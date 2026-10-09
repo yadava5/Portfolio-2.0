@@ -10174,7 +10174,7 @@ function samplePixels() {
   return px;
 }
 const net3 = { g: null, flat: null, paths: [], labs: [], on: false, armed: false, ready: false,
-  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, bounds: null, ident: false, sdev: null, sc: null };
+  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, bounds: null, ident: false, sdev: null, sc: null, labdev: 0 };
 /* ?depth=0.4 holds the assembly at one pose whatever the scroll: a probe's
    still, never a reader's */
 const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : null;
@@ -10458,12 +10458,18 @@ function drawDeep(a) {
   }
   N.paths.forEach((p, n) => { if (p._d !== out[n]) { p._d = out[n]; p.setAttribute("d", out[n]); } });
   NET3_PATHS.forEach(([, o], p) => ink(p, p === 4 ? lerp(0.2, 0.13, nl) : o));
-  /* 5 · the labels, upright, at their own size, once their plane is */
-  /* the ten digits ARE the output plane (the wide plate draws no node for a
-     class), so they stand on it from the first frame; the captions are
-     words about the planes and wait for the camera to be nearly round */
+  /* 5 · THE LABELS ARE BILLBOARDS, so they only go up once their plane is
+     the size they are drawn at. A label is held at nothing until its plane is
+     within 5% of 1:1 and fades up over that last 5%; the captions wait for
+     the camera as well. v4 could afford a loose tolerance because the
+     anamorphic seat held every plane near 1:1 from the first frame — with the
+     seat gone the output plane starts at 0.74, and the old 0.2 let the ten
+     digits print at full size over a plane drawn at 0.83. Measured on the
+     adopted pose: the digits go up at a = 0.79 and the input card captions at
+     a = 0.85, so the row of classes arrives with the answer. */
   const sig = [S[iCtr], S[iCtr + 1], S[iCtr + 2]], capt = smooth((cam - 0.8) / 0.15);
   N.sc = sig; /* the three plane scales: a probe reads the painter's order off them */
+  N.labdev = 0; /* and the worst plane any SHOWN label is standing on, which is the gate */
   /* A DIGIT STANDS ONLY WHERE IT STANDS CLEAR. Billboards are drawn at full
      size on a plane seen in depth, and early on the classes' plane sits
      behind the lattice: the reviewer's frames at 1440 had 0 to 9 printed
@@ -10474,13 +10480,14 @@ function drawDeep(a) {
   const grid = [U[iNode], V[iNode], U[iNode + 9], V[iNode + 9], U[iNode + 99], V[iNode + 99], U[iNode + 90], V[iNode + 90]];
   N.labs.forEach((l, n) => {
     const i = iLab + n, digit = l.wrap !== N.g;
-    const fit = 1 - smooth((Math.abs(sig[l.layer] - 1) - (digit ? 0.12 : 0.025)) / 0.05);
+    const fit = 1 - smooth(Math.abs(sig[l.layer] - 1) / 0.05);
     let clear = 1;
     if (digit) {
       const cu = U[i] + (G.rise ? 0 : -4.5), cv = V[i] - 4.5, half = 7;
       clear = smooth((Math.min(DEPTH.gap(cu, cv, grid) - rr, DEPTH.gap(cu, cv, Q)) - half) / 6);
     }
     const op = l.sample && R.who !== "sample" ? 0 : r2(fit * clear * (digit ? 1 : capt));
+    if (op > 0.05) N.labdev = Math.max(N.labdev, Math.abs(sig[l.layer] - 1));
     if (l._op !== op) { l._op = op; l.el.setAttribute("opacity", op); }
     /* written even while it is hidden, so the frame is the pose's and never
        the history's: a label that kept its last shown place made the same y
@@ -10508,7 +10515,7 @@ function setDeep(on) {
   if (on) N.flat.setAttribute("opacity", 0);
   else { N.flat.removeAttribute("opacity"); N.bounds = null; }
   $("net").classList.toggle("indepth", on);
-  window.__world.net3 = { a: N.a, on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc }; /* probe hook */
+  window.__world.net3 = { a: N.a, on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc, labdev: N.labdev }; /* probe hook */
 }
 /* called every frame by work(y). Arming is what keeps the switch between
    the flat figure and the depth layer off the screen: the layer may take the
@@ -10523,7 +10530,7 @@ function deepNet(y) {
   const show = N.armed && N.ready && a < 1;
   if (show !== N.on) setDeep(show);
   if (show && a !== N.a) { N.a = a; drawDeep(a); }
-  window.__world.net3 = { a: +a.toFixed(4), on: N.on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc }; /* probe hook */
+  window.__world.net3 = { a: +a.toFixed(4), on: N.on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc, labdev: N.labdev }; /* probe hook */
 }
 /* THE FIGURE SHOWS A READ BEFORE THE READER MAKES ONE, because the depth
    layer has nothing to assemble without one, and an empty network seen from
