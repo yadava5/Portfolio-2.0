@@ -245,9 +245,12 @@ are therefore permitted, each bounded:
 2. **One more blur.** §E's "hero de-blur is the only blur on the page" is
    narrowed by exactly one: the link roll's mid-flight blur, under 1px, for
    300ms, on fine pointers only. Never on a phone, never on a resting glyph.
-3. **Figures assembled in true 3D by the scroll** inside a plate that never
+3. **Figures assembled in true 3D by the scroll**, inside a plate that never
    moves on its own: one camera, scroll-pure (the same y gives the same frame),
-   rigid planes, true perspective. Not a tilt card: nothing follows the pointer.
+   rigid planes in true perspective whose depth closes as one scalar into the
+   page, nothing travelling across the screen to its place, nothing descending,
+   no shadows, and the authored drawing exactly in place once it is being read.
+   Not a tilt card: nothing follows the pointer.
 
 **Still banned, unchanged:** tilt cards, glare and holo, magnetic buttons,
 particles and constellations, text scramble and typewriter effects, shimmer
