@@ -2614,6 +2614,36 @@ if (location.hash.length > 1) {
   /* ═══ v6 · style slot, fig. 07 (drawn by hand) ═══ */
 
   /* ═══ v6 · style slot, fig. 08 (drawn by hand) ═══ */
+  /* THE SOLID'S PAPER IS OCCLUSION, NOT A MARK. What says "built" is that the
+     sketch behind a floor goes out of sight under it, and every edge it has
+     is ink. Composited on the day field the paper is #f9f2e2, measured: #f9f2e2 on #f2e4c9 — 1.13:1 / Lc 0.0,
+     which no floor is meant to read, so this rule is the figure's own and stays out of
+     the palette gate's stroke scan, as fig. 07's sheet fill does. */
+  #questFig .q3paper{fill:var(--plate); stroke:none}
+  /* the depth's ink: a tread's weight on the flanks, the cut's on the slab */
+  .figsvg .q3ink{fill:none; stroke:var(--ink); stroke-width:2}
+  .figsvg .q3ink.roof{stroke-width:2.4}
+  #questFig.tight .q3ink.roof{stroke-width:2}
+  .figsvg .q3nib{fill:var(--ink)}
+  /* SEEN FLAT, the depth folds away and the names ride forward to the
+     elevation's own seats. The transitions are armed for the press alone
+     (.q3swap), so the scroll, which writes the same two properties every
+     frame, is never smoothed behind the reader's back; at rest both are 0
+     or 1. */
+  #questFig.q3swap .q3depth{transition:opacity .24s cubic-bezier(.4,0,.2,1)}
+  #questFig.q3swap .q3col{transition:transform .34s cubic-bezier(.3,.7,.2,1)}
+  #questFig.q3flat .q3depth{opacity:0}
+  @media (prefers-reduced-motion: reduce){ #questFig.q3swap .q3depth, #questFig.q3swap .q3col{transition:none} }
+  /* the caption and its one control share the row under the plate; the
+     control speaks in the body face, not the caption's mono */
+  #lifequest .plate{display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:1rem; align-items:center}
+  #lifequest .plate > .figsvg{grid-column:1 / -1}
+  #lifequest .plate > figcaption{grid-row:2; grid-column:1; text-wrap:balance}
+  #lifequest .q3btn{grid-row:2; grid-column:2; margin-top:1rem; min-height:44px; padding:.5rem .9rem;
+    font:400 .95rem/1.2 var(--body); color:var(--ink); background:none; white-space:nowrap;
+    border:1px solid var(--hair-strong); border-radius:3px; cursor:pointer}
+  #lifequest .q3btn:hover{border-color:var(--ink-2)}
+  #lifequest .q3btn:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
 
   /* ═══ v6 · end of the figure slots ═══ */
 </style>
@@ -4198,7 +4228,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file: a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest" target="_blank" rel="noopener">source ↗</a> · <a href="https://getlifequest.vercel.app" target="_blank" rel="noopener">live prototype ↗</a> · <a href="https://getlifequest.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
-        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A building drawn in elevation, five floors high, standing on a ground line that runs the width of the plate. All five floors are sketched in pencil first; the lower three are then inked over the sketch, and each of those carries inside it a small drawing of the thing that was built there: a mission card with a checked line, a tier ladder, and a database. A heavy cut line closes the top of the inked three, where the building stopped. The two floors above it stay pencil, and nothing is drawn inside the two unbuilt floors, because nothing was built in them; that emptiness is the largest thing on the plate. Every floor is named on a short leader to the right. The three built ones carry a check. Of the two above, scale is held for a partner or funder, and a finished product is held because it is not claimed, which are two different holds and not one: the first is blocked from outside and the second is simply not asserted. A leveling staff runs up the left of the building and the run’s token climbs it one floor at a time, stopping at the top of the built work wearing the clay ring this run uses for a deliberate hold, not a fall. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."</svg>
+        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A building drawn in depth, five floors high, standing on a ground line that runs the width of the plate. All five floors are sketched in pencil first, as volumes; the lower three are then inked over the sketch as one solid block, and each carries on its face a small drawing of the thing that was built there: a mission card with a checked line, a tier ladder, and a database. A heavy cut line closes the top of the inked three, where the building stopped, and the cut is drawn as a slab you look down on. The two floors above it stay pencil, open volumes you can see through, and nothing is drawn inside the two unbuilt floors, because nothing was built in them; that emptiness is the largest thing on the plate. Every floor is named on a short leader to the right. The three built ones carry a check. Of the two above, scale is held for a partner or funder, and a finished product is held because it is not claimed, which are two different holds and not one: the first is blocked from outside and the second is simply not asserted. A leveling staff runs up the left of the building and the run’s token stands on it at the top of the built work, wearing the clay ring this run uses for a deliberate hold, not a fall. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
         <figcaption>fig. 08 · three floors built, two held on purpose.</figcaption>
       </figure>
     </div>
@@ -5313,50 +5343,6 @@ function cacheGeometry() {
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
 
-  /* THE LIFEQUEST PLATE FINISHED DRAWING WHERE NOBODY COULD SEE IT. The
-     owner: "the animation … finishes displaying full thing when we past
-     scroll that section". Measured at b29f7a6, at the scroll pixel where the
-     plate's last held tag switches on:
-
-       1512x982  effective opacity 0.50, plate centre 0.29vh
-       1440x900  0.68, 0.28vh
-       1280x800  0.84, 0.28vh
-        390x844  1.00, 0.71vh
-
-     On a laptop the shared dusk curtain is already half over it and it is
-     sliding off the top edge; on a phone it completes with the plate near the
-     bottom of the screen. Nothing was wrong with the drawing — its own clock
-     lands everything by .415 — the fault is that .415 of BEAT 7 is a position
-     in a beat sized by the dusk chain, and that chain grew.
-
-     So the scroll is remapped onto the drawing's clock rather than the clock
-     being retuned: yB is the scroll at which the plate sits centred, pulled
-     back if the curtain would reach it first, and yA is far enough above it
-     that the drawing is never a flick. CLIMB_INK and the drawing order are
-     untouched.
-
-     This sits AFTER the write-back and the second measure(), not beside Y1:
-     bDusk.h is rewritten 4 lines up, and pOf divides by it. Computed before
-     the re-measure, every window here would be scaled by a stale beat
-     height. */
-  {
-    const plate8 = climb.svg.closest("figure"), f8 = fx.find((f) => f.el === plate8);
-    const top8 = absTop(plate8), h8 = plate8.offsetHeight;
-    const yIn = f8.spec.in[1] * (vh + f8.h) - vh + f8.top;           /* entrance done */
-    /* 0.50 and not 0.52, and the 0.02 is bought rather than taste: the last
-       boot-time cacheGeometry runs against a layout that still grows about
-       33px under it (measured at 1512 — the live plate centre is 6694 and the
-       cached one 6661; a forced resize makes them agree). Every derived
-       window on this page carries that staleness and it is not this change's
-       to fix, so the target is placed high enough in the band that 33px of it
-       lands nowhere near the edge. */
-    const yB = Math.min(top8 + h8 / 2 - 0.50 * vh, Y1 - 0.08 * vh);  /* centred, before the curtain */
-    const yA = Math.min(yIn, yB - 0.22 * vh);                        /* never a flick */
-    const pOf = (y) => (y + vh * READ_LINE - bDusk.top) / bDusk.h;
-    climbWin.a = pOf(yA); climbWin.b = pOf(yB);
-    window.__world.climbWin = { a: climbWin.a, b: climbWin.b, yA, yB, yIn }; /* probe hook */
-  }
-
   /* hand the darkening window to arcColor, as fractions of the beat */
   dusk7.start = (yDark + vh * READ_LINE - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
@@ -5402,6 +5388,38 @@ function cacheGeometry() {
   window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
   /* ── v6 · window slot, fig. 04 ── */
   /* ── v6 · window slot, fig. 08 ── */
+  /* FIG. 08 ASSEMBLES INSIDE THE DUSK CONTRACT'S SETTLED CORRIDOR, OR NOT AT
+     ALL. Its drawing holds the opening (the authored elevation, whole) until
+     the plate's own entrance has finished, and is complete by the reading
+     line, the driver's p = 1, so every centred park in both engines is the
+     finished drawing and the curtain never takes one still being made. Both
+     edges are read off the contract the dusk block above has just derived;
+     nothing here is tuned. The driver's own window cannot say this (its
+     floor is ASM_LEAD, and a lead only lengthens it), so the plate maps the
+     driver's p onto its own stretch inside it (climbQ).
+     MEASURED, THE TWO EDGES LEAVE NO WINDOW: the entrance ends at 6325, 5956,
+     8919 and 9171 and the reading line falls at 6317, 5887, 8922 and 9196
+     (1440×900, 1280×720, 420×786, 390×844; Chromium, WebKit within 4px), so
+     the window is −8, −69, 3 and 25px. That is structural, not this plate's
+     tuning: the entrance waits for the plate's bottom, so the room is
+     0.38 vh − 28px − (the figure's height − half its drawing's), which is
+     negative for anything taller than a small card.
+     Under 0.12 vh an assembly is a pop, not a drawing, so there the plate is
+     its finished drawing at every scroll position and the conflict goes to
+     the owner rather than being bent here. ?f8=enter (pre-armed, not
+     shipped) opens the window at the START of the entrance instead, to look
+     at the other side of that ruling. */
+  {
+    const plate8 = climb.svg.closest("figure"), f8 = fx.find((f) => f.el === plate8);
+    const yOf = (u) => u * (vh + f8.h) - vh + f8.top; /* an fx fraction, as a page y */
+    const b = layoutBox(climb.svg), yRead = b.top + b.h / 2 - READ_LINE * vh;
+    climbWin.y0 = yOf(f8.spec.in[FLAGS.get("f8") === "enter" ? 0 : 1]);
+    climbWin.y1 = Math.min(yRead, yOf(f8.spec.out[0]) - 8); /* 8px ahead of the first fade step */
+    climbWin.ok = climbWin.y1 - climbWin.y0 >= 0.12 * vh;
+    if (climb.e) climb.e.last = NaN; /* the same p can be a new q now: redraw it */
+    window.__world.fig08 = { y0: Math.round(climbWin.y0), y1: Math.round(climbWin.y1), ok: climbWin.ok,
+      read: Math.round(yRead), curtain: Math.round(yOf(f8.spec.out[0])) }; /* probe hook */
+  }
   /* ── v6 · every assembled figure's window, measured last ── */
   asmGeometry();
 }
@@ -8612,107 +8630,109 @@ window.__jet3 = () => {
    the same drawing out: scrubJet itself is untouched. */
 const jetBlocks = (y) => (y < jet3.yB ? 0 : 0.2 + 0.8 * clamp((y - jet3.yB) / (0.32 * vh), 0, 1));
 
-/* LifeQuest — the climb, drawn in section. The stair is the ledger beside it:
-   five steps sketched in pencil, three of them built. What makes the drawing
-   honest is not the pencil, it is the MASS — the built three close into a
-   hatched body standing on the ground, and past the cut face where the work
-   ended there is nothing under the last two at all.
+/* LifeQuest: five floors, three built, two held, drawn by hand in depth.
+   Round v6 ships the owner's pick from the v5 lab (cell D) and asks it to
+   "assemble with rail scroll", so the plate is drawn from the scroll's p.
 
-   §4b's note for this plate ("the pencil half reads as faint clutter rather
-   than absence; heavier dash, 5 7 at 1.4") is prior art the design ruling
-   lets a redraw supersede, and this supersedes it: a heavier dash makes
-   absence LOUDER, not legible. Absence is a relation, so the fix is to give
-   the built half a body and let the unbuilt half be read against it.
+   THE ELEVATION NEVER LEAVES. Cabinet oblique keeps every plane parallel to
+   the paper at 1:1, so the authored elevation IS the building's front face:
+   its ground, its three inked floors with the thing built inside each, its
+   cut, its two pencil floors, every name and the legend stand on the plate
+   at every scroll position, at their own size. That is what lets every p be
+   a still a reader can park on: no frame is emptier than the flat drawing.
+   Depth is purely additive, and the hand adds it in the argument's order:
 
-   FOUR THINGS THE OLD PLATE DID NOT SAY, and one it got wrong:
+     1 THE PLAN, IN PENCIL. The receding edges grow back from every front
+       corner and the label column rides back with them, so each leader
+       keeps starting on the face it names; then the back of the building is
+       drawn down from the top. Five storeys as volumes: the building as it
+       was meant to be.
+     2 THE INK CLIMBS THREE OF THEM. Floor by floor from the ground the pen
+       draws the flank, and the paper rises inside it, so the sketch behind
+       a built floor goes out of sight under its own ink. The run's token
+       climbs the levelling staff in step.
+     3 THE CUT BECOMES A SURFACE. The slab is laid back from the cut line and
+       inked, and the token takes the clay ring: a deliberate hold, not a
+       fall. The two floors above keep their pencil and stay open volumes you
+       look through, down onto the slab. Nothing is drawn inside them.
 
-   1 BUILT MEANS THERE IS SOMETHING UNDER IT. The shipping plate drew five
-     bare profiles over nothing, three solid and two dashed, so the only
-     difference between shipped and unshipped was a dash pattern. A stair in
-     section has a body; the two unbuilt steps do not; and the empty region
-     bounded by the cut, the ground and the pencil is now the largest single
-     element on the plate. Hatching is the draughtsman's own notation for
-     material, which is the same licence fig. 07's `1f 8b` lettering has —
-     grammar, not a claim.
-   2 THE STOP HAS A FORM, AND IT IS A LANDING. The last built step is wider
-     than the others because a landing is the architectural element for a
-     deliberate pause. The climber stands ON something instead of at a brink,
-     which is the aria-label's claim drawn rather than asserted.
-   3 THE TWO HOLDS ARE NOT THE SAME HOLD, and the ledger beside the plate has
-     always said so — :1863 "needs a partner or funder" against :1865 "not
-     claimed". The drawing flattened them into two identical `held` tags.
-     Scale is blocked by something outside the work, so it is drawn whole and
-     labelled with what is missing; a finished product is not claimed at all,
-     so ITS tread is the one line on this plate that stops in mid-air instead
-     of ending at something. No terminus, for no claim — and that reads in
-     both editions, in greyscale, and to a dichromat.
-   4 THE WORK HAS AN ORIGIN, and the footer keeps :1858's verb. The project
-     was BORN at Social Innovation Weekend, March 2025; nothing owns a claim
-     that three shipped features were finished inside the weekend, so the
-     plate does not make one.
-   5 AND THE ONE IT GOT WRONG, which no gate could see: the third tick never
-     drew. `tp` topped out at 2 and the threshold for i === 2 was `i + 1`, so
-     `backend — real` sat unchecked at every scroll position AND at the
-     settled frame, next to a ledger row printing "✓ shipped". The ticks now
-     key off the hop that lands on their own step, so the arithmetic cannot
-     drift apart from the walk again.
+   WHAT DID NOT MOVE, from the elevation's own notes. Two holds, not one:
+   scale is blocked from outside and is labelled with what is missing, and a
+   finished product is simply not claimed. The footer keeps its verb, born
+   at, because nothing owns a claim that the shipped floors were finished
+   inside the weekend. `held` stays clay, a disposition of record, so the
+   plate carries two clay words and one clay-g ring and nothing else. And NO
+   PARTIAL OPACITY: the pencil is ink-2 by token, every stroke arrives by its
+   own end point or by stroke-dashoffset, every fill by its own geometry, and
+   every element is at 0 or 1, because check-palette composites token alpha
+   only and cannot see an element's.
 
-   THE CLAY, and the question §4b left open. `held` stays clay: it is a
-   disposition of RECORD, not emphasis this composition adds, in the same
-   family as fig. 03's `not checked in`. The decisive fact is next door —
-   the retired ¶08 ledger's own held rows were already --clay, and beat 7
-   resolves the plate and the ledger off the same `p`, side by side in one
-   field of view. Demoting the plate's `held` would make the two halves of one
-   beat disagree about the colour of a hold. The cap then does its real work
-   in the other direction, on what is WITHHELD: the cut face, the pencil, the
-   reason lines and the ground are ink, ink-2 and hair, so the whole plate
-   carries two clay words and one clay-g ring and nothing else.
-
-   NO PARTIAL OPACITY SURVIVES HERE. The shipping scrub settled the pencil at
-   `opacity 0.9` — check-palette composites TOKEN alpha only and cannot see an
-   element one. Everything now arrives by stroke-dashoffset, by a clip sweep,
-   or at 0/1, and every element reads complete at scrub 1 with no frames of
-   motion left in it.
-
-   Wide is 490 (12 × 450 ÷ 490 = 11.02px at this figure's declared seat, the
-   same band as the other five wide plates); tight is 240, where the words go
-   back to the ledger and the numbers stay, because 7.125 units a character
-   does not buy five names. Height is free on both — the gate reads WIDTH. */
-const climb = { svg: $("questFig"), g: null, ground: null, ghost: null,
-  clip: null, pole: null, steps: [], labels: [], ticks: [], arts: [],
-  blocks: [], foot: [], tok: null, ring: null, leads: [], cut: null, stops: [] };
-/* the three ink windows, hoisted: this array is read every frame */
-const CLIMB_INK = [[0.1, 0.18], [0.16, 0.24], [0.22, 0.32]];
-/* WHERE THE DRAWING PLAYS, in beat-7 progress. The plate's own clock (below)
-   is unchanged — the last held tag still lands at .415 — but the stretch of
-   SCROLL that clock is laid over is derived in cacheGeometry instead of being
-   whatever fraction of the beat happened to fall there. The defaults are the
-   identity remap, so a settle before the first geometry pass draws exactly
-   what it drew before. See the derivation for the numbers that forced it. */
-const climbWin = { a: 0.02, b: 0.415 };
+   Wide is 490 (12 × 450 ÷ 490 = 11.02px at its declared seat); tight is 240,
+   where the words go back to the footer and the numbers stay. Depth is 60
+   wide and 34 tight, which is what each label column can afford: the longest
+   held tag ends 10 units short of the wide plate once it has ridden back. */
+const climb = { svg: $("questFig"), g: null, e: null, p: 1, q: 1, flat: false,
+  btn: null, swapT: 0, col: null, pd: null, papers: [], roofPaper: null,
+  inks: [], nib: null, tok: null, ring: null, segs: [], dFull: "", dKeep: "",
+  depthLabel: "", flatLabel: "" };
+/* the drawing's own window in page px, written by cacheGeometry's fig. 08
+   slot. Until it is measured, and wherever no window fits, the plate is its
+   finished drawing. */
+const climbWin = { y0: 0, y1: 0, ok: false };
+/* cabinet oblique at the drawing board's 30°: x and y stay true and depth
+   runs up and to the right, one vector for every receding edge */
+const Q3 = { x: Math.cos(Math.PI / 6), y: Math.sin(Math.PI / 6) };
+/* the hand's clock, in the drawing's own progress q */
+const Q3T = { ray: [0.03, 0.21], back: [0.21, 0.39], ink: [0.42, 0.831],
+  slab: [0.84, 0.95], ring: 0.96, drop: 0.97 };
+const q3n = (v) => String(Math.round(v * 10) / 10);
+const q3seg = (q, a, b) => clamp((q - a) / (b - a), 0, 1);
+const q3poly = (pts) => pts.map((p, i) => `${i ? "L" : "M"} ${q3n(p[0])} ${q3n(p[1])}`).join(" ");
+const q3len = (pts) => pts.reduce((s, p, i) => (i ? s + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
+/* the point at distance d along a polyline: the pen's nib, by arithmetic, so
+   no frame asks the browser for a path length */
+function q3at(pts, d) {
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (d <= l || i === pts.length - 1) {
+      const t = l ? clamp(d / l, 0, 1) : 0;
+      return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    }
+    d -= l;
+  }
+  return pts[0];
+}
+/* the part of a convex face at or below the level y = h (y runs down), which
+   is how the paper rises inside a floor without a clip or an alpha */
+function q3below(pts, h) {
+  const out = [];
+  pts.forEach((a, i) => {
+    const b = pts[(i + 1) % pts.length], ina = a[1] >= h;
+    if (ina) out.push(a);
+    if (ina !== b[1] >= h) out.push([a[0] + ((b[0] - a[0]) * (h - a[1])) / (b[1] - a[1]), h]);
+  });
+  return out;
+}
+/* write an attribute only when its string changed */
+function q3put(e, k, v) {
+  const c = e._q3 || (e._q3 = {});
+  if (c[k] !== v) { c[k] = v; e.setAttribute(k, v); }
+}
+/* the scroll's p as the drawing's q: the driver owns p over its own window,
+   and the plate's window is the part of it the dusk contract leaves (see
+   cacheGeometry's fig. 08 slot) */
+function climbQ(p) {
+  if (ASM_PIN !== null) return p; /* ?asm pins the drawing itself, for stills */
+  const e = climb.e;
+  if (!e || !climbWin.ok) return 1;
+  const y = e.yA + p * (e.yB - e.yA);
+  return clamp((y - climbWin.y0) / (climbWin.y1 - climbWin.y0), 0, 1);
+}
 function buildClimb(tight) {
   const s = climb.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  climb.steps = []; climb.labels = []; climb.ticks = []; climb.arts = [];
-  climb.blocks = []; climb.foot = []; climb.leads = [];
-  climb._sw = climb._pw = climb._cx = climb._cy = null; /* no stale diff */
-  /* THE SECOND DRAWING. The first was a stair in section: a hatched mass
-     rising to the right, its names lettered into the poché through clipped
-     holes, the unbuilt flight sketched off the top corner. It was honest and
-     the owner looked at the redraw and said it was the same figure — which
-     it was. Lightening the hatch is not a redesign anyone can see.
-     This is an elevation instead, which is what you draw when the question
-     is "how far up did it get". Five floors, stacked, all of them sketched
-     in pencil first. The lower three are inked and each one has the thing
-     that was actually built standing inside it; the upper two stay pencil,
-     empty, and say why. A levelling staff runs up the left and the run's
-     token rides it to the top of the built work and stops there. Nothing
-     about the facts moved: three built, two held, and the two reasons.
-     Naming is annotated to the right off short leaders rather than lettered
-     into the mass, so there are no clip holes, no advance budget and no
-     measured constant that goes stale when a face changes. */
   const g = tight
-    ? { vb: "0 0 240 362", vw: 240, vh: 362,
+    ? { vb: "0 0 240 362", vw: 240, vh: 362, dz: 34,
         x0: 20, x1: 116, lead: 126, lx: 132, pole: 12, bulge: 5,
         ys: [246, 206, 166, 126, 86, 46], gx: [8, 232], dy: 3, ldy: 11,
         names: ["01", "02", "03"],
@@ -8723,7 +8743,7 @@ function buildClimb(tight) {
                [324, "solid: built · pencil: not"],
                [340, "born march 2025, at the"],
                [356, "social innovation weekend"]] }
-    : { vb: "0 0 490 410", vw: 490, vh: 410,
+    : { vb: "0 0 490 410", vw: 490, vh: 410, dz: 60,
         x0: 44, x1: 212, lead: 228, lx: 236, pole: 26, bulge: 7,
         ys: [368, 306, 244, 182, 120, 58], gx: [16, 474], dy: 4, ldy: 16,
         names: ["mission card", "tier ladder", "backend"],
@@ -8733,163 +8753,245 @@ function buildClimb(tight) {
                [404, "born at social innovation weekend, march 2025"]] };
   climb.g = g;
   s.setAttribute("viewBox", g.vb);
-  const { x0, x1, ys } = g, Yg = ys[0];
-  const cy = (i) => (ys[i] + ys[i + 1]) / 2;   /* floor i's middle */
-  const drawn = (e) => {
-    const L = e.getTotalLength();
-    e.style.strokeDasharray = L; e.style.strokeDashoffset = L;
-    e._len = L; e._d = null; return e;
+  const { x0, x1, ys, dz } = g, Yg = ys[0];
+  const P = (x, y, d) => [x + d * Q3.x, y - d * Q3.y];
+  g.ox = dz * Q3.x; g.oy = dz * Q3.y;
+  const cy = (i) => (ys[i] + ys[i + 1]) / 2; /* floor i's middle */
+  const text = (x, y, words, cls, parent) => {
+    const t = el("text", cls ? { x, y, class: cls } : { x, y }, parent);
+    t.textContent = words; return t;
   };
-  const text = (x, y, words, cls) => {
-    const t = el("text", cls ? { x, y, class: cls } : { x, y });
-    t.textContent = words; t.setAttribute("opacity", 0); t._on = 0; return t;
-  };
-  const tick = (x, y) => {
+  const tick = (x, y, parent) => {
     const k = tight ? 0.74 : 1;
-    const e = el("path", { class: "oktick",
-      d: `M ${x} ${y - 3.4 * k} l ${2.9 * k} ${2.8 * k} L ${x + 8.4 * k} ${y - 8.6 * k}` });
-    e.setAttribute("opacity", 0); e._on = 0; return e;
+    el("path", { class: "oktick",
+      d: `M ${x} ${y - 3.4 * k} l ${2.9 * k} ${2.8 * k} L ${x + 8.4 * k} ${y - 8.6 * k}` }, parent);
   };
 
-  /* 1 · the ground. Everything stands on it and the emptiness above the cut
-     is bounded by the same line, which is what makes it a shape. */
-  climb.ground = drawn(el("path", { d: `M ${g.gx[0]} ${Yg} H ${g.gx[1]}`, class: "lane" }));
+  /* BEHIND THE ELEVATION: the pencil construction, and the paper that rises
+     over it as each floor is built. Both fold away when the plate is seen
+     flat. */
+  const back = el("g", { class: "q3depth" });
+  climb.pd = el("path", { class: "pencil", d: "" }, back);
+  climb.papers = [0, 1, 2].map(() => el("path", { class: "q3paper", d: "" }, back));
+  climb.roofPaper = el("path", { class: "q3paper", d: "" }, back);
+  g.faces = [0, 1, 2].map((f) => ({ lo: ys[f], hi: ys[f + 1] - g.oy, top: ys[f + 1],
+    flank: [P(x1, ys[f], 0), P(x1, ys[f], dz), P(x1, ys[f + 1], dz), P(x1, ys[f + 1], 0)] }));
 
-  /* 2 · all five floors in pencil, under one clip that sweeps — the whole
-     building planned, then the built part inked over it. The lower three are
-     their own path so they can retire the moment their ink closes; dashed
-     ink-2 left under 2px of ink fringes at every dash edge. */
+  /* THE ELEVATION, the building's front face. The ground first: everything
+     stands on it, and the emptiness above the cut is bounded by it too. */
+  el("path", { d: `M ${g.gx[0]} ${Yg} H ${g.gx[1]}`, class: "lane" });
   const box = (a, b) => `M ${x0} ${ys[a]} V ${ys[b]} H ${x1} V ${ys[a]} Z`;
-  const sc = el("clipPath", { id: "climbSketch" });
-  climb.clip = el("rect", { x: 0, y: 0, width: 0, height: g.vh }, sc);
-  const sg = el("g", { "clip-path": "url(#climbSketch)" });
-  climb.ghost = el("path", { class: "pencil", d: box(0, 3) }, sg);
-  el("path", { class: "pencil",
-    d: `${box(3, 5)} M ${x0} ${ys[4]} H ${x1}` }, sg);
-
-  /* 3 · the built three, one path per floor: its own slab and the two walls
-     that carry it. Tread weight, because a floor that exists is the heaviest
-     line in an elevation after the cut. */
+  el("path", { class: "pencil", d: `${box(3, 5)} M ${x0} ${ys[4]} H ${x1}` });
+  /* the built three, one path per floor: its own slab and the two walls that
+     carry it, at tread weight; and the cut, where the building stopped */
   for (let i = 0; i < 3; i++)
-    climb.steps.push(drawn(el("path", { class: "tread",
-      d: `M ${x0} ${ys[i]} V ${ys[i + 1]} H ${x1} V ${ys[i]}` })));
-  /* and the cut: where the building stopped. */
-  climb.cut = drawn(el("path", { class: "face cut", d: `M ${x0} ${ys[3]} H ${x1}` }));
-
-  /* 4 · what is standing on each built floor. One path each, no text, no
-     fills — the mission card, the tier ladder, the database. Drawn at the
-     floor's own middle so they cannot collide with the staff or the leaders. */
+    el("path", { class: "tread", d: `M ${x0} ${ys[i]} V ${ys[i + 1]} H ${x1} V ${ys[i]}` });
+  el("path", { class: "face cut", d: `M ${x0} ${ys[3]} H ${x1}` });
+  /* what is standing on each built floor: the mission card, the tier ladder,
+     the database. Drawn at the floor's own middle so they cannot collide
+     with the staff or the leaders. */
   const k = tight ? 0.62 : 1, ax = (x0 + x1) / 2;
-  const art = (i, d) => climb.arts.push(drawn(el("path", { class: "face", d })));
+  const art = (d) => el("path", { class: "face", d });
   {
     const c = cy(0), w = 24 * k, h = 15 * k;                 /* the mission card */
-    art(0, `M ${ax - w} ${c - h} H ${ax + w} V ${c + h} H ${ax - w} Z` +
-           ` M ${ax - w + 5 * k} ${c - h + 6 * k} H ${ax + w - 12 * k}` +
-           ` M ${ax - w + 5 * k} ${c + 1 * k} H ${ax + w - 6 * k}` +
-           ` M ${ax - w + 5 * k} ${c + 7 * k} H ${ax + w - 14 * k}` +
-           ` M ${ax + w - 11 * k} ${c + 4 * k} l ${3 * k} ${3.4 * k} l ${6 * k} ${-7 * k}`);
+    art(`M ${ax - w} ${c - h} H ${ax + w} V ${c + h} H ${ax - w} Z` +
+        ` M ${ax - w + 5 * k} ${c - h + 6 * k} H ${ax + w - 12 * k}` +
+        ` M ${ax - w + 5 * k} ${c + 1 * k} H ${ax + w - 6 * k}` +
+        ` M ${ax - w + 5 * k} ${c + 7 * k} H ${ax + w - 14 * k}` +
+        ` M ${ax + w - 11 * k} ${c + 4 * k} l ${3 * k} ${3.4 * k} l ${6 * k} ${-7 * k}`);
   }
   {
     const c = cy(1), w = 11 * k, h = 17 * k;                 /* the tier ladder */
     let d = `M ${ax - w} ${c - h} V ${c + h} M ${ax + w} ${c - h} V ${c + h}`;
     for (let r = 0; r < 4; r++) d += ` M ${ax - w} ${c - h + (r + 0.5) * (2 * h / 4)} H ${ax + w}`;
-    art(1, d);
+    art(d);
   }
   {
     const c = cy(2), w = 19 * k, h = 14 * k, e = 5.5 * k;    /* the backend */
-    art(2, `M ${ax - w} ${c - h + e} a ${w} ${e} 0 0 1 ${2 * w} 0` +
-           ` a ${w} ${e} 0 0 1 ${-2 * w} 0 V ${c + h - e}` +
-           ` a ${w} ${e} 0 0 0 ${2 * w} 0 V ${c - h + e}` +
-           ` M ${x0 + 8 * k} ${c - 4 * k} H ${ax - w - 5 * k}` +
-           ` M ${x0 + 8 * k} ${c + 5 * k} H ${ax - w - 5 * k}`);
+    art(`M ${ax - w} ${c - h + e} a ${w} ${e} 0 0 1 ${2 * w} 0` +
+        ` a ${w} ${e} 0 0 1 ${-2 * w} 0 V ${c + h - e}` +
+        ` a ${w} ${e} 0 0 0 ${2 * w} 0 V ${c - h + e}` +
+        ` M ${x0 + 8 * k} ${c - 4 * k} H ${ax - w - 5 * k}` +
+        ` M ${x0 + 8 * k} ${c + 5 * k} H ${ax - w - 5 * k}`);
   }
 
-  /* 5 · the names, annotated off short leaders rather than lettered into the
-     building. The pine tick keeps the climber's beat: it arrives when the
-     token reaches that floor. */
-  g.names.forEach((w, i) => {
-    climb.leads.push(drawn(el("path", { class: "lane", d: `M ${x1} ${cy(i)} H ${g.lead}` })));
-    climb.ticks.push(tick(g.lx, cy(i) + g.dy));
-    climb.labels.push(text(g.lx + (tight ? 13 : 18), cy(i) + g.dy, w, "lit"));
-  });
+  /* IN FRONT OF IT: the depth's own ink and the pen that draws it. Each built
+     floor is one stroke that climbs its back edge and comes forward along
+     its top (the ground floor first runs back along the ground); the slab is
+     its left edge and its back edge. Lengths are arithmetic, at build. */
+  const front = el("g", { class: "q3depth" });
+  const inkPath = (pts, cls) => {
+    const len = q3len(pts);
+    const e = el("path", { class: cls, d: q3poly(pts), "stroke-dasharray": `${q3n(len)} ${q3n(len)}` }, front);
+    return { e, pts, len };
+  };
+  climb.inks = [0, 1, 2].map((f) => inkPath([...(f ? [] : [P(x1, Yg, 0)]),
+    P(x1, ys[f], dz), P(x1, ys[f + 1], dz), P(x1, ys[f + 1], 0)], "q3ink"));
+  climb.inks.push(inkPath([P(x0, ys[3], 0), P(x0, ys[3], dz), P(x1, ys[3], dz)], "q3ink roof"));
+  climb.nib = el("circle", { r: tight ? 1.9 : 2.6, class: "q3nib", opacity: 0 }, front);
 
-  /* 6 · the two held floors, named the same way. `held` carries the ledger's
-     own clay; the reason sits under it in ink-2. Nothing is drawn inside
-     them, and that emptiness above the cut is the drawing. */
+  /* THE LABEL COLUMN rides back with the faces it names. Names on short
+     leaders rather than lettered into the mass, so nothing here has a clip
+     hole or an advance budget to go stale. The pine tick says built. */
+  climb.col = el("g", { class: "q3col" });
+  g.names.forEach((w, i) => {
+    el("path", { class: "lane", d: `M ${x1} ${cy(i)} H ${g.lead}` }, climb.col);
+    tick(g.lx, cy(i) + g.dy, climb.col);
+    text(g.lx + (tight ? 13 : 18), cy(i) + g.dy, w, "lit", climb.col);
+  });
+  /* the two held floors, named the same way: `held` in the ledger's own
+     clay, the reason under it */
   g.holds.forEach((lines, i) => {
     const c = cy(3 + i);
-    climb.leads.push(drawn(el("path", { class: "lane", d: `M ${x1} ${c} H ${g.lead}` })));
-    const b = [text(g.lx, c - g.dy, lines[0], "lit")];
-    b.push(text(g.lx, c + g.ldy, lines[1], "heldtag"));
-    climb.blocks.push(b);
+    el("path", { class: "lane", d: `M ${x1} ${c} H ${g.lead}` }, climb.col);
+    text(g.lx, c - g.dy, lines[0], "lit", climb.col);
+    text(g.lx, c + g.ldy, lines[1], "heldtag", climb.col);
   });
 
-  /* 7 · the levelling staff, and the token that rides it. A staff beside a
-     building is read as "this is how far up it got", which is this plate's
-     whole sentence; it replaces the hatched mass that used to say it. */
-  climb.pole = drawn(el("path", { class: "lane", d: `M ${g.pole} ${Yg} V ${cy(2)}` }));
-  climb.foot = g.foot.map(([y, w]) => text(8, y, w));
+  /* the levelling staff and the token that rides it. A staff beside a
+     building is read as "this is how far up it got", which is the plate's
+     whole sentence. */
+  el("path", { class: "lane", d: `M ${g.pole} ${Yg} V ${cy(2)}` });
+  g.foot.forEach(([y, w]) => text(8, y, w));
   climb.ring = el("circle", { r: tight ? 8 : 10, class: "holdmark", opacity: 0 });
-  climb.tok = el("circle", { r: tight ? 4.5 : 5.5, class: "lit", opacity: 0 });
-  climb.stops = [Yg, cy(0), cy(1), cy(2)];
+  climb.tok = el("circle", { r: tight ? 4.5 : 5.5, class: "lit" });
+  g.stops = [Yg, cy(0), cy(1), cy(2)];
+
+  /* THE CONSTRUCTION, segment by segment. Each is its own subpath and grows
+     from its own start, so the dash pattern stays where the pencil put it.
+     The receding edges grow together (kind 0); the back verticals come down
+     from the top a floor at a time, and each back edge is drawn across as
+     the verticals pass it (kind 1, scheduled along the vertical's run).
+     THE LOWER THREE ARE SKETCHED AS THE SOLID THEY ARE MEANT TO BE: only the
+     edges a reader will see. Their hidden edges would sit at depth 30 in
+     floors 62 tall, so each would run exactly through the middle of the
+     floor above it, across the card, the ladder and the database: a dashed
+     strike through every built thing. The two held floors are drawn whole,
+     because you see through them.
+     `keep` is the two held floors, the only pencil a finished drawing
+     shows. The rest goes under ink, and leaves the path once the slab is
+     down, when no reader could see it go. */
+  const S = [], top = ys[5], across = 0.6 * (ys[0] - ys[1]);
+  for (let i = 0; i <= 5; i++) {
+    S.push({ a: P(x1, ys[i], 0), b: P(x1, ys[i], dz), kind: 0, keep: i >= 4 });
+    if (i >= 3) S.push({ a: P(x0, ys[i], 0), b: P(x0, ys[i], dz), kind: 0, keep: i >= 4 });
+  }
+  for (let j = 4; j >= 0; j--) {
+    for (const x of j >= 3 ? [x0, x1] : [x1])
+      S.push({ a: P(x, ys[j + 1], dz), b: P(x, ys[j], dz), kind: 1,
+        at: ys[j + 1] - top, span: ys[j] - ys[j + 1], keep: j >= 3 });
+    if (j >= 2)
+      S.push({ a: P(x0, ys[j + 1], dz), b: P(x1, ys[j + 1], dz), kind: 1,
+        at: ys[j + 1] - top, span: across, keep: j >= 3 });
+  }
+  g.run = Yg - top;
+  climb.segs = S;
+  const whole = (sg) => `M ${q3n(sg.a[0])} ${q3n(sg.a[1])} L ${q3n(sg.b[0])} ${q3n(sg.b[1])}`;
+  climb.dFull = S.map(whole).join(" ");
+  climb.dKeep = S.filter((sg) => sg.keep).map(whole).join(" ");
+
+  /* SEE IT FLAT, once: it sits beside the caption and outlives every
+     rebuild. The label names what pressing it shows; the svg's own label
+     follows the drawing that is on the plate. */
+  if (!climb.btn) {
+    climb.depthLabel = s.getAttribute("aria-label");
+    climb.flatLabel = [
+      ["drawn in depth,", "drawn in elevation,"],
+      ["sketched in pencil first, as volumes; the lower three are then inked over the sketch as one solid block, and each carries on its face",
+        "sketched in pencil first; the lower three are then inked over the sketch, and each carries inside it"],
+      [", and the cut is drawn as a slab you look down on.", "."],
+      ["stay pencil, open volumes you can see through, and", "stay pencil, and"],
+    ].reduce((t, [a, b]) => t.split(a).join(b), climb.depthLabel);
+    const b = (climb.btn = document.createElement("button"));
+    b.type = "button"; b.className = "q3btn"; b.textContent = "see it flat";
+    b.addEventListener("click", () => climbFlat(!climb.flat));
+    s.after(b);
+  }
+  s.classList.toggle("q3flat", climb.flat);
+  climb.e = asmFigure("fig08", { box: () => layoutBox(climb.svg), draw: drawClimb });
+  drawClimb(climb.p); /* never one frame of an undrawn plate */
 }
-function scrubClimb(p) {
+/* the plate seen flat, or in depth. The press is the one place this plate
+   animates on a clock: the depth folds away and the names ride forward to
+   the elevation's own seats, by CSS transitions armed for the press alone
+   (.q3swap), so nothing schedules a frame and the scroll, which writes the
+   same two properties, is never smoothed behind the reader's back. */
+function climbFlat(on) {
+  const s = climb.svg;
+  climb.flat = on;
+  if (!RM) {
+    s.classList.add("q3swap");
+    clearTimeout(climb.swapT);
+    climb.swapT = setTimeout(() => s.classList.remove("q3swap"), 450);
+  }
+  s.classList.toggle("q3flat", on);
+  s.setAttribute("aria-label", on ? climb.flatLabel : climb.depthLabel);
+  climb.btn.textContent = on ? "see it in depth" : "see it flat";
+  drawClimb(climb.p);
+}
+/* the drawing at p. PURE: every attribute is set from q (and the view) alone,
+   so the same p is the same drawing coming down or going back up, and only
+   a changed string is ever written. */
+function drawClimb(p) {
   const g = climb.g;
   if (!g) return; /* a settle before the first build cannot draw anything */
-  const on = (e, want) => {
-    const v = want ? 1 : 0;
-    if (e._on !== v) { e._on = v; e.setAttribute("opacity", v); }
-  };
-  const ink = (e, a, b) => {
-    const v = (e._len * (1 - smooth((p - a) / (b - a)))).toFixed(1);
-    if (e._d !== v) { e._d = v; e.style.strokeDashoffset = v; }
-  };
-  /* the datum first: nothing on this plate means anything without one */
-  ink(climb.ground, 0.02, 0.09);
-  climb.foot.forEach((t, i) => on(t, p >= 0.04 + i * 0.02));
-  /* the building, sketched — one clip rect, so the gesture is a single
-     stroke across the plate and no element carries a partial alpha */
-  const sw = (smooth((p - 0.04) / 0.13) * g.vw).toFixed(1);
-  if (climb._sw !== sw) { climb._sw = sw; climb.clip.setAttribute("width", sw); }
-  /* then the ink over it, floor by floor, each with its own artifact just
-     after the floor that holds it closes */
-  climb.steps.forEach((st, i) => ink(st, CLIMB_INK[i][0], CLIMB_INK[i][1]));
-  climb.arts.forEach((a, i) => ink(a, CLIMB_INK[i][1] - 0.01, CLIMB_INK[i][1] + 0.06));
-  climb.leads.forEach((l, i) => ink(l, 0.12 + i * 0.045, 0.2 + i * 0.045));
-  ink(climb.cut, 0.32, 0.38); /* the cut, dropping as the building stops */
-  ink(climb.pole, 0.1, 0.34);
-  climb.labels.forEach((l, i) => on(l, p >= CLIMB_INK[i][1]));
-  /* the ghost has done its work once the ink closes over it. It is the one
-     element deliberately invisible at the settled frame, and it is invisible
-     because the ink it was a plan for is standing on top of it. */
-  on(climb.ghost, p < 0.33);
-  /* the token climbing the staff: three lifts, and then it stays. `tp`
-     reaches exactly 3 at p 0.32 and holds there, which is what the third
-     tick keys off. The hop bulges in x, because the travel is vertical. */
-  const tp = clamp((p - 0.1) / 0.22, 0, 1) * 3;
-  const seg = Math.min(2, Math.floor(tp)), u = clamp(tp - seg, 0, 1);
-  const cx = (g.pole + Math.sin(Math.PI * u) * g.bulge).toFixed(1);
-  const cyv = lerp(climb.stops[seg], climb.stops[seg + 1], smooth(u)).toFixed(1);
-  if (climb._cx !== cx || climb._cy !== cyv) {
-    climb._cx = cx; climb._cy = cyv;
-    climb.tok.setAttribute("cx", cx); climb.tok.setAttribute("cy", cyv);
-    climb.ring.setAttribute("cx", cx); climb.ring.setAttribute("cy", cyv);
+  climb.p = p;
+  const q = (climb.q = climbQ(p)), T = Q3T, flat = climb.flat;
+  const { x0, x1, ys, dz } = g;
+  /* 1 · the plan, in pencil */
+  const gr = smooth(q3seg(q, T.ray[0], T.ray[1]));
+  let d = "";
+  if (q >= T.drop) d = climb.dKeep;
+  else if (q >= T.back[1]) d = climb.dFull;
+  else if (gr > 0) {
+    const run = smooth(q3seg(q, T.back[0], T.back[1])) * g.run;
+    for (const sg of climb.segs) {
+      const t = sg.kind ? clamp((run - sg.at) / sg.span, 0, 1) : gr;
+      if (t > 0)
+        d += `M ${q3n(sg.a[0])} ${q3n(sg.a[1])} L ${q3n(sg.a[0] + (sg.b[0] - sg.a[0]) * t)} ${q3n(sg.a[1] + (sg.b[1] - sg.a[1]) * t)} `;
+    }
   }
-  on(climb.tok, p >= 0.08);
-  on(climb.ring, p >= 0.355); /* the deliberate halt, after the climb ends */
-  climb.ticks.forEach((t, i) => on(t, tp >= i + 1));
-  /* the holds, last. The ledger they used to run a hair ahead of was deleted
-     from the DOM; its scrubber is gone now too, and these keep the timing,
-     which was always the drawing's own. Everything on this plate is landed by
-     .415, and that is the whole of the plate's clock: p .415 is the last
-     event, not the ring at .42 and not a curtain at .48. The previous version
-     of this note quoted both of those against a dusk chain that has since
-     been rederived twice, and it was what made "the drawing finishes off
-     screen" look like a timing that was already correct. WHERE .415 falls in
-     the reader's scroll is climbWin's job, in cacheGeometry; nothing on this
-     plate should ever be tuned to compensate for it. */
-  climb.blocks.forEach((b, i) => { for (const t of b) on(t, p >= 0.38 + i * 0.035); });
+  q3put(climb.pd, "d", d);
+  const u = flat ? 0 : gr;
+  const tf = `translate(${q3n(u * g.ox)}px, ${q3n(-u * g.oy)}px)`;
+  if (climb.col._tf !== tf) { climb.col._tf = tf; climb.col.style.transform = tf; }
+  /* 2 · the ink climbs three floors, the paper rising inside each */
+  const step = (T.ink[1] - T.ink[0]) / 3;
+  let nib = null;
+  g.faces.forEach((fc, f) => {
+    const t = smooth(q3seg(q, T.ink[0] + f * step, T.ink[0] + (f + 1) * step));
+    let pd = "";
+    if (t > 0) {
+      const h = lerp(fc.lo, fc.hi, t), fl = q3below(fc.flank, h);
+      pd = `M ${x0} ${fc.lo} H ${x1} V ${q3n(Math.max(h, fc.top))} H ${x0} Z`;
+      if (fl.length > 2) pd += ` ${q3poly(fl)} Z`;
+    }
+    q3put(climb.papers[f], "d", pd);
+    const ink = climb.inks[f];
+    q3put(ink.e, "stroke-dashoffset", q3n(ink.len * (1 - t)));
+    if (t > 0 && t < 1) nib = q3at(ink.pts, ink.len * t);
+  });
+  /* 3 · the cut becomes a surface: the slab laid back from it, then inked */
+  const ts = q3seg(q, T.slab[0], T.slab[1]), w = smooth(q3seg(ts, 0, 0.45)) * dz, ks = smooth(ts);
+  const y3 = ys[3], P = (x, y, z) => [x + z * Q3.x, y - z * Q3.y];
+  q3put(climb.roofPaper, "d", w > 0 ? `${q3poly([[x0, y3], [x1, y3], P(x1, y3, w), P(x0, y3, w)])} Z` : "");
+  const roof = climb.inks[3];
+  q3put(roof.e, "stroke-dashoffset", q3n(roof.len * (1 - ks)));
+  if (ks > 0 && ks < 1) nib = q3at(roof.pts, roof.len * ks);
+  q3put(climb.nib, "opacity", nib ? "1" : "0");
+  if (nib) { q3put(climb.nib, "cx", q3n(nib[0])); q3put(climb.nib, "cy", q3n(nib[1])); }
+  /* the token: three lifts with the three inked floors, then it stays. The
+     hop bulges in x, because the travel is vertical. Seen flat, the drawing
+     is the finished elevation, and the token is where it ends. */
+  const tp = flat ? 3 : q3seg(q, T.ink[0], T.ink[1]) * 3;
+  const hop = Math.min(2, Math.floor(tp)), hu = clamp(tp - hop, 0, 1);
+  const cx = q3n(g.pole + Math.sin(Math.PI * hu) * g.bulge);
+  const cyv = q3n(lerp(g.stops[hop], g.stops[hop + 1], smooth(hu)));
+  for (const c of [climb.tok, climb.ring]) { q3put(c, "cx", cx); q3put(c, "cy", cyv); }
+  q3put(climb.ring, "opacity", flat || q >= T.ring ? "1" : "0"); /* the deliberate halt */
 }
+/* probe hook: the drawing's own progress, on call */
+window.__fig08 = () => ({ p: climb.p, q: climb.q, flat: climb.flat, ...climbWin });
 
 /* Agentic AutoML — the notebook, worked by tools. The registry lists the
    REAL 12 (mcpServer.ts, pinned 5e42233, in source order); cells draw and
@@ -9902,13 +10004,7 @@ function work(y) {
      its bench is a settled record. Beat 6 keeps scrubJet, which is the
      drawing; only its bench pair left. */
   if (Math.abs(beat - 6) <= 1) scrubJet(jetBlocks(y));
-  /* beat 7's plate runs on its own window (climbWin), not on the beat's
-     progress: the beat is sized by the dusk chain and the drawing is not */
-  if (Math.abs(beat - 7) <= 1) {
-    const p7 = beat < 7 ? 0 : beat > 7 ? 1
-      : clamp(0.02 + ((bp - climbWin.a) / (climbWin.b - climbWin.a)) * 0.395, 0, 1);
-    scrubClimb(p7);
-  }
+  /* beat 7's plate rides the assembly driver (asmWork, below) */
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   /* BOTH NIGHT PLATES RUN OFF THE BEAD, NOT THE BEAT. scrubHow stood here
      and took the beat's own progress, which is why it used to finish striking
@@ -16541,7 +16637,7 @@ function settleAll() {
      truthful form of a record is the settled one. Every reader gets it now,
      so there is nothing left here to settle. */
   scrubJet(1);
-  scrubClimb(1); scrubAml(1); scrubGate(1);
+  scrubAml(1); scrubGate(1);
   /* Infinity, not 1: both night plates are clocked by the bead's page y, and
      the settled world is the one where it has passed every junction. The
      second argument holds fig. 11's pages ON the line rather than letting
