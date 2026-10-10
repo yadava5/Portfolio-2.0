@@ -4228,7 +4228,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file: a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest" target="_blank" rel="noopener">source ↗</a> · <a href="https://getlifequest.vercel.app" target="_blank" rel="noopener">live prototype ↗</a> · <a href="https://getlifequest.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
-        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A building drawn in depth, five floors high, standing on a ground line that runs the width of the plate. All five floors are sketched in pencil first, as volumes; the lower three are then inked over the sketch as one solid block, and each carries on its face a small drawing of the thing that was built there: a mission card with a checked line, a tier ladder, and a database. A heavy cut line closes the top of the inked three, where the building stopped, and the cut is drawn as a slab you look down on. The two floors above it stay pencil, open volumes you can see through, and nothing is drawn inside the two unbuilt floors, because nothing was built in them; that emptiness is the largest thing on the plate. Every floor is named on a short leader to the right. The three built ones carry a check. Of the two above, scale is held for a partner or funder, and a finished product is held because it is not claimed, which are two different holds and not one: the first is blocked from outside and the second is simply not asserted. A leveling staff runs up the left of the building and the run’s token stands on it at the top of the built work, wearing the clay ring this run uses for a deliberate hold, not a fall. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
+        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A building drawn in depth, five floors high, standing on a ground line that runs the width of the plate. The lower three floors are inked as one solid block, and each carries on its face a small drawing of the thing that was built there: a mission card with a checked line, a tier ladder, and a database. A heavy cut line closes the top of the inked three, where the building stopped, and the cut is drawn as a slab you look down on. The two floors above it are drawn in pencil as open volumes you can see through, and nothing is drawn inside the two unbuilt floors, because nothing was built in them; that emptiness is the largest thing on the plate. Every floor is named on a short leader to the right. The three built ones carry a check. Of the two above, scale is held for a partner or funder, and a finished product is held because it is not claimed, which are two different holds and not one: the first is blocked from outside and the second is simply not asserted. A leveling staff runs up the left of the building and the run’s token stands on it at the top of the built work, wearing the clay ring this run uses for a deliberate hold, not a fall. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
         <figcaption>fig. 08 · three floors built, two held on purpose.</figcaption>
       </figure>
     </div>
@@ -5397,13 +5397,13 @@ function cacheGeometry() {
      nothing here is tuned. The driver's own window cannot say this (its
      floor is ASM_LEAD, and a lead only lengthens it), so the plate maps the
      driver's p onto its own stretch inside it (climbQ).
-     MEASURED, THE TWO EDGES LEAVE NO WINDOW: the entrance ends at 6325, 5956,
-     8919 and 9171 and the reading line falls at 6317, 5887, 8922 and 9196
-     (1440×900, 1280×720, 420×786, 390×844; Chromium, WebKit within 4px), so
-     the window is −8, −69, 3 and 25px. That is structural, not this plate's
-     tuning: the entrance waits for the plate's bottom, so the room is
-     0.38 vh − 28px − (the figure's height − half its drawing's), which is
-     negative for anything taller than a small card.
+     MEASURED, THE TWO EDGES LEAVE NO WINDOW: the entrance ends after the reading line, or
+     within a few px before it: −8, −69, 3 and 25px at 1440×900, 1280×720,
+     420×786 and 390×844 (Chromium, WebKit within 4px; v6/f08 at 7f8b462,
+     2026-10-09). That is structural, not this plate's tuning: the entrance
+     waits for the plate's bottom, so the room is 0.38 vh − 28px − (the
+     figure's height − half its drawing's), which is negative for anything
+     taller than a small card.
      Under 0.12 vh an assembly is a pop, not a drawing, so there the plate is
      its finished drawing at every scroll position and the conflict goes to
      the owner rather than being bent here. ?f8=enter (pre-armed, not
@@ -8904,10 +8904,9 @@ function buildClimb(tight) {
     climb.depthLabel = s.getAttribute("aria-label");
     climb.flatLabel = [
       ["drawn in depth,", "drawn in elevation,"],
-      ["sketched in pencil first, as volumes; the lower three are then inked over the sketch as one solid block, and each carries on its face",
-        "sketched in pencil first; the lower three are then inked over the sketch, and each carries inside it"],
+      ["inked as one solid block, and each carries on its face", "inked, and each carries inside it"],
       [", and the cut is drawn as a slab you look down on.", "."],
-      ["stay pencil, open volumes you can see through, and", "stay pencil, and"],
+      ["are drawn in pencil as open volumes you can see through, and", "are drawn in pencil, and"],
     ].reduce((t, [a, b]) => t.split(a).join(b), climb.depthLabel);
     const b = (climb.btn = document.createElement("button"));
     b.type = "button"; b.className = "q3btn"; b.textContent = "see it flat";
