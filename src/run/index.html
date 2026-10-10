@@ -9690,14 +9690,18 @@ window.__stir = stir; /* the nameplate's module mounts its own hand and has no o
    function of scrollY alone, so scrolling back up takes the figure apart.
    A HAND TAKES IT THERE, AND THE HAND HAS A SPEED LIMIT. The shown p follows
    the target on a critically damped spring stiff enough to track a reading
-   scroll by about a tenth of a second, and its speed is clamped at ASM_RATE
-   windows a second: a flick that would cross the whole window in four frames
-   (the v4.2 complaint, measured: eight frames of motion at 2000 px/s) is
-   played out at that rate instead, so a reader who flicks to a figure and
-   stops still sees it assemble, while a reader who scrolls drives it.
+   scroll by about a tenth of a second, and its speed is clamped so that the
+   figure's own motion takes at least 1/ASM_RATE of a second: a flick that
+   would cross the whole window in four frames (the v4.2 complaint, measured:
+   eight frames of motion at 2000 px/s) is played out at that rate instead,
+   so a reader who flicks to a figure and stops still sees it assemble, while
+   a reader who scrolls drives it. A figure's motion need not fill its window
+   (fig. 04's post waits until its belt is wholly on screen), so a figure may
+   declare the span of p its motion occupies, and the limit is that span's.
    NOTHING MOVES THAT NOBODY SEES. A drawing wholly off screen, a jump of more
-   than half a viewport in one frame (scrollIntoView, an anchor, End, the
-   first frame after boot or a rebuild) all put p on its target at once. At
+   than ASM_JUMP of a viewport in one frame (scrollIntoView, an anchor, End,
+   the first frame after boot or a rebuild) all put p on its target at once:
+   no hand scrolls that far in one frame (a fast flick is ~130 px a frame). At
    rest p IS the target, exactly: the same y gives the same drawing. The hand
    is one stepper on this loop, dropped the frame the last figure lands, so an
    idle page schedules nothing (F3); under reduced motion settleAll draws
@@ -9707,8 +9711,9 @@ window.__stir = stir; /* the nameplate's module mounts its own hand and has no o
    every p as a still a reader may park on: the engine calls it with any p in
    [0, 1], in any order, as often as the scroll asks. */
 const ASM_OMEGA = 18;  /* rad/s · the spring: a steady scroll is followed 2/ω ≈ 0.11 s behind */
-const ASM_RATE = 3.5;  /* windows/s · the speed limit, so a flick plays for ≥ 0.29 s */
+const ASM_RATE = 2.5;  /* motions/s · the speed limit: a figure's whole motion takes ≥ 0.4 s */
 const ASM_LEAD = 0.5;  /* vh · the window's floor */
+const ASM_JUMP = 0.3;  /* vh · a scroll this far in one frame is a jump, and lands at once */
 const ASM_EPS = 5e-4, ASM_VEPS = 0.02; /* rest: within half a thousandth, nearly still */
 /* ?asm=0.4 pins every assembled figure at one p — for looking at stills */
 const ASM_PIN = FLAGS.has("asm") ? clamp(+FLAGS.get("asm") || 0, 0, 1) : null;
@@ -9728,10 +9733,12 @@ function layoutBox(el) {
 }
 /* register (again, on every build: an edition change rebuilds the drawing,
    and a new drawing has never been drawn, so its first frame snaps).
-   spec: { box: () => ({ top, h }) page px, draw(p), lead?: px } */
+   spec: { box: () => ({ top, h }) page px, draw(p), lead?: px,
+           span?: (e) => [p0, p1], the part of p the motion fills, read after
+           each measure (default the whole window) } */
 function asmFigure(key, spec) {
-  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0,
-    top: 0, h: 0, yA: 0, yB: 1, pFull: 0, t: 1, s: NaN, v: 0, last: NaN };
+  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0, span: spec.span || null,
+    top: 0, h: 0, yA: 0, yB: 1, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
   asm.set(key, e);
   if (booted) asmMeasure(e);
   if (RM) { e.t = e.s = 1; asmPut(e, 1); }
@@ -9747,6 +9754,8 @@ function asmMeasure(e) {
   /* where the drawing is first wholly on screen, as a p: a figure schedules
      what happens at its bottom edge after this */
   e.pFull = clamp((yFull - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
+  const [p0, p1] = e.span ? e.span(e) : [0, 1];
+  e.vmax = ASM_RATE * clamp(p1 - p0, 0.1, 1);
 }
 function asmGeometry() { for (const e of asm.values()) asmMeasure(e); asmProbe(); }
 const asmTarget = (e, y) => ASM_PIN ?? clamp((y - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
@@ -9757,7 +9766,7 @@ function asmPut(e, p) {
   e.draw(p);
 }
 function asmWork(y) {
-  const jump = asmY === null || Math.abs(y - asmY) > 0.5 * vh;
+  const jump = asmY === null || Math.abs(y - asmY) > ASM_JUMP * vh;
   asmY = y;
   let moving = false;
   for (const e of asm.values()) {
@@ -9778,7 +9787,7 @@ function asmStep(now) {
   for (const e of asm.values()) {
     if (e.s === e.t && e.v === 0) continue;
     for (let k = Math.max(1, Math.ceil(dt * 240)), h = dt / k; k > 0; k--) {
-      e.v = clamp(e.v + (ASM_OMEGA * ASM_OMEGA * (e.t - e.s) - 2 * ASM_OMEGA * e.v) * h, -ASM_RATE, ASM_RATE);
+      e.v = clamp(e.v + (ASM_OMEGA * ASM_OMEGA * (e.t - e.s) - 2 * ASM_OMEGA * e.v) * h, -e.vmax, e.vmax);
       e.s += e.v * h;
     }
     if (Math.abs(e.t - e.s) < ASM_EPS && Math.abs(e.v) < ASM_VEPS) { e.s = e.t; e.v = 0; }
@@ -9797,7 +9806,7 @@ function asmProbe() {
   const o = {};
   for (const e of asm.values())
     o[e.key] = { t: +e.t.toFixed(4), s: +(Number.isNaN(e.s) ? -1 : e.s).toFixed(4), v: +e.v.toFixed(3),
-      yA: Math.round(e.yA), yB: Math.round(e.yB), pFull: +e.pFull.toFixed(3) };
+      yA: Math.round(e.yA), yB: Math.round(e.yB), pFull: +e.pFull.toFixed(3), vmax: +e.vmax.toFixed(3) };
   window.__world.asm = o;
 }
 window.__world.asmRest = () => [...asm.values()].every((e) => e.s === e.t && e.v === 0);
