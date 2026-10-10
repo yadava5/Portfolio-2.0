@@ -575,56 +575,6 @@ if (location.hash.length > 1) {
      which is why the trailer also keeps its lettering and its place at the end
      of the member — the colour is the third cue here and never the only one. */
   #jetFig .crc.sealed{stroke:var(--clay-g); stroke-width:1.4}
-  /* fig. 07's depth reveal (jet3): the plane drawn through the camera, in the
-     plane's own inks, filled because each line is a sliver as wide as its
-     own depth makes it. It is display:none at a = 1 like fig. 06's. */
-  #jetFig .depth{pointer-events:none}
-  #jetFig .depth .jkline{fill:var(--hair-strong)}
-  #jetFig .depth .jkbox{fill:var(--ink)}
-  /* THE INK FLOOR, AND WHY IT IS A SECOND PATH OVER THE FIRST. In flight the
-     plane's rules have to carry from a scroll, and --hair-strong over this
-     plate is 2.01:1 on the tightest day field — a 1-unit sliver nobody sees.
-     So the same geometry is laid twice: the authored hair below, and --ink
-     above it draining to 0 ON THE DEPTH CURVE, one settle and not a tail.
-     Zero is exactly zero in both themes, which is why the drain is an
-     opacity on a second path and not an alpha tuned to one theme's
-     --hair-strong: a = 0.90 has to land on the authored ink to the channel.
-     MEASURED over the composited day plate (--plate on #f2e4c9 = #f9f2e2):
-     the pair compose --ink at 0.703 — #656057, 5.60:1 / Lc 73.6, against
-     2.03:1 / Lc 37.2 for the hairline alone; night (--plate on #43372f =
-     #342b25), 0.7525 — 7.52:1 / |Lc| 63.6 against 3.71:1.
-     OFF THE SHIPPED PIXELS at 1440 DPR 1 the rule reaches 2.88:1 at the far
-     end of the delivery rail and 3.43:1 at the near, not the 5.60 the tokens
-     compose, because a 1-unit sliver is about one device pixel and a line
-     thinner than its pixel dilutes across two. The settled plate's own
-     hairline is 1.39:1 there by the same arithmetic, so the floor is still
-     roughly double the ink the reader would otherwise get, and the taper is
-     left alone: on these rails the width IS the depth. */
-  #jetFig .depth .jkfloor{fill:var(--ink)}
-  /* A LANE IS A SHEET, and the sheet is what makes four of them read as four
-     while they are still one stream. Paper and edge in one path per lane,
-     interleaved with the lane groups so painter's order IS the DOM's and
-     nothing is ever sorted: sheet k is drawn after lane k-1 and hides it.
-     The paper is --plate, which measures 1.051:1 over this plate (Lc 0.0)
-     and is therefore not a tint — it is there to occlude, and it does:
-     a --hair-strong line behind one sheet falls from 2.03:1 to 1.33:1,
-     behind two to 1.13:1, behind three to 1.06:1, so the deck's own order
-     is readable from how far back a line has gone. The edge is --ink at the
-     flight floor and measured 3.39:1 / Lc 57.9 (near) and 3.44:1 / Lc 58.4
-     (far) off the shipped pixels. Both drain to 0 on the depth curve, so
-     the settled plate has no sheet in it: the edge is ink that belongs to
-     the flight and to nothing else.
-     OUT OF THE RENDER TREE WHEN THERE IS NO FLIGHT, and that is measured
-     rather than tidy: leaving four empty paths standing between the lane
-     groups DOUBLED the identity hold's difference from the settled plate
-     (MAE 0.0104 to 0.0194 at 1440 Chromium) by changing how the labels and
-     the member edges batch. An empty path paints nothing and is not free. */
-  #jetFig .jsheet{display:none}
-  #jetFig.indepth .jsheet{display:inline; fill:var(--plate); stroke:var(--ink)}
-  /* a lane's words fade with the room it has, but never under a keyboard */
-  #jetFig .tracebtn:focus .jlab{opacity:1}
-  @media print{ #jetFig .depth{display:none} #jetFig .jsheet{display:none !important} #jetFig .jflat{opacity:1 !important}
-    #jetFig .lane3, #jetFig .jlab{transform:none !important} #jetFig .jlab{opacity:1 !important} }
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
      nothing here is a partial alpha the palette gate cannot see. */
@@ -2612,6 +2562,52 @@ if (location.hash.length > 1) {
   /* ═══ v6 · style slot, fig. 06 (what the network sees) ═══ */
 
   /* ═══ v6 · style slot, fig. 07 (drawn by hand) ═══ */
+  /* THE PENCIL, in tokens and never in alpha: check-palette composites a
+     token and cannot see an opacity. The parts are laid in fig. 08's pencil,
+     --ink-2 dashed, so the two drawings by hand are one hand; the pipes, which
+     ink in the hairline, and the construction, which stays, are dashed in the
+     hairline itself. Neither weight goes under one unit: the wide plate is
+     1.03 px a unit at 1440, and a stroke thinner than its pixel dilutes.
+     Over the plate as composited on the binding day field (--plate on
+     #f2e4c9 is #f9f2e2): the pencil, measured: #5c564a on #f9f2e2 — 6.53:1 / Lc 77.8,
+     over the Lc 60 dim floor; the construction, which a sheet keeps faint,
+     measured: #b1ac9f on #f9f2e2 — 2.03:1 / Lc 37.2, the day hairline as
+     check-palette declares it. */
+  .figsvg#jetFig .jpen{fill:none; stroke:var(--ink-2); stroke-width:1; stroke-dasharray:3 2.5}
+  .figsvg#jetFig .jpenh{fill:none; stroke:var(--hair-strong); stroke-width:1; stroke-dasharray:4 4}
+  /* a machine's walls carry the plate's own paper, so the near one covers the
+     one behind it; the hand writes their fill-opacity as their outline closes,
+     and no rule here may set it, or a dasharray, or a display the hand drives.
+     The paper is the one rule here written off the figure class, on purpose:
+     the palette scan reads every token in a figure rule as a stroke, and
+     --plate is 1.05:1 over the plate by design, because it is there to
+     occlude and not to be seen. Every stroke in this slot stays in the scan
+     (and the scan matches the class name even inside a comment, so this one
+     does not spell it). */
+  #jetFig .jface{fill:var(--plate)}
+  .figsvg#jetFig .jlid{fill:none; stroke:var(--ink); stroke-width:1.2}
+  .figsvg#jetFig .jnib{fill:var(--ink)}
+  .figsvg#jetFig .jlead{fill:none; stroke:var(--ink); stroke-width:1}
+  /* the lane trace: the hot machine's two blocks, at both ends of the plate,
+     in ink a weight above the cells', and the other six cells receding the
+     way the elevation's do (a token and a weight, never an alpha) */
+  .figsvg#jetFig .jhotk{fill:none; stroke:var(--ink); stroke-width:1.6}
+  .figsvg#jetFig .jhot{display:none}
+  .figsvg#jetFig .jhot.hot{display:inline}
+  .figsvg#jetFig.tracing .jwrite{display:none}
+  .figsvg#jetFig.tracing .jcell{stroke:var(--ink-2); stroke-width:.8}
+  /* the seal, after the recede so a trace never greys it: the trailer's check
+     covers the whole input, so the clay arrives with the lid's last stroke,
+     on the end face and on the trailer together */
+  .figsvg#jetFig .jseal, .figsvg#jetFig .jcrc.sealed{stroke:var(--clay-g); stroke-width:1.4}
+  .figsvg#jetFig .jnibs, .figsvg#jetFig .jtrace, .figsvg#jetFig .jwrite{pointer-events:none}
+  /* "see it flat": what pressing it does, in the body face, as the page's
+     other quiet controls are drawn (underlined, no box), and 45 tall for the
+     reason #clear is: the plate's settled scale takes 44 to 43.3 */
+  .plate .jetflat{display:block; margin:.35rem 0 0 auto; min-height:45px; padding:0 .15rem;
+    font-family:var(--body); font-size:.98rem; color:var(--ink-2); background:none; border:none;
+    text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; cursor:pointer}
+  .plate .jetflat:hover{color:var(--ink)}
 
   /* ═══ v6 · style slot, fig. 08 (drawn by hand) ═══ */
 
@@ -4147,7 +4143,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <!-- role="group" for the reason fig. 04 states: the four lane
              controls traceOn() injects are focusable, and a labelled image's
              descendants are presentational. -->
-        <svg id="jetFig" class="figsvg" viewBox="0 0 560 324" role="group" aria-label="Eight byte blocks arrive from off the plate along one rail and fan down into four virtual-thread lanes. Each lane carries a deflate die, drawn as two walls that step inward, and every block leaves it at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
+        <svg id="jetFig" class="figsvg" viewBox="0 0 560 400" role="group" aria-label="The jetpack-compress engine drawn in depth. One stream runs across the top of the plate, cut into eight equal blocks, and a single pipe off it feeds four identical deflate dies standing one behind the other, named vt-0 to vt-3: four copies of one machine rather than four places in the file. Each takes every fourth block, so vt-0 carries the first and the fifth. Their outputs gather onto one rail above the file, drawn as one gzip member and as a single solid bar: a header lettered 1f 8b 08, the eight blocks at widths of their own in stream order and not in lane order, and a trailer, marked in clay, whose check covers the whole input. The floor the dies stand on is left in pencil. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
         <!-- Same ruling as ¶06's bench: scrubJetBench() is gone and the bars
              are drawn settled. The date is the commit's, not the run's — JMH
              writes no date into its JSON, and inventing one would be the class
@@ -5385,21 +5381,6 @@ function cacheGeometry() {
   net3.yA = Math.min(net3.top + sc * o0 - 0.98 * vh, net3.yB - 0.52 * vh);
   window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
   /* ── v6 · window slot, fig. 07 ── */
-  /* fig. 07's reveal: the same law as fig. 06, off its svg's layout box (the
-     plate's first child, under its padding), and the blocks' clock reads its
-     end. a = 0 WHEN THE OPENING'S OWN TOP EDGE REACHES 0.98 vh, not when the
-     box's does: the near sheet stands above the lane row and the box's top
-     says nothing about where the ink is. Floored at yB − 0.52 vh so the
-     window is never a flick, and a = 1 at the centre on the reading line, so
-     every centred park in both engines lands on the authored plate. */
-  const jp = jet.svg.parentElement, jvb = jet.svg.viewBox.baseVal;
-  jet3.top = absTop(jp) + jp.clientTop + parseFloat(getComputedStyle(jp).paddingTop);
-  jet3.h = jet.svg.clientWidth * jvb.height / jvb.width;
-  jet3.yB = jet3.top + jet3.h / 2 - READ_LINE * vh;
-  jet3.yA = Math.min(jet3.top + (jet3.w ? (jet.svg.clientWidth / jvb.width) * jet3.w.vTop : 0) - 0.98 * vh,
-    jet3.yB - 0.52 * vh);
-  jet3.a = -1;
-  window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
   /* ── v6 · window slot, fig. 04 ── */
   /* ── v6 · window slot, fig. 08 ── */
   /* ── v6 · every assembled figure's window, measured last ── */
@@ -8087,7 +8068,8 @@ cad.fig.addEventListener("pointerup", (e) => {
    No element-level partial opacity survives on this plate. The two it carried
    — the .28 hover recede (1.75:1 on the day field) and the member bar's
    opacity:.8 — are both gone; opacity here is only ever 0 or 1. */
-const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0 };
+const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0,
+  cells: [], mode: "solid", ctl: null, w: null, p: NaN };
 /* Authored, arbitrary — and every one of them must FIT ITS OWN DIE, which is
    the arithmetic the first draft of this redraw got wrong: the tables were
    picked against a throat of 22 and survived a later tightening to 17, so
@@ -8099,19 +8081,19 @@ const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0 }
    two move with it. */
 const JET_OUT_WIDE = [25, 32, 20, 28, 23, 18, 30, 24];
 const JET_OUT_TIGHT = [14, 18, 11, 16, 13, 10, 17, 14];
-function buildJet(tight) {
-  const s = jet.svg, at = svgIn(s);
-  s.textContent = ""; s.classList.toggle("tight", !!tight); s.classList.remove("indepth");
+/* the elevation is what the svg's label describes while it is shown; the
+   resting drawing's own label is the one in the markup */
+const JET_FLAT_LABEL = "The same machine drawn flat, in elevation. Eight byte blocks arrive along one rail and fan down into four virtual-thread lanes side by side, each carrying a deflate die drawn as two walls that step inward, and every block leaves its die at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run.";
+const JET_SOLID_LABEL = jet.svg.getAttribute("aria-label");
+
+/* the authored elevation, unchanged but for where it is drawn: into its own
+   group, centred in the resting drawing's taller box, and settled. It is what
+   "see it flat" brings back, and its lanes keep their own trace. */
+function buildJetFlat(tight, host) {
+  const s = jet.svg, at = svgIn(host);
   jet.blocks = []; jet.crc = null;
-  const jlabs = [], lanes = [];
-  /* three parts, for the depth reveal (jet3): the depth layer; `flat`, the
-     plane's own ink (rails, member, words), which that layer stands in for
-     while the camera is round; and over both, the four lane sheets and the
-     eight blocks, which are drawn where they stand and moved, never redrawn.
-     `el` makes plane ink unless it is handed a parent. */
-  const deep = at("g", { class: "depth", "aria-hidden": "true", display: "none" });
-  const flat = at("g", { class: "jflat" });
-  const el = (t, a, parent) => at(t, a, parent || flat);
+  const jlabs = [];
+  const el = (t, a, parent) => at(t, a, parent);
   /* One geometry per edition and one drawing below it. Nothing here is set
      over a line, so no label needs a rule to break for it. Every label is
      budgeted at 8.012 units/char wide (12px + .05em) and 7.125 tight
@@ -8132,27 +8114,21 @@ function buildJet(tight) {
      ran straight over it. Height is the free dimension (the gate reads viewBox
      WIDTH only), so both boxes grew downward and neither grew across. */
   const g = tight
-    ? { vb: "0 0 240 330", raw: 32, out: JET_OUT_TIGHT, bh: 18,
+    ? { raw: 32, out: JET_OUT_TIGHT, bh: 18,
         laneX: [81, 125, 169, 213], mouth: 19, throat: 12,
         railY: 60, railX0: -40, railX1: 226, dieY: [108, 118, 140, 150],
         stitchY: 186, memX: 8, memY: 206, head: 65, trail: 44,
         tail: "crc32", lead: 0, deflateY: 144,
         heads: [[8, 14, "the stream", 0], [8, 30, "one virtual thread per block", 0]],
-        foot: [[256, ""],
-               [270, ""],
-               [284, ""],
-               [302, "lanes and block sizes here"],
+        foot: [[302, "lanes and block sizes here"],
                [316, "are drawn, not measured"]] }
-    : { vb: "0 0 560 324", raw: 56, out: JET_OUT_WIDE, bh: 22,
+    : { raw: 56, out: JET_OUT_WIDE, bh: 22,
         laneX: [176, 262, 348, 434], mouth: 32, throat: 19,
         railY: 58, railX0: -56, railX1: 446, dieY: [106, 118, 142, 154],
         stitchY: 190, memX: 108, memY: 210, head: 84, trail: 124,
         tail: "crc32 · isize", lead: 134, deflateY: 146,
         heads: [[8, 22, "the stream", 0], [446, 22, "one virtual thread per block", 1]],
-        foot: [[266, ""],
-               [282, ""],
-               [302, "the lane assignment and the block sizes are drawn, not measured"]] };
-  s.setAttribute("viewBox", g.vb);
+        foot: [[302, "the lane assignment and the block sizes are drawn, not measured"]] };
   jet.railY = g.railY; jet.stitchY = g.stitchY;
   const [dTop, dSh, dThr, dBot] = g.dieY;
   jet.dieTop = dTop; jet.dieThroat = dThr;
@@ -8165,35 +8141,14 @@ function buildJet(tight) {
   el("path", { d: `M ${g.railX0} ${g.railY} H ${g.railX1}`, class: "lane" });
   el("path", { d: `M ${g.railX1} ${g.railY - 8} V ${g.railY + 8}`, class: "lane" });
   g.laneX.forEach((lx, i) => {
-    /* THE LANE'S OWN SHEET, and it is a sibling in front of the lane rather
-       than a child of it, for two reasons. It has to be drawn through the
-       camera point for point (a child would inherit the lane's affine
-       matrix and lose the keystone), and it has to sit BETWEEN lane i-1 and
-       lane i so that painter's order is the DOM's: sheet, lane, sheet,
-       lane. Only the depth reveal ever shows it. */
-    const sheet = at("path", { class: "jsheet", "aria-hidden": "true", d: "" });
-    /* one sheet per lane, which the reveal holds upright at its own depth */
     const lw = at("g", { class: "lane3" });
     el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane", "aria-hidden": "true" }, lw);
     el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
     el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
     /* centred ABOVE the rail, where no block ever travels — beside the lane it
-       sat inside the raw block's own footprint at every width. The 18 is the
-       block's half-height plus clearance, checked by walking the scrub in a
-       browser rather than at the settled frame, where the rail is empty. */
+       sat inside the raw block's own footprint at every width */
     const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" }, lw);
     t.textContent = `vt-${i}`; jlabs.push([t, i]);
-    /* THE SHEET'S OWN RECTANGLE, in the plate's units: the lane's share of
-       the manifold — half a pitch each side, so the four tile the delivery
-       rail exactly — running from the rail it hangs off to the gathering
-       rail it feeds. Drawn at the die's mouth instead it came out 64 of 86
-       units wide, and the opening's whole deck measured 136px of a 575px
-       plate: a small cluster in a large empty box. A lane is not its die, it
-       is the channel the die sits in, and at this width the four sheets meet
-       where the drawing says they meet. The label is not on it — it stands
-       above the rail, where no block travels, and the reveal billboards it. */
-    lanes.push({ g: lw, x: lx, lab: t, sheet, w: (g.laneX[1] - g.laneX[0]) / 2,
-      y0: g.railY, y1: g.stitchY });
   });
   /* the deflate register: the word at the left, and the four throats sharing
      one y. Wide runs a leader from the word to the first die because its
@@ -8204,9 +8159,7 @@ function buildJet(tight) {
   if (g.lead) el("path", { d: `M 72 ${dThr} H ${g.lead}`, class: "lane" });
   /* THE MEMBER. Header and trailer are closed cells; the data region between
      them has no top or bottom edge of its own, because the blocks that land
-     supply it. So the member is literally open until the last block is in,
-     and closed the moment it is — which is the honest drawing of a stitch,
-     and it settles complete with no frames of motion. */
+     supply it. */
   const dataX = g.memX + g.head, dataW = g.out.reduce((a, b) => a + b, 0);
   const memEnd = dataX + dataW + g.trail, ty = g.memY + g.bh - (tight ? 5 : 6);
   /* the gathering rail spans EXACTLY the member it writes, and is closed at
@@ -8223,23 +8176,16 @@ function buildJet(tight) {
   /* THE SEAMS ARE THESE SLOTS, and they need no mark of their own. Block i is
      drawn at x = -w/2 about slot[i] = left + w/2, so its right edge and block
      i+1's left edge fall on the SAME x: the join draws itself once, in the
-     landed register, at the 1.2 every other edge on this plate gets. That is
-     what a join is. The seven clay ticks that stood here are gone with the
-     ruling that put the clay on the trailer instead. */
+     landed register, at the 1.2 every other edge on this plate gets. */
   const slot = []; let cx = dataX;
   for (const w of g.out) { slot.push(cx + w / 2); cx += w; }
   for (let i = 0; i < g.out.length; i++) {
     const lane = i % 4, lx = g.laneX[lane], sx = slot[i];
-    /* opacity 0 at BUILD, not only at scrub: a rebuild that is not followed by
-       a scrub — a resize into the other edition — otherwise paints eight
-       blocks stacked at the origin */
     const bg = at("g", { class: "blk", opacity: 0 });
     const r = el("rect", { x: -g.raw / 2, y: -g.bh / 2, width: g.raw, height: g.bh, class: "mk" }, bg);
     jet.blocks.push({
       g: bg, r, i, lane, raw: g.raw, out: g.out[i], delay: i * 0.05,
-      /* rail ⟶ lane ⟶ die ⟶ lane ⟶ gathering rail ⟶ its own slot. Six
-         segments at one sixth of the window each, so the die passage — the
-         shortest leg — is the slowest, and the squeeze is the part you see. */
+      /* rail ⟶ lane ⟶ die ⟶ lane ⟶ gathering rail ⟶ its own slot */
       line: [[g.railX0 - 16, g.railY], [lx, g.railY], [lx, dTop], [lx, dBot],
         [lx, g.stitchY], [sx, g.stitchY], [sx, g.memY + g.bh / 2]],
     });
@@ -8247,8 +8193,10 @@ function buildJet(tight) {
   for (const [y, words] of g.foot) el("text", { x: 8, y }).textContent = words;
   traceOn(s, jlabs, jet.blocks, "lane", (lbl) =>
     `show which blocks lane ${lbl.textContent} carried`);
-  hideDrawnFromAT(s);
-  buildDeepJet(s, deep, flat, lanes);
+  /* the elevation is shown settled, every block in its slot: the scroll's
+     assembly belongs to the resting drawing, and a reader who asks for the
+     flat one is asking for the record */
+  scrubJet(1);
 }
 function scrubJet(p) {
   const span = jet.dieThroat - jet.dieTop;
@@ -8272,345 +8220,412 @@ function scrubJet(p) {
       b.g.classList.toggle("landed", done);
       /* the LAST block seals the member, and that is this plate's clay moment.
          The trailer's check is a statement about the whole input, so it cannot
-         be true until the whole input is in. A class, so the mark is a stroke
-         and never an alpha; symmetric, so scrubbing back unseals it. */
+         be true until the whole input is in. */
       if (b.i === jet.blocks.length - 1) jet.crc.classList.toggle("sealed", done);
     }
   }
 }
 
-/* ————— fig. 07 in depth: four sheets, fanning apart as their depth closes —————
-   (v4, 2026-10-08; rebuilt v4.2, 2026-10-09.) The plate's argument is that
-   one stream is four lanes underneath, so that is what the camera shows: the
-   four lane sheets start at their AUTHORED x, staggered in depth about the
-   drawing plane, and the scroll presses that depth to zero while the camera
-   comes face-on. The separation IS the depth closing — no lane ever travels
-   along x, and the last frame is the authored plate to the unit.
+/* ····· fig. 07 at rest: the same machine, DRAWN BY HAND, in oblique ·····
+   (v6, 2026-10-09.) The owner chose round v5's D for this plate and asked for
+   it to "assemble with rail scroll": the drawing is made under the reader's
+   scroll, in the order the engine works, and it rests as the finished
+   oblique. The elevation above is kept whole, one press away ("see it flat").
 
-   WHAT THE FIRST CUT GOT WRONG, and it is worth keeping on the record. It
-   put the camera exactly end-on at three plate widths, which projects the
-   whole lane row onto a two-stroke smudge: measured on the shipped build,
-   fig. 07 was ONE HAIRLINE for about 40% of its window, which reads as a
-   missing figure rather than as one stream. And it held each lane FACING the
-   camera, scaled by its own depth, which is depth drawn as size — the one
-   cue this page is not allowed to lean on. Both are gone. The camera yaws
-   only, so a lane's sheet foreshortens honestly by cos(yaw) and nothing
-   shears, and the row is read by overlap, occlusion, keystone and relative
-   size together.
+   WHAT THE DEPTH IS FOR, and it is the only thing it is for. Flat, the four
+   lanes have to be four PLACES across the plate, which quietly says vt-0 took
+   the first quarter of the file. It did not: lane assignment is i % 4, so a
+   lane's two blocks are four apart in the stream. In depth the lanes stop
+   being places and become four copies of ONE machine standing one behind the
+   other, and the file, the one real axis, runs across the paper twice: the
+   stream above, the member below. The member is the only thing given volume,
+   because "a whole object only once the last block is in" is this plate's
+   own claim and a rectangle cannot make it.
 
-   Yaw only, never pitch: with the camera level a lane's own vertical line
-   keeps one depth from end to end, so the lane's affine matrix is EXACT in v
-   (checked at 201 positions, both editions: zero error) and only its one
-   horizontal scale is an approximation — see the chord note in drawDeepJet.
-   The lane controls are the authored ones inside each sheet, so a tap, a
-   hover and keyboard focus all keep working while it moves; their words
-   wait until the lanes have come far enough apart to be read, and no block
-   moves until the reveal is over (jetBlocks). */
-const jet3 = { g: null, flat: null, paths: [], labs: [], lanes: [], on: false,
-  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, ident: false };
-/* THE OPENING, in the three numbers a reader actually reads, with the stagger
-   and the camera distance following from them by arithmetic.
+   CABINET OBLIQUE AT 30°. x stays x and y stays y, so every plane parallel to
+   the paper is drawn 1:1 and the words keep the authored 12px (11 tight) — a
+   rotation would tilt the file axis and take every label under the floor.
+   Depth runs up and to the right along one vector, and the angle is not
+   free: four machines cost four rises of half a pitch on a plate with no
+   room to give, and at 37° the back machine reached the stream row.
 
-   The camera stands to the RIGHT of the plate's normal (a negative yaw) and
-   that is not a preference. The lane groups are authored left to right and
-   nothing here ever re-sorts them, so lane 3 is painted last and lane 3 has
-   to be the NEAR one, which is what a right-hand camera gives. Mirrored, the
-   SAME stagger spreads the row instead of closing it — step 1.31 to 1.55 of
-   a sheet's width against 0.54 to 0.64 here — and reversing the stagger to
-   close it again puts lane 0 in front, against the paint order. The mirror
-   also loses the framing: it throws the plate's left edge to u −139 of a box
-   that allows −101, where this turn recedes the left half, where every long
-   line of this drawing is set, and holds the whole opening inside
-   u[125.9, 424.5] v[34.0, 248.2].
+   EVERY p IS A STILL, so the plate is never emptier than the drawing it is
+   becoming. The v5 cell kept the elevation as a ghost under the redraw; on
+   the scroll that ghost prints "the stream" and both heads again 38 units
+   from their redraw at every p in the middle of the window, a label
+   collision a parked reader can sit on for as long as they like. So the
+   underlay is the RESTING DRAWING ITSELF, laid in pencil: at p = 0 every part
+   is on the sheet, dashed in --ink-2 (fig. 08's pencil), the pipes and the
+   construction dashed in the hairline, and every word already lettered. The
+   pen inks it over, and each part's pencil goes under its ink as it closes.
 
-   STEP is the one the eye reads: how far the next sheet's centre stands
-     along, as a fraction of a sheet's own projected width. 0.58 is four
-     sheets each showing most of itself and each clearly behind the next.
-   REL is the near sheet over the far one. 1.55 is relative size you can see
-     at a glance and still a sheet rather than a billboard.
-   YAW sets how much of each sheet you see edgewise.
-
-   With the lanes at their authored x, a sheet's step is pitch·(cos y −
-   q·sin y) and its width 2·half·cos y, so q = (1 − STEP·2·half/pitch)/tan y;
-   the stagger opens ±1.5·pitch·(sin y + q·cos y) of depth, and the distance
-   that turns that into REL is (rel + 1)/(rel − 1) of it. A sheet is its
-   lane's half-pitch each side, so 2·half/pitch is 1 at BOTH editions and the
-   stagger is one number: 0.42 pitches per lane step, ±0.63 at the ends.
-   Only the distance differs, because the plates do: 600.5 units (1.07 W)
-   wide, 307.3 (1.28 W) tight. FILMED at both seats (tmp/v42/D2) and measured
-   off the page: the near sheet opens 89×185px of a 575px plate at 1440 and
-   51×198px of a 276px plate at 420, and the deck spans 184px and 106px. The
-   critique's 62 degrees was a starting value and does not survive the
-   projection: under this same law it draws a 120-unit deck, 123px of that
-   575px plate, and 61 units / 71px on the phone — most of the way back to
-   the defect this replaces. */
-const JET3 = { yaw: (45 * Math.PI) / 180, step: 0.58, rel: 1.55 };
-/* the ink floor in flight, as a fraction of --ink: the flight path over the
-   authored hairline, and the sheets' own edges. The critique set 0.55 and
-   the measurement holds it — see the .jkfloor and .jsheet rules for what it
-   composes to on each theme's worst field and for what it renders at. */
-const JET3_FLOOR = 0.55;
-function buildDeepJet(s, deep, flat, lanes) {
-  jet3.g = null; jet3.on = false; jet3.a = -1; jet3.flat = flat; jet3.lanes = lanes;
-  if (RM) { deep.remove(); for (const l of lanes) l.sheet.remove(); return; }
-  const mk = svgIn(s);
-  /* the hairline, its flight ink over it, and the full-ink boxes. jkfloor
-     carries jkline's own geometry, so one string is built and written twice. */
-  jet3.paths = ["jkline", "jkfloor", "jkbox"].map((c) => mk("path", { class: c, d: "" }, deep));
-  jet3.labs = [...flat.querySelectorAll("text")].map((t) => {
-    const c = t.cloneNode(true);
-    c.setAttribute("opacity", 0);
-    deep.appendChild(c);
-    return { el: c, x: +t.getAttribute("x"), y: +t.getAttribute("y") };
-  });
-  /* the plane's ink, read back off the drawing so there is one geometry:
-     every flat path here is an H or V run, every box a rect */
-  const lines = [], boxes = [];
-  for (const p of flat.querySelectorAll("path")) {
-    const m = p.getAttribute("d").match(/^M (-?[\d.]+) (-?[\d.]+) ([HV]) (-?[\d.]+)$/);
-    if (m) lines.push(m[3] === "H" ? [+m[1], +m[2], +m[4], +m[2]] : [+m[1], +m[2], +m[1], +m[4]]);
-  }
-  for (const r of flat.querySelectorAll("rect")) boxes.push(["x", "y", "width", "height"].map((k) => +r.getAttribute(k)));
-  const vb = s.viewBox.baseVal, railY = jet.railY;
-  const n = lines.length * 2 + boxes.length * 4 + jet3.labs.length + lanes.length * 5;
-  /* Z0 is the point's stagger: the model z it stands at while the depth is
-     fully open. The plane's own ink is 0 and stays 0 — the rails and the
-     member ARE the page, and only the lanes come off it. Every frame writes
-     Z0 × one scalar into P's z, which is what makes the depth one curve. */
-  const P = new Float64Array(n * 3), Z0 = new Float64Array(n);
-  let i = 0;
-  const put = (x, y, z) => { P[i * 3] = x; P[i * 3 + 1] = y; Z0[i] = z || 0; return i++; };
-  const L = lines.map(([x1, y1, x2, y2]) => [put(x1, y1), put(x2, y2)]);
-  const B = boxes.map(([x, y, w, h]) => [put(x, y), put(x + w, y), put(x + w, y + h), put(x, y + h)]);
-  const A = [], Q = [];
-  const pitch = lanes[1].x - lanes[0].x, half = lanes[0].w;
-  const stag = (1 - (JET3.step * 2 * half) / pitch) / Math.tan(JET3.yaw);
-  lanes.forEach((l, k) => {
-    const z = -(k - 1.5) * stag * pitch;
-    A.push(put(l.x, railY, z));
-    Q.push([put(l.x - l.w, l.y0, z), put(l.x + l.w, l.y0, z),
-      put(l.x + l.w, l.y1, z), put(l.x - l.w, l.y1, z)]);
-  });
-  /* the plane's words last, because the opening's own top edge is read off
-     the ink and the words are at opacity 0 until the camera has nearly
-     arrived — an anchor's projected baseline is not an edge anybody sees */
-  const tFrom = i, T = jet3.labs.map((l) => put(l.x, l.y));
-  const cx = lanes.reduce((t, l) => t + l.x, 0) / lanes.length;
-  /* the distance that turns the stagger's own depth into JET3.rel */
-  const dist = 1.5 * pitch * (Math.sin(JET3.yaw) + stag * Math.cos(JET3.yaw))
-    * ((JET3.rel + 1) / (JET3.rel - 1));
-  const w = { P, Z0, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n),
-    n, tFrom, L, B, T, A, Q, railY, vbw: vb.width, dist, stag,
-    pivot: [cx, (railY + jet.stitchY) / 2, 0],
-    labW: (s.classList.contains("tight") ? 7.125 : 8.012) * 4 };
-  /* the opening's own top edge, in figure units: cacheGeometry opens the
-     window on it rather than on the box, because the near sheet stands a
-     third of a box above the lane row and the box's top says nothing about
-     where the ink is */
-  for (let j = 0; j < n; j++) P[j * 3 + 2] = Z0[j];
-  DEPTH.project(DEPTH.pose(-JET3.yaw, 0, dist, dist, w.pivot), P, n, w.U, w.V, w.S);
-  w.vTop = Infinity;
-  for (let j = 0; j < tFrom; j++) if (w.V[j] < w.vTop) w.vTop = w.V[j];
-  jet3.w = w;
-  jet3.g = deep;
-}
-function drawDeepJet(a) {
-  const N = jet3, w = N.w, { P, U, V, S } = w;
-  /* ONE CAMERA, ONE DEPTH SCALAR, AND THE DEPTH CLOSES LAST. The opening is
-     held over [0, 0.45] while the figure climbs the screen — the first half
-     of this window plays below the fold, so a pose spent there is a pose
-     nobody sees. The camera then comes round over [0.45, 0.90] and the depth
-     closes over [0.52, 0.90]: later than the camera and never after it,
-     because any depth left once the camera is face-on is a uniform scale,
-     and boxes changing size on the reading line is the one arrival this page
-     has already rejected. Both are finished at 0.90 and stay finished to 1:
-     yaw 0 with every z at 0 is S = 1 at every point, so [0.90, 1] is the
-     authored drawing to the unit and the swap has nothing to jump. */
-  const cam = cubicInOut(clamp((a - 0.45) / 0.45, 0, 1));
-  const dep = 1 - smooth(clamp((a - 0.52) / 0.38, 0, 1));
-  DEPTH.press(P, w.Z0, w.n, dep);
-  const yaw = JET3.yaw * (1 - cam), cyaw = Math.cos(yaw);
-  DEPTH.project(DEPTH.pose(-yaw, 0, w.dist, w.dist, w.pivot), P, w.n, U, V, S);
-  /* the assertion, not the assumption: identity is every scale being exactly
-     1, read off the frame that was drawn rather than off the clock */
-  let ident = true;
-  for (let i = 0; i < w.n; i++) if (S[i] !== 1) { ident = false; break; }
-  N.ident = ident;
-  const out = ["", ""];
-  const run = (p, i, j, wd) => { out[p] += DEPTH.taper(U[i], V[i], wd * S[i], U[j], V[j], wd * S[j]); };
-  for (const [i, j] of w.L) run(0, i, j, 1);
-  for (const q of w.B) for (let e = 0; e < 4; e++) run(1, q[e], q[(e + 1) & 3], 1.2);
-  /* hair, flight ink over it, boxes — jkfloor repeats jkline's own string,
-     and gives its own up once it has drained, so the identity hold carries
-     no invisible paint. Hygiene rather than a fix: unlike the sheets below,
-     dropping it did not move the hold's difference from the settled plate
-     (MAE 0.0103813 either way at 1440 Chromium). */
-  const flr = r2(JET3_FLOOR * dep);
-  const ds = [out[0], flr ? out[0] : "", out[1]];
-  N.paths.forEach((p, k) => { if (p._d !== ds[k]) { p._d = ds[k]; p.setAttribute("d", ds[k]); } });
-  if (N.paths[1]._f !== flr) { N.paths[1]._f = flr; N.paths[1].setAttribute("opacity", flr); }
-  /* THE SHEETS, back to front in the DOM's own order. The paper holds its
-     strength while the sheets still overlap — measured, the row is clear of
-     itself by dep 0.4 — and then drains with the edge, so the last frame of
-     the flight has no sheet left in it to hand over. */
-  const paper = r2(smooth(dep / 0.4));
-  /* THE WORDS WAIT FOR THE ROW, not for their own lane. Four names read as
-     one thing, and the middle lanes sit nearest the drawing plane, so on a
-     per-lane gate vt-1 lit to 0.22 at a = 0.675 while vt-0 and vt-3 were
-     still flying (measured). This is the row's worst scale, so the names
-     arrive together once every sheet is within 5% of settled. */
-  let far = 0;
-  for (const i of w.A) far = Math.max(far, Math.abs(S[i] - 1));
-  const settle = (0.06 - far) / 0.045;
-  /* each lane: its sheet, then the lane itself upright on it, then its word
-     once the row has opened far enough to read one */
-  N.lanes.forEach((l, k) => {
-    const i = w.A[k], s = S[i], qd = w.Q[k];
-    /* THE SHEET'S OWN CHORD, not the tangent at its middle. The matrix can
-       only be affine (print and WebKit want the CSS property, and a property
-       cannot carry perspective), so the only question is where its one
-       horizontal scale is taken. s·cos(yaw) is the slope at the lane's line,
-       and over an 86-unit sheet it leaves the outer die wall 5.28px from
-       where the camera puts it and the sheet's own corner 7.86px — the frame
-       and the thing drawn on it disagreeing by a visible margin. Taking the
-       scale across the sheet instead pins the corners exactly (0px, so the
-       quad below IS the content's own box, keystone and all) and leaves the
-       die wall at 1.35px wide / 0.44px tight, for 2.87px / 1.64px of drift
-       on the lane's line, which meets nothing while the sheet is off the
-       page. Both are exact at identity: the chord of an unturned sheet is 1. */
-    const uL = U[qd[0]], uR = U[qd[1]];
-    const sx = r2((uR - uL) / (2 * l.w)), sy = r2(s);
-    /* nothing of the flight survives into the identity hold, not even a
-       shape at zero alpha: an invisible path between two lane groups is
-       still a paint the settled plate does not have */
-    const d = ident ? "" : DEPTH.quad(U, V, qd[0], qd[1], qd[2], qd[3]);
-    if (l._d !== d) { l._d = d; l.sheet.setAttribute("d", d); }
-    if (l._pa !== paper) { l._pa = paper; l.sheet.setAttribute("fill-opacity", paper); }
-    /* THE EDGE CARRIES ITS DEPTH BUT NEVER DILUTES OUT OF SIGHT. At 0.9·s
-       the far sheet's edge came out 0.74 units — 0.76 of a device pixel at
-       1440 — and measured 2.35:1 against the plate off the shipped pixels,
-       under the 3.0 non-text floor, while the near one made 2.93:1. A line
-       thinner than the pixel it lands on is not a lighter line, it is a
-       diluted one. So 1.2 at the plate's own box weight, scaled by depth,
-       with a floor just over one device pixel on the widest seat. */
-    const ew = r2(Math.max(1.05, 1.2 * s));
-    if (l._ew !== ew) { l._ew = ew; l.sheet.setAttribute("stroke-width", ew); }
-    /* the edge is this flight's own ink and has no authored counterpart, so
-       its drain ends at zero rather than at a token: stroke-opacity is the
-       alpha check-palette cannot composite, and it is honest here only
-       because the number that matters is its PEAK, measured in the .jsheet
-       rule, and because it reaches exactly 0 before the handover */
-    if (l._eo !== flr) { l._eo = flr; l.sheet.setAttribute("stroke-opacity", flr); }
-    /* FORESHORTENED, NOT SCALED. The camera yaws only, so the sheet's own
-       width comes off with cos(yaw) and its height does not — holding it
-       facing the camera and scaling it by depth, which is what the first cut
-       did, draws depth as size and nothing else.
-       THE CSS PROPERTY, NOT THE ATTRIBUTE: print has to be able to put the
-       sheets back, and in WebKit a stylesheet's transform:none does not beat
-       an SVG transform attribute (measured: lane 3 printed at x 305.5 against
-       its authored 434 mid-reveal; Chromium honoured the rule). On an SVG
-       element the property's px are user units and its origin is the user
-       origin, so the matrix means what the attribute meant. */
-    /* AND AT IDENTITY, NO MATRIX AT ALL. matrix(1,0,0,1,0,0) is identity in
-       arithmetic and not in rasterisation — Chromium composites a
-       transformed group on its own, and the die walls' diagonals came back
-       a shade different from the authored ones over the whole [0.90, 1]
-       hold. The settled lane is the authored element, untouched. */
-    const tf = ident ? ""
-      : `matrix(${sx}, 0, 0, ${sy}, ${r1((uL + uR) / 2 - l.x * sx)}, ${r1(V[i] - w.railY * sy)})`;
-    if (l._tf !== tf) {
-      l._tf = tf;
-      if (!tf) { l.g.removeAttribute("style"); l.lab.removeAttribute("style"); } else {
-      l.g.style.transform = tf;
-      /* the words stand at their own size on a sheet that is not: a far lane
-         at 0.94 would have set its label at 11.9px on the 390 seat, under the
-         reading gate's 12, so the label takes the sheet's scale back off —
-         BOTH axes of it, or the billboard comes out condensed by cos(yaw).
-         Inverted against the ROUNDED matrix, so the pair compose to exactly
-         1 and the settled label is the authored one. */
-      const bx = r2(1 / sx), by = r2(1 / sy), ly = w.railY - 18;
-      l.lab.style.transform = `matrix(${bx}, 0, 0, ${by}, ${r1(l.x * (1 - bx))}, ${r1(ly * (1 - by))})`;
-      }
-    }
-    let room = Infinity;
-    for (const m of [k - 1, k + 1]) if (w.A[m] !== undefined) room = Math.min(room, Math.abs(U[w.A[m]] - U[i]));
-    /* A WORD COMES WITH ITS SHEET, and room alone does not say so. The end
-       lanes have one neighbour and the most perspective, so at the opening
-       lane 3 stood 36.1 units off lane 2 against a 32.05-unit word and lit
-       to 0.09 — a ghost word over a deck that is still a deck. So the gate
-       is the plan's own: the row within about 5% of settled size AND this
-       lane clear of the sheets beside it. Ramped over 30px of scroll rather
-       than the 11px a hard 5% gave, because four words arriving inside one
-       flick is a pop and not an arrival. */
-    const op = r2(smooth(Math.min((room - 1.05 * w.labW) / (0.4 * w.labW), settle)));
-    if (l._op !== op) {
-      l._op = op; l.lab.setAttribute("opacity", op);
-      /* a word nobody can see is not a target: the sheet stops taking taps
-         until its label is half there, and keeps its focus either way */
-      if (op < 0.5) l.g.setAttribute("pointer-events", "none"); else l.g.removeAttribute("pointer-events");
-    }
-  });
-  /* the plane's words, upright, as the camera arrives */
-  const cap = r2(smooth((cam - 0.82) / 0.15));
-  N.labs.forEach((l, k) => {
-    const i = w.T[k], x = r1(U[i]), y = r1(V[i]);
-    if (l._x !== x) { l._x = x; l.el.setAttribute("x", x); }
-    if (l._y !== y) { l._y = y; l.el.setAttribute("y", y); }
-    if (l._op !== cap) { l._op = cap; l.el.setAttribute("opacity", cap); }
-  });
-}
-function setDeepJet(on) {
-  const N = jet3;
-  N.on = on; N.a = -1;
-  N.g.setAttribute("display", on ? "inline" : "none");
-  if (on) N.flat.setAttribute("opacity", 0);
-  else {
-    /* a = 1 is the authored plate exactly: no transform on any sheet, no
-       opacity on any word, every target back */
-    N.flat.removeAttribute("opacity");
-    for (const l of N.lanes) {
-      l.g.style.transform = ""; l.g.removeAttribute("style"); l.g.removeAttribute("pointer-events");
-      l.lab.removeAttribute("opacity"); l.lab.style.transform = ""; l.lab.removeAttribute("style");
-      /* the sheet is the flight's own paper and leaves nothing behind: the
-         class alone would hide it, and a stale d would still be a shape in
-         the DOM the settled plate never drew */
-      for (const k of ["d", "fill-opacity", "stroke-width", "stroke-opacity"]) l.sheet.removeAttribute(k);
-      l._tf = l._op = l._d = l._pa = l._ew = l._eo = undefined;
-    }
-  }
-  jet.svg.classList.toggle("indepth", on);
-}
-function deepJet(y) {
-  const N = jet3;
-  if (!N.g) return;
-  const a = DEPTH_PIN !== null ? DEPTH_PIN : clamp((y - N.yA) / Math.max(1, N.yB - N.yA), 0, 1);
-  const show = a < 1;
-  if (show !== N.on) setDeepJet(show);
-  if (show && a !== N.a) { N.a = a; drawDeepJet(a); }
-  /* ident is the identity assertion [0.90, 1] is held to: every scale 1, so
-     the depth layer is drawing the authored plate and not an approach to it */
-  window.__world.jet3 = { a: +a.toFixed(4), on: N.on, ident: N.on ? N.ident : true }; /* probe hook */
-}
-/* probe hook: this frame's four sheet depths, computed on CALL so the loop
-   pays nothing for it. Camera depth, not model z — painter's order is about
-   where a sheet is from the camera, and scale is the only honest reading of
-   that (s = focal / (z + dist), so rank by s descending is rank by depth). */
-window.__jet3 = () => {
-  const w = jet3.w;
-  if (!w) return null;
-  return { a: jet3.a, ident: jet3.ident, on: jet3.on,
-    s: w.A.map((i) => w.S[i]), z: w.A.map((i) => w.dist / w.S[i] - w.dist),
-    u: w.A.map((i) => w.U[i]), stag: w.stag, dist: w.dist, vTop: w.vTop };
+   THE ORDER IS THE PROCESS: the stream inked, then cut into eight; one pipe
+   off it; four pens at once on the four dies, over exactly the same span of
+   the scroll, because the only thing this plate knows about the lanes is
+   that they ran at the same time; the gather; the file written left to
+   right in stream order, each cell's lead reaching back to the machine that
+   made it (i % 4, authored); and the lid last, which seals eight cells into
+   one bar and turns the trailer clay. The construction stays at rest,
+   faint, the way a drawing sheet keeps it. */
+const JET_OB = { x: 0.866, y: 0.5 };
+/* a point at depth d behind the paper */
+const jetP = (x, y, d = 0) => [x + d * JET_OB.x, y - d * JET_OB.y];
+/* Both editions, the v5 cell's numbers with three moves of its own: the feed
+   meets the stream (wide stopped 29 units short of it, so "one pipe off the
+   stream" was drawn as a pipe off nothing), each machine is fed and drained
+   at the MIDDLE of its mouth rather than its front lip, and the member sits 6
+   lower (8 tight) so the gathering rail's stops clear the lid's back edge
+   instead of crossing it. z is depth behind the paper; zPitch is the one
+   number with no authored counterpart, the step at which no machine hides
+   the one behind it. All eight of the stream's blocks are on the plate in both
+   editions (tight's 32-unit blocks put the first one at x −30, a two-unit
+   sliver, and with it half of vt-0's own trace), so the tight stream's
+   blocks are 27, still wider than any block leaves its die.
+   drop = [end of the pipe above a name, start of the pipe
+   below it], read off the drop's own top: the name hangs ON its feed, and
+   the feed breaks for it. */
+const JET_SOLID_WIDE = {
+  vb: "0 0 560 400", raw: 56, out: JET_OUT_WIDE, bh: 22,
+  heads: [[8, 22, "the stream", 0], [456, 22, "one virtual thread per block", 1]],
+  railY: 58, railX0: -56, streamEnd: 456,
+  mouth: 32, throat: 19, die: [0, 12, 36, 48], mx: 130, mstep: 12, mTop: 280, zPitch: 72, mz: 26,
+  manY: 241, drop: [14, 30], labY: 26,
+  stitchY: 308, cap: 6, memX: 108, memY: 330, head: 84, trail: 124, tail: "crc32 · isize", memZ: 22,
+  deflateY: 272, lead: [72, 160], ground: 352, groundX: [8, 552],
+  foot: [[8, 386, "the lane assignment and the block sizes are drawn, not measured"]],
+  nib: 2.6, flatDy: 38,
 };
-/* SCRUBJET'S CLOCK. The blocks used to run off beat 6's own progress, from
-   0.2 of the beat to 0.95 of it, and that landed the last one as the plate
-   left: measured, with the figure's centre at -0.02 of the screen at
-   1440×900 and 0.02 at 420×786, where the first had set off with the centre
-   still under the fold (1.26). They now wait for the reveal and run over the
-   next 0.32 of a screen: first block with the centre on the reading line,
-   last with it at 0.32, the whole figure in view throughout. The same p in,
-   the same drawing out: scrubJet itself is untouched. */
-const jetBlocks = (y) => (y < jet3.yB ? 0 : 0.2 + 0.8 * clamp((y - jet3.yB) / (0.32 * vh), 0, 1));
+const JET_SOLID_TIGHT = {
+  vb: "0 0 240 330", raw: 27, out: JET_OUT_TIGHT, bh: 18,
+  heads: [[8, 14, "the stream", 0], [8, 30, "one virtual thread per block", 0]],
+  railY: 60, railX0: -40, streamEnd: 224,
+  mouth: 19, throat: 12, die: [0, 10, 32, 42], mx: 16, mstep: 5, mTop: 210, zPitch: 50, mz: 15,
+  manY: 182, drop: [9.5, 22.5], labY: 20,
+  stitchY: 240, cap: 6, memX: 8, memY: 260, head: 65, trail: 44, tail: "crc32", memZ: 11,
+  deflateY: 128, lead: null, ground: 278, groundX: [8, 232],
+  foot: [[8, 306, "lanes and block sizes here"], [8, 320, "are drawn, not measured"]],
+  nib: 1.9, flatDy: 0,
+};
+/* THE ORDER THE HAND WORKS IN, as spans of the scroll's p. The drawing climbs
+   in from the bottom of the screen while p runs, so its top is on screen
+   first: the stream at once, the bank from about a third in, the member only
+   past two thirds (measured off __world.asm at 1440x900, 1280x720, 420x786
+   and 390x844). The spans follow that, top to bottom, and everything is
+   finished by 0.97, so a park that lands a little short of the reading line
+   still sees the whole drawing. Nothing holds still in between: on a flick
+   the hand plays this span at its speed limit, and a held stretch would be
+   time spent showing nothing. */
+const JET_HAND = { stream: [0, 0.12], cuts: [0.06, 0.16], feed: [0.13, 0.26], dies: [0.25, 0.56],
+  gather: [0.55, 0.66], file: [0.66, 0.88], lid: [0.87, 0.97] };
+/* a stroke the hand inks: its outline as points, and its length read off the
+   SAME rounded numbers the path is written with, so a dash exactly the
+   length of the stroke is exactly the stroke and the nib table is free */
+function jetLine(pts, closed = false) {
+  const q = pts.map(([x, y]) => [r2(x), r2(y)]);
+  const ring = closed ? q.concat([q[0]]) : q;
+  const cum = [0];
+  for (let i = 1; i < ring.length; i++)
+    cum.push(cum[i - 1] + Math.hypot(ring[i][0] - ring[i - 1][0], ring[i][1] - ring[i - 1][1]));
+  return { ring, cum, len: cum[cum.length - 1],
+    d: q.map(([x, y], i) => `${i ? "L" : "M"} ${x} ${y}`).join(" ") + (closed ? " Z" : "") };
+}
+/* the pen's tip at length s along a stroke: arithmetic on the point list,
+   never getPointAtLength, which forces layout in WebKit every frame */
+function jetAt(line, s) {
+  const { ring, cum } = line;
+  let i = 1;
+  while (i < cum.length - 1 && cum[i] < s) i++;
+  const t = clamp((s - cum[i - 1]) / (cum[i] - cum[i - 1] || 1), 0, 1);
+  return [ring[i - 1][0] + (ring[i][0] - ring[i - 1][0]) * t, ring[i - 1][1] + (ring[i][1] - ring[i - 1][1]) * t];
+}
+/* every attribute the hand drives is written through here, and only when its
+   value changed: the cache lives on the element, so a rebuilt drawing starts
+   with an empty one and its first frame writes everything */
+function jetPut(el, k, v) {
+  const c = el._jc || (el._jc = {});
+  if (c[k] !== v) { c[k] = v; el.setAttribute(k, v); }
+}
+/* one part at progress k: hidden at 0, revealed along its own length between,
+   whole at 1 — and its pencil under it until it is whole. A face's paper
+   arrives with its outline, never at full area ahead of it. */
+function jetInk(it, k) {
+  it._k = k;
+  jetPut(it.ink, "display", k > 0 ? "inline" : "none");
+  jetPut(it.ink, "stroke-dasharray", k > 0 && k < 1 ? it.dash : "none");
+  jetPut(it.ink, "stroke-dashoffset", k > 0 && k < 1 ? r2(it.line.len * (1 - k)) : 0);
+  if (it.pen) jetPut(it.pen, "display", k < 1 ? "inline" : "none");
+  if (it.face) jetPut(it.ink, "fill-opacity", r2(smooth((k - 0.35) / 0.65)));
+}
+/* one hand: several parts drawn one after another as one continuous pen,
+   its nib at the tip while it is down and gone the moment it lifts */
+function jetRun([a, b], items, nib) {
+  /* the nib's resting place while the pen is up is fixed, the run's first
+     point, so a hidden nib carries the same attributes whatever was drawn
+     before it: same p, same drawing, down to the attributes nobody sees */
+  return { a, b, items, nib, rest: items[0].line.ring[0], total: items.reduce((t, it) => t + it.line.len, 0) || 1 };
+}
+function jetDrawRun(run, p) {
+  const u = clamp((p - run.a) / (run.b - run.a), 0, 1);
+  let L = u * run.total, tip = null;
+  for (const it of run.items) {
+    const len = it.line.len;
+    if (!tip && u > 0 && u < 1 && L >= 0 && L <= len) tip = jetAt(it.line, L);
+    /* a finished run is finished exactly: L is a sum of floats, and the last
+       stroke of a run otherwise closes at 0.9999…, keeping its pencil and
+       its dash and never sealing the member */
+    jetInk(it, u >= 1 ? 1 : len > 0 ? (L >= len - 1e-6 ? 1 : clamp(L / len, 0, 1)) : u > 0 ? 1 : 0);
+    L -= len;
+  }
+  const [cx, cy] = tip || run.rest;
+  jetPut(run.nib, "display", tip ? "inline" : "none");
+  jetPut(run.nib, "cx", r2(cx));
+  jetPut(run.nib, "cy", r2(cy));
+}
+/* draw(p): every attribute from p alone, so the same p is the same drawing
+   coming down or going back up, and a reader can park on any of them */
+function jetDraw(p) {
+  const W = jet.w;
+  if (!W) return;
+  jet.p = p;
+  for (const run of W.runs) jetDrawRun(run, p);
+  /* the pen reaching back: while a cell is being written, its lead runs to
+     the machine that made it, and only its own */
+  W.cells.forEach((it, i) => jetPut(W.leads[i], "display", it._k > 0 && it._k < 1 ? "inline" : "none"));
+  /* the seal: the trailer's check covers the whole input, so it turns clay
+     only when the lid has closed over all eight */
+  const sealed = W.seal._k >= 1;
+  if (W.sealed !== sealed) { W.sealed = sealed; W.trailer.ink.classList.toggle("sealed", sealed); }
+}
+function buildJetSolid(g, host) {
+  const mk = svgIn(host), s = jet.svg;
+  const grp = (cls) => mk("g", { class: cls });
+  /* painter's order IS depth order here, and the layers are in it: the
+     construction, the pencil, the ink, the traces, the words, the controls,
+     the nibs. Nothing is ever re-sorted. */
+  const con = grp("jcon"), pen = grp("jpencil"), ink = grp("jink"), trace = grp("jtrace"),
+    write = grp("jwrite"), words = grp("jwords"), names = grp("jnames"), nibs = grp("jnibs");
+  const items = [];
+  const part = (parent, pts, cls, { closed = false, pencil = "jpen", face = false } = {}) => {
+    const line = jetLine(pts, closed);
+    const it = { line, face, dash: `${r2(line.len)} ${r2(line.len)}`,
+      pen: pencil ? mk("path", { d: line.d, class: pencil }, pen) : null,
+      ink: mk("path", { d: line.d, class: cls }, parent), _k: -1 };
+    items.push(it);
+    return it;
+  };
+  const nib = () => mk("circle", { r: g.nib, class: "jnib", display: "none" }, nibs);
+  const text = (parent, x, y, said, anchor) => {
+    const t = mk("text", anchor ? { x, y, "text-anchor": anchor } : { x, y }, parent);
+    t.textContent = said;
+    return t;
+  };
+  const seg = (a, b) => `M ${r2(a[0])} ${r2(a[1])} L ${r2(b[0])} ${r2(b[1])}`;
+  const box = (x0, y0, x1, y1) => `M ${x0} ${y0} H ${x1} V ${y1} H ${x0} Z`;
+
+  const { raw, bh } = g;
+  const sy0 = g.railY, sy1 = g.railY + bh, sx1 = g.streamEnd, sx0 = sx1 - raw * 8;
+  const [, d1, d2, d3] = g.die;
+  const top = g.mTop, sh = top + d1, th = top + d2, bot = top + d3;
+  const sx = (k) => g.mx + g.mstep * k;            /* the station's own x, one short step per lane */
+  const zOf = (k) => g.zPitch * (k + 1), zMid = (k) => zOf(k) + g.mz / 2;
+  const outlet = (k) => jetP(sx(k), bot, zMid(k));
+  const dataX = g.memX + g.head, dataW = g.out.reduce((a, b) => a + b, 0);
+  const memEnd = dataX + dataW + g.trail, my0 = g.memY, my1 = g.memY + bh;
+  const slots = [];
+  { let c = dataX; for (const w of g.out) { slots.push([c, c + w]); c += w; } }
+
+  /* ── the construction: the floor the bank stands on, the line its four
+     stations stand on with a tick at each, and the sheet's ground line.
+     Pencil, and it stays: a drawing sheet keeps its construction. ── */
+  /* the floor runs a little in front of the near machine and behind the far
+     one and no further, so its front edge stands clear of the gathering rail */
+  const fy = bot, zMin = zOf(0) - 0.15 * g.zPitch, zMax = zOf(3) + g.mz + 0.15 * g.zPitch;
+  const fx0 = sx(0) - g.mouth - 10, fx1 = sx(3) + g.mouth + 10;
+  const station = (k) => jetP(sx(k), fy, zMid(k));
+  const along = (z) => sx(0) + ((z - zMid(0)) * g.mstep) / g.zPitch; /* the station line's x at depth z */
+  mk("path", { class: "jpenh", d: [
+    seg(jetP(fx0, fy, zMin), jetP(fx1, fy, zMin)), seg(jetP(fx1, fy, zMin), jetP(fx1, fy, zMax)),
+    seg(jetP(fx1, fy, zMax), jetP(fx0, fy, zMax)), seg(jetP(fx0, fy, zMax), jetP(fx0, fy, zMin)),
+    seg(jetP(along(zMin), fy, zMin), jetP(along(zMax), fy, zMax)),
+    ...[0, 1, 2, 3].map((k) => seg([station(k)[0] - 7, station(k)[1]], [station(k)[0] + 7, station(k)[1]])),
+    seg([g.groundX[0], g.ground], [g.groundX[1], g.ground]),
+  ].join(" ") }, con);
+
+  /* ── the stream: its rail in from off the plate, the bar, and the seven
+     cuts the splitter makes in it ── */
+  const rail = part(ink, [[g.railX0, sy0], [sx1, sy0]], "lane", { pencil: "jpenh" });
+  const bar = part(ink, [[sx0, sy0], [sx0, sy1], [sx1, sy1], [sx1, sy0]], "mk");
+  const cuts = [];
+  for (let i = 1; i < 8; i++) cuts.push(part(ink, [[sx0 + raw * i, sy0], [sx0 + raw * i, sy1]], "mk"));
+
+  /* ── the feed: ONE pipe off the stream, falling to the back machine and
+     running forward along the bank, every drop's top on it (x and z are
+     both linear in the lane, so the four lie on one line) ── */
+  const f3 = jetP(sx(3), g.manY, zMid(3)), f0 = jetP(sx(0), g.manY, zMid(0));
+  const feed = part(ink, [[f3[0], sy1], f3, f0], "lane", { pencil: "jpenh" });
+
+  /* ── the gather, in the DOM before the bank because painter's order is
+     depth order: it runs behind every machine it passes ── */
+  const gather = part(ink, [outlet(3), outlet(0), [sx(0), g.stitchY]], "lane", { pencil: "jpenh" });
+
+  /* ── the four machines: the authored die, two walls that step inward,
+     given its thickness and closed by a rim at the mouth and at the throat.
+     Without the rims the eye pairs each wall with its neighbour in the next
+     lane instead of with its own, and the bank reads as eight loose walls.
+     The walls are filled with the plate's own paper so a near machine covers
+     the one behind it, which is the only depth cue a parallel projection has
+     that a reader cannot argue with. Back to front. ── */
+  const lanes = [];
+  for (let k = 3; k >= 0; k--) {
+    const x = sx(k), z = zOf(k), z2 = z + g.mz, zc = zMid(k);
+    const lg = mk("g", { class: "jmach" }, ink);
+    const t0 = jetP(x, g.manY, zc), t1 = jetP(x, top, zc);
+    const wall = (sgn) => [
+      jetP(x + sgn * g.mouth, top, z), jetP(x + sgn * g.mouth, sh, z), jetP(x + sgn * g.throat, th, z), jetP(x + sgn * g.throat, bot, z),
+      jetP(x + sgn * g.throat, bot, z2), jetP(x + sgn * g.throat, th, z2), jetP(x + sgn * g.mouth, sh, z2), jetP(x + sgn * g.mouth, top, z2)];
+    const rim = (hw, y) => [jetP(x - hw, y, z), jetP(x + hw, y, z), jetP(x + hw, y, z2), jetP(x - hw, y, z2)];
+    /* in the DOM back to front (throat rim, walls, mouth rim), and drawn the
+       way the material goes through: down the feed, round the mouth, down
+       each wall, and out at the throat */
+    const dropA = part(lg, [t0, [t0[0], t0[1] + g.drop[0]]], "lane", { pencil: "jpenh" });
+    const dropB = part(lg, [[t0[0], t0[1] + g.drop[1]], t1], "lane", { pencil: "jpenh" });
+    const rimT = part(lg, rim(g.throat, th), "die", { closed: true });
+    const wl = part(lg, wall(-1), "die jface", { closed: true, face: true });
+    const wr = part(lg, wall(1), "die jface", { closed: true, face: true });
+    const rimM = part(lg, rim(g.mouth, top), "die", { closed: true });
+    lanes[k] = { k, x, z, z2, t0, items: [dropA, dropB, rimM, wl, wr, rimT] };
+  }
+
+  /* ── the gathering rail, closed at both ends, and the member: a header,
+     eight cells of their own authored widths in stream order (each drawn as
+     its top, right and bottom, the left being the cell before it), and the
+     trailer. Then the lid, its top face scored once per join, and the end
+     face, which is the seal. ── */
+  const stitch = part(ink, [[g.memX, g.stitchY], [memEnd, g.stitchY]], "lane", { pencil: "jpenh" });
+  const caps = [g.memX, memEnd].map((x) => part(ink, [[x, g.stitchY - g.cap], [x, g.stitchY + g.cap]], "lane", { pencil: "jpenh" }));
+  const rect = (x0, x1) => [[x0, my0], [x1, my0], [x1, my1], [x0, my1]];
+  const header = part(ink, rect(g.memX, dataX), "mk", { closed: true });
+  const cells = slots.map(([a, b]) => part(ink, [[a, my0], [b, my0], [b, my1], [a, my1]], "mk jcell"));
+  const trailer = part(ink, rect(dataX + dataW, memEnd), "mk jcrc", { closed: true });
+  const lid = part(ink, [jetP(g.memX, my0), jetP(memEnd, my0), jetP(memEnd, my0, g.memZ), jetP(g.memX, my0, g.memZ)], "jlid", { closed: true });
+  const scores = [dataX, ...slots.map((sl) => sl[1])].map((x) => part(ink, [jetP(x, my0), jetP(x, my0, g.memZ)], "jlid"));
+  const seal = part(ink, [jetP(memEnd, my0), jetP(memEnd, my1), jetP(memEnd, my1, g.memZ), jetP(memEnd, my0, g.memZ)], "jlid jseal", { closed: true });
+
+  /* ── the pen reaching back, one lead per cell: out of the machine that
+     made it, straight down to the gathering rail, along it, and into the
+     cell's own place. Down first, because a diagonal from the back machine
+     crosses the machines in front of it. ── */
+  const leadD = (k, i) => {
+    const o = outlet(k), cxm = r2((slots[i][0] + slots[i][1]) / 2);
+    return `M ${r2(o[0])} ${r2(o[1])} V ${g.stitchY} H ${cxm} V ${my0}`;
+  };
+  const leads = slots.map((_, i) => mk("path", { d: leadD(i % 4, i), class: "jlead", display: "none" }, write));
+
+  /* ── the lane trace, one group per machine, shown only while its control
+     is hot: its two blocks in the stream, the deal into its own feed, the
+     leads out to its two places in the file, and those two cells. It works
+     at every p, pencil or ink, because none of it is the hand's. ── */
+  jet.cells = [0, 1, 2, 3].map((k) => {
+    const hg = mk("g", { class: "jhot" }, trace);
+    for (let i = k; i < 8; i += 4) {
+      mk("path", { d: box(sx0 + raw * i, sy0, sx0 + raw * (i + 1), sy1), class: "jhotk" }, hg);
+      mk("path", { d: seg([sx0 + raw * i + raw / 2, sy1], lanes[k].t0), class: "jlead" }, hg);
+      mk("path", { d: leadD(k, i), class: "jlead" }, hg);
+      mk("path", { d: box(slots[i][0], my0, slots[i][1], my1), class: "jhotk" }, hg);
+    }
+    return { g: hg, lane: k };
+  });
+
+  /* ── the words: lettered on the sheet from the start, so no p is ever
+     missing one, and never scaled ── */
+  for (const [x, y, said, end] of g.heads) text(words, x, y, said, end ? "end" : null);
+  text(words, 8, g.deflateY, "deflate");
+  if (g.lead) mk("path", { d: `M ${g.lead[0]} ${g.deflateY - 4} H ${g.lead[1]}`, class: "lane" }, words);
+  const ty = my1 - (g.tight ? 5 : 6);
+  text(words, g.memX + g.head / 2, ty, "1f 8b 08", "middle");
+  text(words, memEnd - g.trail / 2, ty, g.tail, "middle");
+  for (const [x, y, said] of g.foot) text(words, x, y, said);
+
+  /* ── the controls: each machine's name, hung on its own feed where the
+     pipe breaks for it, in lane order so the keyboard meets vt-0 first ── */
+  const jlabs = [0, 1, 2, 3].map((k) => {
+    const t = mk("text", { x: r2(lanes[k].t0[0]), y: r2(lanes[k].t0[1] + g.labY), "text-anchor": "middle", class: "jlab" }, names);
+    t.textContent = `vt-${k}`;
+    return [t, k];
+  });
+  traceOn(s, jlabs, jet.cells, "lane", (lbl) => `show which blocks lane ${lbl.textContent} carried`);
+  /* and a second target, because a name is small and a machine is not: the
+     machine's own box, held one unit short of the next machine's so no two
+     targets overlap and the tab order can stay vt-0 to vt-3 */
+  for (const [t, k] of jlabs) {
+    const L = lanes[k], x0 = jetP(L.x - g.mouth, top, L.z)[0];
+    const x1 = k < 3 ? Math.min(x0 + 2 * g.mouth + 0.8 * g.mz, jetP(sx(k + 1) - g.mouth, top, zOf(k + 1))[0] - 1)
+      : x0 + 2 * g.mouth + 0.8 * g.mz;
+    const y0 = jetP(L.x, top, L.z2)[1], y1 = jetP(L.x, bot, L.z)[1];
+    if (t.parentNode.classList.contains("tracebtn"))
+      mk("rect", { x: r2(x0), y: r2(y0), width: r2(x1 - x0), height: r2(y1 - y0), fill: "transparent",
+        class: "hitm", "aria-hidden": "true" }, t.parentNode);
+  }
+
+  const runs = [
+    jetRun(JET_HAND.stream, [rail, bar], nib()),
+    jetRun(JET_HAND.cuts, cuts, nib()),
+    jetRun(JET_HAND.feed, [feed], nib()),
+    ...lanes.map((L) => jetRun(JET_HAND.dies, L.items, nib())),
+    jetRun(JET_HAND.gather, [gather, stitch, ...caps], nib()),
+    jetRun(JET_HAND.file, [header, ...cells, trailer], nib()),
+    jetRun(JET_HAND.lid, [lid, ...scores, seal], nib()),
+  ];
+  jet.w = { runs, cells, leads, seal, trailer, items, sealed: undefined };
+}
+/* the control: two complete drawings, named by what pressing it does */
+function jetMode(m) {
+  jet.mode = m;
+  const flat = m === "flat", s = jet.svg;
+  s.querySelector(".jflat")?.setAttribute("display", flat ? "inline" : "none");
+  s.querySelector(".jsolid")?.setAttribute("display", flat ? "none" : "inline");
+  /* a trace belongs to the drawing it was started on */
+  s.classList.remove("tracing");
+  for (const n of s.querySelectorAll(".hot")) n.classList.remove("hot");
+  s.setAttribute("aria-label", flat ? JET_FLAT_LABEL : JET_SOLID_LABEL);
+  if (jet.ctl) jet.ctl.textContent = flat ? "see it in 3D" : "see it flat";
+}
+function buildJet(tight) {
+  const s = jet.svg, at = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  const G = tight ? JET_SOLID_TIGHT : JET_SOLID_WIDE;
+  G.tight = !!tight;
+  s.setAttribute("viewBox", G.vb);
+  /* both drawings are built displayed, because traceOn reads every label's
+     box and the svg's rendered width as it wires them; the mode hides one
+     of them after. The resting drawing comes first in the DOM, so anything
+     that asks for "the plate's first lane control" gets the one on screen:
+     only one of the two is ever displayed, so the order paints nothing. */
+  const solid = at("g", { class: "jsolid" });
+  const flat = at("g", G.flatDy ? { class: "jflat", transform: `translate(0 ${G.flatDy})` } : { class: "jflat" });
+  buildJetFlat(tight, flat);
+  buildJetSolid(G, solid);
+  hideDrawnFromAT(s); hideDrawnFromAT(flat); hideDrawnFromAT(solid);
+  if (!jet.ctl) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "jetflat";
+    b.addEventListener("click", () => jetMode(jet.mode === "flat" ? "solid" : "flat"));
+    s.after(b);
+    jet.ctl = b;
+  }
+  jetMode(jet.mode);
+  /* the hand is the shared one (THE ASSEMBLIES RIDE THE SCROLL): it hands
+     this drawing a p and this drawing sets everything from it. ?prof times
+     the drawing's own share of each frame. */
+  const draw = PROF
+    ? (p) => { const t0 = performance.now(); jetDraw(p); (window.__jetProf ||= []).push(performance.now() - t0); }
+    : jetDraw;
+  asmFigure("fig07", { box: () => layoutBox(jet.svg), draw });
+}
+/* probe hook, computed on call so the loop pays nothing for it */
+window.__jet7 = () => ({ p: jet.p, mode: jet.mode, sealed: !!jet.w?.sealed,
+  inked: jet.w ? jet.w.items.filter((it) => it._k >= 1).length : 0, parts: jet.w ? jet.w.items.length : 0 });
 
 /* LifeQuest — the climb, drawn in section. The stair is the ledger beside it:
    five steps sketched in pencil, three of them built. What makes the drawing
@@ -9908,9 +9923,8 @@ function work(y) {
   if (Math.abs(beat - 3) <= 1) scrubApplied(beat < 3 ? 0 : beat > 3 ? 1 : bp);
   if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
-     its bench is a settled record. Beat 6 keeps scrubJet, which is the
-     drawing; only its bench pair left. */
-  if (Math.abs(beat - 6) <= 1) scrubJet(jetBlocks(y));
+     its bench is a settled record. Beat 6's drawing is assembled by the
+     hand now (asmWork, below), and its elevation is drawn settled. */
   /* beat 7's plate runs on its own window (climbWin), not on the beat's
      progress: the beat is sized by the dusk chain and the drawing is not */
   if (Math.abs(beat - 7) <= 1) {
