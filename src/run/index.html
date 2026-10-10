@@ -10798,7 +10798,12 @@ function seatSee() {
   L.proud = SEE_PROUD / L.u; L.jog = SEE_JOG / L.u;
   /* hairlines a constant width on screen whatever the plate's scale: the
      ring and the frame in --ink, the leader and the slab's faces in --ink-2,
-     the riser heavier, because it is the one stroke that says "this one" */
+     the riser heavier, because it is the one stroke that says "this one".
+     Measured off DPR-1 pixels at 1440x900, the darkest pixel at each of
+     several hundred points against the plate there (254,249,237): riser
+     1.2px median 8.3:1 / Lc 86, frame 0.9px 5.1:1 / Lc 73, ring 0.8px
+     3.7:1 / Lc 63, leader 0.7px 2.4:1 / Lc 46, slab 0.7px 2.5:1 / Lc 48;
+     the weakest point of any of them Lc 29, and of a vote Lc 24. */
   const px = (w) => r2(w / L.u);
   const dir = SEE_DIR[net.tight ? "tight" : "wide"];
   L.dx = Math.cos(dir); L.dy = Math.sin(dir);
@@ -10810,9 +10815,9 @@ function seatSee() {
     seePut(p.frame, "x", r2(p.sx)); seePut(p.frame, "y", r2(p.sy));
     seePut(p.frame, "width", r2(t)); seePut(p.frame, "height", r2(t));
     p.fl = 4 * t; seePut(p.frame, "stroke-dasharray", `${r2(p.fl)} ${r2(p.fl)}`);
-    seePut(p.frame, "stroke-width", px(0.8)); seePut(p.slab, "stroke-width", px(0.6));
-    seePut(p.ring, "stroke-width", px(0.6)); seePut(p.rise, "stroke-width", px(1.1));
-    seePut(p.run, "stroke-width", px(0.6));
+    seePut(p.frame, "stroke-width", px(0.9)); seePut(p.slab, "stroke-width", px(0.7));
+    seePut(p.ring, "stroke-width", px(0.8)); seePut(p.rise, "stroke-width", px(1.2));
+    seePut(p.run, "stroke-width", px(0.7));
     /* the two faces a slab standing proud of the sheet shows, as hairlines:
        the side and the end that face away from the receding direction */
     const xv = ox < 0 ? p.sx : p.sx + t, yh = oy > 0 ? p.sy + t : p.sy;
@@ -10959,8 +10964,10 @@ function seeGeometry() {
   E.vote.forEach((el, n) => {
     const v = see.votes[n];
     seePut(el, "class", v && v.win ? "see-vote win" : "see-vote");
-    seePut(el, "stroke-width", v ? r2((0.4 + 0.9 * v.s) / L.u) : "0");
-    seePut(el, "opacity", v ? r2(0.22 + 0.5 * v.s) : "0");
+    /* a vote's strength is its width and its ink, as the authored lines'
+       is, with a floor: the weakest of them stays a line a reader sees */
+    seePut(el, "stroke-width", v ? r2((0.6 + 0.8 * v.s) / L.u) : "0");
+    seePut(el, "opacity", v ? r2(0.4 + 0.45 * v.s) : "0");
   });
 }
 
@@ -11048,8 +11055,9 @@ function seeRead() {
   if (E.card) {
     const d = seeCells(R.px, false);
     E.card.cells.forEach((el, c) => seePut(el, "d", d[c]));
-    const words = ["input 28×28", sample ? "mnist test" : "your drawing",
-      sample ? `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}` : "", `${inked} of 784 inked`];
+    const words = sample
+      ? ["input 28×28", "mnist test", `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, `${inked} of 784 inked`]
+      : ["input 28×28", "your drawing", `${inked} of 784 inked`, ""];
     E.card.lines.forEach((tx, i) => { tx.textContent = words[i]; });
   }
   see.chrome.machine.innerHTML = firing >= k
@@ -11129,16 +11137,16 @@ function seeRender(q) {
     u = Math.min(u, smooth(clamp(see.strike[i], 0, 1)));
     const ring = clamp(u / 0.15, 0, 1), rise = clamp((u - 0.08) / 0.18, 0, 1), run = clamp((u - 0.2) / 0.35, 0, 1);
     const wipe = clamp((u - 0.55) / 0.45, 0, 1);
+    /* every attribute from p alone, hidden or not: the same p is the same
+       drawing whichever way the scroll came to it */
     seePut(p.ring, "visibility", ring > 0 ? "visible" : "hidden");
-    if (ring > 0) seePut(p.ring, "stroke-dashoffset", r2(p.cl * (1 - ring)));
+    seePut(p.ring, "stroke-dashoffset", r2(p.cl * (1 - ring)));
     seePut(p.rise, "d", p.lead ? seeD(p.lead.rise, rise) : "");
     seePut(p.run, "d", p.lead ? seeD(p.lead.run, run) : "");
     seePut(p.frame, "visibility", fr > 0 ? "visible" : "hidden");
     seePut(p.slab, "visibility", fr > 0 ? "visible" : "hidden");
-    if (fr > 0) {
-      seePut(p.frame, "stroke-dashoffset", r2(p.fl * (1 - fr)));
-      seePut(p.slab, "stroke-dashoffset", r2(p.sl * (1 - fr)));
-    }
+    seePut(p.frame, "stroke-dashoffset", r2(p.fl * (1 - fr)));
+    seePut(p.slab, "stroke-dashoffset", r2(p.sl * (1 - fr)));
     seePut(p.cr, "height", r2(28 * wipe));
   }
   /* 3 · the answer: each of the twelve sends the read's own unit-to-class
