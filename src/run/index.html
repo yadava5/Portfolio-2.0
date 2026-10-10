@@ -8359,7 +8359,10 @@ function jetInk(it, k) {
 /* one hand: several parts drawn one after another as one continuous pen,
    its nib at the tip while it is down and gone the moment it lifts */
 function jetRun([a, b], items, nib) {
-  return { a, b, items, nib, total: items.reduce((t, it) => t + it.line.len, 0) || 1 };
+  /* the nib's resting place while the pen is up is fixed, the run's first
+     point, so a hidden nib carries the same attributes whatever was drawn
+     before it: same p, same drawing, down to the attributes nobody sees */
+  return { a, b, items, nib, rest: items[0].line.ring[0], total: items.reduce((t, it) => t + it.line.len, 0) || 1 };
 }
 function jetDrawRun(run, p) {
   const u = clamp((p - run.a) / (run.b - run.a), 0, 1);
@@ -8373,8 +8376,10 @@ function jetDrawRun(run, p) {
     jetInk(it, u >= 1 ? 1 : len > 0 ? (L >= len - 1e-6 ? 1 : clamp(L / len, 0, 1)) : u > 0 ? 1 : 0);
     L -= len;
   }
+  const [cx, cy] = tip || run.rest;
   jetPut(run.nib, "display", tip ? "inline" : "none");
-  if (tip) { jetPut(run.nib, "cx", r2(tip[0])); jetPut(run.nib, "cy", r2(tip[1])); }
+  jetPut(run.nib, "cx", r2(cx));
+  jetPut(run.nib, "cy", r2(cy));
 }
 /* draw(p): every attribute from p alone, so the same p is the same drawing
    coming down or going back up, and a reader can park on any of them */
