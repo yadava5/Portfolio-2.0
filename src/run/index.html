@@ -4010,8 +4010,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              is still what a reader gets for the plate, but the four desk
              controls inside it now exist. Each carries its own name.
              `check-figures.mjs` §1 encodes the pair of rules. -->
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 400" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks, each folded into the foot of its own case of pigeonholes: 220 regex rules, which settle anything at 0.90 and up; and the two small models that take the hard cases, E5 similarity at 0.85 and up, unless a rule says no, and gated SetFit at 0.70 and up. Each piece leaves at the first desk that clears it and files back into that desk's case, into the hole named for its verdict, where it rests behind the lip. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer are filed behind the rules; assessment and other behind E5 similarity; pending application behind gated SetFit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, follow up, and comes forward out of the machine toward the reader: it is held below in a clay ring, in a tray in front of the belt, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
-        <figcaption>fig. 04 · the sorting line; the eighth email comes forward for review. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a desk to see the mail that reached it.</i></figcaption>
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 400" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks, each folded into the foot of its own case of pigeonholes: 220 regex rules, which settle anything at 0.90 and up; and the two small models that take the hard cases, E5 similarity at 0.85 and up, unless a rule says no, and gated SetFit at 0.70 and up. Each piece leaves at the first desk that clears it and files back into that desk's case, into the hole named for its verdict, where it rests behind the lip. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer are filed behind the rules; assessment and other behind E5 similarity; pending application behind gated SetFit. The eighth piece clears nothing at all. It rides the whole belt to the stop at its end, keeps the rules' own first guess, follow up, and is held below in a clay ring there, under every case, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
+        <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a desk to see the mail that reached it.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -6644,10 +6644,11 @@ const DEPTH = {
    drawn, four, two and one), each named on its own front face. A piece the
    desk clears goes BACK into the case, away from the reader, and comes to
    rest in its hole tucked behind the lip. The one nothing clears rides to the
-   end and comes FORWARD, out of the machine toward the reader, into a tray
-   in front of the belt, where it is ringed in clay: "asks you about the
-   borderline ones" is the only move in the figure that points at the reader.
-   Rest (p = 1) carries the whole argument on its own: seven filed, one held.
+   end of the belt and is ringed in clay there, its reason bound under the
+   ring. A move FORWARD, out of the machine toward the reader into a tray, was
+   built and looked at: at 1x, in both editions, it read as a hop off the end
+   of the belt, and nothing on this plate descends. Rest (p = 1) carries the
+   whole argument on its own: seven filed, one held.
 
    CABINET OBLIQUE, the D figures' projection: x and y stay true and depth
    runs up and to the right at 30 degrees, so every plane that faces the
@@ -6929,7 +6930,7 @@ function appliedAt(pc, s) {
 function appliedLayers(el) {
   const g = (n) => el("g", { class: `a4-${n}` });
   return { defs: el("defs", {}), floor: g("floor"), inner: g("inner"), back: g("back"), cab: g("cab"),
-    mid: g("mid"), belt: g("belt"), tray: g("tray"), front: g("front"), over: g("over"), text: g("text"), ring: g("ring") };
+    mid: g("mid"), belt: g("belt"), front: g("front"), over: g("over"), text: g("text"), ring: g("ring") };
 }
 
 /* ------------------------------------- the wide plate ------------------------------------- */
@@ -6938,7 +6939,7 @@ function appliedWide(s, el) {
      at; df/cd the cases' front and depth; pt the porch's height; foot the
      case below its lowest hole; a row is its name, its opening and its lip */
   const G = { yb: 268, wb: 24, lanes: [5, 17], df: 38, cd: 16, pt: 26, foot: 30, lip: 6, op: 18,
-    strip: 14, strip2: 30, cell: [84, 92, 100], qx: 50, qp: 12, gap: 12, tray: -34 };
+    strip: 14, strip2: 30, cell: [84, 92, 100], qx: 50, qp: 12, gap: 12 };
   const L = appliedLayers(el), M = { tight: false, wb: G.wb, df: G.df, pieces: [], signs: [], p0: 0 };
   const yf = G.yb + 28, z0 = G.df, z1 = G.df + G.cd;
   M.h = G.yb + 132;
@@ -6989,7 +6990,7 @@ function appliedWide(s, el) {
 
   /* THE BELT: plumbing in the hairline — a flat top, a side round at both
      drums, the far rim of the end drum, legs, and the stop it ends at */
-  const held = right + 60, bx0 = 6, bx1 = held + 18;
+  const held = right + 44, bx0 = 6, bx1 = held + 22;
   {
     const r = 6, y0 = G.yb, y1 = G.yb + 12;
     const c1 = appliedP(bx1 - r, y0 + r, G.wb);
@@ -6999,18 +7000,10 @@ function appliedWide(s, el) {
     el("path", { class: "a4belt a4paper", d: `M ${bx0 + r} ${y0} H ${bx1 - r} A ${r} ${r} 0 0 1 ${bx1 - r} ${y1} H ${bx0 + r} A ${r} ${r} 0 0 1 ${bx0 + r} ${y0} Z` }, L.belt);
     for (const x of [bx0 + r, bx1 - r]) el("circle", { cx: x, cy: y0 + r, r: 2.2, class: "a4belt" }, L.belt);
     for (const x of [bx0 + 26, Math.round((bx0 + held) / 2), held - 70]) el("path", { class: "a4belt", d: `M ${x} ${y1} V ${yf}` }, L.belt);
+    /* the stop the held piece comes to rest against, across the belt's depth */
+    const st = held + 12;
+    el("path", { class: "a4belt", d: a4poly(appliedP(st, y0, 0), appliedP(st, y0 - 16, 0), appliedP(st, y0 - 16, G.wb), appliedP(st, y0, G.wb)) }, L.belt);
   }
-  /* THE TRAY the held piece comes forward into: in front of the belt's end,
-     at the belt's height. No leg: drawn to the floor it ran through its own
-     label, so it hangs off the end of the machine. */
-  {
-    const a = held - 14, b = held + 14, zf = G.tray - 6, zb = G.tray + 6, y0 = G.yb - 7;
-    el("path", { class: "a4case a4paper", d: a4rect(a, y0, b, G.yb, zb) }, L.tray);
-    el("path", { class: "a4case a4paper", d: a4shape(appliedP(a, G.yb, zf), appliedP(b, G.yb, zf), appliedP(b, G.yb, zb), appliedP(a, G.yb, zb)) }, L.tray);
-    el("path", { class: "a4case a4paper", d: a4shape(appliedP(b, y0, zf), appliedP(b, G.yb, zf), appliedP(b, G.yb, zb), appliedP(b, y0, zb)) }, L.over);
-    el("path", { class: "a4case a4paper", d: a4rect(a, y0, b, G.yb, zf) }, L.over);
-  }
-
   /* THE WORDS. The rules' sign sits on its tall case; the two models share a
      row under the station's own words for them, E5's caveat on the one line
      SetFit's sign leaves empty, so the two never read as one block. */
@@ -7043,13 +7036,13 @@ function appliedWide(s, el) {
   APPLIED_PLAN.forEach(([k], i) => {
     const lane = G.lanes[i % 2], x = G.qx - 6 * i;
     const start = [x, G.yb, lane];
-    if (k === 3) { M.pieces.push(appliedPiece(i, k, [start, [held, G.yb, lane], [held, G.yb, G.tray]], null)); return; }
+    if (k === 3) { M.pieces.push(appliedPiece(i, k, [start, [held, G.yb, lane]], null)); return; }
     /* the cases fill from the top: a piece rising inside passes only empty holes */
     const e = slot[k]++, r = rows[k].length - 1 - e;
     const way = [start, [X[k], G.yb, lane], [X[k], G.yb, z0 + 6], [X[k], rows[k][r], z0 + 6]];
     M.pieces.push(appliedPiece(i, k, way, holes[k][e]));
   });
-  M.ringC = appliedP(held, G.yb - 7, G.tray);
+  M.ringC = appliedP(held, G.yb - 7, G.lanes[1]);
   M.ringR = 17;
   M.region = G.yb + 1; /* the post's lowest edge: the motion waits until it is on screen */
   return { M, L };
@@ -7063,7 +7056,7 @@ function appliedTight(s, el) {
      phone. Each desk's sign is its case's own header, which is what makes the
      desk the thing its sign names and buys the height the held ring needs. */
   const G = { rx: 40, rw: 8, rd: 10, ride: -3, df: 36, cd: 12, lip: 6, op: 17, pitch: 25, lh: 13,
-    ox0: 31, ox1: 59, lx: 65, x0: 24, x1: 186, q0: 80, qp: 6, tray: -25 };
+    ox0: 31, ox1: 59, lx: 65, x0: 24, x1: 186, q0: 80, qp: 6 };
   const L = appliedLayers(el), M = { tight: true, wb: G.rd, df: G.df, pieces: [], signs: [], p0: 0 };
   const z0 = G.df, z1 = G.df + G.cd, up = 0.5 * z0 + 0.5 * G.cd; /* a case sits `up` higher than its rows */
   const T = L.text;
@@ -7086,7 +7079,10 @@ function appliedTight(s, el) {
       const t = appliedText(el, li ? T : s, tx, ty, ln, li ? null : "lit desklab");
       if (!li) M.signs.push([t, k]);
     });
-    plan.forEach((_, j) => rows[k].push(head + 2 + G.op + G.lip + j * G.pitch));
+    /* a two-line name under the sign starts a full line clear of it, or the sign reads it as
+       its own next line (SetFit: "settles 0.70 and up" ran straight into "pending") */
+    const gap = plan[0][1].length > 1 ? 8 : 2;
+    plan.forEach((_, j) => rows[k].push(head + gap + G.op + G.lip + j * G.pitch));
     const tall = plan.some(([, w]) => w.length > 1) ? 8 : 0;
     const bottom = rows[k][rows[k].length - 1] + 2 + tall;
     const opens = rows[k].map((fy) => [G.ox0, fy - G.lip - G.op, G.ox1, fy - G.lip]);
@@ -7111,15 +7107,7 @@ function appliedTight(s, el) {
     el("path", { class: "a4belt a4paper", d: `M ${a} ${y0 + G.rw} A ${G.rw} ${G.rw} 0 0 1 ${b} ${y0 + G.rw} V ${y1 - G.rw} A ${G.rw} ${G.rw} 0 0 1 ${a} ${y1 - G.rw} Z` }, L.belt);
     for (const yy of [y0 + G.rw, y1 - G.rw]) el("circle", { cx: G.rx, cy: yy, r: 2.2, class: "a4belt" }, L.belt);
   }
-  /* the tray at the belt's foot, in front of it */
-  {
-    const a = G.rx - 13, b = G.rx + 13, zf = G.tray - 6, zb = G.tray + 6, y0 = yEnd - 7;
-    el("path", { class: "a4case a4paper", d: a4rect(a, y0, b, yEnd, zb) }, L.tray);
-    el("path", { class: "a4case a4paper", d: a4shape(appliedP(a, yEnd, zf), appliedP(b, yEnd, zf), appliedP(b, yEnd, zb), appliedP(a, yEnd, zb)) }, L.tray);
-    el("path", { class: "a4case a4paper", d: a4shape(appliedP(b, y0, zf), appliedP(b, yEnd, zf), appliedP(b, yEnd, zb), appliedP(b, y0, zb)) }, L.over);
-    el("path", { class: "a4case a4paper", d: a4rect(a, y0, b, yEnd, zf) }, L.over);
-  }
-  const ring = appliedP(G.rx, yEnd - 7, G.tray);
+  const ring = appliedP(G.rx, yEnd - 7, G.ride);
   M.signs.push([appliedText(el, s, 54, ring[1] + 4, "held for review", "lit desklab"), 3]);
   const ny = ring[1] + 34;
   appliedReason(el, T, 8, ny, ["nothing cleared its desk, so it", "keeps the rules’ own guess:", ""]);
@@ -7133,7 +7121,7 @@ function appliedTight(s, el) {
   const slot = [0, 0, 0];
   APPLIED_PLAN.forEach(([k], i) => {
     const start = [G.rx, G.q0 - G.qp * i, G.ride];
-    if (k === 3) { M.pieces.push(appliedPiece(i, k, [start, [G.rx, yEnd, G.ride], [G.rx, yEnd, G.tray]], null)); return; }
+    if (k === 3) { M.pieces.push(appliedPiece(i, k, [start, [G.rx, yEnd, G.ride]], null)); return; }
     const j = slot[k]++, fy = rows[k][j];
     M.pieces.push(appliedPiece(i, k, [start, [G.rx, fy, G.ride], [G.rx, fy, z0 + 6]], holes[k][j]));
   });
