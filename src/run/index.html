@@ -5416,9 +5416,13 @@ function cacheGeometry() {
     climbWin.y0 = yOf(f8.spec.in[FLAGS.get("f8") === "enter" ? 0 : 1]);
     climbWin.y1 = Math.min(yRead, yOf(f8.spec.out[0]) - 8); /* 8px ahead of the first fade step */
     climbWin.ok = climbWin.y1 - climbWin.y0 >= 0.12 * vh;
+    /* where the ground line comes on screen, held between the plan's share
+       of the window and three quarters of it */
+    const wy = climbWin.y1 - climbWin.y0, yG = b.top + (climb.g.ys[0] / climb.g.vh) * b.h - 0.96 * vh;
+    climbWin.yK = clamp(yG, climbWin.y0 + Q3T.ink[0] * wy, climbWin.y0 + 0.75 * wy);
     if (climb.e) climb.e.last = NaN; /* the same p can be a new q now: redraw it */
     window.__world.fig08 = { y0: Math.round(climbWin.y0), y1: Math.round(climbWin.y1), ok: climbWin.ok,
-      read: Math.round(yRead), curtain: Math.round(yOf(f8.spec.out[0])) }; /* probe hook */
+      ink: Math.round(climbWin.yK), read: Math.round(yRead), curtain: Math.round(yOf(f8.spec.out[0])) }; /* probe hook */
   }
   /* ── v6 · every assembled figure's window, measured last ── */
   asmGeometry();
@@ -8678,7 +8682,7 @@ const climb = { svg: $("questFig"), g: null, e: null, p: 1, q: 1, flat: false,
 /* the drawing's own window in page px, written by cacheGeometry's fig. 08
    slot. Until it is measured, and wherever no window fits, the plate is its
    finished drawing. */
-const climbWin = { y0: 0, y1: 0, ok: false };
+const climbWin = { y0: 0, y1: 0, yK: 0, ok: false };
 /* cabinet oblique at the drawing board's 30°: x and y stay true and depth
    runs up and to the right, one vector for every receding edge */
 const Q3 = { x: Math.cos(Math.PI / 6), y: Math.sin(Math.PI / 6) };
@@ -8725,8 +8729,11 @@ function climbQ(p) {
   if (ASM_PIN !== null) return p; /* ?asm pins the drawing itself, for stills */
   const e = climb.e;
   if (!e || !climbWin.ok) return 1;
-  const y = e.yA + p * (e.yB - e.yA);
-  return clamp((y - climbWin.y0) / (climbWin.y1 - climbWin.y0), 0, 1);
+  /* the plan takes the stretch before yK and the ink the stretch after it:
+     the ink climbs from the ground, so it never starts before the ground line
+     is on screen (yK, measured in the slot) */
+  const { y0, y1, yK } = climbWin, k = Q3T.ink[0], y = e.yA + p * (e.yB - e.yA);
+  return y < yK ? clamp((k * (y - y0)) / (yK - y0), 0, k) : clamp(k + ((1 - k) * (y - yK)) / (y1 - yK), k, 1);
 }
 function buildClimb(tight) {
   const s = climb.svg, el = svgIn(s);
@@ -8978,8 +8985,11 @@ function drawClimb(p) {
   const roof = climb.inks[3];
   q3put(roof.e, "stroke-dashoffset", q3n(roof.len * (1 - ks)));
   if (ks > 0 && ks < 1) nib = q3at(roof.pts, roof.len * ks);
+  /* a lifted pen rests at the first stroke's start, so even an invisible
+     attribute depends on p alone */
+  const at = nib || climb.inks[0].pts[0];
   q3put(climb.nib, "opacity", nib ? "1" : "0");
-  if (nib) { q3put(climb.nib, "cx", q3n(nib[0])); q3put(climb.nib, "cy", q3n(nib[1])); }
+  q3put(climb.nib, "cx", q3n(at[0])); q3put(climb.nib, "cy", q3n(at[1]));
   /* the token: three lifts with the three inked floors, then it stays. The
      hop bulges in x, because the travel is vertical. Seen flat, the drawing
      is the finished elevation, and the token is where it ends. */
@@ -8990,8 +9000,10 @@ function drawClimb(p) {
   for (const c of [climb.tok, climb.ring]) { q3put(c, "cx", cx); q3put(c, "cy", cyv); }
   q3put(climb.ring, "opacity", flat || q >= T.ring ? "1" : "0"); /* the deliberate halt */
 }
-/* probe hook: the drawing's own progress, on call */
+/* probe hooks: the drawing's own progress, on call, and the draw itself, so
+   a probe can time it (a caller that draws must redraw the driver's p after) */
 window.__fig08 = () => ({ p: climb.p, q: climb.q, flat: climb.flat, ...climbWin });
+window.__fig08draw = drawClimb;
 
 /* Agentic AutoML — the notebook, worked by tools. The registry lists the
    REAL 12 (mcpServer.ts, pinned 5e42233, in source order); cells draw and
