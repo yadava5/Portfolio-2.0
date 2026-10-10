@@ -245,7 +245,7 @@ are therefore permitted, each bounded:
 2. **One more blur.** §E's "hero de-blur is the only blur on the page" is
    narrowed by exactly one: the link roll's mid-flight blur, under 1px, for
    300ms, on fine pointers only. Never on a phone, never on a resting glyph.
-3. **Figures assembled in true 3D by the scroll**, inside a plate that never
+3. **(Replaced by F8 below, 2026-10-09.)** **Figures assembled in true 3D by the scroll**, inside a plate that never
    moves on its own: one camera, scroll-pure (the same y gives the same frame),
    rigid planes in true perspective whose depth closes as one scalar into the
    page, nothing travelling across the screen to its place, nothing descending,
@@ -256,3 +256,44 @@ are therefore permitted, each bounded:
 particles and constellations, text scramble and typewriter effects, shimmer
 sweeps, glow of any kind, gradient text, custom cursors, idle animation of page
 content, blur on mobile, and any second rAF loop.
+
+### F8 · The figures assemble with the scroll — replaces F7 item 3 (owner decision, 2026-10-09)
+
+Shown round v5's figures, which played once when a reader stopped at them, the
+owner chose them and set one condition: "make sure to make them work with
+scrolling, not like single play, they should assemble with rail scroll!" A
+round earlier he had rejected the scroll-pure camera of v4.2 because "if
+someone scrolls fast, they'll miss it". F7's third item described that
+camera; this replaces it.
+
+**Permitted, and nothing wider:** four figures (figs. 04, 06, 07 and 08)
+assemble with the scroll. The scroll position sets how far each has
+assembled, as a function of scrollY alone, so scrolling back up takes it apart
+again. One damped hand on the engine's own loop (the `asm` driver in
+`src/run/index.html`) carries the drawing there: it follows a reading scroll
+about a tenth of a second behind, and its speed is capped so that a figure's
+whole motion takes at least 0.4 s (ASM_RATE), so a flick still shows the
+figure assembling instead of skipping it. At rest the same y gives the same
+drawing; a jump, an anchor, a figure off the screen and the first frame land
+at once. fig. 08 stands where dusk falls, and its plate is on the dusk
+contract, whose entrance waits for the plate to clear the fold: it is drawn
+while that entrance fades it in, and is finished, and held, before the
+curtain, so the contract's own clause (no text at full ink on the darkening
+stops) is untouched. Each figure is drawn in parallel
+projection (cabinet oblique, front faces at 1:1, text never scaled), is a
+complete drawing at every point a reader can stop on, and is finished by the
+time its centre reaches the reading line. It stays inside its own plate, and
+the plate never moves for it. What moves is the figure's own subject: strokes
+drawn in the order the process runs (figs. 07 and 08), units called out of
+the field on leaders (fig. 06), and the morning post riding its own belt,
+each piece filing back into its desk's case along the depth axis and rising
+inside it to its pigeonhole, seen through the openings, and the one held for
+review ringed in clay at the belt's end (fig. 04), where the post's travel
+along the belt was already the figure's content.
+
+**Still banned, unchanged:** a camera that orbits, tilts or flies; parts that
+fly in from off the plate, drop or fall into place; shadows; anything that
+changes size for its own sake; a plate that tilts or follows the pointer;
+scroll-snap, pinning or any scroll hijack; a second rAF loop; idle motion of
+any kind; and motion under reduced motion, where every figure is shown
+finished.
