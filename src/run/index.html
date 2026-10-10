@@ -749,17 +749,6 @@ if (location.hash.length > 1) {
   #net.tight .on text{font-size:11px}
   #net.tight .on.win text{font-size:12.5px}
   #net .ed{stroke:var(--ink); fill:none}
-  /* fig. 06's depth layer (net3): the plate's own inks and nothing else. The
-     depth is in the geometry and in each path's lightness, never a shadow or
-     a glow; while it is up the figure may draw a little outside its own box,
-     inside the plate's padding, and at a = 1 it is display:none. */
-  #net.indepth{overflow:visible}
-  #net .depth path{fill:var(--ink); stroke:none}
-  #net .depth .dkbar{fill:var(--ink-2)}
-  #net .depth .dkwin{fill:var(--clay-g)}
-  /* print is the drawing: the layer goes, and the flat figure it may be
-     standing in for (opacity 0 anywhere above the window) comes back */
-  @media print{ #net .depth{display:none} #net .flat{opacity:1 !important} }
   @media (prefers-reduced-motion: no-preference){
     #net .hn{transition:opacity .45s ease}
     #net .ed{transition:opacity .5s ease}
@@ -2610,6 +2599,62 @@ if (location.hash.length > 1) {
   /* ═══ v6 · style slot, fig. 04 (the mailroom) ═══ */
 
   /* ═══ v6 · style slot, fig. 06 (what the network sees) ═══ */
+  /* THE STEP THE SCROLL IS IN, over the drawing it narrates. Text and not
+     buttons: the steps have no control but the scroll, and a button that
+     does nothing is a fake one. "flat" is the one control, and a finger's
+     size. The body face, because a person reads it. */
+  #glyph .seestrip{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    gap:0 1rem; min-height:44px; margin:0 0 .4rem; font-family:var(--body); font-size:var(--fs-label);
+    line-height:1.4; color:var(--ink-2)}
+  #glyph .seesteps{display:flex; flex-wrap:wrap; gap:.1rem 1.15rem; margin:0; padding:0; list-style:none}
+  #glyph .seesteps li{padding:.15rem 0; border-bottom:2px solid transparent}
+  #glyph .seesteps .n{margin-right:.4em; font-variant-numeric:tabular-nums}
+  #glyph .seesteps li[aria-current]{color:var(--ink); border-bottom-color:var(--clay-g)}
+  #glyph .seesteps li[aria-current] .n{color:var(--clay)}
+  #glyph .seeflat{font:inherit; color:var(--ink-2); background:none; border:0; cursor:pointer;
+    min-height:44px; min-width:44px; padding:0 .5rem; margin-right:-.5rem;
+    text-decoration:underline; text-underline-offset:3px}
+  #glyph .seeflat{margin-left:auto}
+  #glyph .seeflat:hover{color:var(--ink)}
+  #glyph .seeflat[aria-pressed="true"]{color:var(--ink); text-decoration-color:var(--clay-g)}
+  #glyph .seeflat:focus-visible{outline:2px solid var(--clay-g); outline-offset:-2px}
+  /* what a tile is: the one sentence the drawing owes the reader */
+  #glyph .seenote{margin:.9rem 0 0; max-width:62ch; font-family:var(--body); font-size:var(--fs-label);
+    line-height:1.55; color:var(--ink-2)}
+  /* the machine line: computed, and it changes when the digit does */
+  #glyph .seemachine{display:block}
+  #glyph .seemachine b{font-weight:400; color:var(--ink)}
+  /* THE WIDE SHEET IS THE ROW. The drawing is laid over the whole row so
+     the card can move out from under the hundred into the band under the
+     pad; the net keeps its authored height in the flow (the placeholder),
+     so the verdict line stays where it was; the band under the pad is
+     reserved for the card, 84px and its gaps, at every p. The sheet takes
+     no pointer, so the pad under its corner is the pad. */
+  #glyph.seewide .glyphrow{position:relative}
+  #glyph.seewide #net{position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none}
+  #glyph.seewide #netwrap::before{content:""; display:block; aspect-ratio:460 / 300}
+  #glyph.seewide .padcard{padding-bottom:98px}
+  /* the tight sheet is a column under the pad, never wider than a phone's */
+  #glyph.seetight #netwrap{flex:1 1 100%; min-width:0; max-width:336px; margin-inline:auto}
+  #net .n-hit{pointer-events:all}
+  /* the twelve's views and the card: whole cells in the page's own inks */
+  #net .see-cells path{shape-rendering:crispEdges; stroke:none}
+  #net .see-cells .pos{fill:var(--ink)}
+  #net .see-cells .neg{fill:var(--clay-g)}
+  #net .see-ring, #net .see-rise, #net .see-frame{stroke:var(--ink)}
+  #net .see-run, #net .see-slab{stroke:var(--ink-2)}
+  #net .see-cardframe{stroke:var(--hair)}
+  #net .see-vote{stroke:var(--ink)}
+  #net .see-vote.win{stroke:var(--clay-g)}
+  #net.reading .see-votes{opacity:.3} /* pen down: the votes wait for the lift, like the ten */
+  /* THE VERDICT LINE BREAKS IN FIXED PLACES, so the scroll naming the
+     sample's answer ("·" to "99.8%") can never change how many lines it
+     takes, and so never the row's height. Measured: the named first line
+     is at most 300px (100.0%, 123.4 ms), against a 362px net at its
+     narrowest wide seat and 262px on the tight one, where "forward" takes
+     a line of its own. */
+  #glyph.seewide .verdictline > :last-child{flex-basis:100%}
+  #glyph.seetight .verdictline > :nth-child(n+3){flex-basis:100%}
 
   /* ═══ v6 · style slot, fig. 07 (drawn by hand) ═══ */
 
@@ -4059,7 +4104,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             </div>
           </div>
           <div id="netwrap">
-            <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: a 28 by 28 input, showing MNIST test digit 9370 until you draw your own, one hidden layer, ten output classes with confidence bars, and lines for the strongest pushes the read made."></svg>
+            <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: a 28 by 28 input, showing MNIST test digit 9370 until you draw your own, a hidden layer of a hundred units with twelve of the ones that fire called out, each tile that unit’s view of the digit, ink where the stroke excites it and clay where it holds it back, and the ten output classes they push toward, with confidence bars."></svg>
             <div class="verdictline">
               <span class="big idle" id="verdict">·</span>
               <span>conf <b id="conf">·</b></span>
@@ -5362,28 +5407,10 @@ function cacheGeometry() {
   dusk7.span = darkSpan / bDusk.h;
   window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h, kick: b.kick })); /* probe hook — kick is the masthead clock's anchor */
   /* ── v6 · window slot, fig. 06 ── */
-  /* fig. 06 assembles from the net's top at 0.90 of the screen to its centre
-     on the reading line, off its LAYOUT box: absTop never sees the plate's
-     arrival transform, and the svg's height is its seat times its viewBox's
-     aspect. THE READING LINE AND NOT 0.52, which is what the plan said and
-     what a centred park cannot afford: WebKit's scrollIntoView({block:
-     "center"}) lands a phone figure low (measured: the net's centre at 444
-     of 786 at 420×786 and 454 of 844 at 390×844, where Chromium puts it at
-     393 and 422), so a window ending at 0.52 left that park at a = 0.93 with
-     the depth layer up. 0.62 clears WebKit's worst by 43px. */
-  /* AND IT OPENS WHEN THE OPENING'S TOP EDGE REACHES 0.98 vh: the pose's own
-     projected ink, not the box, so the same rule holds on every seat. The
-     opening is HELD over the first 45% of the window, so the stretch where
-     the figure is still climbing out of the bottom of the screen costs
-     nothing — and the floor is what actually binds at 1440x900 (0.52 vh of
-     window: 468px, against the 331px the first cut had for the whole
-     assembly). a = 1 is the net's centre on the reading line, which is what
-     lets every centred park in both engines see the authored drawing. */
-  const nw = $("netwrap"), sc = nw.clientWidth / net.vbw, [o0] = netOpening();
-  net3.top = absTop(nw); net3.h = nw.clientWidth * net.vbh / net.vbw;
-  net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
-  net3.yA = Math.min(net3.top + sc * o0 - 0.98 * vh, net3.yB - 0.52 * vh);
-  window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
+  /* fig. 06's sheet is laid off the row as it now stands (seatSee: it reads
+     layout boxes and writes only inside the svg, so nothing moves under the
+     measurements above); its window is the driver's, off the drawing's box */
+  seatSee();
   /* ── v6 · window slot, fig. 07 ── */
   /* fig. 07's reveal: the same law as fig. 06, off its svg's layout box (the
      plate's first child, under its padding), and the blocks' clock reads its
@@ -9214,7 +9241,7 @@ function chooseEditions() {
     jet: [innerW(jet.svg.parentElement), 515, buildJet],
     aml: [innerW(aml.svg.parentElement), 515, buildAml],
     quest: [innerW(climb.svg.parentElement), 450, buildClimb],
-    net: [$("netwrap").clientWidth, 355, buildNet],
+    net: [netSeat(), 355, buildNet],
     path: [innerW(yard.svg.parentElement), 515, buildPath],
   };
   let changed = false;
@@ -10226,83 +10253,103 @@ ready.then(
    REAL activations on classify. Wide reads left to right with horizontal
    confidence bars; tight (240) stacks input over hidden over ten RISING bars
    with their digits beneath. Everything authored goes in `g.flat`, which is
-   the drawing; fig. 06's depth layer (net3, below) is its sibling and only
-   ever stands in for it while the figure assembles. */
+   the drawing, and inside it in the five parts fig. 06's assembly moves or
+   fades (net.g): the card, the hundred, the ten, and the two fans of lines,
+   in the order they were always painted. What the network sees (below) is
+   drawn over it in its own layer, and with that layer at rest p = 0 is this
+   drawing exactly. */
 const net = { hn: [], on: [], ed: [], inCtx: null, tight: false, vbw: 460, vbh: 300, r0: 3.2,
-  geo: null, labs: [], sampleTx: [], read: null, edges: null, W1: null, W2: null };
+  geo: null, g: null, sampleTx: [], read: null, edges: null, W1: null, W2: null,
+  sample: null, sampleMs: 0 };
+/* THE TIGHT PLATE IS 104 UNITS TALLER THAN IT WAS, and the ten sit that much
+   lower, at every p and under "flat" too, so the sheet never changes height
+   under a scroll. It is the room six 56px tiles need between the hundred and
+   the ten: two rows and a gap from y 178, at the narrowest tight seat this
+   page lays out (262px at 360), are 108 units, and the tallest bar keeps 14
+   units of its votes in view above it. */
+const TIGHT_PUSH = 104;
 function buildNet(tight) {
   const s = $("net"), mk = svgIn(s);
-  s.textContent = ""; s.classList.toggle("tight", !!tight); s.classList.remove("indepth");
-  net.hn = []; net.on = []; net.ed = []; net.tight = !!tight; net.labs = []; net.sampleTx = [];
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  net.hn = []; net.on = []; net.ed = []; net.tight = !!tight; net.sampleTx = [];
+  seeSeat(tight);
   const flat = mk("g", { class: "flat" });
+  const G = (net.g = { flat,
+    card: mk("g", { class: "n-card" }, flat), field: mk("g", { class: "n-field" }, flat),
+    out: mk("g", { class: "n-out" }, flat), e1: mk("g", { class: "n-e1" }, flat),
+    e2: mk("g", { class: "n-e2" }, flat) });
+  G.cardInk = mk("g", {}, G.card); G.cardLabs = mk("g", {}, G.card);
   const el = (t, a, parent) => mk(t, a, parent || flat);
-  /* `layer` is which plane of the network the label stands on: 0 input,
-     1 hidden, 2 output. The depth layer holds each one upright on its plane. */
-  const lab = (x, y, words, layer, a = {}, parent) => {
+  const lab = (x, y, words, a = {}, parent) => {
     const t = el("text", { x, y, ...a }, parent);
-    t.textContent = words; net.labs.push([t, layer]); return t;
+    t.textContent = words; return t;
   };
   let seed = 11;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   if (!tight) {
     net.vbw = 460; net.vbh = 300; net.r0 = 3.2;
     s.setAttribute("viewBox", "0 0 460 300");
-    const fo = el("foreignObject", { x: 14, y: 88, width: 96, height: 96 });
+    const fo = el("foreignObject", { x: 14, y: 88, width: 96, height: 96 }, G.cardInk);
     const cv = document.createElement("canvas");
     cv.id = "inCanvas"; cv.width = 28; cv.height = 28;
     cv.style.width = "96px"; cv.style.height = "96px";
     fo.appendChild(cv);
     net.inCtx = cv.getContext("2d");
-    lab(14, 208, "input 28×28", 0, { class: "l1" });
-    net.sampleTx = [lab(14, 226, "mnist test", 0), lab(14, 244, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, 0)];
+    lab(14, 208, "input 28×28", { class: "l1" }, G.cardLabs);
+    net.sampleTx = [lab(14, 226, "mnist test", {}, G.cardLabs), lab(14, 244, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, {}, G.cardLabs)];
+    G.inked = lab(14, 262, "", { opacity: 0 }, G.cardLabs);
     for (let i = 0; i < 100; i++) {
       const r = Math.floor(i / 10), c = i % 10;
-      net.hn.push(el("circle", { cx: 190 + c * 13, cy: 78 + r * 13, r: 3.2, class: "hn l2", opacity: 0.12 }));
+      net.hn.push(el("circle", { cx: 190 + c * 13, cy: 78 + r * 13, r: 3.2, class: "hn l2", opacity: 0.12 }, G.field));
     }
-    lab(190, 232, "hidden ×100", 1);
+    lab(190, 232, "hidden ×100", {}, G.field);
+    G.fire = lab(190, 250, "", { opacity: 0 }, G.field);
     for (let d = 0; d < 10; d++) {
-      const g = el("g", { class: "on l3" });
+      const g = el("g", { class: "on l3" }, G.out);
       const y = 42 + d * 24;
-      lab(356, y + 4, d, 2, { "text-anchor": "end" }, g);
+      lab(356, y + 4, d, { "text-anchor": "end" }, g);
       el("rect", { x: 364, y: y - 3, width: 0, height: 6, class: "bar" }, g);
       net.on.push({ g, bar: g.querySelector(".bar") });
     }
-    lab(356, 292, "softmax ×10", 2, { "text-anchor": "end" });
+    G.soft = lab(356, 292, "softmax ×10", { "text-anchor": "end" }, G.out);
     /* the seeded positions are only the IDLE drawing, before any read; the
        first read routes every line to a push it actually made */
     for (let k = 0; k < 46; k++) { /* input region → hidden */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const iy = 92 + rnd() * 88;
-      net.ed.push({ el: el("line", { x1: 112, y1: iy, x2: 190 + hc * 13 - 4, y2: 78 + hr * 13, class: "ed l2", opacity: 0.05, "stroke-width": .6 }), a: h, kind: 0 });
+      net.ed.push({ el: el("line", { x1: 112, y1: iy, x2: 190 + hc * 13 - 4, y2: 78 + hr * 13, class: "ed l2", opacity: 0.05, "stroke-width": .6 }, G.e1), a: h, kind: 0 });
     }
     for (let k = 0; k < 70; k++) { /* hidden → output */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const o = Math.floor(rnd() * 10);
-      net.ed.push({ el: el("line", { x1: 190 + hc * 13 + 4, y1: 78 + hr * 13, x2: 340, y2: 42 + o * 24, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
+      net.ed.push({ el: el("line", { x1: 190 + hc * 13 + 4, y1: 78 + hr * 13, x2: 340, y2: 42 + o * 24, class: "ed l3", opacity: 0.05, "stroke-width": .6 }, G.e2), a: h, b: o, kind: 1 });
     }
     net.geo = { fo: [14, 88, 96], hid: [190, 78, 13], out: (d) => [340, 42 + d * 24],
-      bar: (d, len) => [364, 39 + d * 24, 364 + len, 45 + d * 24], barMax: 88, rise: false };
+      bar: (d, len) => [364, 39 + d * 24, 364 + len, 45 + d * 24], barMax: 88, rise: false, base: 0 };
   } else {
-    net.vbw = 240; net.vbh = 310; net.r0 = 2.6;
-    s.setAttribute("viewBox", "0 0 240 310");
-    const fo = el("foreignObject", { x: 8, y: 26, width: 72, height: 72 });
+    const P = TIGHT_PUSH;
+    net.vbw = 240; net.vbh = 310 + P; net.r0 = 2.6;
+    s.setAttribute("viewBox", `0 0 240 ${310 + P}`);
+    const fo = el("foreignObject", { x: 8, y: 26, width: 72, height: 72 }, G.cardInk);
     const cv = document.createElement("canvas");
     cv.id = "inCanvas"; cv.width = 28; cv.height = 28;
     cv.style.width = "72px"; cv.style.height = "72px";
     fo.appendChild(cv);
     net.inCtx = cv.getContext("2d");
-    lab(8, 118, "input 28×28", 0);
-    net.sampleTx = [lab(8, 134, "mnist test", 0), lab(8, 150, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, 0)];
+    lab(8, 118, "input 28×28", {}, G.cardLabs);
+    net.sampleTx = [lab(8, 134, "mnist test", {}, G.cardLabs), lab(8, 150, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, {}, G.cardLabs)];
+    G.inked = lab(8, 166, "", { opacity: 0 }, G.cardLabs);
     for (let i = 0; i < 100; i++) {
       const r = Math.floor(i / 10), c = i % 10;
-      net.hn.push(el("circle", { cx: 128 + c * 10.8, cy: 24 + r * 10.8, r: 2.6, class: "hn l2", opacity: 0.12 }));
+      net.hn.push(el("circle", { cx: 128 + c * 10.8, cy: 24 + r * 10.8, r: 2.6, class: "hn l2", opacity: 0.12 }, G.field));
     }
-    lab(128, 142, "hidden ×100", 1);
+    lab(128, 142, "hidden ×100", {}, G.field);
+    G.fire = lab(128, 158, "", { opacity: 0 }, G.field);
     for (let d = 0; d < 10; d++) {
-      const g = el("g", { class: "on l3" });
+      const g = el("g", { class: "on l3" }, G.out);
       const x = 10 + d * 22.6;
-      el("rect", { x, y: 262, width: 9, height: 0, class: "bar" }, g);
-      lab(x + 4.5, 282, d, 2, { "text-anchor": "middle" }, g);
+      el("rect", { x, y: 262 + P, width: 9, height: 0, class: "bar" }, g);
+      lab(x + 4.5, 282 + P, d, { "text-anchor": "middle" }, g);
       net.on.push({ g, bar: g.querySelector(".bar") });
     }
     /* D-4 · BESIDE ITS OWN LAYER, like the other two. This label was
@@ -10311,34 +10358,43 @@ function buildNet(tight) {
        a reader met "softmax ×10" most of a screen above any softmax. The
        input and hidden labels both sit under their layer; this one now does
        too, below the digit row rather than adrift above it. */
-    lab(8, 300, "softmax ×10", 2);
+    lab(8, 300 + P, "softmax ×10", {}, G.out);
     for (let k = 0; k < 34; k++) { /* input region → hidden */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const iy = 32 + rnd() * 60;
-      net.ed.push({ el: el("line", { x1: 82, y1: iy, x2: 128 + hc * 10.8 - 3, y2: 24 + hr * 10.8, class: "ed l2", opacity: 0.05, "stroke-width": .6 }), a: h, kind: 0 });
+      net.ed.push({ el: el("line", { x1: 82, y1: iy, x2: 128 + hc * 10.8 - 3, y2: 24 + hr * 10.8, class: "ed l2", opacity: 0.05, "stroke-width": .6 }, G.e1), a: h, kind: 0 });
     }
     for (let k = 0; k < 54; k++) { /* hidden → output */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const o = Math.floor(rnd() * 10);
-      net.ed.push({ el: el("line", { x1: 128 + hc * 10.8, y1: 24 + hr * 10.8 + 3, x2: 10 + o * 22.6 + 4.5, y2: 236, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
+      net.ed.push({ el: el("line", { x1: 128 + hc * 10.8, y1: 24 + hr * 10.8 + 3, x2: 10 + o * 22.6 + 4.5, y2: 236 + P, class: "ed l3", opacity: 0.05, "stroke-width": .6 }, G.e2), a: h, b: o, kind: 1 });
     }
-    net.geo = { fo: [8, 26, 72], hid: [128, 24, 10.8], out: (d) => [14.5 + d * 22.6, 236],
-      bar: (d, len) => [10 + d * 22.6, 262 - len, 19 + d * 22.6, 262], barMax: 66, rise: true };
+    net.geo = { fo: [8, 26, 72], hid: [128, 24, 10.8], out: (d) => [14.5 + d * 22.6, 236 + P],
+      bar: (d, len) => [10 + d * 22.6, 262 + P - len, 19 + d * 22.6, 262 + P], barMax: 66, rise: true, base: 262 + P };
   }
   for (const t of net.sampleTx) t.setAttribute("display", "none");
-  /* micro: hidden nodes answer the pointer (event-driven, no idle loop) */
-  s.addEventListener("pointermove", (ev) => {
-    if (net3.on) return; /* the drawn dots are not the ones on screen */
-    const r = s.getBoundingClientRect();
-    const x = ((ev.clientX - r.left) / r.width) * net.vbw, y = ((ev.clientY - r.top) / r.height) * net.vbh;
+  /* micro: hidden nodes answer the pointer (event-driven, no idle loop).
+     Through a hit box of the hundred's own, inside the part that slides, so
+     the pointer is read in the dots' own units wherever the scroll has put
+     them, and so the sheet over the row can stay out of the pad's way. */
+  const [hx, hy, hp] = net.geo.hid, hm = net.r0 + 3;
+  const hit = el("rect", { class: "n-hit", x: hx - hm, y: hy - hm, width: 9 * hp + 2 * hm, height: 9 * hp + 2 * hm, fill: "none" }, G.field);
+  hit.addEventListener("pointermove", (ev) => {
+    const m = G.field.getScreenCTM();
+    if (!m) return;
+    const at = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m.inverse());
     for (const n of net.hn) {
-      const d = Math.hypot(n.cx.baseVal.value - x, n.cy.baseVal.value - y);
+      const d = Math.hypot(n.cx.baseVal.value - at.x, n.cy.baseVal.value - at.y);
       n.setAttribute("r", d < 26 ? net.r0 * 1.35 : net.r0);
     }
   }, { passive: true });
-  s.addEventListener("pointerleave", () => { for (const n of net.hn) n.setAttribute("r", net.r0); });
-  buildDeep(s, flat);
-  if (net.lastLight) lightNet(...net.lastLight); /* a rebuild keeps your read */
+  hit.addEventListener("pointerleave", () => { for (const n of net.hn) n.setAttribute("r", net.r0); });
+  buildSee(s, mk);
+  seatSee();
+  /* a rebuild keeps your read, and the twelve are chosen again on the new
+     plate at once rather than a throttle later */
+  if (net.lastLight) { lightNet(...net.lastLight); seeRead(); }
+  asmFigure("fig06", { box: () => layoutBox(s), draw: seeDraw });
 }
 
 /* `live` is a read taken with the pen still down: it lights the input and
@@ -10375,7 +10431,7 @@ function lightNet(px, hidden, conf, pred, live = false, who = "you") {
     if (net.tight) { /* rising bars: anchor at the 262 baseline */
       const h = Math.max(1, conf[d] * 66);
       o.bar.setAttribute("height", h.toFixed(1));
-      o.bar.setAttribute("y", (262 - h).toFixed(1));
+      o.bar.setAttribute("y", (net.geo.base - h).toFixed(1));
     } else o.bar.setAttribute("width", Math.max(1, conf[d] * 88).toFixed(1));
     o.g.classList.toggle("win", d === pred);
   });
@@ -10398,7 +10454,7 @@ function lightNet(px, hidden, conf, pred, live = false, who = "you") {
   for (const e of net.ed) e.el.setAttribute("opacity", e.to);
   net.read = { px, hidden, conf, pred, who };
   for (const t of net.sampleTx) t.setAttribute("display", who === "sample" ? "inline" : "none");
-  seatDeep();
+  seeQueue(who);
 }
 
 /* THE LOADER'S OWN LAYOUT, which is not the one anybody would guess from the
@@ -10497,75 +10553,635 @@ function routeEdges([k0, k1], { e1, e2 }) {
   });
 }
 
-/* ————— fig. 06 in depth: the network pressed into the page —————
-   (v4, 2026-10-08, the owner: "choose some of the figures to be assembled in
-   3D with the scroll ... maybe something like to do with neural network".
-   Rebuilt v4.2, 2026-10-09: at reading scale the first cut read as nothing.
-   Measured on it: the input card projected 41px wide with 1.5px cells, drawn
-   in --hair, which is 1.37:1 over this plate, with up to 45% more taken off
-   it again by a distance fog; and the whole opening played in the bottom
-   tenth of the screen. Small, pale and peripheral is one failure, not three.)
+/* ————— fig. 06 · WHAT THE NETWORK SEES —————
+   (v6, 2026-10-09: round v5's B, which the owner chose, built into the page
+   to ride the scroll — "make sure to make them work with scrolling, not like
+   single play, they should assemble with rail scroll!")
 
-   THE SCROLL PRESSES THE OBJECT INTO THE PAGE. The reader meets the network
-   as the solid it is a drawing of: the 28×28 card near and large with the
-   read's own digit inked on it, the hundred units behind, the ten classes
-   furthest off. Then the camera comes face-on while the depth closes to
-   zero, so the last frame is the object flat, which IS the authored figure.
-   Over the same scroll the read runs forward through it: the pushes the
-   digit made travel along their lines into the units they light, those vote
-   into the classes, the bars grow, the winner turns clay. Scrolling up runs
-   it all backwards, because every frame is a pure function of scrollY.
+   The authored drawing says a hundred units looked at the digit. It never
+   says what any of them saw. This draws that: twelve of the units that fire
+   (six on the tight plate) are called out of the hundred the way a drawing
+   sheet calls out a detail, a ring on the dot and a hairline leader out along
+   one receding direction, and at the leader's end the unit's own view of the
+   digit at 56px: its incoming weights times the ink, pixel by pixel, ink
+   where the stroke excites it and clay where it holds it back. The twelve
+   stand a few pixels proud of the plate and send their real W2·h lines to
+   the ten. Every number on it is computed from the read on show; nothing
+   about the network is invented.
 
-   THE LAW, and it is a law rather than a taste because the round the owner
-   threw out broke every part of it: ONE camera; the planes are rigid; the
-   depth is ONE scalar on z (DEPTH.press) closing monotonically on ONE curve,
-   so no part has a private arrival and the painter's order cannot change;
-   true perspective, so a plane seen at an angle keystones, a line running
-   into depth tapers, and a near plane is BIGGER — the three things scale
-   cannot fake. Nothing crosses the screen to its place, nothing descends,
-   there is no shadow, no glow, no leader line and no fog.
+   THE SCROLL RUNS IT IN THREE STEPS, each a sub-window of the driver's p
+   (SEE_PLAN): 1 the pixels (the read counts its own ink), 2 what the units
+   see (the sheet opens, the leaders ink, the tiles are drawn, frame before
+   image), 3 the answer (the votes, and the answer named). draw(p) is a pure
+   function of p and the read: p = 0 is the authored drawing exactly, "flat"
+   is p = 0 at any scroll, and scrolling up takes the sheet apart again.
+   A step strip over the drawing says which step the scroll is in; it is
+   text, not a control, because the scroll is the only replay.
 
-   DEPTH CLOSES LATER THAN THE CAMERA TURNS (camera [0.45, 0.90], depth
-   [0.52, 0.90]), so the planes are still visibly apart while the turn is
-   under way; both land together, and over [0.90, 1] the layer is the drawing
-   exactly: yaw, pitch and every z are 0, so every perspective scale is 1.
-   That identity is measured each frame, not assumed (`__world.net3.ident`),
-   because a single plane left at a non-zero z once the camera is face-on is
-   a uniform scale — boxes changing size, the rejected look, landing on the
-   reading line.
+   WHICH TWELVE. Not the twelve most active: on the sample six units tie at
+   h = 1.000, so "most active" ranks noise and the twelve look alike. Of the
+   units that fire, the twelve whose views differ most from each other, by a
+   greedy max-min on the pictures themselves, each normalised the way it is
+   drawn; the machine line under the plate says so. Drawing on the pad
+   chooses again on the stroke's end: a unit that survives keeps its slot,
+   and only the replaced tiles are struck again, so what moves is exactly
+   what changed.
 
-   THE INPUT CARD IS PAPER, with a 6-unit slab under it: the lines from its
-   pixels run back into the network behind it, so the card hides them until
-   they clear its edge, which is the authored figure's own "lines leave the
-   canvas at its edge" arrived at by occlusion rather than by drawing. No
-   sheet is filled. A fill cannot occlude honestly here: --plate over this
-   plate measures 1.020:1 (dawn) / 1.053:1 (tight), Lc 0.0, so the vellum
-   that would read as tracing paper is one channel step, and an opaque fill
-   has no token to be — the plate's own background is translucent over a
-   field that changes with the hour. The clipping does it exactly instead
-   (DEPTH.span and DEPTH.inside), which is what the drawing wants anyway.
+   TWO SHEETS, one per edition, and neither changes a box's size with p.
+   Wide (the pad beside the net): the sheet is the whole glyph row, laid over
+   it, so the read card can move out of the network into the band under the
+   pad, the hundred slide into the room it leaves, and the twelve take the
+   room between the hundred and the ten. The card cannot travel there: the
+   pad and its bar are on one side of a 26px gutter, the verdict's text on
+   the other, and the card is 85px, so it is printed again under the pad as
+   the old one dims and only its labels move, at one p. The pad is never
+   covered and the sheet takes no pointer: only the hundred's own hit box
+   does. Tight (the row stacked, so phones and every wrapped row): the plate
+   is the authored one with its ten 104 units lower (TIGHT_PUSH), and the
+   six sit in the band that opens.
 
-   WHAT IS DRAWN IS THE READ, and the read is real: before the reader draws,
-   it is MNIST t10k #9370, a 3, read by the classifier in this tab
-   (lightSample); after, it is theirs. The lines are the read's own pushes
-   (netEdges), the same ones the authored figure routes, so the handover
-   at a = 1 swaps a drawing for itself.
+   THE TILES ARE VECTOR CELLS in the page's own inks, quantised to eight
+   steps of opacity, crisp-edged: 28 cells at exactly 2px each is 56px, which
+   is a whole number of device pixels at every whole DPR. Wiring that passes
+   behind a tile is cut where the tile's slab hides it (seeVisible) rather
+   than painted over with a face, because the plate's background is
+   translucent over a field that changes with the hour and no fill can be
+   its colour. */
+const SEE_TILE = 56; /* css px: 28 source pixels at 2px each */
+const SEE_GAP = 6; /* css px between tiles */
+const SEE_PROUD = 6; /* css px the twelve stand off the plate */
+const SEE_JOG = 19; /* css px: the depth segment every leader starts with */
+/* THE ONE RECEDING DIRECTION, one per sheet: up and to the right on the
+   wide one, where the twelve stand to the right of the hundred, and down
+   and to the left on the tight one, where they stand below it, so on both
+   every leader's jog already heads for its tile. */
+const SEE_DIR = { wide: (-34 * Math.PI) / 180, tight: (146 * Math.PI) / 180 };
+const SEE_LEVELS = 8; /* opacity steps a cell is quantised to */
+const SEE_STRIKE_S = 0.62, SEE_ARRIVE_S = 1.1; /* a re-strike, and a read landing on a sheet in view */
+/* THE SUB-WINDOWS, placed where each part is on screen. The driver's window
+   ends with the drawing's centre on the reading line, and the drawing is
+   first wholly on screen only at pFull (0.74 at 1440x900, 0.97 on a phone),
+   so the upper parts move first: the counts and the opening while the plate
+   climbs in, the twelve while their block is on screen, the votes and the
+   named answer last. Within a window everything is drawn, never scaled. */
+const SEE_PLAN = {
+  wide: { count: [0.12, 0.24], open: [0.22, 0.42], tiles: [0.4, 0.84], votes: [0.8, 0.95], name: 0.93, steps: [0.22, 0.8] },
+  tight: { count: [0.04, 0.16], open: [0.14, 0.28], tiles: [0.26, 0.64], votes: [0.6, 0.86], name: 0.9, steps: [0.14, 0.6] },
+};
+const see = { k: 12, L: null, els: null, chrome: null, slots: [], strike: [], votes: [],
+  seated: false, arrive: 1, flat: false, p: 0, x: 0, step: -1, timer: 0, t: 0, firing: 0, pool: 0 };
+window.__world.see = () => ({ k: see.k, tight: net.tight, slots: [...see.slots], p: see.p, x: see.x,
+  flat: see.flat, seated: see.seated, step: see.step, tile: see.L ? r2(see.L.t * see.L.u) : 0,
+  u: see.L ? r2(see.L.u) : 0, firing: see.firing }); /* probe hook */
+window.__profSee = [];
 
-   THE INK DRAINS ON THE DEPTH CURVE. In flight nothing is lighter than 0.55
-   of --ink (worst case 3.52:1 in the tight day field, 4.18:1 at the night
-   flip stop: the whole object clears the 3.0 graphic floor at every stop,
-   where --hair does not), and as the depth closes every path settles to its
-   authored lightness and every line to its authored width. One settle, not a
-   separate tail — it reads as a solid being pressed into paper, and it is
-   the reason the thing is legible at a glance.
+/* writes only what changed, so a frame that moves one leader writes one d */
+const seeLast = new WeakMap();
+function seePut(el, k, v) {
+  let c = seeLast.get(el);
+  if (!c) seeLast.set(el, (c = {}));
+  if (c[k] === v) return;
+  c[k] = v;
+  el.setAttribute(k, v);
+}
 
-   TWELVE PATHS, back to front and never re-sorted: the pose never turns
-   the camera behind a plane, so painter's order holds at every frame (the
-   three plane scales go out on `__world.net3.sc` so a probe can prove it).
-   Labels are the authored ones held upright at their own size, and they show
-   only once their plane has come to within a few percent of full size,
-   because a reading gate measures SVG type through the CTM every half
-   viewport and a label riding a plane at 0.7 would be 0.7 of its size. */
+/* THE SEAT: the row as it will lay out, beside the pad or under it. The
+   net takes the tight plate whenever the row stacks, which is every phone
+   and the 455–740px band, where the wide plate stood under the pad and B's
+   twelve have no row to stand in. Read off the declared widths, never off
+   the net's own box, because the tight plate draws that box narrower. */
+function netSeat() {
+  const row = $("glyph").querySelector(".glyphrow"), pad = row.querySelector(".padcard");
+  const cs = getComputedStyle(row), rw = row.clientWidth;
+  const side = rw - pad.offsetWidth - (parseFloat(cs.columnGap) || 0);
+  return side >= Math.min(360, rw) ? Math.min(520, side) : 1;
+}
+
+/* the chrome the sheet needs that the plate does not carry: the strip that
+   says which step the scroll is in, with "flat"; one sentence on what a tile
+   is; and the machine line in the caption. Built once, seated per edition. */
+const SEE_LABEL = {
+  wide: "The 784-100-10 network drawn in ink: a 28 by 28 input, showing MNIST test digit 9370 until you draw your own, a hidden layer of a hundred units with twelve of the ones that fire called out, each tile that unit’s view of the digit, ink where the stroke excites it and clay where it holds it back, and the ten output classes they push toward, with confidence bars.",
+  flat: "The 784-100-10 network drawn in ink: a 28 by 28 input, showing MNIST test digit 9370 until you draw your own, one hidden layer, ten output classes with confidence bars, and lines for the strongest pushes the read made.",
+};
+function seeSeat(tight) {
+  const st = $("glyph"), row = st.querySelector(".glyphrow");
+  let C = see.chrome;
+  if (!C) {
+    const strip = document.createElement("div");
+    strip.className = "seestrip";
+    strip.innerHTML =
+      `<ol class="seesteps"><li><span class="n">1</span>the pixels</li>` +
+      `<li><span class="n">2</span>what <span class="seek">twelve</span> units see</li>` +
+      `<li><span class="n">3</span>the answer</li></ol>` +
+      `<button type="button" class="seeflat" aria-pressed="false">flat</button>`;
+    const note = document.createElement("p");
+    note.className = "seenote";
+    note.textContent = "Each tile is what one hidden unit sees of this digit: its weights times the ink. Ink where the stroke excites it, clay where it holds it back.";
+    const machine = document.createElement("span");
+    machine.className = "seemachine";
+    st.querySelector(".plate > figcaption").appendChild(machine);
+    row.after(note);
+    const flatBtn = strip.querySelector(".seeflat");
+    flatBtn.addEventListener("click", () => {
+      see.flat = !see.flat;
+      flatBtn.setAttribute("aria-pressed", String(see.flat));
+      $("net").setAttribute("aria-label", see.flat ? SEE_LABEL.flat : seeLabel());
+      seeRender(see.p);
+    });
+    C = see.chrome = { strip, note, machine, steps: [...strip.querySelectorAll("li")], k: strip.querySelector(".seek") };
+  }
+  see.k = tight ? 6 : 12;
+  see.slots = []; see.strike = []; see.votes = [];
+  C.k.textContent = tight ? "six" : "twelve";
+  st.classList.toggle("seewide", !tight);
+  st.classList.toggle("seetight", !!tight);
+  /* the strip stands over the drawing it narrates: above the row when the
+     sheet is the row, above the net when the row is stacked */
+  if (tight) $("netwrap").prepend(C.strip);
+  else row.before(C.strip);
+  $("net").setAttribute("aria-label", see.flat ? SEE_LABEL.flat : seeLabel());
+}
+const seeLabel = () => (see.k === 12 ? SEE_LABEL.wide : SEE_LABEL.wide.replace("twelve", "six"));
+
+/* the layer: per slot a ring, a riser and a leader, and a tile (slab, frame,
+   cells, the clip its image is drawn through); the read card printed again
+   under the pad (wide only); and the votes */
+function buildSee(s, mk) {
+  const root = mk("g", { class: "see" });
+  const votes = mk("g", { class: "see-votes" }, root);
+  const leads = mk("g", { class: "see-leads" }, root);
+  const tiles = mk("g", { class: "see-tiles" }, root);
+  const defs = mk("defs", {}, root);
+  const parts = [];
+  for (let i = 0; i < see.k; i++) {
+    const ring = mk("circle", { class: "see-ring", fill: "none", visibility: "hidden" }, leads);
+    const rise = mk("path", { class: "see-rise", fill: "none", d: "" }, leads);
+    const run = mk("path", { class: "see-run", fill: "none", d: "" }, leads);
+    const tile = mk("g", { class: "see-tile" }, tiles);
+    const slab = mk("path", { class: "see-slab", fill: "none", visibility: "hidden" }, tile);
+    const frame = mk("rect", { class: "see-frame", fill: "none", visibility: "hidden" }, tile);
+    const clip = mk("clipPath", { id: `seeclip${i}` }, defs);
+    const cr = mk("rect", { x: 0, y: 0, width: 28, height: 0 }, clip);
+    const img = mk("g", { class: "see-cells", "clip-path": `url(#seeclip${i})` }, tile);
+    const cells = [];
+    for (let c = 0; c < 2 * SEE_LEVELS; c++)
+      cells.push(mk("path", { class: c < SEE_LEVELS ? "pos" : "neg", "fill-opacity": r2(((c % SEE_LEVELS) + 1) / SEE_LEVELS), d: "" }, img));
+    parts.push({ ring, rise, run, slab, frame, cr, img, cells, lead: null, sx: 0, sy: 0 });
+  }
+  let card = null;
+  if (!net.tight) {
+    const g = mk("g", { class: "see-card", opacity: 0 }, root);
+    const frame = mk("rect", { class: "see-cardframe", fill: "none" }, g);
+    const ink = mk("g", { class: "see-cells" }, g);
+    const cells = [];
+    for (let c = 0; c < SEE_LEVELS; c++)
+      cells.push(mk("path", { class: "pos", "fill-opacity": r2((c + 1) / SEE_LEVELS), d: "" }, ink));
+    const labs = mk("g", { opacity: 0 }, root);
+    const lines = [0, 1, 2, 3].map(() => mk("text", {}, labs));
+    card = { g, frame, ink, cells, labs, lines };
+  }
+  const vote = [];
+  for (let i = 0; i < 2 * see.k; i++) vote.push(mk("path", { class: "see-vote", fill: "none", d: "" }, votes));
+  see.els = { root, parts, card, vote };
+  see.strike = Array(see.k).fill(1);
+}
+
+/* THE SHEET, laid off the row as it stands. Reads layout boxes (offset*,
+   blind to the plate's own arrival transform) and writes only inside the
+   svg, so it is safe in cacheGeometry: nothing it does moves a box. */
+function seatSee() {
+  const E = see.els, G = net.g, s = $("net");
+  if (!E || !G) return;
+  const row = $("glyph").querySelector(".glyphrow"), nw = $("netwrap");
+  const L = (see.L = { u: 1 });
+  if (!net.tight) {
+    const pad = row.querySelector(".padcard"), bar = row.querySelector(".padbar");
+    const u = nw.clientWidth / 460, nx = nw.offsetLeft, padW = pad.offsetWidth;
+    L.u = u; L.nx = nx / u;
+    s.setAttribute("viewBox", `0 0 ${r2(row.clientWidth / u)} ${r2(row.clientHeight / u)}`);
+    s.setAttribute("preserveAspectRatio", "xMinYMin meet");
+    G.flat.setAttribute("transform", `translate(${r2(L.nx)} 0)`);
+    /* the columns, in px: the hundred's rings 6px off the pad, the twelve
+       20px past the hundred so no leader's jog runs into its own tile, and
+       12px of every vote left in view before it stops short of its class.
+       The ten take the authored figure's 8-unit right margin, and their
+       label moves to the bars' end, out of the twelve's way. The tiles
+       are 56px wherever they come within 2px of fitting (a vote gives up
+       those 2px, so 1280 keeps whole cells), and give way to no less than
+       44 where the row is narrowest. */
+    const f0 = padW + 6 + (net.r0 + 2.6) * u, f9 = f0 + 117 * u;
+    L.dxC = 8; L.dxS = 460 - 356;
+    const vEnd = nx + (340 + L.dxC) * u, left = f9 + 20, right = vEnd - 12;
+    const fit = (right - left - 2 * SEE_GAP) / 3;
+    const tp = fit >= SEE_TILE - 2 ? SEE_TILE : clamp(fit, 44, SEE_TILE);
+    const bw = 3 * tp + 2 * SEE_GAP;
+    L.t = tp / u; L.g = SEE_GAP / u; L.cols = 3;
+    L.bx = (left + Math.max(0, (right - left - bw) / 2)) / u;
+    L.by = (300 - (4 * L.t + 3 * L.g)) / 2;
+    L.dxF = f0 / u - L.nx - 190;
+    L.fx = L.nx + 190 + L.dxF; L.fy = 78; L.fp = 13;
+    L.vEnd = vEnd / u;
+    /* the read card, printed again under the pad: 84px, 3px a pixel, clear
+       of the bar's 45px clear button by 4px */
+    L.card = { x: 1 / u, y: (bar.offsetTop + bar.offsetHeight + 10) / u, s: 84 / u };
+  } else {
+    const u = nw.clientWidth / 240;
+    L.u = u; L.nx = 0; L.dxC = 0; L.dxF = 0; L.cols = 3;
+    const base = 262 + TIGHT_PUSH, top = 178, low = base - 66 - 14;
+    const tp = clamp(Math.min(((low - top) * u - SEE_GAP) / 2, (240 * u - 16 - 2 * SEE_GAP) / 3), 40, SEE_TILE);
+    L.t = tp / u; L.g = SEE_GAP / u;
+    L.bx = (240 - (3 * L.t + 2 * L.g)) / 2; L.by = top;
+    L.fx = 128; L.fy = 24; L.fp = 10.8;
+    L.card = null;
+  }
+  L.proud = SEE_PROUD / L.u; L.jog = SEE_JOG / L.u;
+  /* hairlines a constant width on screen whatever the plate's scale: the
+     ring and the frame in --ink, the leader and the slab's faces in --ink-2,
+     the riser heavier, because it is the one stroke that says "this one" */
+  const px = (w) => r2(w / L.u);
+  const dir = SEE_DIR[net.tight ? "tight" : "wide"];
+  L.dx = Math.cos(dir); L.dy = Math.sin(dir);
+  L.ox = -L.proud * L.dx; L.oy = -L.proud * L.dy;
+  const t = L.t, { ox, oy } = L;
+  for (let i = 0; i < see.k; i++) {
+    const p = E.parts[i], c = i % L.cols, rw = Math.floor(i / L.cols);
+    p.sx = L.bx + c * (t + L.g); p.sy = L.by + rw * (t + L.g);
+    seePut(p.frame, "x", r2(p.sx)); seePut(p.frame, "y", r2(p.sy));
+    seePut(p.frame, "width", r2(t)); seePut(p.frame, "height", r2(t));
+    p.fl = 4 * t; seePut(p.frame, "stroke-dasharray", `${r2(p.fl)} ${r2(p.fl)}`);
+    seePut(p.frame, "stroke-width", px(0.8)); seePut(p.slab, "stroke-width", px(0.6));
+    seePut(p.ring, "stroke-width", px(0.6)); seePut(p.rise, "stroke-width", px(1.1));
+    seePut(p.run, "stroke-width", px(0.6));
+    /* the two faces a slab standing proud of the sheet shows, as hairlines:
+       the side and the end that face away from the receding direction */
+    const xv = ox < 0 ? p.sx : p.sx + t, yh = oy > 0 ? p.sy + t : p.sy;
+    seePut(p.slab, "d", `M${r2(xv)} ${r2(p.sy)}l${r2(ox)} ${r2(oy)}v${r2(t)}l${r2(-ox)} ${r2(-oy)}` +
+      `M${r2(p.sx)} ${r2(yh)}l${r2(ox)} ${r2(oy)}h${r2(t)}l${r2(-ox)} ${r2(-oy)}`);
+    p.sl = 2 * t + 4 * L.proud; seePut(p.slab, "stroke-dasharray", `${r2(p.sl)} ${r2(p.sl)}`);
+    seePut(p.img, "transform", `translate(${r2(p.sx)} ${r2(p.sy)}) scale(${(t / 28).toFixed(4)})`);
+  }
+  /* THE FRAMES ARE LAID AS THE HUNDRED CLEAR THEIR PLACE, so the sheet is
+     never barer than the drawing it opened from: the authored lines lift,
+     and each column of the twelve's frames is drawn the moment the sliding
+     field has passed it, found on the same easing the slide is drawn on.
+     On the tight plate nothing slides, and the six are laid through the
+     opening in slot order. */
+  const P = SEE_PLAN[net.tight ? "tight" : "wide"], os = P.open[1] - P.open[0], fr = net.r0 + 2.6;
+  for (let i = 0; i < see.k; i++) {
+    const p = E.parts[i];
+    if (net.tight) { p.f0 = P.open[0] + os * (0.3 + 0.1 * i); continue; }
+    p.f0 = P.open[1];
+    for (let z = 0; z <= 80; z++) {
+      const q = P.open[0] + (os * z) / 80;
+      const sl = cubicInOut(clamp(((q - P.open[0]) / os - 0.2) / 0.8, 0, 1));
+      if (L.nx + 307 + fr + L.dxF * sl < p.sx + L.ox - 2) { p.f0 = q; break; }
+    }
+  }
+  if (E.card && L.card) {
+    const { x, y, s: cs } = L.card, b = 1 / L.u;
+    seePut(E.card.frame, "x", r2(x - b / 2)); seePut(E.card.frame, "y", r2(y - b / 2));
+    seePut(E.card.frame, "width", r2(cs + b)); seePut(E.card.frame, "height", r2(cs + b));
+    seePut(E.card.frame, "stroke-width", r2(b));
+    seePut(E.card.ink, "transform", `translate(${r2(x)} ${r2(y)}) scale(${(cs / 28).toFixed(4)})`);
+    E.card.lines.forEach((tx, i) => { seePut(tx, "x", r2(x + cs + 10 / L.u)); seePut(tx, "y", r2(y + 11 + i * 18)); });
+  }
+  seeGeometry();
+  seeRender(see.p);
+}
+
+/* a tile's slab, as the convex outline that hides what passes behind it:
+   the hull of its face and its back (monotone chain, eight corners) */
+function seeHull(x, y, t, ox, oy) {
+  const P = [[x, y], [x + t, y], [x + t, y + t], [x, y + t]];
+  for (const [a, b] of P.slice()) P.push([a + ox, b + oy]);
+  P.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = [];
+  for (const q of P) { while (lo.length > 1 && cross(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+  for (const q of P.slice().reverse()) { while (up.length > 1 && cross(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+  return lo.slice(0, -1).concat(up.slice(0, -1));
+}
+/* the stretch [t0, t1] of A→B inside a convex outline, or null */
+function seeCut(ax, ay, bx, by, Q) {
+  let t0 = 0, t1 = 1, cx = 0, cy = 0;
+  for (const [x, y] of Q) { cx += x / Q.length; cy += y / Q.length; }
+  const dx = bx - ax, dy = by - ay;
+  for (let i = 0; i < Q.length; i++) {
+    const [x1, y1] = Q[i], [x2, y2] = Q[(i + 1) % Q.length];
+    let nx = y1 - y2, ny = x2 - x1;
+    if (nx * (cx - x1) + ny * (cy - y1) < 0) { nx = -nx; ny = -ny; }
+    const f = nx * (ax - x1) + ny * (ay - y1), g = nx * dx + ny * dy;
+    if (Math.abs(g) < 1e-12) { if (f < 0) return null; continue; }
+    const tt = -f / g;
+    if (g > 0) t0 = Math.max(t0, tt); else t1 = Math.min(t1, tt);
+    if (t0 >= t1) return null;
+  }
+  return [t0, t1];
+}
+/* A→B with the parts every slab hides taken out, as fractions of its length */
+function seeVisible(ax, ay, bx, by, solids) {
+  const hid = [];
+  for (const Q of solids) { const c = seeCut(ax, ay, bx, by, Q); if (c && c[1] - c[0] > 1e-4) hid.push(c); }
+  hid.sort((a, b) => a[0] - b[0]);
+  const vis = [];
+  let at = 0;
+  for (const [a, b] of hid) { if (a > at) vis.push([at, a]); at = Math.max(at, b); }
+  if (at < 1) vis.push([at, 1]);
+  return { ax, ay, bx, by, vis };
+}
+/* the drawn part of a cut segment, up to fraction f of its length */
+function seeD(seg, f) {
+  if (!seg || f <= 0) return "";
+  const { ax, ay, bx, by, vis } = seg, dx = bx - ax, dy = by - ay;
+  let d = "";
+  for (const [a, b] of vis) {
+    if (a >= f) break;
+    const e = Math.min(b, f);
+    d += `M${r2(ax + dx * a)} ${r2(ay + dy * a)}L${r2(ax + dx * e)} ${r2(ay + dy * e)}`;
+  }
+  return d;
+}
+
+/* everything that depends on the read AND the sheet: which dot each slot
+   calls out, its leader cut around the slabs, and the votes */
+function seeGeometry() {
+  const E = see.els, L = see.L, R = net.read;
+  if (!E || !L) return;
+  const solids = E.parts.map((p) => seeHull(p.sx, p.sy, L.t, L.ox, L.oy));
+  /* a draughtsman breaks a leader where it crosses a label rather than
+     drawing through it: the hundred's two labels, and on the tight plate
+     the card's, are cut out of the leaders the way the slabs are, read off
+     their own boxes where the sheet rests them (a layout read, at seat and
+     read time only, never in a frame) */
+  const labels = [];
+  const boxOf = (t, dx) => {
+    if (!t.textContent) return;
+    const b = t.getBBox(), m = 1.5;
+    labels.push([[b.x - m + dx, b.y - m], [b.x + b.width + m + dx, b.y - m], [b.x + b.width + m + dx, b.y + b.height + m], [b.x - m + dx, b.y + b.height + m]]);
+  };
+  const G = net.g;
+  for (const t of G.field.querySelectorAll("text")) boxOf(t, L.nx + L.dxF);
+  if (net.tight) for (const t of G.cardLabs.querySelectorAll("text")) boxOf(t, 0);
+  const cuts = solids.concat(labels);
+  const rr = net.r0 + 2.6, C = 2 * Math.PI * rr;
+  for (let i = 0; i < see.k; i++) {
+    const p = E.parts[i], j = see.slots[i];
+    p.lead = null;
+    if (j == null || j < 0) continue;
+    const dx = L.fx + (j % 10) * L.fp, dy = L.fy + Math.floor(j / 10) * L.fp;
+    const jx = dx + L.jog * L.dx, jy = dy + L.jog * L.dy;
+    /* a leader meets its tile where the tile faces the hundred: the slab's
+       back corner on the wide sheet, the top edge's middle on the tight */
+    const [bx, by] = net.tight ? [p.sx + L.t / 2, p.sy] : [p.sx + L.ox, p.sy + L.t + L.oy];
+    p.lead = { rise: seeVisible(dx, dy, jx, jy, cuts), run: seeVisible(jx, jy, bx, by, cuts) };
+    seePut(p.ring, "cx", r2(dx)); seePut(p.ring, "cy", r2(dy)); seePut(p.ring, "r", r2(rr));
+    seePut(p.ring, "stroke-dasharray", `${r2(C)} ${r2(C)}`);
+    p.cl = C;
+  }
+  see.votes = [];
+  if (!R || !net.edges) return;
+  const slotOf = new Map();
+  see.slots.forEach((j, i) => { if (j >= 0) slotOf.set(j, i); });
+  const vs = [];
+  for (const e of net.edges.e2) if (slotOf.has(e.j)) vs.push({ i: slotOf.get(e.j), o: e.o, s: e.s });
+  vs.sort((a, b) => a.i - b.i || b.s - a.s);
+  for (const v of vs.slice(0, E.vote.length)) {
+    const p = E.parts[v.i];
+    const [ax, ay] = net.tight ? [p.sx + L.t / 2, p.sy + L.t] : [p.sx + L.t, p.sy + L.t / 2];
+    let cx, cy;
+    if (net.tight) {
+      const h = Math.max(1, R.conf[v.o] * 66);
+      cx = 14.5 + v.o * 22.6; cy = net.geo.base - h - 5;
+    } else { cx = L.vEnd; cy = 42 + 24 * v.o; }
+    see.votes.push({ ...v, seg: seeVisible(ax, ay, cx, cy, solids), win: v.o === R.pred });
+  }
+  E.vote.forEach((el, n) => {
+    const v = see.votes[n];
+    seePut(el, "class", v && v.win ? "see-vote win" : "see-vote");
+    seePut(el, "stroke-width", v ? r2((0.4 + 0.9 * v.s) / L.u) : "0");
+    seePut(el, "opacity", v ? r2(0.22 + 0.5 * v.s) : "0");
+  });
+}
+
+/* one view as path data in cell units, a path per ink and per step:
+   alternating runs of a row merged, so a tile is a few hundred rectangles */
+function seeCells(f, signed) {
+  const d = Array(signed ? 2 * SEE_LEVELS : SEE_LEVELS).fill("");
+  const key = (v) => {
+    const a = signed ? Math.min(1, Math.abs(v) ** 0.7) : Math.min(1, v);
+    const lv = Math.round(a * SEE_LEVELS);
+    return lv ? (v < 0 ? SEE_LEVELS : 0) + lv - 1 : -1;
+  };
+  for (let r = 0; r < 28; r++) {
+    for (let c = 0; c < 28; ) {
+      const k = key(f[r * 28 + c]);
+      let e = c + 1;
+      while (e < 28 && key(f[r * 28 + e]) === k) e++;
+      if (k >= 0) d[k] += `M${c} ${r}h${e - c}v1h${c - e}z`;
+      c = e;
+    }
+  }
+  return d;
+}
+/* what unit j sees of this read: its incoming weights times the ink, pixel
+   by pixel, scaled so its strongest pixel is 1 (positive excites it) */
+function seeField(j, px) {
+  const W1 = net.W1, out = new Float32Array(784);
+  let m = 1e-6;
+  for (let k = 0, r = j * 784; k < 784; k++) { out[k] = W1[r + k] * px[k]; m = Math.max(m, Math.abs(out[k])); }
+  for (let k = 0; k < 784; k++) out[k] /= m;
+  return out;
+}
+/* of the units that fire, the k whose views differ most: the most active
+   first, then each time the one farthest from all those already chosen */
+function seeChoose(px, h, k) {
+  const firing = [];
+  for (let j = 0; j < 100; j++) if (h[j] > 0.5) firing.push(j);
+  const pool = firing.length >= k ? firing
+    : [...h.keys()].sort((a, b) => h[b] - h[a]).slice(0, Math.max(2 * k, 20));
+  const F = new Map(pool.map((j) => [j, seeField(j, px)]));
+  const dist = (a, b) => { const A = F.get(a), B = F.get(b); let s = 0; for (let i = 0; i < 784; i++) s += (A[i] - B[i]) ** 2; return s; };
+  const picked = [pool.reduce((best, j) => (h[j] > h[best] ? j : best), pool[0])];
+  const near = new Map(pool.map((j) => [j, dist(j, picked[0])]));
+  while (picked.length < Math.min(k, pool.length)) {
+    let bj = -1, bd = -1;
+    for (const j of pool) { if (picked.includes(j)) continue; const d = near.get(j); if (d > bd) { bd = d; bj = j; } }
+    picked.push(bj);
+    for (const j of pool) near.set(j, Math.min(near.get(j), dist(j, bj)));
+  }
+  return { picked, F, firing: firing.length, pool: pool.length };
+}
+
+const seeInView = () => { const r = $("net").getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+/* a finished read: the pad's on the stroke's end and a tenth of a second
+   (a pen that comes down again inside it cancels it), the sample at once */
+function seeQueue(who) {
+  clearTimeout(see.timer);
+  if (who === "you") see.timer = setTimeout(seeRead, 100);
+  else seeRead();
+}
+function seeRead() {
+  clearTimeout(see.timer); see.timer = 0;
+  const R = net.read, E = see.els, k = see.k;
+  if (!R || !E || !net.W1) return; /* no weights: the authored drawing stands */
+  const { picked, F, firing, pool } = seeChoose(R.px, R.hidden, k);
+  see.firing = firing; see.pool = pool;
+  /* the slots: a survivor keeps its place; the new fill the places the
+     replaced left, in unit order, so leaders cross as little as they can */
+  const prev = see.slots.length === k ? see.slots : [];
+  const keep = new Set(picked);
+  const next = Array.from({ length: k }, (_, i) => (prev[i] != null && keep.has(prev[i]) ? prev[i] : -1));
+  const fresh = picked.filter((j) => !next.includes(j)).sort((a, b) => a - b);
+  for (let i = 0; i < k; i++) if (next[i] < 0) next[i] = fresh.shift() ?? -1;
+  const changed = [];
+  for (let i = 0; i < k; i++) if (prev[i] !== next[i]) changed.push(i);
+  see.slots = next;
+  E.parts.forEach((p, i) => {
+    const d = next[i] >= 0 ? seeCells(F.get(next[i]), true) : null;
+    p.cells.forEach((el, c) => seePut(el, "d", d ? d[c] : ""));
+  });
+  const inked = R.px.filter((v) => v > 0.05).length;
+  const sample = R.who === "sample";
+  net.g.inked.textContent = `${inked} of 784 inked`;
+  net.g.fire.textContent = `${firing} fire`;
+  if (E.card) {
+    const d = seeCells(R.px, false);
+    E.card.cells.forEach((el, c) => seePut(el, "d", d[c]));
+    const words = ["input 28×28", sample ? "mnist test" : "your drawing",
+      sample ? `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}` : "", `${inked} of 784 inked`];
+    E.card.lines.forEach((tx, i) => { tx.textContent = words[i]; });
+  }
+  see.chrome.machine.innerHTML = firing >= k
+    ? `the <b>${k}</b> of the <b>${firing}</b> units that fire, chosen to differ`
+    : `the <b>${k}</b> of the <b>${pool}</b> strongest of 100 units, chosen to differ · only <b>${firing}</b> fire`;
+  seeGeometry();
+  /* a read landing on a sheet in view is drawn, not swapped: the first one
+     assembles the sheet up to where the scroll has it, a later one strikes
+     only the replaced tiles. Off screen, under reduced motion, it is simply
+     there. */
+  const first = !see.seated;
+  see.seated = true;
+  if (RM || !seeInView()) { see.arrive = 1; see.strike.fill(1); }
+  else if (first) { if (see.p > 0) { see.arrive = 0; stir(seeStep); } }
+  else if (changed.length) {
+    changed.forEach((i, n) => { see.strike[i] = -n * 0.08; });
+    stir(seeStep);
+  }
+  seeRender(see.p);
+}
+/* the hand for both: a stepper on the engine's one loop, exactly at rest
+   when it stops */
+function seeStep(now) {
+  const dt = see.t ? Math.min(0.05, (now - see.t) / 1000) : 1 / 60;
+  see.t = now;
+  let moving = false;
+  if (see.arrive < 1) { see.arrive = Math.min(1, see.arrive + dt / SEE_ARRIVE_S); moving = moving || see.arrive < 1; }
+  for (let i = 0; i < see.k; i++) {
+    if (see.strike[i] >= 1) continue;
+    see.strike[i] = Math.min(1, see.strike[i] + dt / SEE_STRIKE_S);
+    moving = moving || see.strike[i] < 1;
+  }
+  seeRender(see.p);
+  if (!moving) see.t = 0;
+  return moving;
+}
+/* the driver's draw: the p it is handed, kept so a read or "flat" can draw
+   the same p again */
+function seeDraw(p) { see.p = p; seeRender(p); }
+const seeWin = (x, a, b) => clamp((x - a) / (b - a), 0, 1);
+function seeRender(q) {
+  const E = see.els, L = see.L, G = net.g, C = see.chrome;
+  if (!E || !L || !G) return;
+  const t0 = PROF ? performance.now() : 0;
+  const wide = !net.tight, P = SEE_PLAN[wide ? "wide" : "tight"];
+  const on = see.seated && !see.flat;
+  const x = (see.x = on ? Math.min(q, see.arrive) : 0);
+  /* 1 · the pixels: the read counts its own ink, and the hundred their own */
+  const cnt = seeWin(x, P.count[0], P.count[1]);
+  seePut(G.fire, "opacity", r2(cnt));
+  /* 2 · the sheet opens: the authored lines lift, the card moves out from
+     under the hundred, and the hundred and the ten make their columns */
+  const o = seeWin(x, P.open[0], P.open[1]);
+  const lines = r2(1 - smooth(o / (wide ? 0.25 : 0.6)));
+  seePut(G.e1, "opacity", lines); seePut(G.e2, "opacity", lines);
+  if (wide && E.card) {
+    const swap = o >= 0.33;
+    seePut(G.cardInk, "opacity", r2(1 - smooth(o / 0.35)));
+    seePut(E.card.g, "opacity", r2(smooth((o - 0.12) / 0.4)));
+    seePut(G.cardLabs, "opacity", swap ? "0" : "1");
+    seePut(E.card.labs, "opacity", swap ? "1" : "0");
+    seePut(G.inked, "opacity", swap ? "0" : r2(cnt));
+    const sl = cubicInOut(clamp((o - 0.2) / 0.8, 0, 1));
+    seePut(G.field, "transform", `translate(${r2(L.dxF * sl)} 0)`);
+    seePut(G.out, "transform", `translate(${r2(L.dxC * sl)} 0)`);
+    seePut(G.soft, "transform", `translate(${r2((L.dxS - L.dxC) * sl)} 0)`);
+  } else seePut(G.inked, "opacity", r2(cnt));
+  /* 2 · the twelve: the frames as their place clears, then in slot order a
+     ring, a riser and a leader to each, and the view, wiped down the tile
+     the way a unit sums it, a row of pixels at a time */
+  const n = see.k, span = P.tiles[1] - P.tiles[0], D = span * (wide ? 0.4 : 0.5);
+  const st = (span - D) / Math.max(1, n - 1);
+  for (let i = 0; i < n; i++) {
+    const p = E.parts[i];
+    const fr = p.f0 != null ? seeWin(x, p.f0, p.f0 + 0.05) : 0;
+    let u = p.lead ? seeWin(x, P.tiles[0] + i * st, P.tiles[0] + i * st + D) : 0;
+    u = Math.min(u, smooth(clamp(see.strike[i], 0, 1)));
+    const ring = clamp(u / 0.15, 0, 1), rise = clamp((u - 0.08) / 0.18, 0, 1), run = clamp((u - 0.2) / 0.35, 0, 1);
+    const wipe = clamp((u - 0.55) / 0.45, 0, 1);
+    seePut(p.ring, "visibility", ring > 0 ? "visible" : "hidden");
+    if (ring > 0) seePut(p.ring, "stroke-dashoffset", r2(p.cl * (1 - ring)));
+    seePut(p.rise, "d", p.lead ? seeD(p.lead.rise, rise) : "");
+    seePut(p.run, "d", p.lead ? seeD(p.lead.run, run) : "");
+    seePut(p.frame, "visibility", fr > 0 ? "visible" : "hidden");
+    seePut(p.slab, "visibility", fr > 0 ? "visible" : "hidden");
+    if (fr > 0) {
+      seePut(p.frame, "stroke-dashoffset", r2(p.fl * (1 - fr)));
+      seePut(p.slab, "stroke-dashoffset", r2(p.sl * (1 - fr)));
+    }
+    seePut(p.cr, "height", r2(28 * wipe));
+  }
+  /* 3 · the answer: each of the twelve sends the read's own unit-to-class
+     pushes, the strongest first, and the answer is named */
+  const V = see.votes, vs = (P.votes[1] - P.votes[0]) * 0.55, vst = V.length > 1 ? (P.votes[1] - P.votes[0] - vs) / (V.length - 1) : 0;
+  E.vote.forEach((el, k) => {
+    const v = V[k];
+    if (!v) { seePut(el, "d", ""); return; }
+    const f = Math.min(seeWin(x, P.votes[0] + k * vst, P.votes[0] + k * vst + vs), smooth(clamp((see.strike[v.i] - 0.6) / 0.4, 0, 1)));
+    seePut(el, "d", seeD(v.seg, f));
+  });
+  seeName(on && x >= P.name);
+  /* the step the scroll is in, and the sentence on what a tile is */
+  const step = see.flat ? 0 : x < P.steps[0] ? 1 : x < P.steps[1] ? 2 : 3;
+  if (step !== see.step) {
+    see.step = step;
+    C.steps.forEach((li, i) => { if (i + 1 === step) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current"); });
+  }
+  const nop = String(r2(on ? smooth(seeWin(x, P.tiles[0], P.tiles[0] + 0.2)) : 0));
+  if (C.note.style.opacity !== nop) C.note.style.opacity = nop;
+  if (PROF && window.__profSee.length < 30000) window.__profSee.push(performance.now() - t0);
+}
+/* THE ANSWER IS NAMED FOR THE SAMPLE TOO, by the scroll, once the votes are
+   in: the verdict line says what the read on show reads. Text only, and the
+   line breaks in fixed places (the style slot), so "·" becoming "99.8%" can
+   never reflow the row under a scroll; no stamp, which is a clock. A
+   reader's own read is the classifier's to state, and is never touched. */
+function seeName(named) {
+  const R = net.read;
+  if (!R || R.who !== "sample" || current || strokes.length) return;
+  const v = $("verdict"), txt = named ? String(R.pred) : "·";
+  if (v.textContent === txt) return;
+  const ms = net.sampleMs;
+  v.textContent = txt; v.classList.toggle("idle", !named);
+  $("conf").textContent = named ? `${(R.conf[R.pred] * 100).toFixed(1)}%` : "·";
+  $("fwd").textContent = !named ? "·" : ms < 1 ? `${(ms * 1000).toFixed(0)} µs` : `${ms.toFixed(1)} ms`;
+}
+/* clear goes back to the sample, and the twelve choose again for it */
+function seeSample() {
+  if (net.sample) { lightNet(...net.sample); return; }
+  lightSample(true);
+}
+
 /* MNIST t10k record 9370, label 3: the 20×20 box its ink occupies, at (3, 5)
    on the 28 grid, 8 bits a pixel exactly as the test file stores them (no
    ink falls outside the box). The shipped weights read it 3 at 99.8% (node,
@@ -10578,389 +11194,30 @@ function samplePixels() {
   for (let r = 0; r < w; r++) for (let c = 0; c < w; c++) px[(y + r) * 28 + x + c] = b.charCodeAt(r * w + c) / 255;
   return px;
 }
-const net3 = { g: null, flat: null, paths: [], labs: [], on: false, armed: false, ready: false,
-  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, bounds: null, ident: false, sdev: null, sc: null, labdev: 0 };
-/* ?depth=0.4 holds the assembly at one pose whatever the scroll: a probe's
-   still, never a reader's */
+/* ?depth=0.4 holds fig. 07's v4.2 depth layer at one pose: its lane
+   replaces that layer, and this goes with it at integration */
 const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : null;
-/* THE OPENING IS THE MOMENT, and it is held for the first 45% of the window
-   while the plate climbs the screen, so it has to be a picture: three planes
-   standing apart in space, the near one big enough to read the digit on.
-   Per edition, in degrees and in fractions of the camera distance D, which
-   is itself in figure widths. The figure's BOX is the constraint and it is
-   smaller than it looks: 409.22 x 266.88 css at 1440x900 (the pad takes the
-   rest of the row), 321.63 x 415.42 at 420x786. Searched under the rules —
-   projected bounds inside the box + 8% at every step of the whole camera
-   path, no class anchor behind the card or the lattice, reading order left
-   to right, the painter's order never changing — for the widest near plane
-   that still keystones. Two things the search had to be told. The eye must
-   stand laterally OUTSIDE the card's own x span, or no face of its slab turns
-   toward the reader and the one solid cue draws nothing. And the card's
-   centre must not swing out and come back, which reads as a part travelling
-   rather than a camera turning. Filmed against four rivals, including a
-   154px near plane with a gentler keystone, which lost: at reading scale the
-   bigger card is the figure. Two rules were added once integration had
-   looked: the first pose's card KISSED THE DRAW PAD's border at 1440 (0.1px
-   in 2 of 118 frames, 1.1px of air at 1280), so the PAINTED box (getBBox of
-   the shown paths, not the projected centrelines, which ran 1.7 units
-   narrower than the ink) keeps at least 12px off the pad at every frame:
-   15.5px at 1440 and 16.0 at 1280 for this pose. And the card may hide at
-   most about a fifth of the hundred units behind it, because the widest
-   card the pad rule allowed (201px) ate the figure: 18 of 100 hidden reads
-   as a network, 70 to 80 does not, and no width measure could tell them
-   apart. This pose hides 20. The tight plate has only 8.3 units of horizontal slack
-   before its own paint containment clips (measured at 420x786, 9.2 at
-   390x844) against 87% of a viewBox vertically, so it spends its depth on
-   pitch and looks down the stack. */
-const NET3_POSE = {
-  wide: { yaw: 22, pitch: 20, dist: 0.45, px: 74, py: 180, zc: -0.50, zl: -0.16, zo: -0.12, lip: 6 },
-  tight: { yaw: 18, pitch: 40, dist: 1.10, px: 60, py: 125, zc: -0.34, zl: -0.03, zo: -0.10, lip: 5 },
-};
-/* in flight nothing is lighter than this fraction of --ink; it drains to the
-   authored inks on the depth curve */
-const INK_FLOOR = 0.55;
-/* the twelve paths, back to front; the number is each one's authored ink,
-   which is where it lands. The three line buckets are MEASURED off the read
-   the figure shows (t10k #9370, the 85 lines it routes): input-to-hidden
-   averages 0.419 of --ink over 46 lines and hidden-to-class 0.281 over 39,
-   and split at the strength the layer splits at, the buckets are 0.55, 0.37
-   and 0.30. The faint one is --hair's own ink (16% of --ink): the card's edge
-   converges to the authored 1px canvas border drawn in it, and so do the
-   lines a read has no push for. */
-const NET3_PATHS = [["dkfaint", 0.16], ["dkbar", 1], ["dkwin", 1], ["dke2", 0.3], ["dkdim", 0.2],
-  ["dkmid", 0.55], ["dklit", 0.95], ["dke1w", 0.37], ["dke1s", 0.55], ["dkpx1", 0.25], ["dkpx2", 0.55], ["dkpx3", 0.97]];
-function buildDeep(s, flat) {
-  net3.g = null; net3.on = false; net3.a = -1; net3.ready = false; net3.flat = flat;
-  if (RM) return;
-  const mk = svgIn(s);
-  const g = mk("g", { class: "depth", "aria-hidden": "true", display: "none" });
-  net3.paths = NET3_PATHS.map(([c, o]) => mk("path", { class: c, opacity: o, d: "" }, g));
-  /* the authored labels, cloned: a digit keeps its `.on` wrapper so the
-     clay and the size of the winner come from the same rule as the plate's,
-     and the wrappers go in BEHIND the units, because the classes' plane is
-     the furthest one and painter's order is the only occlusion text gets */
-  const units = net3.paths[4];
-  net3.labs = net.labs.map(([t, layer]) => {
-    const digit = t.parentNode.classList.contains("on");
-    const wrap = digit ? g.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "g"), units) : g;
-    if (digit) wrap.setAttribute("class", "on");
-    const c = t.cloneNode(true);
-    c.setAttribute("opacity", 0);
-    c.removeAttribute("display"); /* the sample lines are cloned hidden; the clone answers to opacity */
-    wrap.appendChild(c);
-    return { el: c, wrap, layer, x: +t.getAttribute("x"), y: +t.getAttribute("y"), sample: net.sampleTx.includes(t) };
-  });
-  net3.g = g;
-  seatDeep();
-}
-/* the world for the read on show: every point the frame will project, seated
-   on its plane, in one buffer. Rebuilt per read, never per frame. */
-function seatDeep() {
-  const N = net3, R = net.read, E = net.edges;
-  N.ready = false; N.a = -1;
-  if (!N.g || !R || !E) return;
-  const G = net.geo, W = net.vbw, pose = NET3_POSE[net.tight ? "tight" : "wide"], rad = Math.PI / 180;
-  const D = W * pose.dist, zs = [pose.zc * D, pose.zl * D, pose.zo * D];
-  const [fx, fy, fw] = G.fo, cell = (fw - 2) / 28;
-  const iOcc = 4, iLip = 8, iLat = 12, iNode = iLat + 841, iOut = iNode + 100, iE1 = iOut + 10;
-  const iBar = iE1 + E.e1.length, iLab = iBar + 40, iCtr = iLab + N.labs.length, n = iCtr + 3;
-  const P = new Float64Array(n * 3), Z0 = new Float64Array(n);
-  /* the authored place and the authored depth. Nothing here moves between
-     frames: the frame closes every z by one scalar and projects. */
-  const put = (i, u, v, z) => { P[i * 3] = u; P[i * 3 + 1] = v; Z0[i] = z; };
-  const m = 1.5;
-  const card = [[fx, fy], [fx + fw, fy], [fx + fw, fy + fw], [fx, fy + fw]];
-  card.forEach(([u, v], i) => put(i, u, v, zs[0]));
-  [[fx - m, fy - m], [fx + fw + m, fy - m], [fx + fw + m, fy + fw + m], [fx - m, fy + fw + m]].forEach(([u, v], i) => put(iOcc + i, u, v, zs[0]));
-  card.forEach(([u, v], i) => put(iLip + i, u, v, zs[0] + pose.lip)); /* the slab's back face */
-  for (let j = 0; j < 29; j++) for (let i = 0; i < 29; i++) put(iLat + j * 29 + i, fx + 1 + i * cell, fy + 1 + j * cell, zs[0]);
-  for (let j = 0; j < 100; j++) put(iNode + j, ...netUnit(j), zs[1]);
-  for (let d = 0; d < 10; d++) put(iOut + d, ...G.out(d), zs[2]);
-  E.e1.forEach((e, i) => put(iE1 + i, ...netPix(e.k), zs[0]));
-  N.labs.forEach((l, i) => put(iLab + i, l.x, l.y, zs[l.layer]));
-  put(iCtr, fx + fw / 2, fy + fw / 2, zs[0]);
-  put(iCtr + 1, ...netUnit(44), zs[1]);
-  put(iCtr + 2, ...G.out(5), zs[2]);
-  const hMax = Math.max(1e-6, ...R.hidden);
-  const cells = [];
-  for (let k = 0; k < 784; k++) if (R.px[k] > 0.02) cells.push([k, R.px[k], iLat + Math.floor(k / 28) * 29 + (k % 28)]);
-  N.w = { P, Z0, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n), n, D, zs,
-    yaw: pose.yaw * rad, pitch: pose.pitch * rad, pivot: [pose.px, pose.py, 0],
-    iOcc, iLip, iLat, iNode, iOut, iE1, iBar, iLab, iCtr, cells,
-    lit: R.hidden.map((h) => h / hMax), put };
-  N.ready = true;
-}
-/* where the opening pose draws, top to bottom in the figure's units: the
-   card's and the lattice's corners and the class anchors, seated and
-   projected the way seatDeep and drawDeep do it. No read is needed, so the
-   window can be laid before one exists. */
-function netOpening() {
-  const G = net.geo, W = net.vbw, pose = NET3_POSE[net.tight ? "tight" : "wide"], rad = Math.PI / 180;
-  const D = W * pose.dist, zs = [pose.zc * D, pose.zl * D, pose.zo * D], [fx, fy, fw] = G.fo;
-  const pts = [];
-  for (const [u, v] of [[fx - 1, fy - 1], [fx + fw + 1, fy - 1], [fx + fw + 1, fy + fw + 1], [fx - 1, fy + fw + 1]]) {
-    pts.push([u, v, zs[0]], [u, v, zs[0] + pose.lip]);
-  }
-  for (let j = 0; j < 100; j++) pts.push([...netUnit(j), zs[1]]);
-  for (let d = 0; d < 10; d++) pts.push([...G.out(d), zs[2]]);
-  const n = pts.length, P = new Float64Array(n * 3), U = new Float64Array(n), V = new Float64Array(n), S = new Float64Array(n);
-  pts.forEach(([u, v, z], i) => { P[i * 3] = u; P[i * 3 + 1] = v; P[i * 3 + 2] = z; });
-  DEPTH.project(DEPTH.pose(pose.yaw * rad, pose.pitch * rad, D, D, [pose.px, pose.py, 0]), P, n, U, V, S);
-  let v0 = Infinity, v1 = -Infinity;
-  for (let i = 0; i < n; i++) {
-    const r = i >= 8 && i < 108 ? net.r0 * S[i] : 0; /* the lattice's units carry their radius */
-    v0 = Math.min(v0, V[i] - r); v1 = Math.max(v1, V[i] + r);
-  }
-  return [v0, v1];
-}
-/* one frame of the assembly at a in [0, 1) */
-function drawDeep(a) {
-  const N = net3, w = N.w, R = net.read, E = net.edges, G = net.geo;
-  const { P, Z0, U, V, S, D, iOcc, iLip, iNode, iOut, iE1, iBar, iLab, iCtr } = w;
-  /* THE OPENING IS HELD over [0, 0.45] — about 210px of scroll at 1440x900,
-     which is exactly the stretch the figure spends climbing out of the
-     bottom tenth of the screen, where there is nothing to be gained by
-     moving. The camera comes round over [0.45, 0.90] on a smoothstep (a
-     cubic in-out passed the planes through each other in about 25px of
-     scroll, too fast to read as anything but a snap) and the depth closes
-     over [0.52, 0.90], later and on its own curve. The read runs forward over
-     [0.46, 0.84]: it starts with the turn and lands before it, so the bundle
-     is at its weight while the planes are still visibly apart and the winner
-     turns clay with about 85px of scroll left to see it in. Past 0.90 nothing
-     moves: the drawing rides to the reading line. */
-  const cam = smooth((a - 0.45) / 0.45), press = smooth((a - 0.52) / 0.38);
-  const f = clamp((a - 0.46) / 0.38, 0, 1);
-  const grow = smooth((f - 0.72) / 0.2);
-  for (let d = 0; d < 10; d++) {
-    const len = Math.max(1, R.conf[d] * G.barMax) * grow, [x0, y0, x1, y1] = G.bar(d, len), i = iBar + d * 4;
-    w.put(i, x0, y0, w.zs[2]); w.put(i + 1, x1, y0, w.zs[2]); w.put(i + 2, x1, y1, w.zs[2]); w.put(i + 3, x0, y1, w.zs[2]);
-  }
-  DEPTH.press(P, Z0, w.n, 1 - press);
-  DEPTH.project(DEPTH.pose(w.yaw * (1 - cam), w.pitch * (1 - cam), D, D, w.pivot), P, w.n, U, V, S);
-  /* IDENTITY, MEASURED WHERE IT IS CLAIMED. Past 0.90 the camera is face-on
-     and every z is 0, so every perspective scale must be exactly 1 and every
-     point must land on its authored place. Anything left over there is a
-     uniform scale arriving at the reading line, which is the rejected
-     "boxes changing size" by another route; counting it costs one pass over
-     the buffer and only in the frames that assert it. */
-  if (cam === 1 && press === 1) {
-    let dev = 0;
-    for (let i = 0; i < w.n; i++) dev = Math.max(dev, Math.abs(S[i] - 1));
-    N.sdev = dev; N.ident = dev === 0;
-  } else { N.sdev = null; N.ident = false; }
-  /* THE INK DRAINS ON THE DEPTH CURVE: in flight no path is lighter than the
-     floor, and each settles to its authored lightness as the depth closes.
-     No fog. v4 took up to 45% more off a --hair that was already 1.37:1 over
-     this plate, and a distance haze that only exists for part of a window is
-     a cue that comes and goes; depth here is edge, occlusion, keystone and
-     relative size, which are all true at every frame. */
-  const ink = (p, o) => {
-    const el = N.paths[p], v = r2(lerp(Math.max(o, INK_FLOOR), o, press));
-    if (el._o !== v) { el._o = v; el.setAttribute("opacity", v); }
-  };
-  /* a weight x activation edge is a BUNDLE in flight: up to 2.1 authored
-     units, tapering with nothing but its own perspective. Measured at
-     1440x900: 2.67px where the strongest one leaves the card, and at the
-     frame where both halves of the pass are drawn, 2.07px at the card to
-     0.72px at the classes (2.88:1). It thins to the authored 0.6 units
-     (0.53px) on the depth curve, so the handover has nothing to jump. The
-     round before this measured 0.89px and 0.87px: a 1.02:1 "taper" is a
-     line, not a thing running into the page. */
-  const wd = (s) => lerp(0.6 + 1.5 * s, 0.6, press);
-  const Q = [U[iOcc], V[iOcc], U[iOcc + 1], V[iOcc + 1], U[iOcc + 2], V[iOcc + 2], U[iOcc + 3], V[iOcc + 3]];
-  const inside = (i) => DEPTH.inside(U[i], V[i], Q);
-  const out = NET3_PATHS.map(() => "");
-  let u0 = Infinity, v0 = Infinity, u1 = -Infinity, v1 = -Infinity;
-  const grab = (i) => { if (U[i] < u0) u0 = U[i]; if (U[i] > u1) u1 = U[i]; if (V[i] < v0) v0 = V[i]; if (V[i] > v1) v1 = V[i]; };
-  /* a line from point i to point j, drawn over [ta, tb] of its length, each
-     end as wide as its own perspective makes `wide` authored units */
-  const sliver = (p, i, j, ta, tb, wide) => {
-    if (tb - ta < 0.004) return;
-    const du = U[j] - U[i], dv = V[j] - V[i], wi = wide * S[i], wj = wide * S[j];
-    out[p] += DEPTH.taper(U[i] + du * ta, V[i] + dv * ta, lerp(wi, wj, ta), U[i] + du * tb, V[i] + dv * tb, lerp(wi, wj, tb));
-  };
-  /* the visible part of i→j after the card: [t0, t1] minus the card's span */
-  const pieces = (i, j, t0, t1) => {
-    const sp = DEPTH.span(U[i], V[i], U[j], V[j], Q);
-    if (!sp || sp[1] <= t0 || sp[0] >= t1) return [[t0, t1]];
-    const r = [];
-    if (sp[0] > t0) r.push([t0, sp[0]]);
-    if (sp[1] < t1) r.push([sp[1], t1]);
-    return r;
-  };
-  const along = (p, i, j, segs, upto, wide) => {
-    for (const [ta, tb] of segs) if (upto > ta) sliver(p, i, j, ta, Math.min(tb, upto), wide);
-  };
-  const after = (p, i, j, segs, from, wide) => {
-    for (const [ta, tb] of segs) if (tb > Math.max(ta, from)) sliver(p, i, j, Math.max(ta, from), tb, wide);
-  };
-  /* 1 · THE LINES, AND EACH PIXEL OF THEM IS ONE FILL. The bundle runs from
-     the start to wherever the read has got; the pale line carries the rest.
-     v4 laid the pale line down whole and the bundle on top, and two fills of
-     one ink composite heavier than either, so the bucket ink and the overlap
-     were both guessing at the same number. With each pixel of a line drawn
-     once and the buckets measured off the read (above), the swap at a = 1
-     moves 2.57% of the figure's pixels by more than 6% at 1440x900 and 3.73%
-     at 420x786, against 2.84% and 4.81% before this round. What is left is
-     the digit: 110 cell quads antialias at every shared edge, where the
-     authored canvas is one pixelated bitmap. */
-  const g1 = smooth((f - 0.08) / 0.32), g2 = smooth((f - 0.42) / 0.3);
-  const thin = lerp(0.85, 0.5, press);
-  const rimOf = (j) => (net.r0 + 0.8) * S[iNode + j];
-  E.e1.forEach((e, n) => {
-    const i = iE1 + n, j = iNode + e.j, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
-    const t1 = 1 - rimOf(e.j) / l, vis = pieces(i, j, 0, t1);
-    const t0 = vis.length ? vis[0][0] : t1, front = g1 > 0 ? lerp(t0, t1, g1) : 0;
-    after(0, i, j, vis, front, thin);
-    if (g1 > 0) along(e.s >= 0.7 ? 8 : 7, i, j, vis, front, wd(e.s));
-  });
-  E.e2.forEach((e) => {
-    const i = iNode + e.j, j = iOut + e.o, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
-    const segs = pieces(i, j, rimOf(e.j) / l, 1);
-    const lit = g2 > 0 && e.s >= 0.25, front = lit ? lerp(segs.length ? segs[0][0] : 1, 1, g2) : 0;
-    after(0, i, j, segs, front, thin);
-    if (lit) along(3, i, j, segs, front, wd(e.s));
-    grab(j);
-  });
-  /* 2 · the bars, on the far plane; the winner's is clay once the pass lands */
-  if (grow > 0) for (let d = 0; d < 10; d++) {
-    const i = iBar + d * 4;
-    out[d === R.pred && f >= 0.93 ? 2 : 1] += DEPTH.quad(U, V, i, i + 1, i + 2, i + 3);
-    grab(i + 1); grab(i + 2);
-  }
-  /* 3 · the units: dim until the pass reaches them, then their own level.
-     The unlit ink starts a little above the plate's 0.12 so the lattice
-     reads as a plane while it is still dark, and settles to it as the
-     pass lands, so face-on they are the authored dots' ink */
-  const nl = smooth((f - 0.3) / 0.2);
-  for (let j = 0; j < 100; j++) {
-    const i = iNode + j;
-    grab(i);
-    if (inside(i)) continue;
-    const lv = 0.12 + 0.88 * w.lit[j] * nl;
-    out[lv < 0.35 ? 4 : lv < 0.75 ? 5 : 6] += DEPTH.dot(U[i], V[i], net.r0 * S[i]);
-  }
-  /* 4 · the card, and it is a SLAB. Its edge converges to the authored 1px
-     canvas border; under it, the faces of a 6-unit slab that turn toward the
-     reader — culled off the screen rather than assumed, because the front
-     cap is wound inward by construction, so a side face faces us exactly
-     when its projected winding takes the opposite sign. The slab's depth
-     rides the same scalar as everything else, so by 0.90 its faces have zero
-     area and the card is a sheet. It is the one solid cue in the figure:
-     a per-pixel relief was the alternative and it is legible only while a
-     cell is 6px or more, which is the half of the window nobody is reading. */
-  for (let i = 0; i < 4; i++) { sliver(0, i, (i + 1) & 3, 0, 1, lerp(1.8, 1, press)); grab(i); }
-  const turn = (p, q, r, s) => (U[q] - U[p]) * (V[q] + V[p]) + (U[r] - U[q]) * (V[r] + V[q])
-    + (U[s] - U[r]) * (V[s] + V[r]) + (U[p] - U[s]) * (V[p] + V[s]);
-  const front = turn(0, 1, 2, 3);
-  for (let e = 0; e < 4; e++) {
-    const i = e, j = (e + 1) & 3;
-    if (turn(i, j, iLip + j, iLip + i) * front < 0) {
-      out[0] += DEPTH.quad(U, V, i, j, iLip + j, iLip + i);
-      grab(iLip + i);
-    }
-  }
-  /* the digit is the INPUT, not part of the read: it is at full ink from the
-     first frame. v4 inked it in over the first fifth of the pass, which spent
-     the one thing the held opening has to look at on a beat nobody is there
-     for — the hold plays while the plate is still climbing the screen. */
-  for (const [kk, v, t] of w.cells) {
-    const lv = v;
-    if (lv < 0.06) continue;
-    out[lv < 0.36 ? 9 : lv < 0.7 ? 10 : 11] += DEPTH.quad(U, V, t, t + 1, t + 30, t + 29);
-  }
-  N.paths.forEach((p, n) => { if (p._d !== out[n]) { p._d = out[n]; p.setAttribute("d", out[n]); } });
-  NET3_PATHS.forEach(([, o], p) => ink(p, p === 4 ? lerp(0.2, 0.13, nl) : o));
-  /* 5 · THE LABELS ARE BILLBOARDS, so they only go up once their plane is
-     the size they are drawn at. A label is held at nothing until its plane is
-     within 5% of 1:1 and fades up over that last 5%; the captions wait for
-     the camera as well. v4 could afford a loose tolerance because the
-     anamorphic seat held every plane near 1:1 from the first frame — with the
-     seat gone the output plane starts at 0.74, and the old 0.2 let the ten
-     digits print at full size over a plane drawn at 0.83. Measured on the
-     adopted pose: the digits go up at a = 0.79 and the input card captions at
-     a = 0.85, so the row of classes arrives with the answer. */
-  const sig = [S[iCtr], S[iCtr + 1], S[iCtr + 2]], capt = smooth((cam - 0.8) / 0.15);
-  N.sc = sig; /* the three plane scales: a probe reads the painter's order off them */
-  N.labdev = 0; /* and the worst plane any SHOWN label is standing on, which is the gate */
-  /* A DIGIT STANDS ONLY WHERE IT STANDS CLEAR. Billboards are drawn at full
-     size on a plane seen in depth, and early on the classes' plane sits
-     behind the lattice: the reviewer's frames at 1440 had 0 to 9 printed
-     over its right-hand columns. So a digit is held at nothing until its
-     glyph clears the lattice (its four corner units, grown by a dot) and
-     the card, and fades up over the next 6 units of daylight. */
-  const rr = net.r0 * Math.max(S[iNode], S[iNode + 99]);
-  const grid = [U[iNode], V[iNode], U[iNode + 9], V[iNode + 9], U[iNode + 99], V[iNode + 99], U[iNode + 90], V[iNode + 90]];
-  N.labs.forEach((l, n) => {
-    const i = iLab + n, digit = l.wrap !== N.g;
-    const fit = 1 - smooth(Math.abs(sig[l.layer] - 1) / 0.05);
-    let clear = 1;
-    if (digit) {
-      const cu = U[i] + (G.rise ? 0 : -4.5), cv = V[i] - 4.5, half = 7;
-      clear = smooth((Math.min(DEPTH.gap(cu, cv, grid) - rr, DEPTH.gap(cu, cv, Q)) - half) / 6);
-    }
-    const op = l.sample && R.who !== "sample" ? 0 : r2(fit * clear * (digit ? 1 : capt));
-    if (op > 0.05) N.labdev = Math.max(N.labdev, Math.abs(sig[l.layer] - 1));
-    if (l._op !== op) { l._op = op; l.el.setAttribute("opacity", op); }
-    /* written even while it is hidden, so the frame is the pose's and never
-       the history's: a label that kept its last shown place made the same y
-       two different DOMs, one coming down and one going up */
-    const x = r1(U[i]), y = r1(V[i]);
-    if (l._x !== x) { l._x = x; l.el.setAttribute("x", x); }
-    if (l._y !== y) { l._y = y; l.el.setAttribute("y", y); }
-    if (op > 0) grab(i);
-    const win = l.wrap !== N.g && l.el.textContent === String(R.pred) && f >= 0.93;
-    if (l._win !== win) { l._win = win; l.wrap.classList.toggle("win", win); }
-  });
-  N.bounds = [r1(u0), r1(v0), r1(u1), r1(v1)];
-}
-/* THE HANDOVER IS A SWAP, at a = 1, and not a crossfade. Two half-opaque
-   copies of one ink composite lighter than either: measured, the winner's
-   clay bar went salmon at the midpoint and the swap's RMSE rose from 2.4% to
-   2.7%; holding the authored figure at full under a fading layer doubled
-   the partial inks instead (4.5%). Face-on the layer IS the drawing, so the
-   swap changes 0.25% of the figure's pixels by more than 6% (antialiasing,
-   mostly), which is less than either fade shows. */
-function setDeep(on) {
-  const N = net3;
-  N.on = on; N.a = -1;
-  N.g.setAttribute("display", on ? "inline" : "none");
-  if (on) N.flat.setAttribute("opacity", 0);
-  else { N.flat.removeAttribute("opacity"); N.bounds = null; }
-  $("net").classList.toggle("indepth", on);
-  window.__world.net3 = { a: N.a, on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc, labdev: N.labdev }; /* probe hook */
-}
-/* called every frame by work(y). Arming is what keeps the switch between
-   the flat figure and the depth layer off the screen: the layer may take the
-   figure only once a read exists AND the net has been out of view since, so
-   a read that lands, or a pen that lifts, while the reader is looking at the
-   plate never turns it into a different picture under them. */
-function deepNet(y) {
-  const N = net3;
-  if (!N.g) return;
-  const a = DEPTH_PIN !== null ? DEPTH_PIN : clamp((y - N.yA) / Math.max(1, N.yB - N.yA), 0, 1);
-  if (!N.armed && N.ready && (y + vh < N.top || y > N.top + N.h)) N.armed = true;
-  const show = N.armed && N.ready && a < 1;
-  if (show !== N.on) setDeep(show);
-  if (show && a !== N.a) { N.a = a; drawDeep(a); }
-  window.__world.net3 = { a: +a.toFixed(4), on: N.on, armed: N.armed, bounds: N.bounds, ident: N.ident, sdev: N.sdev, sc: N.sc, labdev: N.labdev }; /* probe hook */
-}
-/* THE FIGURE SHOWS A READ BEFORE THE READER MAKES ONE, because the depth
-   layer has nothing to assemble without one, and an empty network seen from
-   behind is a lattice of dots. It is asked of the classifier in this tab,
-   once, after the name has finished arriving or as soon as the reader has
-   left it (one classify() is 6–15ms of main thread, measured in both
-   engines, and the nameplate is the one thing on the first screen that
-   moves), and only if the reader has not drawn. */
+/* THE FIGURE SHOWS A READ BEFORE THE READER MAKES ONE, because what the
+   network sees has nothing to show without one, and an empty network is a
+   lattice of dots. It is asked of the classifier in this tab, once, after
+   the name has finished arriving or as soon as the reader has left it (one
+   classify() is 6–15ms of main thread, measured in both engines, and the
+   nameplate is the one thing on the first screen that moves), and only if
+   the reader has not drawn. Its own forward time is kept, because the
+   verdict line names this read too once the scroll reaches the answer. Clear
+   asks again (force), which is how the pad gives the sheet back to it. */
 let sampleAsked = false;
-function lightSample() {
-  if (sampleAsked || net.lastLight || current || strokes.length) return;
+function lightSample(force = false) {
+  if (!force && (sampleAsked || net.lastLight)) return;
+  if (current || strokes.length) return;
   sampleAsked = true;
   ready.then((c) => {
-    if (net.lastLight || current || strokes.length) return;
-    const px = samplePixels(), r = c.classify(px), p = Number(r.prediction);
+    if ((!force && net.lastLight) || current || strokes.length) return;
+    const px = samplePixels(), t0 = performance.now(), r = c.classify(px);
+    const ms = performance.now() - t0, p = Number(r.prediction);
     if (p !== GLYPH_SAMPLE.label) return;
     const read = [px, Array.from(r.hidden_activations), Array.from(r.confidence), p, false, "sample"];
+    net.sample = read; net.sampleMs = ms;
     /* the classifier can be ready before boot has drawn the net (under
        reduced motion the read is asked at once): keep the read, and
        buildNet lights it as it draws the figure */
@@ -11152,8 +11409,9 @@ pad.addEventListener("pointerdown", (ev) => {
   pad.setPointerCapture(ev.pointerId);
   current = [toPadXY(ev)]; strokes.push(current);
   $("padhint").classList.add("gone");
-  /* fig. 06 is never in depth under a pen: see deepNet */
-  net3.armed = false; if (net3.on) setDeep(false);
+  /* a pen that comes down again inside the tenth of a second after a lift
+     keeps the twelve where they are until this stroke ends too */
+  clearTimeout(see.timer);
   /* the pen is down, so the last answer is no longer an answer to what is
      on the pad: the big digit and its conf go back to the idle "·" they
      wear after clear, and the ten outputs dim (#net.reading) until lift */
@@ -11178,6 +11436,7 @@ $("clear").addEventListener("click", () => {
   const v = $("verdict"); v.textContent = "·"; v.classList.add("idle");
   $("conf").textContent = "·"; $("fwd").textContent = "·";
   window.__demo.last = null;
+  seeSample();
 });
 /* the sample read waits for the name: see lightSample. AND ONLY WHILE THE
    READER IS STILL WITH THE NAME. The name finishes arriving 5.0 to 5.3s after
