@@ -671,16 +671,25 @@ test.describe("the type answers the hand, and comes back to rest", () => {
       const r = document.querySelector(s)!.getBoundingClientRect();
       return { x: r.x, y: r.y, w: r.width, h: r.height };
     }, sel);
-  /* a real hand: many small moves, fast, through the x-height band */
+  /* a real hand: many small moves, fast, through the x-height band, placed
+     by the CLOCK and not by a count. A machine answers only a crest moving
+     faster than 7.69 em/s, and 40 moves with no delay is a step count whose
+     speed is whatever the engine spends per move: measured, Playwright's
+     WebKit takes ~16.6 ms a move to Chromium's 8.3, so the same sweep ran at
+     8.46 em/s there and 17 in Chromium, about a millisecond a move from
+     failing. Placed by elapsed time, every engine sweeps at one speed. */
   const sweep = async (
     page: import("@playwright/test").Page,
     b: { x: number; y: number; w: number; h: number },
-    n = 40
+    ms = 450
   ) => {
     const y = b.y + b.h * 0.55;
     await page.mouse.move(b.x - 60, y);
-    for (let i = 0; i <= n; i++)
-      await page.mouse.move(b.x - 60 + ((b.w + 120) * i) / n, y);
+    const t0 = Date.now();
+    for (let u = 0; u < 1; ) {
+      u = Math.min(1, (Date.now() - t0) / ms);
+      await page.mouse.move(b.x - 60 + (b.w + 120) * u, y);
+    }
   };
 
   test("a swoosh across the name moves it and wakes its machines, then nothing is left", async ({
