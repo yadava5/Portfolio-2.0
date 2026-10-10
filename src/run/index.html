@@ -4143,7 +4143,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <!-- role="group" for the reason fig. 04 states: the four lane
              controls traceOn() injects are focusable, and a labelled image's
              descendants are presentational. -->
-        <svg id="jetFig" class="figsvg" viewBox="0 0 560 400" role="group" aria-label="The same machine drawn in depth. One stream runs across the top of the plate, cut into eight equal blocks, and a single pipe off it feeds four identical deflate dies standing one behind the other, named vt-0 to vt-3: four copies of one machine rather than four places in the file. Each takes every fourth block, so vt-0 carries the first and the fifth. Their outputs gather onto one rail above the file, drawn as one gzip member and as a single solid bar: a header lettered 1f 8b 08, the eight blocks at widths of their own in stream order and not in lane order, and a trailer, marked in clay, whose check covers the whole input. The floor the dies stand on is left in pencil. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
+        <svg id="jetFig" class="figsvg" viewBox="0 0 560 400" role="group" aria-label="The jetpack-compress engine drawn in depth. One stream runs across the top of the plate, cut into eight equal blocks, and a single pipe off it feeds four identical deflate dies standing one behind the other, named vt-0 to vt-3: four copies of one machine rather than four places in the file. Each takes every fourth block, so vt-0 carries the first and the fifth. Their outputs gather onto one rail above the file, drawn as one gzip member and as a single solid bar: a header lettered 1f 8b 08, the eight blocks at widths of their own in stream order and not in lane order, and a trailer, marked in clay, whose check covers the whole input. The floor the dies stand on is left in pencil. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
         <!-- Same ruling as ¶06's bench: scrubJetBench() is gone and the bars
              are drawn settled. The date is the commit's, not the run's — JMH
              writes no date into its JSON, and inventing one would be the class
@@ -8598,9 +8598,11 @@ function buildJet(tight) {
   s.setAttribute("viewBox", G.vb);
   /* both drawings are built displayed, because traceOn reads every label's
      box and the svg's rendered width as it wires them; the mode hides one
-     of them after */
-  const flat = at("g", G.flatDy ? { class: "jflat", transform: `translate(0 ${G.flatDy})` } : { class: "jflat" });
+     of them after. The resting drawing comes first in the DOM, so anything
+     that asks for "the plate's first lane control" gets the one on screen:
+     only one of the two is ever displayed, so the order paints nothing. */
   const solid = at("g", { class: "jsolid" });
+  const flat = at("g", G.flatDy ? { class: "jflat", transform: `translate(0 ${G.flatDy})` } : { class: "jflat" });
   buildJetFlat(tight, flat);
   buildJetSolid(G, solid);
   hideDrawnFromAT(s); hideDrawnFromAT(flat); hideDrawnFromAT(solid);
