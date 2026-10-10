@@ -87,14 +87,11 @@ test.describe("reduced motion and keyboard access", () => {
     await expect(page.locator("#gate")).toBeInViewport();
   });
 
-  /* v4 (2026-10-08): the type that answers the hand and the figures that
-     assemble in depth are motion, so a reader who asked for stillness gets
-     neither: the name, the headings and the links do not answer a hover,
-     and both figures are their authored drawings at every scroll. */
-  test("the type does not answer the hand, and no figure is drawn in depth", async ({
-    page,
-    isMobile,
-  }) => {
+  /* v4 (2026-10-08): the type that answers the hand is motion, so a reader
+     who asked for stillness does not get it: the name, the headings and the
+     links do not answer a hover. (v6 retired the v4.2 depth layers; what a
+     still reader is shown of the assembled figures is checked with them.) */
+  test("the type does not answer the hand", async ({ page, isMobile }) => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await page.waitForTimeout(800);
@@ -104,8 +101,6 @@ test.describe("reduced motion and keyboard access", () => {
         inkLive?: () => number;
         rollLive?: () => number;
         hand?: () => number;
-        net3?: { on: boolean };
-        jet3?: { on: boolean };
       };
     };
     if (!isMobile) {
@@ -153,25 +148,6 @@ test.describe("reduced motion and keyboard access", () => {
         });
         expect(live, sel).toBe(0);
       }
-    }
-    for (const id of ["net", "jetFig"]) {
-      await page.evaluate(
-        (i) =>
-          document
-            .getElementById(i)!
-            .scrollIntoView({ block: "end", behavior: "instant" }),
-        id
-      );
-      await page.waitForTimeout(300);
-      const d = await page.evaluate(() => {
-        const w = (window as unknown as W).__world;
-        return {
-          net: w.net3?.on ?? false,
-          jet: w.jet3?.on ?? false,
-          deep: document.querySelectorAll(".indepth").length,
-        };
-      });
-      expect(d).toEqual({ net: false, jet: false, deep: 0 });
     }
   });
 });

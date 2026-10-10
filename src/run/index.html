@@ -2606,6 +2606,16 @@ if (location.hash.length > 1) {
     100%{transform:none}
   }
   @keyframes np-turn{to{transform:rotate(-360deg)}}
+
+  /* ═══ v6 · style slot, fig. 04 (the mailroom) ═══ */
+
+  /* ═══ v6 · style slot, fig. 06 (what the network sees) ═══ */
+
+  /* ═══ v6 · style slot, fig. 07 (drawn by hand) ═══ */
+
+  /* ═══ v6 · style slot, fig. 08 (drawn by hand) ═══ */
+
+  /* ═══ v6 · end of the figure slots ═══ */
 </style>
 
 <style id="np-css">
@@ -5351,6 +5361,7 @@ function cacheGeometry() {
   dusk7.start = (yDark + vh * READ_LINE - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
   window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h, kick: b.kick })); /* probe hook — kick is the masthead clock's anchor */
+  /* ── v6 · window slot, fig. 06 ── */
   /* fig. 06 assembles from the net's top at 0.90 of the screen to its centre
      on the reading line, off its LAYOUT box: absTop never sees the plate's
      arrival transform, and the svg's height is its seat times its viewBox's
@@ -5373,6 +5384,7 @@ function cacheGeometry() {
   net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
   net3.yA = Math.min(net3.top + sc * o0 - 0.98 * vh, net3.yB - 0.52 * vh);
   window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
+  /* ── v6 · window slot, fig. 07 ── */
   /* fig. 07's reveal: the same law as fig. 06, off its svg's layout box (the
      plate's first child, under its padding), and the blocks' clock reads its
      end. a = 0 WHEN THE OPENING'S OWN TOP EDGE REACHES 0.98 vh, not when the
@@ -5388,6 +5400,10 @@ function cacheGeometry() {
     jet3.yB - 0.52 * vh);
   jet3.a = -1;
   window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
+  /* ── v6 · window slot, fig. 04 ── */
+  /* ── v6 · window slot, fig. 08 ── */
+  /* ── v6 · every assembled figure's window, measured last ── */
+  asmGeometry();
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
@@ -9658,6 +9674,134 @@ function stirAll(now) {
 window.__world.hand = () => stirring.size;
 window.__stir = stir; /* the nameplate's module mounts its own hand and has no other way into this loop */
 
+/* ————— THE ASSEMBLIES RIDE THE SCROLL (v6) —————
+   The owner, shown figures that played once when the reader stopped at them:
+   "make sure to make them work with scrolling, not like single play, they
+   should assemble with rail scroll!" — and a round before that, of figures
+   that were a pure function of the scroll: "if someone scrolls fast, they'll
+   miss it". Both are answered here, once, for every figure that assembles.
+   THE SCROLL SETS WHERE A FIGURE IS GOING. A figure registers its drawing's
+   layout box and draw(p), and gets a window in page space: p = 1 when the
+   drawing's centre reaches the reading line, so every centred park in both
+   engines is the finished drawing (WebKit's scrollIntoView lands a phone
+   figure's centre as low as 0.565 vh, which is why the plates' depth windows
+   ended there too), and p = 0 ASM_LEAD of a viewport earlier, or wherever the
+   drawing is first wholly on screen if that is earlier still. target is a
+   function of scrollY alone, so scrolling back up takes the figure apart.
+   A HAND TAKES IT THERE, AND THE HAND HAS A SPEED LIMIT. The shown p follows
+   the target on a critically damped spring stiff enough to track a reading
+   scroll by about a tenth of a second, and its speed is clamped at ASM_RATE
+   windows a second: a flick that would cross the whole window in four frames
+   (the v4.2 complaint, measured: eight frames of motion at 2000 px/s) is
+   played out at that rate instead, so a reader who flicks to a figure and
+   stops still sees it assemble, while a reader who scrolls drives it.
+   NOTHING MOVES THAT NOBODY SEES. A drawing wholly off screen, a jump of more
+   than half a viewport in one frame (scrollIntoView, an anchor, End, the
+   first frame after boot or a rebuild) all put p on its target at once. At
+   rest p IS the target, exactly: the same y gives the same drawing. The hand
+   is one stepper on this loop, dropped the frame the last figure lands, so an
+   idle page schedules nothing (F3); under reduced motion settleAll draws
+   every figure finished and nothing here runs.
+   A FIGURE OWNS ITS DRAWING, THIS OWNS ITS p. draw(p) must set everything
+   from p alone (never an increment), write only what changed, and treat
+   every p as a still a reader may park on: the engine calls it with any p in
+   [0, 1], in any order, as often as the scroll asks. */
+const ASM_OMEGA = 18;  /* rad/s · the spring: a steady scroll is followed 2/ω ≈ 0.11 s behind */
+const ASM_RATE = 3.5;  /* windows/s · the speed limit, so a flick plays for ≥ 0.29 s */
+const ASM_LEAD = 0.5;  /* vh · the window's floor */
+const ASM_EPS = 5e-4, ASM_VEPS = 0.02; /* rest: within half a thousandth, nearly still */
+/* ?asm=0.4 pins every assembled figure at one p — for looking at stills */
+const ASM_PIN = FLAGS.has("asm") ? clamp(+FLAGS.get("asm") || 0, 0, 1) : null;
+const asm = new Map();
+let asmY = null, asmMoving = false, asmT = 0;
+/* the drawing's LAYOUT box in page space: an html ancestor's absTop is blind
+   to the plate's arrival transform, and the drawing's offset inside it is
+   read off their two rects with the host's own scale undone */
+function layoutBox(el) {
+  let host = el;
+  while (host && !(host instanceof HTMLElement)) host = host.parentNode;
+  if (!host) return { top: 0, h: 0 };
+  if (host === el) return { top: absTop(el), h: el.offsetHeight };
+  const hr = host.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const k = host.offsetHeight / (hr.height || 1);
+  return { top: absTop(host) + (r.top - hr.top) * k, h: r.height * k };
+}
+/* register (again, on every build: an edition change rebuilds the drawing,
+   and a new drawing has never been drawn, so its first frame snaps).
+   spec: { box: () => ({ top, h }) page px, draw(p), lead?: px } */
+function asmFigure(key, spec) {
+  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0,
+    top: 0, h: 0, yA: 0, yB: 1, pFull: 0, t: 1, s: NaN, v: 0, last: NaN };
+  asm.set(key, e);
+  if (booted) asmMeasure(e);
+  if (RM) { e.t = e.s = 1; asmPut(e, 1); }
+  asmProbe();
+  return e;
+}
+function asmMeasure(e) {
+  const b = e.box();
+  e.top = b.top; e.h = b.h;
+  e.yB = b.top + b.h / 2 - READ_LINE * vh;
+  const yFull = b.top + b.h - 0.95 * vh; /* the drawing wholly on screen */
+  e.yA = Math.min(yFull, e.yB - Math.max(ASM_LEAD * vh, e.lead));
+  /* where the drawing is first wholly on screen, as a p: a figure schedules
+     what happens at its bottom edge after this */
+  e.pFull = clamp((yFull - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
+}
+function asmGeometry() { for (const e of asm.values()) asmMeasure(e); asmProbe(); }
+const asmTarget = (e, y) => ASM_PIN ?? clamp((y - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
+const asmSeen = (e, y) => e.top - y < vh && e.top + e.h - y > 0;
+function asmPut(e, p) {
+  if (p === e.last) return;
+  e.last = p;
+  e.draw(p);
+}
+function asmWork(y) {
+  const jump = asmY === null || Math.abs(y - asmY) > 0.5 * vh;
+  asmY = y;
+  let moving = false;
+  for (const e of asm.values()) {
+    e.t = asmTarget(e, y);
+    if (jump || ASM_PIN !== null || Number.isNaN(e.s) || !asmSeen(e, y)) { e.s = e.t; e.v = 0; }
+    if (Math.abs(e.t - e.s) > ASM_EPS || Math.abs(e.v) > ASM_VEPS) moving = true;
+    else { e.s = e.t; e.v = 0; asmPut(e, e.s); }
+  }
+  if (moving && !asmMoving) { asmMoving = true; asmT = 0; stir(asmStep); }
+  asmProbe();
+}
+/* the hand: a critically damped spring per figure, sub-stepped at 240 Hz so
+   60 and 120 Hz displays land the same way, its speed clamped at ASM_RATE */
+function asmStep(now) {
+  const dt = asmT ? Math.min(0.05, (now - asmT) / 1000) : 1 / 60;
+  asmT = now;
+  let moving = false;
+  for (const e of asm.values()) {
+    if (e.s === e.t && e.v === 0) continue;
+    for (let k = Math.max(1, Math.ceil(dt * 240)), h = dt / k; k > 0; k--) {
+      e.v = clamp(e.v + (ASM_OMEGA * ASM_OMEGA * (e.t - e.s) - 2 * ASM_OMEGA * e.v) * h, -ASM_RATE, ASM_RATE);
+      e.s += e.v * h;
+    }
+    if (Math.abs(e.t - e.s) < ASM_EPS && Math.abs(e.v) < ASM_VEPS) { e.s = e.t; e.v = 0; }
+    else moving = true;
+    asmPut(e, clamp(e.s, 0, 1));
+  }
+  asmProbe();
+  if (!moving) { asmMoving = false; asmT = 0; }
+  return moving;
+}
+/* the settled world (reduced motion, a dead module): every figure finished */
+function asmSettle() { for (const e of asm.values()) { e.t = e.s = 1; e.v = 0; asmPut(e, 1); } asmProbe(); }
+/* probe hooks: each figure's window, target and shown p; and whether the
+   hand is at rest, which a spec that parks waits on before it asserts */
+function asmProbe() {
+  const o = {};
+  for (const e of asm.values())
+    o[e.key] = { t: +e.t.toFixed(4), s: +(Number.isNaN(e.s) ? -1 : e.s).toFixed(4), v: +e.v.toFixed(3),
+      yA: Math.round(e.yA), yB: Math.round(e.yB), pFull: +e.pFull.toFixed(3) };
+  window.__world.asm = o;
+}
+window.__world.asmRest = () => [...asm.values()].every((e) => e.s === e.t && e.v === 0);
+
 function frame() {
   const y = scrollY;
   const changed = y !== lastY;
@@ -9774,9 +9918,9 @@ function work(y) {
   if (Math.abs(beat - 9) <= 1) scrubGates(tokenY);
   if (Math.abs(beat - 10) <= 1) scrubSigns(tokenY);
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
-  /* fig. 06 in depth runs off the net's own position, not the beat's */
-  deepNet(y);
-  deepJet(y);
+  /* the assembled figures run off their own drawings' positions, not the
+     beats' (the v4.2 depth layers, deepNet and deepJet, stood here) */
+  asmWork(y);
 
   /* manifest stamps: one line as each station completes (reversible).
      The six stations ride beats 3–8 now. */
@@ -16412,6 +16556,7 @@ function settleAll() {
      spent removing everywhere else. setMast(11, 0) is the same minute, named by
      the stop that owns it. */
   setStamps(6); setStop(11); setMast(11, 0);
+  asmSettle();
 }
 async function boot() {
   await document.fonts.ready.catch(() => {});
