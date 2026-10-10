@@ -638,7 +638,7 @@ test.describe("the tab mark is the page in a 16px window", () => {
 test.describe("the type answers the hand, and comes back to rest", () => {
   type Name = {
     live: boolean;
-    kicks: number;
+    driven: number;
     presses: number;
     peak: number;
     rest: boolean;
@@ -795,7 +795,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     await page.mouse.move(px, py);
     await page.waitForTimeout(300);
     const scrolled = await name(page);
-    expect(scrolled!.kicks).toBe(parked!.kicks);
+    expect(scrolled!.driven).toBe(parked!.driven);
     expect(scrolled!.peak).toBe(parked!.peak);
     expect(scrolled!.rest).toBe(true);
   });

@@ -2787,7 +2787,7 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
   overflow: visible;
   pointer-events: none;
 }
-/* .np-ans: the machines' answers to the hand (v4) take the same box, under
+/* .np-ans: the machines' answers to the hand take the same box, under
    their own class so check-nameplate never counts one as a performance.
    A rule of its own, not a second selector on the rule above: the
    nameplate's negative gate breaks .np-mech's sizing by that rule's own
@@ -16691,7 +16691,7 @@ boot();
       const M = await import("./run/components/story/nameplateMachines.js");
       const letters = Array.from(h1.querySelectorAll(".np-ch"));
       let running = false;
-      /* THE HAND (v4): the settled name answers the pointer. It mounts in
+      /* THE HAND: the settled name answers the pointer. It mounts in
          perform()'s finally, on the same line that says the name reads
          whole, and it comes off as the FIRST thing rebuild() does, because
          a MutationObserver on data-np-ready would run as a microtask, after
