@@ -5369,32 +5369,31 @@ function cacheGeometry() {
   /* ── v6 · window slot, fig. 07 ── */
   /* ── v6 · window slot, fig. 04 ── */
   /* ── v6 · window slot, fig. 08 ── */
-  /* FIG. 08 ASSEMBLES INSIDE THE DUSK CONTRACT'S SETTLED CORRIDOR, OR NOT AT
-     ALL. Its drawing holds the opening (the authored elevation, whole) until
-     the plate's own entrance has finished, and is complete by the reading
-     line, the driver's p = 1, so every centred park in both engines is the
-     finished drawing and the curtain never takes one still being made. Both
-     edges are read off the contract the dusk block above has just derived;
-     nothing here is tuned. The driver's own window cannot say this (its
-     floor is ASM_LEAD, and a lead only lengthens it), so the plate maps the
-     driver's p onto its own stretch inside it (climbQ).
-     MEASURED, THE TWO EDGES LEAVE NO WINDOW: the entrance ends after the reading line, or
-     within a few px before it: −8, −69, 3 and 25px at 1440×900, 1280×720,
-     420×786 and 390×844 (Chromium, WebKit within 4px; v6/f08 at 7f8b462,
-     2026-10-09). That is structural, not this plate's tuning: the entrance
-     waits for the plate's bottom, so the room is 0.38 vh − 28px − (the
-     figure's height − half its drawing's), which is negative for anything
-     taller than a small card.
-     Under 0.12 vh an assembly is a pop, not a drawing, so there the plate is
-     its finished drawing at every scroll position and the conflict goes to
-     the owner rather than being bent here. ?f8=enter (pre-armed, not
-     shipped) opens the window at the START of the entrance instead, to look
-     at the other side of that ruling. */
+  /* FIG. 08 IS DRAWN AS ITS PLATE ARRIVES. Its window is read off the dusk
+     contract the block above has just derived, and nothing here is tuned:
+     it opens at the START of the plate's own entrance and closes at the
+     reading line (the driver's p = 1, so every centred park in both engines
+     is the finished drawing), or 8px ahead of the curtain if that comes
+     first, so the curtain never takes a drawing still being made.
+     WHY THE ENTRANCE AND NOT THE SETTLED CORRIDOR. The lane that built it
+     tried the corridor first and measured it shut: the entrance waits for
+     the plate's bottom to clear the fold, so it ends −8, −69, 3 and 25px
+     from the reading line at 1440×900, 1280×720, 420×786 and 390×844, which
+     is no window at all (v6/f08 at 7f8b462). A corridor window would finish
+     the drawing near the top of the screen and leave every centred park
+     part-drawn. The owner's ruling for this round is that every chosen
+     figure assembles with the scroll, so the pencil is laid while the plate
+     fades in, the way a sheet develops, and the ink climbs as it settles;
+     the contract's own clause, no text at full ink on the darkening stops,
+     is untouched (the drawing is finished, and held, before the curtain).
+     The driver takes the window as given (window:), and its speed limit is
+     counted on it. Under 0.12 vh an assembly is a pop, not a drawing, so a
+     seat that short shows the finished drawing at every scroll position. */
   {
     const plate8 = climb.svg.closest("figure"), f8 = fx.find((f) => f.el === plate8);
     const yOf = (u) => u * (vh + f8.h) - vh + f8.top; /* an fx fraction, as a page y */
     const b = layoutBox(climb.svg), yRead = b.top + b.h / 2 - READ_LINE * vh;
-    climbWin.y0 = yOf(f8.spec.in[FLAGS.get("f8") === "enter" ? 0 : 1]);
+    climbWin.y0 = yOf(f8.spec.in[0]);
     climbWin.y1 = Math.min(yRead, yOf(f8.spec.out[0]) - 8); /* 8px ahead of the first fade step */
     climbWin.ok = climbWin.y1 - climbWin.y0 >= 0.12 * vh;
     /* where the ground line comes on screen, held between the plan's share
@@ -8755,9 +8754,9 @@ function q3put(e, k, v) {
   const c = e._q3 || (e._q3 = {});
   if (c[k] !== v) { c[k] = v; e.setAttribute(k, v); }
 }
-/* the scroll's p as the drawing's q: the driver owns p over its own window,
-   and the plate's window is the part of it the dusk contract leaves (see
-   cacheGeometry's fig. 08 slot) */
+/* the scroll's p as the drawing's q: the driver's window is the plate's own
+   (window:, measured in cacheGeometry's fig. 08 slot), so a p is a page y,
+   and the plate splits that window at the ground line, yK */
 function climbQ(p) {
   if (ASM_PIN !== null) return p; /* ?asm pins the drawing itself, for stills */
   const e = climb.e;
@@ -8947,7 +8946,8 @@ function buildClimb(tight) {
     s.after(b);
   }
   s.classList.toggle("q3flat", climb.flat);
-  climb.e = asmFigure("fig08", { box: () => layoutBox(climb.svg), draw: drawClimb });
+  climb.e = asmFigure("fig08", { box: () => layoutBox(climb.svg), draw: drawClimb,
+    window: () => (climbWin.ok ? { yA: climbWin.y0, yB: climbWin.y1 } : null) });
   drawClimb(climb.p); /* never one frame of an undrawn plate */
 }
 /* the plate seen flat, or in depth. The press is the one place this plate
@@ -9881,9 +9881,12 @@ function layoutBox(el) {
    and a new drawing has never been drawn, so its first frame snaps).
    spec: { box: () => ({ top, h }) page px, draw(p), lead?: px,
            span?: (e) => [p0, p1], the part of p the motion fills, read after
-           each measure (default the whole window) } */
+           each measure (default the whole window),
+           window?: (e) => ({ yA, yB }) | null, a window a figure's station
+           already decides (fig. 08's dusk contract), read after each measure
+           in place of the driver's own; null falls back to it } */
 function asmFigure(key, spec) {
-  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0, span: spec.span || null,
+  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0, span: spec.span || null, win: spec.window || null,
     top: 0, h: 0, yA: 0, yB: 1, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
   asm.set(key, e);
   if (booted) asmMeasure(e);
@@ -9897,6 +9900,8 @@ function asmMeasure(e) {
   e.yB = b.top + b.h / 2 - READ_LINE * vh;
   const yFull = b.top + b.h - 0.95 * vh; /* the drawing wholly on screen */
   e.yA = Math.min(yFull, e.yB - Math.max(ASM_LEAD * vh, e.lead));
+  const w = e.win ? e.win(e) : null;
+  if (w && w.yB - w.yA >= 1) { e.yA = w.yA; e.yB = w.yB; }
   /* where the drawing is first wholly on screen, as a p: a figure schedules
      what happens at its bottom edge after this */
   e.pFull = clamp((yFull - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
