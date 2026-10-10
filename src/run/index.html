@@ -5147,6 +5147,23 @@ const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offs
    terminated on getBoundingClientRect() bakes in whatever entrance animation
    happened to be mid-flight when the geometry was last built. */
 const absLeft = (el) => { let x = 0; while (el) { x += el.offsetLeft; el = el.offsetParent; } return x; };
+/* A LAYOUT BOX TO THE SUBPIXEL. absTop sums each offsetParent's INTEGER
+   offsetTop, and the error adds up a level at a time: measured at 1800×1169
+   (v6) the socket's seven levels put the halt ring 1.141px off the socket's
+   own rect, over the 1px the ending gate allows, where the same chain lands
+   within 0.05 at 1440. A client rect is exact but carries whatever entrance
+   transform the fx engine has mid-flight on an ancestor, which is why the
+   geometry is read in layout space at all. So those inline transforms are
+   lifted for one synchronous read and put back exactly as they were: the
+   rect is then the layout box, to the subpixel, and nothing paints between. */
+function layoutRect(el) {
+  const held = [];
+  for (let a = el.parentElement; a; a = a.parentElement)
+    if (a.style && a.style.transform) { held.push([a, a.style.transform]); a.style.transform = "none"; }
+  const r = el.getBoundingClientRect();
+  for (const [a, t] of held) a.style.transform = t;
+  return { top: r.top + scrollY, left: r.left + scrollX, w: r.width, h: r.height };
+}
 let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false;
 
 /* fx elements: arrive → settle-with-drift → depart, except where the
@@ -5598,8 +5615,9 @@ function buildThread() {
      sees as the end of the line. */
   const dockEl = $("gateDock");
   const sq = dockEl.querySelector("i") || dockEl;
-  gatePageY = absTop(sq) + sq.offsetHeight / 2;
-  dockX = absLeft(sq) + sq.offsetWidth / 2;
+  const sqBox = layoutRect(sq); /* layout space, to the subpixel: see layoutRect */
+  gatePageY = sqBox.top + sqBox.h / 2;
+  dockX = sqBox.left + sqBox.w / 2;
   /* stx keeps all 13 entries (check-beat-tables counts them against the DOM)
      and stx[11] is overridden by dockX at every width: the gate's x is a
      measurement now, not a declaration. */
@@ -10064,12 +10082,15 @@ function asmStep(now) {
 }
 /* the settled world (reduced motion, a dead module): every figure finished */
 function asmSettle() { for (const e of asm.values()) { e.t = e.s = 1; e.v = 0; asmPut(e, 1); } asmProbe(); }
-/* probe hooks: each figure's window, target and shown p; and whether the
-   hand is at rest, which a spec that parks waits on before it asserts */
+/* probe hooks: each figure's window, target, shown p and drawn p (d, the p
+   draw() was last called with, so a spec can tell the ink from the
+   bookkeeping); and whether the hand is at rest, which a spec that parks
+   waits on before it asserts */
 function asmProbe() {
   const o = {};
   for (const e of asm.values())
     o[e.key] = { t: +e.t.toFixed(4), s: +(Number.isNaN(e.s) ? -1 : e.s).toFixed(4), v: +e.v.toFixed(3),
+      d: +(Number.isNaN(e.last) ? -1 : e.last).toFixed(4), /* the p the drawing was last drawn at: the ink, not the bookkeeping */
       yA: Math.round(e.yA), yB: Math.round(e.yB), pFull: +e.pFull.toFixed(3), vmax: +e.vmax.toFixed(3) };
   window.__world.asm = o;
 }
@@ -10445,10 +10466,10 @@ function watchTerminus() {
   geomRaf = requestAnimationFrame(() => {
     geomRaf = 0;
     const sq = $("gateDock").querySelector("i");
-    const now = absTop(sq) + sq.offsetHeight / 2;
-    /* offsetTop is an integer, so the socket and the rail can sit half a
-       pixel apart in honest agreement; 0.5 is the smallest threshold that is
-       not chasing that rounding. scrollHeight is checked too because growth
+    const sb = layoutRect(sq), now = sb.top + sb.h / 2;
+    /* both sides are the same subpixel layout read now (layoutRect), so a
+       half pixel is movement and not rounding: 0.5 rebuilds only for a socket
+       that really moved. scrollHeight is checked too because growth
        BELOW the socket moves nothing here but does move the document's end,
        which the token's last glide and the carry both read. */
     if (Math.abs(now - gatePageY) < 0.5 &&
