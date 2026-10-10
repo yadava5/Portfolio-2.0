@@ -1394,11 +1394,20 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
         const res = await route.fetch();
         const src = await res.text();
         injected = src.includes(TARGET);
+        /* AND THE LAST TWO BEATS RIDE THE STOP-NAME COLUMN ITSELF. The
+           percentage alone put beat 11 at 24% of 1512 = 363px, at the right
+           edge of a column whose names end anywhere from 260 to 380px, so
+           whether the line came within RAIL_LANE_MIN of a word depended on
+           the wobble's phase at the ladder: v6 moved the page 188px below
+           ¶06, the phase moved with it, the nearest approach went from under
+           16 to 24, and the control stopped failing (labrat, v6). Sent down
+           the column 24px inside its left edge, the line runs through the
+           names on any page height, which is the defect the gate exists for. */
         await route.fulfill({
           response: res,
           body: src.replace(
             TARGET,
-            "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
+            "mobile ? RAIL_X_MOBILE : i >= 10 && document.querySelector('.ladder .st') ? absLeft(document.querySelector('.ladder .st')) + 24 : (stx[i] / 100) * vw"
           ),
         });
       }

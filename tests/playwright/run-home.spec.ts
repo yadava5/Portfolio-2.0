@@ -1067,22 +1067,22 @@ test.describe("the figures assemble with the scroll", () => {
       await jump(page, Math.round(w.yA - 0.3 * (w.yB - w.yA)));
       const box = await page.evaluate(() => [innerWidth / 2, innerHeight / 2]);
       await page.mouse.move(box[0], box[1]);
-      await page.evaluate(() => {
+      /* the figure is named IN the call that starts the tracker: set in a
+         later evaluate, the tracker's first tick could win the race, read
+         asm[undefined], throw and never reschedule (labrat, v6: 8 of 8 red
+         on chromium-desktop with the page itself fine) */
+      await page.evaluate((k) => {
         const W2 = window as unknown as W & {
           __trk: [number, number, number][];
         };
         W2.__trk = [];
         const f = () => {
-          const a = W2.__world.asm[(window as unknown as { __k: string }).__k];
+          const a = W2.__world.asm[k];
           W2.__trk.push([performance.now(), a.s, scrollY]);
           if (W2.__trk.length < 240) requestAnimationFrame(f);
         };
         requestAnimationFrame(f);
-      });
-      await page.evaluate(
-        (k) => ((window as unknown as { __k: string }).__k = k),
-        key
-      );
+      }, key);
       const span = w.yB - w.yA;
       for (let k = 0; k < 5; k++)
         await page.mouse.wheel(0, Math.round((span * 1.5) / 5));

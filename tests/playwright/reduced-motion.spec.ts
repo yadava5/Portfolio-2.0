@@ -160,7 +160,7 @@ test.describe("reduced motion and keyboard access", () => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await page.waitForTimeout(800);
-    type A = { t: number; s: number; yA: number; yB: number };
+    type A = { t: number; s: number; d: number; yA: number; yB: number };
     const asm = () =>
       page.evaluate(
         () =>
@@ -174,7 +174,34 @@ test.describe("reduced motion and keyboard access", () => {
       "fig07",
       "fig08",
     ]);
+    /* THE INK, NOT THE BOOKKEEPING. labrat's negative proof (v6) drew every
+       figure at p 0 under reduced motion while the driver still said s = 1,
+       and an assertion on s passed it. So the drawn p is read too, and the
+       drawing itself must be one picture wherever the still reader stands. */
+    const ids: Record<string, string> = {
+      fig04: "appliedFig",
+      fig06: "net",
+      fig07: "jetFig",
+      fig08: "questFig",
+    };
+    const canon = (id: string) =>
+      page.evaluate(
+        (i) =>
+          [...document.getElementById(i)!.querySelectorAll("*")]
+            .map(
+              (e) =>
+                e.tagName +
+                "|" +
+                [...e.attributes]
+                  .map((a) => a.name + "=" + a.value)
+                  .sort()
+                  .join(",")
+            )
+            .join("\n"),
+        id
+      );
     for (const [key, w] of Object.entries(a0)) {
+      const seen: string[] = [];
       for (const f of [0, 0.3, 0.7]) {
         await page.evaluate(
           (y) => window.scrollTo({ top: y, behavior: "instant" }),
@@ -183,7 +210,17 @@ test.describe("reduced motion and keyboard access", () => {
         await page.waitForTimeout(120);
         const a = (await asm())[key];
         expect(a.s, `${key} at ${f} of its window`).toBe(1);
+        expect(a.d, `${key} is drawn finished at ${f} of its window`).toBe(1);
+        seen.push(await canon(ids[key]));
       }
+      expect(
+        seen[1],
+        `${key}: one drawing wherever a still reader stands`
+      ).toBe(seen[0]);
+      expect(
+        seen[2],
+        `${key}: one drawing wherever a still reader stands`
+      ).toBe(seen[0]);
     }
   });
 });

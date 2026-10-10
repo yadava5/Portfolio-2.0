@@ -222,11 +222,20 @@ test.describe("2.6 · nothing invisible is in the focus order before approval", 
          let the engine draw a frame, then read. ¶13's links fail that test
          because they sit 584px BELOW the document's end, where no scroll
          can put them. */
-      await page.evaluate(() =>
-        (document.activeElement as HTMLElement | null)?.scrollIntoView?.({
-          block: "center",
-        })
-      );
+      /* AND A FIGURE'S CONTROL IS CENTRED WITH ITS FIGURE. A reader uses a
+         plate's control with the plate in view, and the plates are where
+         that differs from the stop alone: fig. 08's "see it flat" sits at
+         the foot of a ~620px plate on the dusk contract, so on an 851px
+         phone centring the button alone puts the plate's top 64px above the
+         screen, inside the curtain that takes the station away before the
+         ground darkens (labrat, v6), while the plate centred shows it at
+         opacity 1. A stop outside a plate is centred as before, and a plate
+         control that renders nothing with its plate in view still fails. */
+      await page.evaluate(() => {
+        const a = document.activeElement as HTMLElement | null;
+        const plate = a?.closest?.("figure.plate") as HTMLElement | null;
+        (plate ?? a)?.scrollIntoView?.({ block: "center" });
+      });
       await page.waitForTimeout(260);
       const s = await read();
       if (!s) continue;
