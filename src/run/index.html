@@ -6763,18 +6763,27 @@ function traceOn(svg, labels, marks, key, name) {
      dominates the floor there anyway, so the clamp never bites on a laptop and
      the arithmetic reduces to the -2/+4 pair it replaces. */
   const FLOOR_H = (svg.classList.contains("tight") ? 46 : 26) * perPx;
+  /* A TAP PINS; A HOVER OR A FOCUS PREVIEWS. A finger's tap arrives as
+     pointerenter, focus and click in one gesture, and the click used to toggle
+     whatever the first two had just turned on: measured in both engines' phone
+     seats (v6, lane F7), the first tap on a fig. 04 desk or a fig. 07 lane lit
+     it and put it out again before the finger was up, and only a second tap
+     worked. So a trace has two states. A preview is what a fine pointer's hover
+     or a keyboard's focus shows while nothing is pinned; a pin is what a click,
+     Enter or Space toggles, and only a second press, Escape or a tap outside
+     the plate clears it. A touch pointer neither previews nor leaves. */
+  let pin = null;
+  const show = () => (pin !== null ? on(pin) : off());
   const wire = (g, id) => {
-    g.addEventListener("pointerenter", () => on(id));
-    g.addEventListener("pointerleave", off);
-    g.addEventListener("focus", () => on(id));
-    g.addEventListener("blur", off);
-    g.addEventListener("click", (e) => {
-      e.stopPropagation();
-      svg.classList.contains("tracing") && marks.some((m) => m[key] === id && m.g.classList.contains("hot")) ? off() : on(id);
-    });
+    g.addEventListener("pointerenter", (e) => { if (e.pointerType !== "touch" && pin === null) on(id); });
+    g.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch") show(); });
+    g.addEventListener("focus", () => { if (pin === null) on(id); });
+    g.addEventListener("blur", show);
+    const press = () => { pin = pin === id ? null : id; show(); };
+    g.addEventListener("click", (e) => { e.stopPropagation(); press(); });
     g.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); on(id); }
-      if (e.key === "Escape") off();
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); press(); }
+      if (e.key === "Escape") { pin = null; off(); }
     });
   };
   /* PASS 1 · every box, before a single target is drawn. getBBox throws on an
@@ -6828,7 +6837,16 @@ function traceOn(svg, labels, marks, key, name) {
     g.appendChild(lbl);
     wire(g, id);
   });
-  document.addEventListener("click", (e) => { if (!svg.contains(e.target)) off(); });
+  /* one outside-tap listener per plate, however often an edition change
+     rebuilds it: the listener reads the CURRENT build's clear. POINTERDOWN,
+     not click: WebKit sends no click for a tap on plain page (iOS only clicks
+     what it thinks is clickable), so measured in its phone seat an outside
+     tap never cleared a pinned trace. A press anywhere off the plate does. */
+  svg.__traceClear = () => { pin = null; off(); };
+  if (!svg.__traceDoc) {
+    svg.__traceDoc = true;
+    document.addEventListener("pointerdown", (e) => { if (!svg.contains(e.target)) svg.__traceClear(); });
+  }
 }
 function buildApplied(tight) {
   const s = applied.svg, el = svgIn(s);
