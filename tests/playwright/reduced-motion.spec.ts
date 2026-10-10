@@ -150,4 +150,40 @@ test.describe("reduced motion and keyboard access", () => {
       }
     }
   });
+
+  /* v6 (2026-10-09): the figures assemble with the scroll, and that is
+     motion, so a still reader is shown every one of them finished wherever
+     they stand, and the same finished drawing a moving reader parks on. */
+  test("every assembled figure is finished, at any scroll", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await page.waitForTimeout(800);
+    type A = { t: number; s: number; yA: number; yB: number };
+    const asm = () =>
+      page.evaluate(
+        () =>
+          (window as unknown as { __world: { asm: Record<string, A> } }).__world
+            .asm
+      );
+    const a0 = await asm();
+    expect(Object.keys(a0).sort()).toEqual([
+      "fig04",
+      "fig06",
+      "fig07",
+      "fig08",
+    ]);
+    for (const [key, w] of Object.entries(a0)) {
+      for (const f of [0, 0.3, 0.7]) {
+        await page.evaluate(
+          (y) => window.scrollTo({ top: y, behavior: "instant" }),
+          Math.round(w.yA + f * (w.yB - w.yA))
+        );
+        await page.waitForTimeout(120);
+        const a = (await asm())[key];
+        expect(a.s, `${key} at ${f} of its window`).toBe(1);
+      }
+    }
+  });
 });

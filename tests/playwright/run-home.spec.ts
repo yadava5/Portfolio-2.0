@@ -903,3 +903,246 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     expect(await link.evaluate((a) => a.outerHTML)).toBe(html0);
   });
 });
+
+/* THE FIGURES ASSEMBLE WITH THE SCROLL (v6, 2026-10-09). The owner: "make
+   sure to make them work with scrolling, not like single play, they should
+   assemble with rail scroll!" — and of the scroll-pure round before it, "if
+   someone scrolls fast, they'll miss it". So each assembled figure is held
+   to both: its drawing at rest is a function of the scroll alone (the same y
+   gives the same drawing, coming down and going back up), a centred park is
+   the finished drawing, a flick that stops at the figure still shows it
+   assembling, a slow scroll drives it both ways, and once it lands nothing
+   runs. The driver's probes are __world.asm[key] = { t, s, v, yA, yB } and
+   __world.asmRest(). */
+test.describe("the figures assemble with the scroll", () => {
+  const FIGS = [
+    ["fig04", "appliedFig"],
+    ["fig06", "net"],
+    ["fig07", "jetFig"],
+    ["fig08", "questFig"],
+  ] as const;
+  type A = { t: number; s: number; v: number; yA: number; yB: number };
+  type W = { __world: { asm: Record<string, A>; asmRest: () => boolean } };
+  const frames = (page: import("@playwright/test").Page, n = 2) =>
+    page.evaluate(
+      (k) =>
+        new Promise<void>((done) => {
+          const step = (i: number) =>
+            i ? requestAnimationFrame(() => step(i - 1)) : done();
+          step(k);
+        }),
+      n
+    );
+  const rest = (page: import("@playwright/test").Page) =>
+    page.waitForFunction(
+      () => (window as unknown as W).__world.asmRest(),
+      null,
+      {
+        timeout: 5000,
+      }
+    );
+  const asmOf = (page: import("@playwright/test").Page, key: string) =>
+    page.evaluate((k) => (window as unknown as W).__world.asm[k], key);
+  /* a jump of more than the driver's snap distance, so the figure lands at
+     rest in the frame it arrives */
+  const jump = async (page: import("@playwright/test").Page, y: number) => {
+    await page.evaluate(
+      (yy) => window.scrollTo({ top: yy, behavior: "instant" }),
+      y
+    );
+    await frames(page);
+    await rest(page);
+  };
+  const canon = (page: import("@playwright/test").Page, id: string) =>
+    page.evaluate(
+      (i) =>
+        [...document.getElementById(i)!.querySelectorAll("*")]
+          .map(
+            (e) =>
+              e.tagName +
+              "|" +
+              [...e.attributes]
+                .map((a) => a.name + "=" + a.value)
+                .sort()
+                .join(",") +
+              "|" +
+              (e.children.length ? "" : e.textContent)
+          )
+          .join("\n"),
+      id
+    );
+  const open = async (page: import("@playwright/test").Page) => {
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() =>
+            Object.keys((window as unknown as W).__world.asm ?? {})
+              .sort()
+              .join(",")
+          ),
+        { timeout: 15000 }
+      )
+      .toBe(FIGS.map(([k]) => k).join(","));
+  };
+
+  for (const [key, id] of FIGS) {
+    test(`${key}: the same y gives the same drawing both ways, and a centred park is finished`, async ({
+      page,
+      isMobile,
+    }) => {
+      await open(page);
+      const w = await asmOf(page, key);
+      /* fig. 08's window is its plate's dusk entrance: 89 to 211 px */
+      expect(w.yB - w.yA).toBeGreaterThan(80);
+      const ys = [0.2, 0.5, 0.8].map((f) =>
+        Math.round(w.yA + f * (w.yB - w.yA))
+      );
+      const down: string[] = [];
+      for (const y of ys) {
+        await jump(page, y - 2000 < 0 ? y + 2000 : y - 2000);
+        await jump(page, y);
+        const a = await asmOf(page, key);
+        expect(a.s, `mid-assembly at ${y}`).toBeGreaterThan(0);
+        expect(a.s).toBeLessThan(1);
+        expect(a.s).toBe(a.t);
+        down.push(await canon(page, id));
+      }
+      /* the assembly changes the drawing: 0.2 and 0.8 are not one picture */
+      expect(down[0]).not.toBe(down[2]);
+      await jump(page, Math.round(w.yB + 1200));
+      for (let i = ys.length - 1; i >= 0; i--) {
+        await jump(page, ys[i]);
+        expect(
+          await canon(page, id),
+          `the same drawing at ${ys[i]} both ways`
+        ).toBe(down[i]);
+      }
+      /* CENTRED is computed, not asked of scrollIntoView: WebKit's own call
+         lands a phone figure's centre anywhere from 0.55 to 0.66 of the
+         screen depending on the scroll that came before it (measured, v6),
+         which on a figure 70% of the screen tall is a park with its bottom
+         off the screen. On a desktop seat both are checked. */
+      const centre = await page.evaluate((i) => {
+        const r = document.getElementById(i)!.getBoundingClientRect();
+        return Math.round(scrollY + r.top + r.height / 2 - innerHeight / 2);
+      }, id);
+      await jump(page, centre);
+      expect(
+        (await asmOf(page, key)).s,
+        "a centred figure is the finished drawing"
+      ).toBe(1);
+      const finished = await canon(page, id);
+      await jump(page, Math.round(w.yB + 0.4 * (w.yB - w.yA)));
+      expect(
+        await canon(page, id),
+        "and it is the same drawing as any later scroll"
+      ).toBe(finished);
+      if (!isMobile) {
+        await jump(page, Math.round(w.yA - 1500));
+        await page.evaluate(
+          (i) =>
+            document
+              .getElementById(i)!
+              .scrollIntoView({ block: "center", behavior: "instant" }),
+          id
+        );
+        await frames(page);
+        await rest(page);
+        expect(
+          (await asmOf(page, key)).s,
+          "scrollIntoView centre, desktop"
+        ).toBe(1);
+      }
+    });
+
+    test(`${key}: a flick that stops at the figure still shows it assembling`, async ({
+      page,
+      isMobile,
+    }) => {
+      test.skip(isMobile, "wheel input; the touch flick is the same driver");
+      await open(page);
+      const w = await asmOf(page, key);
+      await jump(page, Math.round(w.yA - 0.3 * (w.yB - w.yA)));
+      const box = await page.evaluate(() => [innerWidth / 2, innerHeight / 2]);
+      await page.mouse.move(box[0], box[1]);
+      await page.evaluate(() => {
+        const W2 = window as unknown as W & {
+          __trk: [number, number, number][];
+        };
+        W2.__trk = [];
+        const f = () => {
+          const a = W2.__world.asm[(window as unknown as { __k: string }).__k];
+          W2.__trk.push([performance.now(), a.s, scrollY]);
+          if (W2.__trk.length < 240) requestAnimationFrame(f);
+        };
+        requestAnimationFrame(f);
+      });
+      await page.evaluate(
+        (k) => ((window as unknown as { __k: string }).__k = k),
+        key
+      );
+      const span = w.yB - w.yA;
+      for (let k = 0; k < 5; k++)
+        await page.mouse.wheel(0, Math.round((span * 1.5) / 5));
+      await rest(page);
+      const r = await page.evaluate(() => {
+        const T = (window as unknown as { __trk: [number, number, number][] })
+          .__trk;
+        const yEnd = T[T.length - 1][2];
+        const stop = T.findIndex((q) => q[2] === yEnd);
+        const after = T.slice(stop).filter((q) => q[1] > 0 && q[1] < 1);
+        let mono = true;
+        for (let i = 1; i < T.length; i++)
+          if (T[i][1] < T[i - 1][1] - 1e-6) mono = false;
+        return {
+          msAfterStop: after.length
+            ? after[after.length - 1][0] - T[stop][0]
+            : 0,
+          mono,
+        };
+      });
+      expect(r.mono, "it only ever moves forward on a forward flick").toBe(
+        true
+      );
+      expect(
+        r.msAfterStop,
+        "the assembly is still visibly running after the scroll has stopped"
+      ).toBeGreaterThan(120);
+      expect((await asmOf(page, key)).s).toBe(1);
+    });
+  }
+
+  test("once every figure has landed, nothing runs", async ({ page }) => {
+    await page.addInitScript(() => {
+      const raf = window.requestAnimationFrame.bind(window);
+      (window as unknown as { __rafN: number }).__rafN = 0;
+      window.requestAnimationFrame = (cb) => {
+        (window as unknown as { __rafN: number }).__rafN++;
+        return raf(cb);
+      };
+    });
+    await open(page);
+    const w = await asmOf(page, "fig07");
+    await jump(page, Math.round(w.yA - 100));
+    /* small steps a frame apart, so the hand runs (a jump would snap) */
+    for (let k = 1; k <= 8; k++) {
+      await page.evaluate(
+        (y) => window.scrollTo(0, y),
+        Math.round(w.yA - 100 + k * 70)
+      );
+      await frames(page, 1);
+    }
+    await rest(page);
+    await page.waitForTimeout(400);
+    const n0 = await page.evaluate(
+      () => (window as unknown as { __rafN: number }).__rafN
+    );
+    await page.waitForTimeout(1000);
+    const n1 = await page.evaluate(
+      () => (window as unknown as { __rafN: number }).__rafN
+    );
+    expect(n1 - n0).toBe(0);
+  });
+});
