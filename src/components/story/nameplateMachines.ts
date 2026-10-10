@@ -1922,10 +1922,21 @@ export function mountNameHand(
     if (!wetLayer) {
       wetLayer = document.createElement("div");
       wetLayer.className = "np-wet";
+      /* THE TWINS ARE PAINT, NOT TEXT, and they have to say so twice. They
+         carry the letters' own characters — that is how they draw the same
+         glyph — so without this the name is in the h1 twice, and a reader
+         who triple-clicks it gets it twice. Measured on the built page:
+         Firefox returns "Ayush Yadav AyushYadav" from a real triple-click
+         (Chromium and WebKit return it once, so this is not theory and not
+         portable either way). aria-hidden already keeps them out of the
+         accessibility tree; `inert` keeps them out of find-in-page and
+         user-select:none out of a selection. Neither touches paint. */
       wetLayer.setAttribute("aria-hidden", "true");
+      wetLayer.setAttribute("inert", "");
       wetLayer.style.cssText =
         "position:absolute;left:0;top:0;width:100%;height:0;" +
-        "visibility:hidden;pointer-events:none";
+        "visibility:hidden;pointer-events:none;" +
+        "user-select:none;-webkit-user-select:none";
       h1.appendChild(wetLayer);
     }
     for (let i = 0; i < N; i++) {
