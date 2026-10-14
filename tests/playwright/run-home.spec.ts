@@ -937,6 +937,15 @@ test.describe("the figures assemble with the scroll", () => {
      plate is a different picture by design; what the later-scroll equality
      guards for the driver is only that the assembly stays finished. */
   const BEAD = new Set<string>(["fig10", "fig11"]);
+  /* THE FLOOR IS THE ENVELOPE, NOT SLACK. A centred park (the drawing's
+     middle at 0.5 vh) sits 0.05 vh short of the end line at ASM_END 0.45,
+     so its pure p is 1 - 0.05 vh / window. Measured on this build at the
+     five project seats (1440x900 on three engines, Pixel 5, iPhone 14):
+     .816 (fig10, iPhone 14) to .886, fig08 1 (its window ends earlier). With
+     the end line moved to 0.20 vh the same parks read .53 to .56, which a
+     floor of 0.4 let through (labrat, v7). 0.7 refuses that move by .14
+     and keeps .11 under the shortest real park. */
+  const PARK_FLOOR = 0.7;
   type A = {
     t: number;
     s: number;
@@ -1076,7 +1085,7 @@ test.describe("the figures assemble with the scroll", () => {
       expect(
         parked.t,
         "a centred park is mostly assembled by the scroll alone"
-      ).toBeGreaterThanOrEqual(0.4);
+      ).toBeGreaterThanOrEqual(PARK_FLOOR);
       /* ... and after the grace's stillness the hand finishes it, and the
          window is closed where the reader paused */
       await expect
@@ -1145,7 +1154,7 @@ test.describe("the figures assemble with the scroll", () => {
         expect(
           (await asmOf(page, key)).t,
           "scrollIntoView centre, desktop: mostly by the scroll"
-        ).toBeGreaterThanOrEqual(0.4);
+        ).toBeGreaterThanOrEqual(PARK_FLOOR);
         await expect
           .poll(async () => (await asmOf(page, key)).s, { timeout: 4000 })
           .toBe(1);
