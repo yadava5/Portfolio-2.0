@@ -932,6 +932,11 @@ test.describe("the figures assemble with the scroll", () => {
     ["fig10", "gatesFig"],
     ["fig11", "signsFig"],
   ] as const;
+  /* TWO CLOCKS. fig. 10's verdicts and fig. 11's blade ride the rail's bead
+     (a pure function of scroll the driver does not own), so at a later y the
+     plate is a different picture by design; what the later-scroll equality
+     guards for the driver is only that the assembly stays finished. */
+  const BEAD = new Set<string>(["fig10", "fig11"]);
   type A = {
     t: number;
     s: number;
@@ -1098,10 +1103,16 @@ test.describe("the figures assemble with the scroll", () => {
         ).toBe(1);
       }
       await jump(page, Math.round(w.yB + 0.4 * (w.yB - w.yA)));
-      expect(
-        await canon(page, id),
-        "and it is the same drawing as any later scroll"
-      ).toBe(finished);
+      if (BEAD.has(key))
+        expect(
+          (await asmOf(page, key)).s,
+          "and it stays finished at any later scroll"
+        ).toBe(1);
+      else
+        expect(
+          await canon(page, id),
+          "and it is the same drawing as any later scroll"
+        ).toBe(finished);
       /* back up from the park it comes apart again, continuously, over the
          closed window: p falls with y, never jumps, never sticks */
       const yG = graced.g ?? w.yB;
