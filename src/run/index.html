@@ -5477,18 +5477,19 @@ function cacheGeometry() {
        of the window and three quarters of it */
     const wy = climbWin.y1 - climbWin.y0, yG = b.top + (climb.g.ys[0] / climb.g.vh) * b.h - 0.96 * vh;
     climbWin.yK = clamp(yG, climbWin.y0 + Q3T.ink[0] * wy, climbWin.y0 + 0.75 * wy);
-    if (climb.e) {
-      climb.e.last = NaN; /* the same p can be a new q now: redraw it */
-      /* under reduced motion no frame follows to redraw it, and the still
-         reader's plate is the finished one at any window: draw it through the
-         driver, so the d probe stays the ink and not a stale cache flag */
-      if (RM) asmPut(climb.e, 1);
-    }
+    if (climb.e) climb.e.last = NaN; /* the same p can be a new q now: redraw it (below, after the measure) */
     window.__world.fig08 = { y0: Math.round(climbWin.y0), y1: Math.round(climbWin.y1), ok: climbWin.ok,
       ink: Math.round(climbWin.yK), read: Math.round(yRead), curtain: Math.round(yOf(f8.spec.out[0])) }; /* probe hook */
   }
   /* ── v6 · every assembled figure's window, measured last ── */
   asmGeometry();
+  /* under reduced motion no frame follows to redraw fig. 08 for its new
+     window, and the still reader's plate is the finished one at any window:
+     draw it through the driver AFTER the measure (climbQ reads the driver's
+     yA/yB: drawn before it, q = 1 landed on the stale window and a 1440 seat
+     showed the bare elevation while d read 1 — found by lane F08, v7), so the
+     d probe stays the ink and the ink is the finished plate */
+  if (RM && climb.e) { asmPut(climb.e, 1); asmProbe(); } /* re-probe: the measure's snapshot saw the cleared flag */
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.

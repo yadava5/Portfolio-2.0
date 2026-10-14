@@ -207,6 +207,7 @@ test.describe("reduced motion and keyboard access", () => {
             .join("\n"),
         id
       );
+    const finished: Record<string, string> = {};
     for (const [key, w] of Object.entries(a0)) {
       const seen: string[] = [];
       for (const f of [0, 0.3, 0.7]) {
@@ -218,7 +219,8 @@ test.describe("reduced motion and keyboard access", () => {
         const a = (await asm())[key];
         expect(a.s, `${key} at ${f} of its window`).toBe(1);
         expect(a.d, `${key} is drawn finished at ${f} of its window`).toBe(1);
-        expect(a.g, `${key}: no grace under reduced motion`).toBeNull();
+        /* a build without the probe (v6) reads undefined: no closed window either way */
+        expect(a.g ?? null, `${key}: no grace under reduced motion`).toBeNull();
         seen.push(await canon(ids[key]));
       }
       expect(
@@ -229,6 +231,23 @@ test.describe("reduced motion and keyboard access", () => {
         seen[2],
         `${key}: one drawing wherever a still reader stands`
       ).toBe(seen[0]);
+      finished[key] = seen[0];
+    }
+    /* ONE DRAWING IS NOT ENOUGH: IT MUST BE THE FINISHED ONE. fig. 08's still
+       was consistent at every scroll and drawn at q = 0 on a 1440 seat (its
+       reduced-motion redraw ran before its window was measured; v7), with d
+       reading 1 — the probe cannot see "called with 1, drew the start". The
+       reference is the page pinned at p = 1 (?asm=1), which draws every
+       figure finished by construction: the still must equal it, figure by
+       figure. */
+    await page.goto("/?asm=1");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await page.waitForTimeout(800);
+    for (const key of Object.keys(ids)) {
+      expect(
+        finished[key],
+        `${key}: the still reader's drawing is the finished one`
+      ).toBe(await canon(ids[key]));
     }
   });
 });
