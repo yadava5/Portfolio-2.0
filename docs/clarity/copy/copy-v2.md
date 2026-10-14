@@ -182,6 +182,7 @@ Codes: `h2+` is the new second heading line, `prov` a provenance row, `stack` a 
 - Plate rows: "Randall Vollen · his manager, station 03" / "Shree Chaturvedi · teammate, stations 06 and 09" · "three of the twelve stops carry a name that is not mine."
 - prov and link, unchanged.
 - Caption: "fig. 11 · each reference sits beside the station that person worked on."
+- Caption, v8 (2026-10-14): "fig. 11 · written at the stops, posted, and collected by the line." The boards of v7 are gone; each row is one place with a writing desk in it, and "posted" carries the fact: public.
 
 **¶12 Every pipeline I build ends with a human decision.**
 - "This one ends with yours."

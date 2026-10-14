@@ -1107,7 +1107,11 @@ const FIGURES = [
          block with its tags stripped, so "the yard" still passes when the
          plate says "the yards". A tag-delimited match cannot. */
       claims: [
-        "each reference joins the line from the stops where its writer saw me work.",
+        /* v8: the boards went and the sentence changed with them. "posted"
+           is the load-bearing word, because public is the station's fact;
+           v7's "joins the line from the stops" described a motion the plate
+           no longer makes. */
+        "written at the stops, posted, and collected by the line.",
       ],
       exposed: [
         />Randall Vollen</,
