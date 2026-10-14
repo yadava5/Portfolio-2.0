@@ -180,6 +180,7 @@ test.describe("reduced motion and keyboard access", () => {
       "fig06",
       "fig07",
       "fig08",
+      "fig10",
     ]);
     /* THE INK, NOT THE BOOKKEEPING. labrat's negative proof (v6) drew every
        figure at p 0 under reduced motion while the driver still said s = 1,
@@ -190,6 +191,7 @@ test.describe("reduced motion and keyboard access", () => {
       fig06: "net",
       fig07: "jetFig",
       fig08: "questFig",
+      fig10: "gatesFig",
     };
     const canon = (id: string) =>
       page.evaluate(
