@@ -5477,7 +5477,13 @@ function cacheGeometry() {
        of the window and three quarters of it */
     const wy = climbWin.y1 - climbWin.y0, yG = b.top + (climb.g.ys[0] / climb.g.vh) * b.h - 0.96 * vh;
     climbWin.yK = clamp(yG, climbWin.y0 + Q3T.ink[0] * wy, climbWin.y0 + 0.75 * wy);
-    if (climb.e) climb.e.last = NaN; /* the same p can be a new q now: redraw it */
+    if (climb.e) {
+      climb.e.last = NaN; /* the same p can be a new q now: redraw it */
+      /* under reduced motion no frame follows to redraw it, and the still
+         reader's plate is the finished one at any window: draw it through the
+         driver, so the d probe stays the ink and not a stale cache flag */
+      if (RM) asmPut(climb.e, 1);
+    }
     window.__world.fig08 = { y0: Math.round(climbWin.y0), y1: Math.round(climbWin.y1), ok: climbWin.ok,
       ink: Math.round(climbWin.yK), read: Math.round(yRead), curtain: Math.round(yOf(f8.spec.out[0])) }; /* probe hook */
   }
