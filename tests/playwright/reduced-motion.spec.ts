@@ -180,6 +180,7 @@ test.describe("reduced motion and keyboard access", () => {
       "fig06",
       "fig07",
       "fig08",
+      "fig09",
       "fig10",
       "fig11",
     ]);
@@ -192,6 +193,7 @@ test.describe("reduced motion and keyboard access", () => {
       fig06: "net",
       fig07: "jetFig",
       fig08: "questFig",
+      fig09: "amlFig",
       fig10: "gatesFig",
       fig11: "signsFig",
     };

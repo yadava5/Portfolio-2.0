@@ -929,6 +929,7 @@ test.describe("the figures assemble with the scroll", () => {
     ["fig06", "net"],
     ["fig07", "jetFig"],
     ["fig08", "questFig"],
+    ["fig09", "amlFig"],
     ["fig10", "gatesFig"],
     ["fig11", "signsFig"],
   ] as const;

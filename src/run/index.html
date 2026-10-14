@@ -848,7 +848,12 @@ if (location.hash.length > 1) {
   .figsvg .staged{font-size:12px} /* the caveat, printed where the tools are */
   .figsvg .cellr{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .figsvg .cellink{fill:none; stroke:var(--ink); stroke-width:1.4}
-  .figsvg .cellrun{fill:var(--pine); font-size:12px}
+  /* the sandbox is a crate (v8): near edges and the receding silhouette in
+     subject ink, the far wall in --ink-2, the convention figs. 08 and 10
+     draw depth with; no fill, the hidden lines cut at build. The ✓ that
+     stood at each cell's end is gone: the gutter number is the proof. */
+  .figsvg .wnear{fill:none; stroke:var(--ink); stroke-width:1.4; stroke-linejoin:round}
+  .figsvg .wfar{fill:none; stroke:var(--ink-2); stroke-width:1}
   /* a gate a thing PASSES THROUGH is a boom, and it swings; the square is
      reserved for a gate a thing is JUDGED BY. FORM carries the state and
      colour reinforces it, because the pair is a weak luminance separation
@@ -860,6 +865,7 @@ if (location.hash.length > 1) {
   .figsvg .boom{fill:none; stroke:var(--clay-g); stroke-width:1.6; stroke-linecap:round}
   .figsvg .boom.open{stroke:var(--pine)}
   .figsvg .boom.held{stroke-width:2.4} /* the one that never lifts, drawn heavier */
+  .figsvg .boom.bar{stroke-width:1.6; stroke-linejoin:round} /* heavy by volume, not by weight: the wide plate's barrier has faces */
   /* THE THREE GATES HAVE TO READ APART IN A STILL, not only in the scrub.
      A screenshot, a print and a reduced-motion reader all see one frame, so
      "this one lifts and that one doesn't" is not a distinction the drawing
@@ -4379,8 +4385,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="margin-top:.5rem; max-width:44ch">no accuracy figure is quoted: no committed evaluation earns one.</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/automl/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md" target="_blank" rel="noopener">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app" target="_blank" rel="noopener">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
-        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a Docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom standing across the rail. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Deploy carries a heavy boom that never lifts, over a phase label which never lights, because nothing in the graph can start a deployment; the rail runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the rail and the run passes straight through them."></svg>
+      <figure class="plate" data-fx="in .04 .30 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
+        <svg id="amlFig" class="figsvg" viewBox="0 0 560 556" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a Docker sandbox, and the notebook returns to the supervisor. The sandbox is an open crate drawn in depth: a floor, a back wall, two side walls and a low front lip, and no top. The notebook is six cells inked on the back wall, their right ends running behind the right wall, which cuts them; the tools' wire drops in over the back wall's top edge, the only thing that crosses it, and the return wire leaves through the right wall. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a two-rail track drawn in the same depth, its posts on the near side: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom on its post. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Both of those arms swing back along the depth ahead of the run. Deploy carries a heavy barrier, a bar drawn with volume, that never lifts, standing in the line of the crate's right wall over a phase label which never lights, because nothing in the graph can start a deployment; the track runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the track and the run passes straight through them."></svg>
         <figcaption>fig. 09 · the 12 MCP tools in source order, timing staged. the run halts before deploy.</figcaption>
       </figure>
     </div>
@@ -9823,18 +9829,21 @@ window.__fig08 = () => ({ p: climb.p, q: climb.q, flat: climb.flat, ...climbWin 
 window.__fig08draw = drawClimb;
 
 /* Agentic AutoML — the notebook, worked by tools. The registry lists the
-   REAL 12 (mcpServer.ts, pinned 5e42233, in source order); cells draw and
-   run as the bead walks the seven-phase rail; six gates open, the seventh
-   stays shut, and deploy never lights. No metric appears because none is
-   claimed — the drawing is the architecture, halting. */
+   REAL 12 (mcpServer.ts, pinned 5e42233, in source order); the sandbox is
+   an open crate drawn in depth and the notebook's cells are ink on its back
+   wall; cells draw and run as the bead walks the seven-phase track; two
+   arms swing back, the third gate stays shut, and deploy never lights. No
+   metric appears because none is claimed — the drawing is the architecture,
+   halting. */
 const AML_TOOLS = [
   "list_project_files", "get_dataset_profile", "get_dataset_sample", "search_documents",
   "list_cells", "read_cell", "write_cell", "edit_cell",
   "run_cell", "delete_cell", "reorder_cells", "insert_cell",
 ];
-const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], runs: [], prompts: [], booms: [], plabels: [],
+const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], prompts: [], booms: [], plabels: [],
   bead: null, ring: null, trail: null, state: null, deploySeg: null,
-  phx: [], vert: false, from: 24, railY: 466, railX: 34, swing: -104, halt: 0 };
+  phx: [], vert: false, from: 24, railY: 490, railX: 34, swing: -120, halt: 0, ringBottom: 500, vbH: 556,
+  steps: [], track: [], p3: 0.4, p4: 0.55, e: null, authored: "" };
 const AML_PHASES = ["1.0 ingest", "2.0 explore", "3.0 preprocess", "4.0 engineer", "5.0 train", "6.0 experiments", "7.0 deploy"];
 /* WHICH PHASES ACTUALLY GATE — read off the platform at 5e42233, not assumed.
    This plate used to draw a boom before all seven and caption it "a human
@@ -9855,8 +9864,11 @@ const AML_BOOM_CLASS = { maybe: "boom maybe", always: "boom", human: "boom held"
      what the shipping plate did (the caveat crossed the sixth cell row at
      y 226 while the registry column started at x 398: three systems in one
      x-band, and the defect this redraw exists to answer).
-   2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, plus dash for
-     containment. Subject ink is 1.4–1.6. There is no third hue and no
+   2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, plus dash for a run that
+     is only conditional. Subject ink is 1.4–1.6, and the crate (v8) is
+     subject, drawn the way figs. 08 and 10 draw depth: its near edges and
+     receding silhouette --ink at 1.4, its far wall --ink-2 at 1, no fill,
+     the hidden lines cut at build. There is no third hue and no
      element-level opacity added here — the three `edge` paths this
      function used to draw at opacity:.3 measured 2.32:1 on #43372f and
      2.49:1 on #2c2622, under the 3.0 non-text floor, and check-palette
@@ -9867,14 +9879,45 @@ const AML_BOOM_CLASS = { maybe: "boom maybe", always: "boom", human: "boom held"
 
    Height is the dimension this plate reaches for: check-figures' floor is
    `authored × seat ÷ viewBox WIDTH`, so the 560 stays 560 (12 × 515 ÷ 560
-   = 11.04px, unchanged) and the stack grows downward for free. */
+   = 11.04px, unchanged) and the stack grows downward for free: 532 → 556
+   when the crate took its depth (v8) and the rail moved down 24. */
+/* ····· v8 · one clock: the plate rides the assembly driver ·····
+   The run used to ride the plate's own fx (e over .14–.74 of its travel
+   through the viewport: ≈920 px of scroll at 1440×900, beginning with the
+   rail ≈400 px below the fold, with no hand, no grace and no flick floor),
+   the class the 2026-10-14 amendment outlaws. Now the whole plate is one
+   still of p (THE ASSEMBLIES RIDE THE SCROLL): the crate in a builder's
+   order, the notebook inked on its back wall and the stem dropped in, the
+   track laid once its band is on screen, then the run. The pace cut is
+   deliberate and in the open: the run has p4..1 (p4 ≥ AML_W.run, amlSpan)
+   of a window the plate stretches past the law's end line (amlWindow) until
+   a centred park reads AML_PARK pure, and never past AML_SPAN of the law's
+   window. */
+const AML_W = { crate: 0.22, track: [0.37, 0.4], run: 0.45 }; /* of p · w1 ends; w3 starts in this band (the stem lands at .37); w4 starts here or .15 after w3 */
+const AML_SPAN = 1.6;  /* the most the wide window stretches past the law's, as a multiple of it */
+const AML_PARK = 0.72; /* pure p a centred park keeps: the spec's PARK_FLOOR .7 with margin (a control at the floor flips, v7) */
+const AML_FOLD = 0.88; /* vh · the window closes no earlier than the halt ring standing here: the halt is seen on a phone (fig. 08 declares its window too) */
+/* the tight plate's rail is flat and vertical: the authored label's phrases
+   about the track in depth are swapped for its own (fig. 08 swaps its
+   label by edition the same way) */
+const AML_TIGHT_SWAP = [
+  ["a two-rail track drawn in the same depth, its posts on the near side", "a rail"],
+  ["Both of those arms swing back along the depth ahead of the run.", "Both of those booms lift ahead of the run."],
+  ["a heavy barrier, a bar drawn with volume, that never lifts, standing in the line of the crate's right wall over", "a heavy boom that never lifts, over"],
+  ["the track runs on dashed", "the rail runs on dashed"],
+  ["nothing across the track", "nothing across the rail"],
+];
 function buildAml(tight) {
   const s = aml.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  aml.tools = []; aml.dots = []; aml.cells = []; aml.runs = []; aml.prompts = [];
-  aml.booms = []; aml.plabels = [];
+  aml.tools = []; aml.dots = []; aml.cells = []; aml.prompts = [];
+  aml.booms = []; aml.plabels = []; aml.steps = []; aml.track = [];
   aml._lit = -1; aml._st = ""; /* fresh elements: the diff cache must not skip them */
   aml.vert = !!tight;
+  if (!aml.authored) aml.authored = s.getAttribute("aria-label");
+  s.setAttribute("aria-label", tight
+    ? AML_TIGHT_SWAP.reduce((t, [wide, own]) => t.replace(wide, own), aml.authored)
+    : aml.authored);
   /* a rule, with a gap wherever a legend seats on it or a wire crosses it */
   const hrule = (y, x0, x1, gaps) => {
     let d = "", cur = x0;
@@ -9882,25 +9925,33 @@ function buildAml(tight) {
     if (x1 > cur) d += `M ${cur} ${y} H ${x1}`;
     el("path", { d: d.trim(), class: "lane" });
   };
-  const tipDown = (x, y) => el("path", { d: `M ${x} ${y} l -4 -8 h 8 z`, class: "wiretip" });
+  /* an element the scroll switches on: built at 0 and listed with the p it
+     appears at (w1, w2) or the fraction of the track's window (w3) */
+  const step = (list, at, t, a, parent) => {
+    const n = el(t, { ...a, opacity: 0 }, parent); list.push([n, at]); return n;
+  };
+  const tipDown = (x, y, list, at) => (list
+    ? step(list, at, "path", { d: `M ${x} ${y} l -4 -8 h 8 z`, class: "wiretip" })
+    : el("path", { d: `M ${x} ${y} l -4 -8 h 8 z`, class: "wiretip" }));
   if (!tight) {
-    s.setAttribute("viewBox", "0 0 560 532");
-    const R = 466; /* the rail */
-    aml.railY = R; aml.from = 24; aml.swing = -104;
+    s.setAttribute("viewBox", "0 0 560 556");
+    const R = 490; /* the rail */
+    aml.railY = R; aml.from = 24; aml.swing = -120;
     /* ——— the loop, laid down first so every block sits over it ———
        the supervisor calls its hands, the hands work the notebook, and the
        notebook comes back: the figcaption used to say "written, run, and
-       re-read by the tools" in words. It is drawn now. */
-    el("path", { d: "M 500 322 H 524 V 172 M 524 152 V 34 H 478", class: "lane" });
+       re-read by the tools" in words. It is drawn now. The return wire
+       leaves the crate's right wall through a gap in that wall's far edge. */
+    el("path", { d: "M 476 322 H 524 V 172 M 524 152 V 34 H 478", class: "lane" });
     el("path", { d: "M 472 34 l 8 -4 v 8 z", class: "wiretip" });
     el("text", { x: 524, y: 162, "text-anchor": "middle", class: "fsm" }).textContent = "returns";
     /* ——— the supervisor, and the phase it is in ——— */
     el("rect", { x: 24, y: 16, width: 448, height: 52, rx: 3, class: "lane" });
     el("text", { x: 38, y: 40, class: "lit" }).textContent = "LangGraph supervisor";
     el("text", { x: 38, y: 58, class: "fsm" }).textContent = "agentic core · GPT-5.4";
-    /* built with the content scrubAml(0) would write, never empty: a
+    /* built with the content drawAml(0) would write, never empty: a
        resize across the 515 seat rebuilds the plate (chooseEditions) and
-       the next scrub frame may be a scroll away */
+       the next frame may be a scroll away */
     aml.state = el("text", { x: 458, y: 58, "text-anchor": "end", class: "lit" });
     aml.state.textContent = `state · ${AML_PHASES[0]}`;
     el("path", { d: "M 300 68 V 92", class: "lane" });
@@ -9922,67 +9973,117 @@ function buildAml(tight) {
        the registry on its own rule instead of crossing the notebook */
     el("text", { x: 24, y: 218, class: "staged" }).textContent = "timing staged · order real";
     hrule(214, 243, 500, [[329, 343]]);
-    el("path", { d: "M 336 214 V 234", class: "lane" });
-    tipDown(336, 242);
-    el("text", { x: 328, y: 234, "text-anchor": "end", class: "fsm" }).textContent = "works the cells";
-    /* ——— the notebook, inside the sandbox that runs its python ———
-       dashed because a boundary is a boundary and not a wall, and the only
-       thing that crosses it is the tools' stem: the model never reaches in */
-    el("path", { class: "lane", "stroke-dasharray": "5 6",
-      d: "M 24 242 H 31 M 143 242 H 329 M 343 242 H 500 M 500 242 V 402 M 24 242 V 402 M 24 402 H 163 M 493 402 H 500" });
-    el("text", { x: 38, y: 246, class: "lit" }).textContent = "the notebook";
-    el("text", { x: 486, y: 406, "text-anchor": "end", class: "fsm" })
+    /* the stem (w2): the tools reach the notebook over the back wall's top
+       edge, through the cut in it — the one thing that crosses the crate */
+    step(aml.steps, 0.37, "path", { d: "M 336 214 V 240", class: "lane" });
+    tipDown(336, 248, aml.steps, 0.37);
+    step(aml.steps, 0.37, "text", { x: 344, y: 232, class: "fsm" }).textContent = "works the cells";
+    /* ——— the sandbox: an open crate in cabinet oblique (v8) ———
+       The dashed frame said "boundary"; a wall is what the station claims.
+       Box 24–464, depth 48 (x +41.6, y −24), so the back wall runs 65.6 to
+       505.6 and clears the registry's third column (ends 442.5) and the
+       return wire at 524 (18.4 of air). Floor, back wall, two side walls
+       and a low front lip, the top open: the near edges and the receding
+       silhouette in --ink, the far wall in --ink-2, no fill. Hidden lines
+       are cut at build, never faded: the floor's far edge stops at the
+       right wall, the left wall's foot shows only above the lip, and the
+       cells on the back wall end where the right wall covers them. The
+       back wall's top edge breaks for the notebook's name and the stem;
+       its right edge (the right wall's far one) for the return wire; the
+       lip's edge for the legend, 312.5 units on a 440 lip (measured). In a
+       builder's order (w1): floor, back wall, left wall, right wall, lip. */
+    step(aml.steps, 0.04, "path", { d: "M 24 430 H 464 L 505.6 406", class: "wnear" });
+    step(aml.steps, 0.04, "path", { d: "M 65.6 406 H 464 M 48.3 416 L 65.6 406", class: "wfar" });
+    step(aml.steps, 0.08, "path", { class: "wfar",
+      d: "M 65.6 238 H 73 M 183 238 H 329 M 343 238 H 505.6 M 65.6 238 V 406 M 505.6 238 V 316 M 505.6 328 V 406" });
+    step(aml.steps, 0.08, "text", { x: 80, y: 242, class: "lit" }).textContent = "the notebook";
+    step(aml.steps, 0.12, "path", { d: "M 24 262 V 430 M 24 262 L 65.6 238", class: "wnear" });
+    step(aml.steps, 0.16, "path", { d: "M 464 262 V 430 M 464 262 L 505.6 238", class: "wnear" });
+    step(aml.steps, 0.2, "path", { d: "M 24 416 H 133 M 458 416 H 464", class: "wnear" });
+    step(aml.steps, 0.2, "text", { x: 452, y: 420, "text-anchor": "end", class: "fsm" })
       .textContent = "Docker sandbox · no root · fs read only";
+    /* the notebook (w2): six cells inked on the back wall, 380 wide, their
+       right ends behind the right wall — so each is drawn to x 464 with no
+       right edge, which is the occlusion that makes the box a box. Never
+       thickness: six strips with receding edges would be the benchmark's
+       slab stack, and this is the AutoML station. */
     for (let i = 0; i < 6; i++) {
-      const y = 252 + i * 24;
-      el("rect", { x: 72, y, width: 396, height: 18, class: "cellr" });
+      const y = 262 + i * 24, at = AML_W.crate + i * 0.025;
+      step(aml.steps, at, "path", { d: `M 464 ${y} H 106 V ${y + 18} H 464`, class: "cellr" });
       /* the gutter prompt: [ ] until the cell has run, then its own index.
          An ordinal of a drawn cell, in the grammar the plate already prints
          (×12, 1.0 ingest) — rule 6 binds metrics, and this is not one. */
-      const pr = el("text", { x: 38, y: y + 13, class: "prompt" });
+      const pr = step(aml.steps, at, "text", { x: 74, y: y + 13, class: "prompt" });
       pr.textContent = "[ ]"; aml.prompts.push(pr);
       const len = [236, 292, 198, 310, 262, 216][i];
-      const ln = el("path", { d: `M 82 ${y + 9} h ${len}`, class: "cellink" });
+      const ln = el("path", { d: `M 116 ${y + 9} h ${len}`, class: "cellink" });
       ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
       aml.cells.push(ln);
-      const rn = el("text", { x: 460, y: y + 13.5, class: "cellrun", "text-anchor": "end" });
-      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
     }
-    /* ——— the seven-phase rail; booms only where the code gates ——— */
-    el("text", { x: 24, y: 428, class: "lit" }).textContent = "seven phases · three gates";
-    const PHX = Array.from({ length: 7 }, (_, i) => 56 + i * 73);
-    el("path", { d: `M 24 ${R} H ${PHX[6]}`, class: "lane" });
-    aml.deploySeg = el("path", { d: `M ${PHX[6]} ${R} H 536`, class: "lane", "stroke-dasharray": "3 6" });
+    /* ——— the seven-phase track (w3): two rails in the same depth, gauge 24
+       (the far rail at +20.8, −12: at 12 the track was a double rule at
+       1x, critic v8), posts on the near side, the near-left end closed by
+       a stub along the depth axis; booms only where the code gates. The
+       far rail runs behind the posts and the barrier, so it breaks for
+       each. The run past deploy is dashed on both rails: it is never
+       walked. The seventh phase's x is the barrier's centre. ——— */
+    const PHX = Array.from({ length: 7 }, (_, i) => (i === 6 ? 496 : 56 + i * 73));
+    const rails = step(aml.track, 0.05, "g", {});
+    el("text", { x: 24, y: 448, class: "lit" }, rails).textContent = "seven phases · three gates";
+    el("path", { d: `M 24 ${R} H 492`, class: "lane" }, rails);
+    let far = "", cur = 44.8;
+    for (const [a, b] of PHX.slice(0, 6).map((x) => [x - 2.5, x + 2.5]).concat([[491, 504]])) {
+      far += `M ${cur} ${R - 12} H ${a} `; cur = b;
+    }
+    el("path", { d: far.trim(), class: "lane" }, rails);
+    el("path", { d: `M 24 ${R} L 44.8 ${R - 12}`, class: "wfar" }, rails); /* the near-left end: the one stroke on the depth axis */
+    aml.deploySeg = el("path", { d: `M 500 ${R} H 536 M 504 ${R - 12} H 556.8`, class: "lane", "stroke-dasharray": "3 6" }, rails);
     aml.trail = el("path", { d: `M 24 ${R}`, class: "trail" });
     for (let i = 0; i < 7; i++) {
+      const g = step(aml.track, 0.15 + i * 0.09, "g", {});
       /* ONE stroke per phase does three jobs: it is the boom's post above
          the rail, the phase mark on it, and the leader down to the label —
          so a staggered label is never ambiguous about which mark owns it,
-         and a lifted boom is still visibly hinged to its own rail. */
-      el("path", { d: `M ${PHX[i]} ${R - 20} V ${i % 2 ? R + 37 : R + 17}`, class: "lane" });
-      /* a boom only where AML_GATES says the code stops. `null` keeps the
-         array dense so every index still means its own phase — the scrub
-         below reads aml.phx[i] off the same i. */
-      aml.booms.push(AML_GATES[i]
-        ? el("line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
-            class: AML_BOOM_CLASS[AML_GATES[i]] })
-        : null);
+         and a lifted boom is still visibly hinged to its own rail. The
+         seventh's post is the barrier's own bar, and its stroke is only
+         the leader under it. */
+      el("path", { class: "lane", d: i === 6
+        ? `M ${PHX[i]} ${R + 6} V ${R + 17}`
+        : `M ${PHX[i]} ${R - 20} V ${i % 2 ? R + 37 : R + 17}` }, g);
       const lbl = el("text", { x: PHX[i], y: i % 2 ? R + 48 : R + 28, "text-anchor": "middle",
-        class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
+        class: i === 6 ? "phlbl deplbl" : "phlbl dim" }, g);
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
     }
-    aml.phx = PHX; aml.halt = PHX[6] - 16;
+    /* the two arms that lift hang from their posts' tops across both rails
+       and swing 120° back to lie along the depth, ahead of the bead. The
+       barrier that never lifts is heavy by volume, not by weight: an 8-unit
+       bar (492–500, a 4-unit slat read as a post at 1x: critic v8) with its
+       side and top faces, standing in the line of the crate's right wall
+       (464–505.6) at no cost to the pitch. `null` keeps the array dense so
+       every index still means its own phase. */
+    for (let i = 0; i < 7; i++) {
+      if (!AML_GATES[i]) { aml.booms.push(null); continue; }
+      aml.booms.push(AML_GATES[i] === "human"
+        ? step(aml.track, 0.92, "path", { class: "boom held bar",
+            d: `M 492 ${R - 20} H 500 V ${R + 6} H 492 Z M 500 ${R - 20} L 503.5 ${R - 22} V ${R + 4} L 500 ${R + 6} M 492 ${R - 20} L 495.5 ${R - 22} H 503.5` })
+        : step(aml.track, 0.8, "line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
+            class: AML_BOOM_CLASS[AML_GATES[i]] }));
+    }
+    aml.phx = PHX; aml.halt = PHX[6] - 20; /* 476: 7 units of air from the ring to the bar's face, 11.5 from the bead */
+    aml.ringBottom = R + 10; aml.vbH = 556; /* the ring's foot, for the window */
     aml.ring = el("circle", { cy: R, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
     aml.bead = el("circle", { cy: R, r: 4.5, fill: "var(--ink)", opacity: 0 });
   } else {
     /* the tight plate: the same machine and the same vocabulary, turned
-       vertical — supervisor over registry over the notebook-in-its-sandbox
+       vertical — supervisor over registry over the notebook in its crate
        over a vertical rail of booms. All twelve names stay, at 11 units on
-       the 240 plate: 11.4px at a 248px seat, 15.1px at the 330 cap. */
-    s.setAttribute("viewBox", "0 0 240 716");
+       the 240 plate: 11.4px at a 248px seat, 15.1px at the 330 cap. The
+       crate keeps its depth at 24 (box 8–196, the back wall 28.8–216.8,
+       13 units under the return wire); the rail stays flat. */
+    s.setAttribute("viewBox", "0 0 240 730");
     const X = 34; /* the rail */
-    aml.railX = X; aml.from = 494; aml.swing = 60;
-    el("path", { d: "M 220 380 H 230 V 206 M 230 186 V 26 H 224", class: "lane" });
+    aml.railX = X; aml.from = 514; aml.swing = 60;
+    el("path", { d: "M 206 380 H 230 V 206 M 230 186 V 26 H 224", class: "lane" });
     el("path", { d: "M 218 26 l 8 -4 v 8 z", class: "wiretip" });
     el("text", { x: 236, y: 196, "text-anchor": "end", class: "fsm" }).textContent = "returns";
     el("rect", { x: 8, y: 8, width: 210, height: 56, rx: 3, class: "lane" });
@@ -10002,44 +10103,62 @@ function buildAml(tight) {
       aml.tools.push(t);
     }
     el("text", { x: 8, y: 278, class: "staged" }).textContent = "timing staged · order real";
-    el("path", { d: "M 160 286 V 294", class: "lane" });
-    tipDown(160, 302);
-    el("text", { x: 168, y: 294, class: "fsm" }).textContent = "works";
-    /* the sandbox legend loses `read-only fs` here and nothing else: at 240
-       units the full disclosure is 281 wide. The prose and the case file
-       carry the rest; what the plate must not lose is that there IS a box. */
-    el("path", { class: "lane", "stroke-dasharray": "5 6",
-      d: "M 8 302 H 13 M 113 302 H 153 M 167 302 H 220 M 220 302 V 454 M 8 302 V 454 M 8 454 H 13 M 207 454 H 220" });
-    el("text", { x: 20, y: 306, class: "lit" }).textContent = "the notebook";
-    el("text", { x: 200, y: 458, "text-anchor": "end", class: "fsm" })
+    step(aml.steps, 0.37, "path", { d: "M 160 286 V 302", class: "lane" });
+    tipDown(160, 310, aml.steps, 0.37);
+    step(aml.steps, 0.37, "text", { x: 168, y: 294, class: "fsm" }).textContent = "works";
+    /* the crate at 240 units. The left wall's foot would show as a 4-unit
+       stub past the lip here and is left out; everything else is the wide
+       crate's geometry at half the depth. */
+    step(aml.steps, 0.04, "path", { d: "M 8 468 H 196 L 216.8 456", class: "wnear" });
+    step(aml.steps, 0.04, "path", { d: "M 28.8 456 H 196", class: "wfar" });
+    step(aml.steps, 0.08, "path", { class: "wfar",
+      d: "M 28.8 298 H 33 M 128 298 H 153 M 167 298 H 216.8 M 28.8 298 V 456 M 216.8 298 V 374 M 216.8 386 V 456" });
+    step(aml.steps, 0.08, "text", { x: 40, y: 302, class: "lit" }).textContent = "the notebook";
+    step(aml.steps, 0.12, "path", { d: "M 8 310 V 468 M 8 310 L 28.8 298", class: "wnear" });
+    step(aml.steps, 0.16, "path", { d: "M 196 310 V 468 M 196 310 L 216.8 298", class: "wnear" });
+    /* the sandbox legend loses `fs read only` here and nothing else: at 240
+       units the full disclosure is 265 wide. The prose and the case file
+       carry the rest; what the plate must not lose is that there IS a box.
+       It stands under the crate rather than seating on the lip: 171 units
+       of label on a 10-unit lip over a 2-unit floor strip crossed the floor's
+       far edge and the back wall's left edge (measured), and a seat on the
+       near edge would break the crate's bottom line for most of its width. */
+    step(aml.steps, 0.2, "path", { d: "M 8 458 H 196", class: "wnear" });
+    step(aml.steps, 0.2, "text", { x: 190, y: 480, "text-anchor": "end", class: "fsm" })
       .textContent = "Docker sandbox · no root";
     for (let i = 0; i < 6; i++) {
-      const y = 310 + i * 23;
-      el("rect", { x: 46, y, width: 150, height: 17, class: "cellr" });
-      const pr = el("text", { x: 18, y: y + 12, class: "prompt" });
+      const y = 318 + i * 23, at = AML_W.crate + i * 0.025;
+      step(aml.steps, at, "path", { d: `M 196 ${y} H 62 V ${y + 17} H 196`, class: "cellr" });
+      const pr = step(aml.steps, at, "text", { x: 36, y: y + 12, class: "prompt" });
       pr.textContent = "[ ]"; aml.prompts.push(pr);
       const len = [96, 118, 80, 124, 106, 88][i];
-      const ln = el("path", { d: `M 54 ${y + 8} h ${len}`, class: "cellink" });
+      const ln = el("path", { d: `M 70 ${y + 8} h ${len}`, class: "cellink" });
       ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
       aml.cells.push(ln);
-      const rn = el("text", { x: 190, y: y + 12.5, class: "cellrun", "text-anchor": "end" });
-      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
     }
-    el("text", { x: 8, y: 480, class: "lit" }).textContent = "seven phases · three gates";
-    const PHY = Array.from({ length: 7 }, (_, i) => 512 + i * 27);
-    el("path", { d: `M ${X} 494 V ${PHY[6]}`, class: "lane" });
-    aml.deploySeg = el("path", { d: `M ${X} ${PHY[6]} V 706`, class: "lane", "stroke-dasharray": "3 6" });
-    aml.trail = el("path", { d: `M ${X} 494`, class: "trail" });
+    /* pitch 26 with 7.0 held at 688: the heading and the rail's start moved
+       down 6 for air under the legend without moving the halt, the ring or
+       the plate's height (the window is anchored on the ring) */
+    const PHY = Array.from({ length: 7 }, (_, i) => 532 + i * 26);
+    const rails = step(aml.track, 0.05, "g", {});
+    el("text", { x: 8, y: 500, class: "lit" }, rails).textContent = "seven phases · three gates";
+    el("path", { d: `M ${X} 514 V ${PHY[6]}`, class: "lane" }, rails);
+    aml.deploySeg = el("path", { d: `M ${X} ${PHY[6]} V 720`, class: "lane", "stroke-dasharray": "3 6" }, rails);
+    aml.trail = el("path", { d: `M ${X} 514`, class: "trail" });
     for (let i = 0; i < 7; i++) {
-      el("path", { d: `M 14 ${PHY[i]} H 46`, class: "lane" });
-      aml.booms.push(AML_GATES[i]
-        ? el("line", { x1: 14, y1: PHY[i], x2: 36, y2: PHY[i],
-            class: AML_BOOM_CLASS[AML_GATES[i]] })
-        : null);
-      const lbl = el("text", { x: 50, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
+      const g = step(aml.track, 0.15 + i * 0.09, "g", {});
+      el("path", { d: `M 14 ${PHY[i]} H 46`, class: "lane" }, g);
+      const lbl = el("text", { x: 50, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" }, g);
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
     }
+    for (let i = 0; i < 7; i++) {
+      aml.booms.push(AML_GATES[i]
+        ? step(aml.track, AML_GATES[i] === "human" ? 0.92 : 0.8, "line",
+            { x1: 14, y1: PHY[i], x2: 36, y2: PHY[i], class: AML_BOOM_CLASS[AML_GATES[i]] })
+        : null);
+    }
     aml.phx = PHY; aml.halt = PHY[6] - 15;
+    aml.ringBottom = aml.halt + 7; aml.vbH = 730;
     /* the ring scales with the plate: r 9 on 240 units would be r 21 on
        the 560, and it would swallow the sixth phase mark */
     aml.ring = el("circle", { cx: X, r: 6, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
@@ -10050,33 +10169,87 @@ function buildAml(tight) {
     t.addEventListener("pointerenter", () => aml.dots[i].classList.add("hot"));
     t.addEventListener("pointerleave", () => aml.dots[i].classList.remove("hot"));
   });
+  /* the plate rides the assembly driver (THE ASSEMBLIES RIDE THE SCROLL):
+     registered again on every build, because a new drawing has never been
+     drawn */
+  aml.e = asmFigure("fig09", { box: () => layoutBox(aml.svg), draw: drawAml, span: amlSpan, window: amlWindow });
+  window.__world.fig09 = { nodes: s.querySelectorAll("*").length, p3: () => aml.p3, p4: () => aml.p4 }; /* probe hook */
 }
-function scrubAml(p) {
-  const e = smooth((p - 0.14) / 0.6);       /* the run, start → the seventh gate */
+/* the window the driver takes as given (window:). It opens by the law, p = 0
+   with ASM_START of the drawing on screen, so the crate, the first thing to
+   move, is in view. It closes at the latest of three lines, and never
+   earlier than the law's own (the centre at ASM_END): stretched until a
+   centred park reads AML_PARK pure, so the run has scroll, capped at
+   AML_SPAN of the law's window; and no earlier than where the halt ring
+   stands at AML_FOLD of the screen, so the halt is seen when the window
+   closes. On the wide plate the ring is far above that line and only the
+   stretch counts (1.2 of the law at 1440x900, measured). On the tight plate,
+   taller than any phone with the rail its bottom band, the law's close left
+   the halt at the fold; on an 844 px phone the stretch and the ring's line
+   coincide, and on a shorter one the ring's line wins and the park floor is
+   not met, which is the small-phone class the lane note states. e.yA and
+   e.yB are the law's when this is read. */
+function amlWindow(e) {
+  const yA = e.yA, yLaw = e.yB;
+  const yPark = e.top + e.h / 2 - 0.5 * vh; /* a centred park */
+  const yStretch = Math.min(yA + (yPark - yA) / AML_PARK, yA + AML_SPAN * (yLaw - yA));
+  const yHalt = e.top + (aml.ringBottom / aml.vbH) * e.h - AML_FOLD * vh;
+  return { yA, yB: Math.max(yLaw, yStretch, yHalt) };
+}
+/* the part of p the motion fills is the run: the crate, the cells and the
+   track are switches, and the bead's walk is what a flick must not skip, so
+   the hand's speed limit is counted on w4 (the run takes ≥ 0.4 s). Read
+   after each measure, so the two cuts are settled here: the track starts
+   where the rail's band is wholly on screen, held inside AML_W.track so it
+   never lays rails while the last cells are still being written and never
+   waits past .40; the run starts .15 after the track, or at AML_W.run,
+   whichever is later. */
+function amlSpan(e) {
+  const p3 = clamp(asmBandP(e, 1), AML_W.track[0], AML_W.track[1]);
+  const p4 = Math.max(AML_W.run, p3 + 0.15);
+  if (p3 !== aml.p3 || p4 !== aml.p4) { aml.p3 = p3; aml.p4 = p4; if (aml.e) aml.e.last = NaN; } /* the same p is a new still now: redraw */
+  return [p4, 1];
+}
+/* the still at p. w1 the crate in a builder's order; w2 the notebook's six
+   lines with their empty gutters, then the stem dropped in over the wall;
+   w3 the track once its band is on screen (rails, posts in phase order, the
+   two arms hung, the barrier last); w4 the run, as it always was: the bead
+   walks the near rail and halts short of the barrier, the arms swing back
+   along the depth ahead of it, the tools light in source order, the cells
+   fill and take their numbers, the ring. Every switch is 0 or 1, written by
+   a4put; the bead's walk, the arms' swing and the cells' ink are the
+   continuous things, and they are the subject's own motion (NO-LIST F8).
+   Same p, same attributes, in any order. */
+function drawAml(p) {
+  const on = (n, b) => a4put(n, "opacity", b ? "1" : "0");
+  for (const [n, at] of aml.steps) on(n, p >= at);
+  const w = clamp((p - aml.p3) / Math.max(1e-3, aml.p4 - aml.p3), 0, 1);
+  for (const [n, at] of aml.track) on(n, w >= at);
+  const e = smooth((p - aml.p4) / (1 - aml.p4)); /* the run, start → the seventh gate */
   const vert = aml.vert;
   const HALT = aml.halt; /* the bead stops SHORT of the boom that never lifts —
      the shipping plate put the ring on top of it and hid the plate's subject */
   const axis = vert ? "cy" : "cx";
   const xb = lerp(aml.from, HALT, e);
   const bs = xb.toFixed(1);
-  aml.bead.setAttribute(axis, bs);
-  aml.bead.setAttribute("opacity", smooth((p - 0.12) / 0.05).toFixed(2));
-  aml.ring.setAttribute(axis, HALT);
-  aml.ring.setAttribute("opacity", e >= 1 ? 1 : 0); /* halted: the site's own ring */
+  a4put(aml.bead, axis, bs);
+  on(aml.bead, p > aml.p4);
+  a4put(aml.ring, axis, String(HALT));
+  on(aml.ring, e >= 1); /* halted: the site's own ring */
   /* the travelled rail inks in behind the bead. It is a record being
      WRITTEN, not a magnitude being filled: no number is claimed here, and
      the dashed run past the seventh boom stays unlit at every scroll. */
   const td = xb > aml.from + 0.6
     ? (vert ? `M ${aml.railX} ${aml.from} V ${bs}` : `M ${aml.from} ${aml.railY} H ${bs}`)
     : (vert ? `M ${aml.railX} ${aml.from}` : `M ${aml.from} ${aml.railY}`);
-  if (aml.trail._d !== td) { aml.trail._d = td; aml.trail.setAttribute("d", td); }
+  a4put(aml.trail, "d", td);
   /* class writes are DIFFED — round 3 rewrote ~36 class attributes per
      frame with unchanged values (6 gates + 6 labels + 12 tools + 12
      dots); each is a state that flips a handful of times per pass, so
      the cached-value guard turns almost every frame into zero writes.
      The booms' angle is continuous rather than a flip, so it is diffed on
      its rounded string: a boom lifts AHEAD of the bead and the bead passes
-     under it, and at scrub 1 all six stand lifted with no frame of motion. */
+     under it, and at p 1 both stand swung back with no frame of motion. */
   aml.booms.forEach((b, i) => {
     if (!b) return;                        /* this phase has no gate to lift */
     if (AML_GATES[i] === "human") return;  /* and this one does not open for a scroll */
@@ -10095,7 +10268,7 @@ function scrubAml(p) {
     if (b._open !== open) { b._open = open; b.setAttribute("class", open ? `${rest} open` : rest); }
   });
   /* the supervisor's readout: the phase it is in, and then the halt. It is
-     staged by the same scrub the caveat already discloses, and it carries
+     staged by the same run the caveat already discloses, and it carries
      no number the run has not drawn. */
   let si = 0;
   for (let i = 0; i < 6; i++) if (xb > aml.phx[i]) si = i;
@@ -10119,12 +10292,12 @@ function scrubAml(p) {
     const t = smooth((e - 0.08 - i * 0.13) / 0.12);
     const off = (c._len * (1 - t)).toFixed(1);
     if (c._off !== off) { c._off = off; c.style.strokeDashoffset = off; }
-    const ran = t >= 1;
-    if (aml.runs[i]._on !== ran) {
-      aml.runs[i]._on = ran; aml.runs[i].setAttribute("opacity", ran ? 1 : 0);
+    const ran = t >= 1, pr = aml.prompts[i];
+    if (pr._on !== ran) {
+      pr._on = ran;
       /* the gutter takes its number the way a notebook's does */
-      aml.prompts[i].textContent = ran ? `[${i + 1}]` : "[ ]";
-      aml.prompts[i].setAttribute("class", ran ? "prompt lit" : "prompt");
+      pr.textContent = ran ? `[${i + 1}]` : "[ ]";
+      pr.setAttribute("class", ran ? "prompt lit" : "prompt");
     }
   });
 }
@@ -10904,7 +11077,7 @@ function work(y) {
      its bench is a settled record. Beat 6's drawing is assembled by the
      hand now (asmWork, below), and its elevation is drawn settled. */
   /* beat 7's plate rides the assembly driver (asmWork, below) */
-  if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
+  /* beat 8's plate rides the assembly driver too (v8): one clock, no scrub */
   /* BOTH NIGHT PLATES RUN OFF THE BEAD, NOT THE BEAT. scrubHow stood here
      and took the beat's own progress, which is why it used to finish striking
      while the drawing was still off screen: ¶10 is a tall station and most of
@@ -17787,7 +17960,7 @@ function settleAll() {
      truthful form of a record is the settled one. Every reader gets it now,
      so there is nothing left here to settle. */
   scrubJet(1);
-  scrubAml(1); scrubGate(1);
+  scrubGate(1); /* fig. 09 is the driver's now: asmSettle() below draws it halted */
   /* Infinity, not 1: both night plates are clocked by the bead's page y, and
      the settled world is the one where it has passed every junction. The
      second argument holds fig. 11's pages ON the line rather than letting
