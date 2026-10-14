@@ -145,7 +145,7 @@ Codes: `h2+` is the new second heading line, `prov` a provenance row, `stack` a 
 - Brooks, credited "Frederick P. Brooks Jr., 1975"
 - "LifeQuest turns the job-hunt grind into missions, on a real backend. It was born at Social Innovation Weekend in March 2025 with a 7-person team, in React and NestJS. Scaling it would need a partner."
 - → "↳ no case file: a prototype has nothing to argue yet · source ↗ · live prototype ↗ · system card ↗"
-- Caption: "fig. 08 · three steps built, two held on purpose." (SVG legend: "solid: built · pencil: not")
+- Caption: "fig. 08 · three steps built, two held on purpose." (SVG legend: "ink: built · pencil: not")
 
 **¶09 Agentic AutoML.** Kicker `¶ 09 · project 6 of 6 · 22:05`.
 - h2+ "A capstone platform where an AI agent trains models, with human sign-off"
@@ -706,7 +706,7 @@ v2 adds one erratum candidate: the Glyph bench label "openmp, all cores" became 
 | dusk — the hour that shows you what did not get finished. | dusk. the hour that shows what didn’t get finished. | EDIT hourline kept (Option B keeps dusk) |
 | Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. Born at Social Innovation Weekend, March 2025 — a 7-person team, one weekend, React + NestJS. It would need a partner to scale, and it says so. | LifeQuest turns the job-hunt grind into missions, on a real backend. It was born at Social Innovation Weekend in March 2025 with a 7-person team, in React and NestJS. Scaling it would need a partner. | EDIT |
 | fig. 08 — the stair is the ledger, drawn in section: three steps with a body under them, two with nothing at all. | fig. 08 · three steps built, two held on purpose. | EDIT caption |
-| solid where it was built · pencil where it was not | solid: built · pencil: not | EDIT fig. 08 SVG label, the tight edition's wording |
+| solid where it was built · pencil where it was not | ink: built · pencil: not | EDIT fig. 08 SVG label, the tight edition's wording; v7 "ink", the built three are inked rooms, not a solid |
 | Frederick P. Brooks Jr. · | Frederick P. Brooks Jr., 1975 | EDIT credit |
 | ↳ no case file — a prototype has nothing to argue yet | ↳ no case file: a prototype has nothing to argue yet | EDIT dash out |
 
