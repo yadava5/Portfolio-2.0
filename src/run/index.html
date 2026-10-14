@@ -4385,7 +4385,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="margin-top:.5rem; max-width:44ch">no accuracy figure is quoted: no committed evaluation earns one.</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/automl/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md" target="_blank" rel="noopener">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app" target="_blank" rel="noopener">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .30 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
         <svg id="amlFig" class="figsvg" viewBox="0 0 560 556" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a Docker sandbox, and the notebook returns to the supervisor. The sandbox is an open crate drawn in depth: a floor, a back wall, two side walls and a low front lip, and no top. The notebook is six cells inked on the back wall, their right ends running behind the right wall, which cuts them; the tools' wire drops in over the back wall's top edge, the only thing that crosses it, and the return wire leaves through the right wall. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a two-rail track drawn in the same depth, its posts on the near side: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom on its post. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Both of those arms swing back along the depth ahead of the run. Deploy carries a heavy barrier, a bar drawn with volume, that never lifts, standing in the line of the crate's right wall over a phase label which never lights, because nothing in the graph can start a deployment; the track runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the track and the run passes straight through them."></svg>
         <figcaption>fig. 09 · the 12 MCP tools in source order, timing staged. the run halts before deploy.</figcaption>
       </figure>
@@ -9843,7 +9843,7 @@ const AML_TOOLS = [
 const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], prompts: [], booms: [], plabels: [],
   bead: null, ring: null, trail: null, state: null, deploySeg: null,
   phx: [], vert: false, from: 24, railY: 490, railX: 34, swing: -120, halt: 0, ringBottom: 500, vbH: 556,
-  steps: [], track: [], p3: 0.4, e: null, authored: "" };
+  steps: [], track: [], p3: 0.4, p4: 0.55, e: null, authored: "" };
 const AML_PHASES = ["1.0 ingest", "2.0 explore", "3.0 preprocess", "4.0 engineer", "5.0 train", "6.0 experiments", "7.0 deploy"];
 /* WHICH PHASES ACTUALLY GATE — read off the platform at 5e42233, not assumed.
    This plate used to draw a boom before all seven and caption it "a human
@@ -9889,10 +9889,11 @@ const AML_BOOM_CLASS = { maybe: "boom maybe", always: "boom", human: "boom held"
    still of p (THE ASSEMBLIES RIDE THE SCROLL): the crate in a builder's
    order, the notebook inked on its back wall and the stem dropped in, the
    track laid once its band is on screen, then the run. The pace cut is
-   deliberate and in the open: the run has AML_W.run..1 of a window the
-   plate stretches past the law's end line (amlWindow) until a centred park
-   reads AML_PARK pure, and never past AML_SPAN of the law's window. */
-const AML_W = { crate: 0.22, cells: 0.40, track: 0.40, run: 0.55 }; /* of p · w1 ends, w2 ends, w3 starts no later than, w4 starts */
+   deliberate and in the open: the run has p4..1 (p4 ≥ AML_W.run, amlSpan)
+   of a window the plate stretches past the law's end line (amlWindow) until
+   a centred park reads AML_PARK pure, and never past AML_SPAN of the law's
+   window. */
+const AML_W = { crate: 0.22, track: [0.37, 0.4], run: 0.45 }; /* of p · w1 ends; w3 starts in this band (the stem lands at .37); w4 starts here or .15 after w3 */
 const AML_SPAN = 1.6;  /* the most the wide window stretches past the law's, as a multiple of it */
 const AML_PARK = 0.72; /* pure p a centred park keeps: the spec's PARK_FLOOR .7 with margin (a control at the floor flips, v7) */
 const AML_FOLD = 0.88; /* vh · the window closes no earlier than the halt ring standing here: the halt is seen on a phone (fig. 08 declares its window too) */
@@ -10019,21 +10020,24 @@ function buildAml(tight) {
       ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
       aml.cells.push(ln);
     }
-    /* ——— the seven-phase track (w3): two rails in the same depth, gauge 12
-       (the far rail at +10.4, −6), posts on the near side; booms only
-       where the code gates. The far rail runs behind the posts and the
-       barrier, so it breaks for each. The run past deploy is dashed on
-       both rails: it is never walked. ——— */
-    const PHX = Array.from({ length: 7 }, (_, i) => 56 + i * 73);
+    /* ——— the seven-phase track (w3): two rails in the same depth, gauge 24
+       (the far rail at +20.8, −12: at 12 the track was a double rule at
+       1x, critic v8), posts on the near side, the near-left end closed by
+       a stub along the depth axis; booms only where the code gates. The
+       far rail runs behind the posts and the barrier, so it breaks for
+       each. The run past deploy is dashed on both rails: it is never
+       walked. The seventh phase's x is the barrier's centre. ——— */
+    const PHX = Array.from({ length: 7 }, (_, i) => (i === 6 ? 496 : 56 + i * 73));
     const rails = step(aml.track, 0.05, "g", {});
     el("text", { x: 24, y: 448, class: "lit" }, rails).textContent = "seven phases · three gates";
     el("path", { d: `M 24 ${R} H 492`, class: "lane" }, rails);
-    let far = "", cur = 34.4;
-    for (const [a, b] of PHX.slice(0, 6).map((x) => [x - 2.5, x + 2.5]).concat([[491, 500.5]])) {
-      far += `M ${cur} ${R - 6} H ${a} `; cur = b;
+    let far = "", cur = 44.8;
+    for (const [a, b] of PHX.slice(0, 6).map((x) => [x - 2.5, x + 2.5]).concat([[491, 504]])) {
+      far += `M ${cur} ${R - 12} H ${a} `; cur = b;
     }
     el("path", { d: far.trim(), class: "lane" }, rails);
-    aml.deploySeg = el("path", { d: `M 496 ${R} H 536 M 500.5 ${R - 6} H 546.4`, class: "lane", "stroke-dasharray": "3 6" }, rails);
+    el("path", { d: `M 24 ${R} L 44.8 ${R - 12}`, class: "wfar" }, rails); /* the near-left end: the one stroke on the depth axis */
+    aml.deploySeg = el("path", { d: `M 500 ${R} H 536 M 504 ${R - 12} H 556.8`, class: "lane", "stroke-dasharray": "3 6" }, rails);
     aml.trail = el("path", { d: `M 24 ${R}`, class: "trail" });
     for (let i = 0; i < 7; i++) {
       const g = step(aml.track, 0.15 + i * 0.09, "g", {});
@@ -10052,19 +10056,20 @@ function buildAml(tight) {
     }
     /* the two arms that lift hang from their posts' tops across both rails
        and swing 120° back to lie along the depth, ahead of the bead. The
-       barrier that never lifts is heavy by volume, not by weight: a 4-unit
-       bar with its side and top faces, standing in the line of the crate's
-       right wall (464–505.6) at no cost to the pitch. `null` keeps the
-       array dense so every index still means its own phase. */
+       barrier that never lifts is heavy by volume, not by weight: an 8-unit
+       bar (492–500, a 4-unit slat read as a post at 1x: critic v8) with its
+       side and top faces, standing in the line of the crate's right wall
+       (464–505.6) at no cost to the pitch. `null` keeps the array dense so
+       every index still means its own phase. */
     for (let i = 0; i < 7; i++) {
       if (!AML_GATES[i]) { aml.booms.push(null); continue; }
       aml.booms.push(AML_GATES[i] === "human"
         ? step(aml.track, 0.92, "path", { class: "boom held bar",
-            d: `M 492 ${R - 20} H 496 V ${R + 6} H 492 Z M 496 ${R - 20} L 499.5 ${R - 22} V ${R + 4} L 496 ${R + 6} M 492 ${R - 20} L 495.5 ${R - 22} H 499.5` })
+            d: `M 492 ${R - 20} H 500 V ${R + 6} H 492 Z M 500 ${R - 20} L 503.5 ${R - 22} V ${R + 4} L 500 ${R + 6} M 492 ${R - 20} L 495.5 ${R - 22} H 503.5` })
         : step(aml.track, 0.8, "line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
             class: AML_BOOM_CLASS[AML_GATES[i]] }));
     }
-    aml.phx = PHX; aml.halt = PHX[6] - 16; /* 7 units of air from the ring to the post, 5 to the bar */
+    aml.phx = PHX; aml.halt = PHX[6] - 20; /* 476: 7 units of air from the ring to the bar's face, 11.5 from the bead */
     aml.ringBottom = R + 10; aml.vbH = 556; /* the ring's foot, for the window */
     aml.ring = el("circle", { cy: R, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
     aml.bead = el("circle", { cy: R, r: 4.5, fill: "var(--ink)", opacity: 0 });
@@ -10077,7 +10082,7 @@ function buildAml(tight) {
        13 units under the return wire); the rail stays flat. */
     s.setAttribute("viewBox", "0 0 240 730");
     const X = 34; /* the rail */
-    aml.railX = X; aml.from = 508; aml.swing = 60;
+    aml.railX = X; aml.from = 514; aml.swing = 60;
     el("path", { d: "M 206 380 H 230 V 206 M 230 186 V 26 H 224", class: "lane" });
     el("path", { d: "M 218 26 l 8 -4 v 8 z", class: "wiretip" });
     el("text", { x: 236, y: 196, "text-anchor": "end", class: "fsm" }).textContent = "returns";
@@ -10131,12 +10136,15 @@ function buildAml(tight) {
       ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
       aml.cells.push(ln);
     }
-    const PHY = Array.from({ length: 7 }, (_, i) => 526 + i * 27);
+    /* pitch 26 with 7.0 held at 688: the heading and the rail's start moved
+       down 6 for air under the legend without moving the halt, the ring or
+       the plate's height (the window is anchored on the ring) */
+    const PHY = Array.from({ length: 7 }, (_, i) => 532 + i * 26);
     const rails = step(aml.track, 0.05, "g", {});
-    el("text", { x: 8, y: 494, class: "lit" }, rails).textContent = "seven phases · three gates";
-    el("path", { d: `M ${X} 508 V ${PHY[6]}`, class: "lane" }, rails);
+    el("text", { x: 8, y: 500, class: "lit" }, rails).textContent = "seven phases · three gates";
+    el("path", { d: `M ${X} 514 V ${PHY[6]}`, class: "lane" }, rails);
     aml.deploySeg = el("path", { d: `M ${X} ${PHY[6]} V 720`, class: "lane", "stroke-dasharray": "3 6" }, rails);
-    aml.trail = el("path", { d: `M ${X} 508`, class: "trail" });
+    aml.trail = el("path", { d: `M ${X} 514`, class: "trail" });
     for (let i = 0; i < 7; i++) {
       const g = step(aml.track, 0.15 + i * 0.09, "g", {});
       el("path", { d: `M 14 ${PHY[i]} H 46`, class: "lane" }, g);
@@ -10165,7 +10173,7 @@ function buildAml(tight) {
      registered again on every build, because a new drawing has never been
      drawn */
   aml.e = asmFigure("fig09", { box: () => layoutBox(aml.svg), draw: drawAml, span: amlSpan, window: amlWindow });
-  window.__world.fig09 = { nodes: s.querySelectorAll("*").length, p3: () => aml.p3 }; /* probe hook */
+  window.__world.fig09 = { nodes: s.querySelectorAll("*").length, p3: () => aml.p3, p4: () => aml.p4 }; /* probe hook */
 }
 /* the window the driver takes as given (window:). It opens by the law, p = 0
    with ASM_START of the drawing on screen, so the crate, the first thing to
@@ -10191,12 +10199,16 @@ function amlWindow(e) {
 /* the part of p the motion fills is the run: the crate, the cells and the
    track are switches, and the bead's walk is what a flick must not skip, so
    the hand's speed limit is counted on w4 (the run takes ≥ 0.4 s). Read
-   after each measure, so the track's own start is settled here: no later
-   than AML_W.track, and not before the rail's band is wholly on screen. */
+   after each measure, so the two cuts are settled here: the track starts
+   where the rail's band is wholly on screen, held inside AML_W.track so it
+   never lays rails while the last cells are still being written and never
+   waits past .40; the run starts .15 after the track, or at AML_W.run,
+   whichever is later. */
 function amlSpan(e) {
-  const p3 = Math.min(asmBandP(e, 1), AML_W.track);
-  if (p3 !== aml.p3) { aml.p3 = p3; if (aml.e) aml.e.last = NaN; } /* the same p is a new still now: redraw */
-  return [AML_W.run, 1];
+  const p3 = clamp(asmBandP(e, 1), AML_W.track[0], AML_W.track[1]);
+  const p4 = Math.max(AML_W.run, p3 + 0.15);
+  if (p3 !== aml.p3 || p4 !== aml.p4) { aml.p3 = p3; aml.p4 = p4; if (aml.e) aml.e.last = NaN; } /* the same p is a new still now: redraw */
+  return [p4, 1];
 }
 /* the still at p. w1 the crate in a builder's order; w2 the notebook's six
    lines with their empty gutters, then the stem dropped in over the wall;
@@ -10211,9 +10223,9 @@ function amlSpan(e) {
 function drawAml(p) {
   const on = (n, b) => a4put(n, "opacity", b ? "1" : "0");
   for (const [n, at] of aml.steps) on(n, p >= at);
-  const w = clamp((p - aml.p3) / Math.max(1e-3, AML_W.run - aml.p3), 0, 1);
+  const w = clamp((p - aml.p3) / Math.max(1e-3, aml.p4 - aml.p3), 0, 1);
   for (const [n, at] of aml.track) on(n, w >= at);
-  const e = smooth((p - AML_W.run) / (1 - AML_W.run)); /* the run, start → the seventh gate */
+  const e = smooth((p - aml.p4) / (1 - aml.p4)); /* the run, start → the seventh gate */
   const vert = aml.vert;
   const HALT = aml.halt; /* the bead stops SHORT of the boom that never lifts —
      the shipping plate put the ring on top of it and hid the plate's subject */
@@ -10221,7 +10233,7 @@ function drawAml(p) {
   const xb = lerp(aml.from, HALT, e);
   const bs = xb.toFixed(1);
   a4put(aml.bead, axis, bs);
-  on(aml.bead, p > AML_W.run);
+  on(aml.bead, p > aml.p4);
   a4put(aml.ring, axis, String(HALT));
   on(aml.ring, e >= 1); /* halted: the site's own ring */
   /* the travelled rail inks in behind the bead. It is a record being
