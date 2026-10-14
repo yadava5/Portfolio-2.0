@@ -852,13 +852,27 @@ try {
     const doeH = (scape && scape.doeH) || 0;
     /* the daisies stand in the same meadow and answer to the same rule:
        a flower taller than a third of the doe is not a daisy */
+    /* MEASURED IN THE SHEET'S OWN SPACE. `data-y` is a sheet coordinate;
+       a viewport `top` equals it only while the sheet's top sits at 0.
+       v8 grew the page by 26px at 1024×768 and its height became
+       18357.688: scrolling to the bottom overshoots by the fraction and
+       the sticky morning rides up 0.31px, so the old subtraction read a
+       tallest blade of 18.6 against a cap of 18.47 (labrat, v8) — the
+       drawing had not moved. The screen CTM takes the sheet's offset and
+       scale out. */
     const meadow = [
       ...svg.querySelectorAll(".ds-tuft[data-y], .ds-daisy[data-y]"),
     ]
-      .map((el) => ({
-        x: +el.dataset.x,
-        rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
-      }))
+      .map((el) => {
+        const m = el.ownerSVGElement.getScreenCTM();
+        return {
+          x: +el.dataset.x,
+          rise: +(
+            +el.dataset.y -
+            (el.getBoundingClientRect().top - m.f) / m.d
+          ).toFixed(1),
+        };
+      })
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
     /* 12 · THE RIM LIGHT IS ON THE LIT SIDE. The canopy's cut-lines are the
        light on the foliage, and they always began on the upper WEST of a
