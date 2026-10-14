@@ -247,47 +247,15 @@ test.describe("reduced motion and keyboard access", () => {
     await page.goto("/?asm=1");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await page.waitForTimeout(800);
-    /* A SECOND CLOCK. fig. 11's points close as the LINE reaches each
-       junction and its pages leave past the plate's exit: the bead's clock,
-       not p, so at the top of the page ?asm=1 draws its assembly finished
-       and its points still open. Such a figure's reference is read where
-       every clock of its has arrived — the bead past its last junction and
-       short of the exit, both checked — and the others at the top, as
-       before. */
-    type Bead = {
-      __world: {
-        junctions: { fig: number; y: number }[];
-        exit11: number;
-        token: { y: number };
-      };
-    };
-    const arrived: Record<string, () => Promise<number>> = {
-      fig11: () =>
-        page.evaluate(() => {
-          const w = (window as unknown as Bead).__world;
-          const j = w.junctions.filter((q) => q.fig === 11);
-          const last = j[j.length - 1].y + 60;
-          return Math.round((last + w.exit11) / 2 - innerHeight * 0.55);
-        }),
-    };
+    /* TWO CLOCKS, ONE STILL. fig. 11's points close on the rail's bead, not
+       on p, so a ?asm=1 load with motion would draw its assembly finished
+       and its points open. Under reduced motion there is no bead: work(y)
+       returns before the token is placed (__world.token stays undefined)
+       and scrubSigns(Infinity, true) closes every point once at load on
+       both loads, so the reference at the top IS the still. Measured on
+       this build, chromium 1440x900 and webkit 390x844: 0 differing lines
+       at the top and at the bead's "arrived" y alike. */
     for (const key of Object.keys(ids)) {
-      await page.evaluate(
-        (y) => window.scrollTo({ top: y, behavior: "instant" }),
-        arrived[key] ? await arrived[key]() : 0
-      );
-      await page.waitForTimeout(200);
-      if (arrived[key]) {
-        const b = await page.evaluate(() => {
-          const w = (window as unknown as Bead).__world;
-          const j = w.junctions.filter((q) => q.fig === 11);
-          return { y: w.token.y, last: j[j.length - 1].y + 60, exit: w.exit11 };
-        });
-        expect(
-          b.y,
-          `${key}: the bead is past the last junction`
-        ).toBeGreaterThanOrEqual(b.last);
-        expect(b.y, `${key}: and short of the exit`).toBeLessThan(b.exit);
-      }
       expect(
         finished[key],
         `${key}: the still reader's drawing is the finished one`
