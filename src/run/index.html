@@ -8007,8 +8007,8 @@ function drawGates(p) {
 
    WHAT THE PAGE IS IN FRONT OF IS CUT, NOT PAINTED OVER (nothing is filled
    at night): flat, it covers the rear trestle's head; standing and pushed
-   back, the desk's far edge, the rear trestles' heads, the rail's middle and
-   the left rail post; on its way down to the line, the slab's face, the
+   back, the desk's far edge, the rear trestles' heads and the rail's middle;
+   on its way down to the line, the slab's face, the
    front trestles, the lane's head and the blade. Each keeps its authored `d`
    and is rewritten with the page's own polygon taken out while the two
    overlap (segOutPoly: a parallelogram through the stand-up, a rectangle
@@ -8045,9 +8045,9 @@ const SIGN_RULES = 4;
    from the desk's left end and PAGE_IN units deep from its near edge, which
    is the edge it is stood up about. Posted, it is pushed back to PAGE_BACK
    units short of the slab's far edge: 16px of slab top stands in front of
-   it at 1440 (13 on the phone), and the left rail post is 1.2px behind its
-   left edge, cut, rather than 0.5px beside it, fused — which is what the
-   critic's own D − 4 measured to. */
+   it at 1440 (13 on the phone), and it is nudged sideways by that depth's
+   own cos 30° so it stands centred between the rail's posts, PAGE_X clear
+   of each. */
 const DESK_AT = 12, PAGE_X = 4, PAGE_IN = 4, PAGE_BACK = 6;
 /* THE COLLECTION WINDOW, on the bead: open from this far past the junction,
    over this much. 120 is not a taste. At 1440×900 the bead reaches row 0's
@@ -8249,7 +8249,12 @@ function drawDesk(g, x0, y, ed, parts) {
     seg(x0 + dx, railY, x0 + dw + dx, railY)), 0.36);
   for (const n of [rear, back, rail, front, face]) add(g, n);
   return { cuts: [front, rear, face, back, rail], nx: x0 + PAGE_X + PAGE_IN * Q3.x, ny,
-    push: { x: U * Q3.x, y: -U * Q3.y }, slab: +(U * Q3.y + PAGE_IN * Q3.y).toFixed(1),
+    /* the push is along the depth, plus the sideways share of PAGE_BACK's
+       own depth, so the posted page stands centred between the posts in
+       projection (PAGE_X of air each side) instead of flush with the left
+       one and PAGE_X + PAGE_BACK·cos 30° from the right (the coordinator's
+       cosmetic, after the critic's second pass) */
+    push: { x: (U + PAGE_BACK) * Q3.x, y: -U * Q3.y }, posts: [x0 + dx, x0 + dw + dx], slab: +(U * Q3.y + PAGE_IN * Q3.y).toFixed(1),
     /* where the collected page lands: standing on the lane at its head, its
        right edge two px clear of the right front trestle's near foot, so
        the desk keeps a whole trestle beside it (the phase 1 still showed a
@@ -8465,7 +8470,7 @@ function buildSigns(js) {
   /* the hand is the shared one (THE ASSEMBLIES RIDE THE SCROLL): it hands
      this drawing a p and this drawing sets everything from it */
   signs.e = asmFigure("fig11", { box: () => layoutBox(svg), draw: drawSigns, span: signsSpan });
-  window.__world.fig11 = () => ({ S, T, R, tight, pw: ed.pw, ph: ed.ph, desk: { x0, w: DW, deep: DD, right: +deskR.toFixed(1), h: ed.dh },
+  window.__world.fig11 = () => ({ S, T, R, tight, pw: ed.pw, ph: ed.ph, desk: { x0, w: DW, deep: DD, right: +deskR.toFixed(1), h: ed.dh, posts: [+(x0 + DD * Q3.x).toFixed(1), +(x0 + DW + DD * Q3.x).toFixed(1)] },
     take: SIGN_TAKE, draw: drawSigns,
     rows: signs.rows.map((r) => ({ i: r.i, y: +r.y.toFixed(1), jy: +r.pageY.toFixed(1), a: +r.a.toFixed(3),
       objs: r.objs.map((o) => ({ k: o.k, x0: +o.x0.toFixed(1), x1: +o.x1.toFixed(1), c: +o.c.toFixed(1) })),
