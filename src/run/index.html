@@ -2165,7 +2165,6 @@ if (location.hash.length > 1) {
      reads every token here off these rules and holds it to the night floor. */
   .sline .s-lane{stroke:var(--ink); stroke-width:1.1}
   .sline .s-stub{stroke:var(--ink); stroke-width:1.4}
-  .sline .s-dash{stroke:var(--ink-2); stroke-width:1.1; stroke-dasharray:4 6}
   .sline .s-node{fill:var(--ink); stroke:none}
   .sline .s-track{stroke:var(--ink-2); stroke-width:1.1; fill:none}
   .sline .s-stop{stroke:var(--ink); stroke-width:1.6}
@@ -2176,8 +2175,10 @@ if (location.hash.length > 1) {
   .sline .s-bit{fill:var(--ink); stroke:none}
   .sline .s-post{stroke:var(--ink-2); stroke-width:1.2}
   .sline .s-hinge{stroke:var(--ink); stroke-width:1.2; fill:none}
-  .sline .s-arm{stroke:var(--ink); stroke-width:1.8; fill:none; stroke-linecap:round}
-  .sline .s-weight{stroke:var(--ink); stroke-width:2.6; stroke-linecap:round}
+  /* the arm is the heavy stroke (fig. 09's barrier, heavy by volume) and
+     the counterweight heavier still, a lump below the hinge */
+  .sline .s-arm{stroke:var(--ink); stroke-width:2.4; fill:none; stroke-linecap:round}
+  .sline .s-weight{stroke:var(--ink); stroke-width:3.2; stroke-linecap:round}
   .sline .s-tray{stroke:var(--ink-2); stroke-width:1.1; fill:none}
   .sline .s-ring{stroke:var(--clay-g); stroke-width:1.8; fill:none}
   .sline .s-desk{stroke:var(--ink); stroke-width:1.2; fill:none}
@@ -4539,7 +4540,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                tray stopped at it. At the lane's head, directly across the
                line from the writer's name, a small desk on trestles: the
                page is written flat on it, stood up facing the reader and
-               pinned, and the line collects it once the bead has passed.
+               pinned against a rail at the slab's far edge, and the line
+               collects it once the bead has passed.
                The stops' names and clocks hang under the lane below each
                place and come from stations.ts; each branch joins the run's
                line through a set of points that closes as the line reaches
@@ -7985,8 +7987,12 @@ function drawGates(p) {
    name, a small desk on trestles, the same on both rows. The page is
    written FLAT on the desk — a parallelogram in the receding plane, its
    rules inking line by line — then stood up about its near edge until it is
-   a true rectangle facing the reader, and pinned: a notice posted at the
-   place. The depth says two things the flat plate could not: a page lying
+   a true rectangle facing the reader, pushed back along the depth to the
+   rail at the slab's far edge, and pinned where its top meets the rail: a
+   notice posted at the place, with the desk's top in front of it so the
+   desk is still a desk once the notice is up (the critic's phase 1: a page
+   standing at the near edge hid the slab, and A-frames under a board are an
+   easel). The depth says two things the flat plate could not: a page lying
    down and a page standing up are one object in two planes, so "written,
    then posted" is one rigid motion rather than a card appearing; and the
    desk's feet stand on the ground the sidings run on, so "at the stop" is a
@@ -7994,20 +8000,23 @@ function drawGates(p) {
    end are concept C's two ideas, kept because A's text already held them.
 
    WHAT THE PAGE IS IN FRONT OF IS CUT, NOT PAINTED OVER (nothing is filled
-   at night): flat, it covers the rear trestle's head; standing, the desk's
-   far edge and the rest of that trestle; on its way down, the slab's face
-   and the front trestles. Each keeps its authored `d` and is rewritten with
-   the page's own polygon taken out while the two overlap (segOutPoly: a
-   parallelogram through the stand-up, a rectangle before and after it — an
-   axis-aligned box over the parallelogram over-cuts the far edge by 12px at
-   θ 45°, so the cut is the quad).
+   at night): flat, it covers the rear trestle's head; standing and pushed
+   back, the desk's far edge, the rear trestles' heads, the rail's middle and
+   the left rail post; on its way down to the line, the slab's face, the
+   front trestles, the lane's head and the blade. Each keeps its authored `d`
+   and is rewritten with the page's own polygon taken out while the two
+   overlap (segOutPoly: a parallelogram through the stand-up, a rectangle
+   before and after it — an axis-aligned box over the parallelogram
+   over-cuts the far edge by 9.8px at θ 45°, measured, so the cut is the
+   quad).
 
    TWO CLOCKS, ON PURPOSE. The evidence — the place, the desk, the writing,
-   the stand-up, the pin — rides the driver's p; the disposition rides the
-   rail's bead: the points close as the line reaches the junction, as every
-   disposition on both night plates does, and once the bead is well past it
-   the pin goes and the page is set down off the desk onto the line at its
-   foot: collected. The descent is the LESSER of the bead's progress and p's
+   the stand-up, the push, the pin — rides the driver's p; the disposition
+   rides the rail's bead: the points close as the line reaches the junction,
+   as every disposition on both night plates does, and once the bead is well
+   past it the pin goes and the page slides off the desk, forward and down
+   and left, to stand on the line at the lane's head clear of the desk's
+   legs: collected. The descent is the LESSER of the bead's progress and p's
    last tenth, so a reader whose bead arrives before the page is up (row 0
    at 1440×900: the bead reaches the junction at p ≈ .66) sees it posted
    first and collected after, and nothing ever jumps. Gone past exit11, as
@@ -8022,14 +8031,18 @@ const signs = { rows: [], svg: null, spx: 0, exit: 0 };
    cos 30°: 97px at the wide seats, 80 on the phone, the first thing on
    every lane. */
 const SIGN_ED = {
-  wide: { pw: 56, ph: 32, pitch: 7, dh: 27, leg: 24, lip: 3, foot: 7, bar: 10, pin: 2.2 },
-  tight: { pw: 44, ph: 26, pitch: 5.5, dh: 22, leg: 19, lip: 3, foot: 6, bar: 8, pin: 2 },
+  wide: { pw: 56, ph: 32, pitch: 7, dh: 27, leg: 24, lip: 3, foot: 7, bar: 10, pin: 2.6 },
+  tight: { pw: 44, ph: 26, pitch: 5.5, dh: 22, leg: 19, lip: 3, foot: 6, bar: 8, pin: 2.3 },
 };
 const SIGN_RULES = 4;
 /* the desk stands DESK_AT right of the lane's node; the page lies PAGE_X in
    from the desk's left end and PAGE_IN units deep from its near edge, which
-   is the edge it is stood up about and the edge it is set down from */
-const DESK_AT = 12, PAGE_X = 4, PAGE_IN = 4;
+   is the edge it is stood up about. Posted, it is pushed back to PAGE_BACK
+   units short of the slab's far edge: 16px of slab top stands in front of
+   it at 1440 (13 on the phone), and the left rail post is 1.2px behind its
+   left edge, cut, rather than 0.5px beside it, fused — which is what the
+   critic's own D − 4 measured to. */
+const DESK_AT = 12, PAGE_X = 4, PAGE_IN = 4, PAGE_BACK = 6;
 /* THE COLLECTION WINDOW, on the bead: open from this far past the junction,
    over this much. 120 is not a taste. At 1440×900 the bead reaches row 0's
    junction at p ≈ .66, mid stand-up, and at the centred park (p 1) it stands
@@ -8066,6 +8079,9 @@ const segsBox = (segs) => {
   }
   return bb;
 };
+/* a cuttable path: its authored d, segments and box; re-read when the
+   author (the bead, for the blade) rewrites it */
+const cutOf = (el, d) => { const d0 = d ?? el.getAttribute("d"), segs = pathSegs(d0); return { el, d0, segs, bb: segsBox(segs) }; };
 /* the part of a segment OUTSIDE a convex polygon, as path data (Cyrus–Beck
    for the span inside, the rest drawn): fig. 08's q3below for any convex
    shape, with the polygon's own winding (P.s) deciding which side is in. */
@@ -8100,15 +8116,17 @@ const polyOf = (pts) => {
 };
 /* Each stop is the place itself, drawn at its right edge x1 on the lane at
    y, scaled by S, its pieces staged by `parts` (the share of the row's
-   window at which each inks). `w` is the drawing's width at S 1. */
+   window at which each inks). `w` is the drawing's width at S 1, `pad` what
+   it keeps unscaled. */
 const MARKS = {
   /* the goods yard: a ladder leaving the lane and climbing the depth, three
      sidings off it running on to their buffer stops, two wagons. The wagons
      stand where no siding behind them crosses their top face — the near one
      at the head of its siding, 12 units deep, so its top clears the middle
      siding's start by 1.4px at S 1 — because nothing here is filled, and a
-     track drawn through a wagon reads as a wagon drawn on a track. */
-  yard: { w: 180, draw: (g, x1, y, s, parts) => {
+     track drawn through a wagon reads as a wagon drawn on a track. The
+     ladder is the lane's own branch and stands at p 0. */
+  yard: { w: 180, pad: 0, draw: (g, x1, y, s, parts) => {
     const xl = x1 - 180 * s;
     const sd = [34, 68, 102].map((d) => d * s);
     const at = (d) => [xl + d * Q3.x, y - d * Q3.y];
@@ -8137,17 +8155,19 @@ const MARKS = {
      cell, --ink fill on the s-node precedent (check-palette reads the token
      out of the rule and holds it to the night floor). Below 1.9px a cell the
      bitmap is a smudge, so the tight edition prints the mono digit instead,
-     as the pad does once a reader has drawn one of their own. */
-  pad: { w: 64 + 6 * C30, draw: (g, x1, y, s, parts, digit) => {
+     as the pad does once a reader has drawn one of their own. The frame
+     draws inside the row's window, never at p 0: an empty frame at the
+     plate's entry was v7's empty dashed frame for a beat. */
+  pad: { w: 64 + 6 * C30, pad: 0, draw: (g, x1, y, s, parts, digit) => {
     const W2 = 64 * s, dp = 6 * s, x = x1 - dp * Q3.x - W2, top = y - W2;
-    add(g, parts(dPath("s-pad", box(x, top, W2, W2)), 0));
-    add(g, parts(dPath("s-far", recede(x, top, W2, W2, dp)), 0));
+    add(g, parts(dPath("s-pad", box(x, top, W2, W2)), 0.02));
+    add(g, parts(dPath("s-far", recede(x, top, W2, W2, dp)), 0.02));
     let t = "";
     for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
       const cx = x + W2 / 2 + sx * W2 / 2, cy = top + W2 / 2 + sy * W2 / 2;
       t += seg(cx, cy - sy * 9 * s, cx, cy) + seg(cx - sx * 9 * s, cy, cx, cy);
     }
-    add(g, parts(dPath("s-reg", t), 0.04));
+    add(g, parts(dPath("s-reg", t), 0.05));
     const cell = W2 / 28;
     let bits = "";
     if (digit === null && cell >= 1.9) {
@@ -8159,21 +8179,25 @@ const MARKS = {
     return { c: x + W2 / 2, cy: top + W2 / 2, mono: !bits };
   } },
   /* the barrier, down across the lane's far end. The lane is the road's near
-     edge and the road runs 32 units back from it: a post on the lane and a
-     post at the far edge, the arm hinged on the near post and lowered along
-     the depth onto the far one, striped and counterweighted so it is a
-     barrier and not a rail, and the run's tray (fig. 10's) stopped eight
-     units short of it with the halt ring on it. The arm swings down as the
-     place is drawn: the run halts. The near post stands ON the lane so
-     nothing of it reaches the label band under it. */
-  automl: { w: 75.7, draw: (g, x1, y, s, parts) => {
+     edge and the road runs 32 units back from it: a post on the lane, raised
+     eight units above its hinge, and a full-height post at the far edge with
+     a cradle the arm's tip sits in; the arm the heavy stroke, hinged on the
+     near post and lowered along the depth into the cradle, three stripes
+     across it, the counterweight below the hinge; the run's tray (fig. 10's)
+     stopped sixteen units short of the post, clear of it with its depth,
+     the halt ring centred on the tray's near face. The far post stands ten
+     px inside the object's edge: at the plate's edge (phase 1) the second
+     post was not seen and the striped diagonal read as a pole pointing at
+     the sky. The arm swings down as the place is drawn: the run halts. */
+  automl: { w: 83.7, pad: 10, draw: (g, x1, y, s, parts) => {
     const rd = 32 * s, rx = rd * Q3.x, ry = rd * Q3.y, ph2 = 22 * s;
-    const xb = x1 - 1 - rx, fx = xb + rx, fy = y - ry;
-    const tw = 40 * s, tx = xb - 8 * s - tw, ty = y - 17 * s, lip = 5 * s;
+    const fx = x1 - 10, fy = y - ry, xb = fx - rx;
+    const tw = 40 * s, tx = xb - 16 * s - tw, ty = y - 17 * s, lip = 5 * s;
     /* the road's far edge, so the two posts stand on something and the arm
        lies ACROSS a road rather than up a slope */
     add(g, parts(dPath("s-track", seg(tx - 8 * s, fy, fx, fy)), 0.13));
-    add(g, parts(dPath("s-post", seg(xb, y, xb, y - ph2) + seg(fx, fy, fx, fy - ph2)), 0.13));
+    add(g, parts(dPath("s-post", seg(xb, y, xb, y - ph2 - 8 * s) +
+      seg(fx, fy, fx, fy - ph2 - 4 * s) + seg(fx - 4 * s, fy - ph2, fx, fy - ph2)), 0.13));
     const hx = xb, hy = y - ph2;
     add(g, parts(dPath("s-hinge", box(hx - 2.2 * s, hy - 2.2 * s, 4.4 * s, 4.4 * s)), 0.13));
     const arm = parts(el("path", { class: "s-arm", d: "" }), 0.13);
@@ -8181,10 +8205,10 @@ const MARKS = {
     add(g, arm); add(g, weight);
     add(g, parts(dPath("s-tray", box(tx, ty, tw, lip) + recede(tx, ty, tw, lip, 12 * s) +
       seg(tx + 6 * s, y - 12 * s, tx + 6 * s, y) + seg(tx + tw - 6 * s, y - 12 * s, tx + tw - 6 * s, y)), 0.26));
-    add(g, parts(el("circle", { class: "s-ring", cx: n1(tx + tw / 2), cy: n1(y - 11 * s), r: n1(9 * s) }), 0.29));
-    return { c: (tx + x1) / 2, laneEnd: xb + 4 * s,
-      /* the arm at f: straight up (open) at 0, down the depth onto the far
-         post at 1 — one plane, the one across the road */
+    add(g, parts(el("circle", { class: "s-ring", cx: n1(tx + tw / 2), cy: n1(ty + lip / 2), r: n1(9 * s) }), 0.29));
+    return { c: (tx + x1) / 2, laneEnd: xb + 4 * s, far: fx, near: xb,
+      /* the arm at f: straight up (open) at 0, down the depth into the far
+         post's cradle at 1 — one plane, the one across the road */
       swing: (f) => {
         const a = (f * Math.PI) / 2, dx = Math.sin(a) * Q3.x, dy = -Math.sin(a) * Q3.y - Math.cos(a);
         const px = -dy, py = dx;
@@ -8198,8 +8222,9 @@ const MARKS = {
       } };
   } },
 };
-/* the desk: a slab on two trestles, drawn once per row, its four paths the
-   ones the page can cover. Front faces --ink, what recedes --ink-2. */
+/* the desk: a slab on two trestles with a rail at its far edge, drawn once
+   per row, its five paths the ones the page can cover. Front faces --ink,
+   what recedes --ink-2. */
 function drawDesk(g, x0, y, ed, parts) {
   const dw = ed.pw + 8, D = ed.ph + 6, dx = D * Q3.x, dy = D * Q3.y, top = y - ed.dh;
   const A = (xa, yb) => `M${n1(xa - ed.foot)} ${n1(yb)}L${n1(xa)} ${n1(yb - ed.leg)}L${n1(xa + ed.foot)} ${n1(yb)}`;
@@ -8209,8 +8234,21 @@ function drawDesk(g, x0, y, ed, parts) {
   const rear = parts(dPath("s-far", xa.map((x) => A(x + dx, y - dy)).join("")), 0.33);
   const face = parts(dPath("s-desk", box(x0, top, dw, ed.lip)), 0.36);
   const back = parts(dPath("s-far", recede(x0, top, dw, ed.lip, D)), 0.36);
-  for (const n of [rear, back, front, face]) add(g, n);
-  return { cuts: [front, rear, face, back], nx: x0 + PAGE_X + PAGE_IN * Q3.x, ny: top - PAGE_IN * Q3.y };
+  /* the rail: two short posts at the slab's far corners and a rail between
+     them at the height the posted page's top will stand, so the pin seats
+     where the page meets the rail */
+  const U = D - PAGE_IN - PAGE_BACK, ny = top - PAGE_IN * Q3.y;
+  const railY = ny - U * Q3.y - ed.ph, fy = top - dy;
+  const rail = parts(dPath("s-far", seg(x0 + dx, fy, x0 + dx, railY) + seg(x0 + dw + dx, fy, x0 + dw + dx, railY) +
+    seg(x0 + dx, railY, x0 + dw + dx, railY)), 0.36);
+  for (const n of [rear, back, rail, front, face]) add(g, n);
+  return { cuts: [front, rear, face, back, rail], nx: x0 + PAGE_X + PAGE_IN * Q3.x, ny,
+    push: { x: U * Q3.x, y: -U * Q3.y }, slab: +(U * Q3.y + PAGE_IN * Q3.y).toFixed(1),
+    /* where the collected page lands: standing on the lane at its head, its
+       right edge two px clear of the right front trestle's near foot, so
+       the desk keeps a whole trestle beside it (the phase 1 still showed a
+       floating top over a card) */
+    land: x0 + dw - ed.bar - ed.foot - ed.pw - 2, trestle: [xa[1] - ed.foot, xa[1] + ed.foot] };
 }
 function buildSigns(js) {
   const host = $("signsFig");
@@ -8238,7 +8276,8 @@ function buildSigns(js) {
      It is solved on the row that runs out of lane first — Shree's two stops
      at a two-column seat, the yard's 180px on the phone — and spent on both
      rows: places that shrink together stay one family, and a narrow seat
-     gets a smaller drawing rather than a missing one. The desk and its page are not scaled: the notice has to read.
+     gets a smaller drawing rather than a missing one. The desk and its page
+     are not scaled: the notice has to read.
      A LABEL IS NEVER SCALED EITHER. The stop's name and clock stand under
      the lane below their stop, measured with getBoundingClientRect and
      never guessed from a per-character budget (the rule
@@ -8257,7 +8296,7 @@ function buildSigns(js) {
   const seatRow = (row, kinds, S) => {
     let edge = R;
     const objs = kinds.slice().reverse().map((k) => {
-      const w2 = MARKS[k].w * S + (k === "automl" ? 1 : 0);
+      const w2 = MARKS[k].w * S + MARKS[k].pad;
       const o = { k, x0: edge - w2, x1: edge, c: edge - w2 / 2 };
       edge = o.x0 - GAP;
       return o;
@@ -8294,7 +8333,7 @@ function buildSigns(js) {
     objs.forEach((o, n) => boxes[n]?.style.setProperty("--mx", lcs[n].toFixed(1) + "px"));
     const jx = railless ? spx : (js?.[i]?.jx ?? spx);
     const rec = { el: row, g, i, y, jx, pageY: js?.[i]?.y ?? y, objs, lcs, parts: [], cuts: [],
-      a: 0, w: 0, th: -1, P: 0, cs: 0, vis: true, _k: "", _tf: "", _o: "", digitEl: null, auto: null };
+      a: 0, w: 0, th: -1, push: -1, P: 0, cs: 0, vis: true, _k: "", _tf: "", _o: "", digitEl: null, auto: null };
     /* a piece of the drawing and the share of the row's window it inks at;
        nothing is visible until the driver has drawn a p */
     const parts = (n, at) => { if (n) { n.setAttribute("opacity", "0"); rec.parts.push({ el: n, at }); } return n; };
@@ -8319,12 +8358,12 @@ function buildSigns(js) {
         rec.digitEl = d;
       }
     });
-    /* the lane: dashed from the node to the desk, which is the stretch the
-       page has not travelled, solid from the desk to the place; on Shree's
-       row it ends at the barrier */
-    add(g, dPath("s-node", dot(T, y, 3)));
-    add(g, dPath("s-lane", seg(x0 - 4, y, laneEnd, y)));
-    add(g, dPath("s-dash", seg(T, y, x0 - 4, y)));
+    /* the lane, solid from the node to the place (on Shree's row it ends at
+       the barrier); the dashed register on this run means conditional, and
+       nothing on the lane's head is */
+    const knot = dPath("s-node", dot(T, y, 3));
+    add(g, knot);
+    add(g, dPath("s-lane", seg(T, y, laneEnd, y)));
     const stub = dPath("s-stub", seg(jx, y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
@@ -8357,7 +8396,9 @@ function buildSigns(js) {
        reads it as "quoted words begin here"; a filled square at a page's
        corner is a seal, and nobody signs here. */
     const dk = drawDesk(g, x0, y, ed, parts);
-    rec.cuts = dk.cuts.map((n) => { const d0 = n.getAttribute("d"), segs = pathSegs(d0); return { el: n, d0, segs, bb: segsBox(segs) }; });
+    /* the blade's cut record is re-read whenever the bead rewrites it */
+    const bladeCut = cutOf(blade);
+    rec.cuts = [...dk.cuts.map((n) => cutOf(n)), bladeCut];
     const page = el("g", { class: "s-carry" });
     const sheet = parts(el("path", { class: "s-page", d: "" }), 0.42);
     const rules = [];
@@ -8369,20 +8410,24 @@ function buildSigns(js) {
     }
     const writ = parts(el("path", { class: "s-rule", d: "", "stroke-dasharray": n1(len + 2), "stroke-dashoffset": n1(len + 2) }), 0.42);
     const quote = el("path", { class: "s-quote", d: "", visibility: "hidden" });
-    const pin = el("path", { class: "s-node", d: dot(dk.nx + ed.pw / 2, dk.ny - ed.ph, ed.pin), opacity: "0" });
+    const pin = el("path", { class: "s-node", d: dot(dk.nx + dk.push.x + ed.pw / 2, dk.ny + dk.push.y - ed.ph, ed.pin), opacity: "0" });
     for (const n of [sheet, writ, quote]) add(page, n);
     add(g, page);
     add(g, pin);
-    Object.assign(rec, { page, sheet, writ, quote, pin, rules, len, blade, nx: dk.nx, ny: dk.ny,
-      /* from standing on the desk to standing on the lane at its foot */
-      fall: { x: -PAGE_IN * Q3.x, y: ed.dh + PAGE_IN * Q3.y }, corners: [] });
+    Object.assign(rec, { page, sheet, writ, quote, pin, rules, len, blade, bladeCut, knot,
+      knotBox: { x0: T - 3, y0: y - 3, x1: T + 3, y1: y + 3 }, nx: dk.nx, ny: dk.ny, pushTo: dk.push,
+      /* from posted at the rail to standing on the lane at its head: forward
+         off the desk, down its height and left of its legs, in one leg */
+      fall: { x: dk.land - dk.nx - dk.push.x, y: y - dk.ny - dk.push.y }, land: dk.land, trestle: dk.trestle, slab: dk.slab, corners: [] });
     /* the page's frame — u along the near edge, v deep from it — to the
-       plate at the stand-up's θ: flat at 0 the far edge lies PH·cos 30°
-       right and PH/2 up, standing at 90° it is PH straight up */
+       plate at the stand-up's θ and the push: flat at 0 the far edge lies
+       PH·cos 30° right and PH/2 up, standing at 90° it is PH straight up,
+       and pushed the whole frame moves back along the depth */
     rec.lay = () => {
       const th = (rec.th * Math.PI) / 2, c = Math.cos(th), s2 = Math.sin(th);
       const fx = ed.ph * Q3.x * c, fy = -ed.ph * (Q3.y * c + s2);
-      const P = (u, v) => [dk.nx + u + (fx * v) / ed.ph, dk.ny + (fy * v) / ed.ph];
+      const ox = dk.nx + dk.push.x * rec.push, oy = dk.ny + dk.push.y * rec.push;
+      const P = (u, v) => [ox + u + (fx * v) / ed.ph, oy + (fy * v) / ed.ph];
       const q = (pts) => "M" + pts.map(([x, y2]) => `${n1(x)} ${n1(y2)}`).join("L") + "z";
       rec.corners = [P(0, 0), P(ed.pw, 0), P(ed.pw, ed.ph), P(0, ed.ph)];
       a4put(sheet, "d", q(rec.corners));
@@ -8398,13 +8443,15 @@ function buildSigns(js) {
       const tx = rec.fall.x * D, ty = rec.fall.y * D;
       const tf = D > 0 ? `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px)` : "";
       if (tf !== rec._tf) { rec._tf = tf; page.style.transform = tf; }
-      a4put(pin, "opacity", rec.w >= 0.88 && D <= 0 && rec.vis ? "1" : "0");
+      a4put(pin, "opacity", rec.w >= 0.9 && D <= 0 && rec.vis ? "1" : "0");
       a4cls(page, "coupled", D >= 0.98);
       const live = rec.w >= 0.42 && rec.vis;
       const poly = live ? polyOf(rec.corners.map(([x, y2]) => [x + tx, y2 + ty])) : null;
       const over = (b) => poly && poly.bb.x0 < b.x1 && poly.bb.x1 > b.x0 && poly.bb.y0 < b.y1 && poly.bb.y1 > b.y0;
       for (const c of rec.cuts)
         a4put(c.el, "d", over(c.bb) ? c.segs.map((s3) => segOutPoly(s3[0], s3[1], s3[2], s3[3], poly)).join("") : c.d0);
+      /* the lane's node is a filled square and hides whole */
+      a4put(knot, "visibility", over(rec.knotBox) ? "hidden" : "visible");
     };
     svg.appendChild(g);
     signs.rows.push(rec);
@@ -8416,7 +8463,8 @@ function buildSigns(js) {
     take: SIGN_TAKE, draw: drawSigns,
     rows: signs.rows.map((r) => ({ i: r.i, y: +r.y.toFixed(1), jy: +r.pageY.toFixed(1), a: +r.a.toFixed(3),
       objs: r.objs.map((o) => ({ k: o.k, x0: +o.x0.toFixed(1), x1: +o.x1.toFixed(1), c: +o.c.toFixed(1) })),
-      labels: r.lcs.map((v) => +v.toFixed(1)), page: { nx: +r.nx.toFixed(1), ny: +r.ny.toFixed(1) },
+      labels: r.lcs.map((v) => +v.toFixed(1)), page: { nx: +r.nx.toFixed(1), ny: +r.ny.toFixed(1), push: r.pushTo, land: +r.land.toFixed(1), fall: r.fall },
+      trestle: r.trestle, slab: r.slab, far: r.auto ? +r.auto.far.toFixed(1) : null, near: r.auto ? +r.auto.near.toFixed(1) : null,
       corners: r.corners.map(([x, y2]) => [+x.toFixed(1), +y2.toFixed(1)]), cuts: r.cuts.length, parts: r.parts.length })) }); /* probe hook */
 }
 
@@ -8427,7 +8475,7 @@ function buildSigns(js) {
    row's label band is on screen (at .95 vh, stricter than the driver's
    80%), capped so a late row keeps .4 of the window: the place over the
    first .30 of that, the desk and the writing to .55, the stand-up to .85,
-   the pin from .88. */
+   the push back to the rail to .88, the pin from .90. */
 function signsSpan(e) {
   const span = Math.max(1, e.yB - e.yA);
   const at = (yy) => clamp((e.top + yy - 0.95 * vh - e.yA) / span, 0, 1);
@@ -8451,8 +8499,8 @@ function drawSigns(p) {
     const write = clamp((w - 0.46) / 0.07, 0, 1);
     a4put(r.writ, "stroke-dashoffset", n1((r.len + 2) * (1 - write)));
     a4put(r.quote, "visibility", write >= 1 ? "visible" : "hidden");
-    const th = smooth((w - 0.55) / 0.3);
-    if (th !== r.th) { r.th = th; r.lay(); }
+    const th = smooth((w - 0.55) / 0.3), push = smooth((w - 0.85) / 0.03);
+    if (th !== r.th || push !== r.push) { r.th = th; r.push = push; r.lay(); }
     r.P = smooth((w - 0.92) / 0.08);
     r.w = w;
     r.ink();
@@ -8509,8 +8557,8 @@ function scrubSigns(tokenY, settled) {
     const close = smooth((u - 0.1) / 0.7);
     const gone = !settled && tokenY >= signs.exit ? "0" : "1";
     /* the collection: once the bead is well past the junction (SIGN_TAKE),
-       the pin goes and the page is set down onto the line — but never
-       before the page is up; ink() takes the lesser of this and p's own */
+       the pin goes and the page slides off the desk onto the line — but
+       never before the page is up; ink() takes the lesser of this and p's own */
     const cs = settled ? 1 : smooth((tokenY - r.pageY - SIGN_TAKE.from) / SIGN_TAKE.over);
     const key = close.toFixed(3) + "|" + gone + "|" + cs.toFixed(3);
     if (key === r._k) continue;
@@ -8518,11 +8566,13 @@ function scrubSigns(tokenY, settled) {
     r.page.style.opacity = gone;
     /* the points close as the line reaches the junction: the one thing on
        this plate the bead sets, whether the page is still being written or
-       already posted */
-    a4put(r.blade, "d",
-      `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`);
+       already posted. The blade is the page's to cut once it has landed, so
+       its cut record follows its authored d. */
+    const bd = `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`;
+    if (bd !== r.bladeCut.d0) Object.assign(r.bladeCut, cutOf(r.blade, bd));
     const vis = gone === "1";
-    if (cs !== r.cs || vis !== r.vis) { r.cs = cs; r.vis = vis; r.ink(); }
+    r.cs = cs; r.vis = vis;
+    r.ink();
   }
 }
 
