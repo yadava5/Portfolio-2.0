@@ -183,6 +183,7 @@ Codes: `h2+` is the new second heading line, `prov` a provenance row, `stack` a 
 - prov and link, unchanged.
 - Caption: "fig. 11 · each reference sits beside the station that person worked on."
 - Caption, v8 (2026-10-14): "fig. 11 · written at the stops, posted, and collected by the line." The boards of v7 are gone; each row is one place with a writing desk in it, and "posted" carries the fact: public.
+- Caption, v9 (2026-10-14): "fig. 11 · written at the stops, sealed, and collected by the line." Each row is a halt at night: a platform, the stop's name board, a writing desk with a lamp; the page is sealed in an envelope on the desk and the line collects it. "Sealed" replaces "posted" because nothing is pinned up any more; public stays in the heading. Open for the owner: "sealed" sits beside "in public", and at rest the quote mark is inside the envelope.
 
 **¶12 Every pipeline I build ends with a human decision.**
 - "This one ends with yours."

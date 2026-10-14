@@ -2160,35 +2160,30 @@ if (location.hash.length > 1) {
   .gline .g-boom.open{stroke:var(--pine)}
   .gline .g-hinge{stroke:var(--ink); stroke-width:1.2; fill:none}
   .gline .g-spine{stroke:var(--ink-2); stroke-width:1.2}
-  /* fig. 11 · the lanes, the places on them, and the desks at their heads.
-     --ink draws what is near or the subject (the lane, the desk's face and
-     front trestles, the page, the wagons, the digit, the arm, the buffer
-     stops); --ink-2 what recedes or is structure (the sidings, the rear
-     trestles, the desk's far edges, the pad's slab, the posts, the tray);
-     --clay-g the two clay events, the quote mark and the halt ring. The only
-     fills are small and on the s-node precedent: the nodes, the wheels, the
-     pin and the digit's cells in --ink, the quote mark in clay. check-palette
-     reads every token here off these rules and holds it to the night floor. */
+  /* fig. 11 · the halts, at night. --ink draws what is near or the subject
+     (the lane, the platform's edge, the desk's face and front legs, the
+     lamp, the boards, the page, the letter); --ink-2 what recedes or is
+     structure (the platform's kerb and top, the desk's far edges and back
+     legs, the lamp's stem, the boards' legs, the page's rules); --clay-g
+     the one clay event, the quote mark at the head of the page's first
+     rule. The only fills are small and on the s-node precedent: the nodes
+     and the drawer's knob in --ink, the quote mark in clay. The envelope is
+     fig. 04's, its body at 1.2 and its flap at .9, as fig. 04 draws it.
+     check-palette reads every token here off these rules and holds it to
+     the night floor. */
   .sline .s-lane{stroke:var(--ink); stroke-width:1.1}
   .sline .s-stub{stroke:var(--ink); stroke-width:1.4}
   .sline .s-node{fill:var(--ink); stroke:none}
-  .sline .s-track{stroke:var(--ink-2); stroke-width:1.1; fill:none}
-  .sline .s-stop{stroke:var(--ink); stroke-width:1.6}
-  .sline .s-wagon{stroke:var(--ink); stroke-width:1.2; fill:none}
-  .sline .s-wagon.out{stroke-dasharray:3 3}
-  .sline .s-pad{stroke:var(--ink-2); stroke-width:1.1; fill:none}
-  .sline .s-reg{stroke:var(--ink); stroke-width:1.4; fill:none}
-  .sline .s-bit{fill:var(--ink); stroke:none}
-  .sline .s-post{stroke:var(--ink-2); stroke-width:1.2}
-  .sline .s-hinge{stroke:var(--ink); stroke-width:1.2; fill:none}
-  /* the arm is the heavy stroke (fig. 09's barrier, heavy by volume) and
-     the counterweight heavier still, a lump below the hinge */
-  .sline .s-arm{stroke:var(--ink); stroke-width:2.4; fill:none; stroke-linecap:round}
-  .sline .s-weight{stroke:var(--ink); stroke-width:3.2; stroke-linecap:round}
-  .sline .s-tray{stroke:var(--ink-2); stroke-width:1.1; fill:none}
-  .sline .s-ring{stroke:var(--clay-g); stroke-width:1.8; fill:none}
-  .sline .s-desk{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .sline .s-edge{stroke:var(--ink); stroke-width:1.1}
+  .sline .s-plat{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-desk{stroke:var(--ink); stroke-width:1.4; fill:none; stroke-linejoin:round}
   .sline .s-far{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-lamp{stroke:var(--ink); stroke-width:1.2; fill:none; stroke-linejoin:round}
+  .sline .s-stem{stroke:var(--ink-2); stroke-width:1.2}
+  .sline .s-board{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .sline .s-leg{stroke:var(--ink-2); stroke-width:1.2}
+  .sline .s-env{stroke:var(--ink); stroke-width:1.2; fill:none; stroke-linejoin:round}
+  .sline .s-flap{stroke:var(--ink); stroke-width:.9; fill:none; stroke-linejoin:round}
   .sline .s-page{stroke:var(--ink); stroke-width:1.2; fill:none; stroke-linejoin:round}
   .sline .s-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
   .sline .s-quote{fill:var(--clay-g); stroke:none}
@@ -2218,17 +2213,17 @@ if (location.hash.length > 1) {
      that meets a line still swinging is a road the line crosses. --sfoot is
      the near ground under the last road, which is where the plate stops
      being a diagram and becomes the night the pages came through. */
-  /* --sby IS THE GROUND (v8). The lane is where every place on a row stands:
-     the yard's ladder leaves it, the pad and the tray stand on it, the desk's
-     feet are on it, and the stops' names hang under it. The 144px above the
-     lane is the room the tallest thing on a row needs — the yard's far wagon
-     rises 72px above the lane at S 1, the pin on a posted page 63 — and the
-     24 under it is where the barrier's near post and the lever's foot stand,
-     with the label block (36 tall) starting 10px under the lane and running
-     12px into the next row's top band, where nothing is drawn. --srh is
-     --sby plus that room. The two blockquotes' centres are 178px apart at
-     every two-column seat, so --s1 resolves to 10 there and the declared pair
-     is the drawing's own geometry rather than a number that happened to fit.
+  /* --sby IS THE GROUND. The lane is the line every halt stands beside: the
+     platform's kerb rises from it, the desk and the boards stand on the
+     platform, and a collected letter stands on the lane itself. The 144px
+     above the lane is the room the tallest thing on a row needs — a board's
+     top stands 124px above it at S 1 on a laptop, and 136 on the phone,
+     where Shree's two boards share one pair of legs — and the 24 under it
+     is where the lever's foot stands; nothing else is drawn under the lane
+     now that the stops' names are on their boards (v9). --srh is --sby plus
+     that room. The two blockquotes' centres are 178px apart at every
+     two-column seat, so --s1 resolves to 10 there and the declared pair is
+     the drawing's own geometry rather than a number that happened to fit.
      --s0 and --s1 are both WRITTEN by seatFigures; the declared values are
      what a stacked seat uses, where the quotes are above the plate and there
      is nothing beside it to align to.
@@ -2240,54 +2235,43 @@ if (location.hash.length > 1) {
   .signs .srow{position:relative; height:var(--srh)}
   .signs .srow + .srow{margin-top:var(--s1)}
   /* THE WRITER'S NAME STANDS ON THE OTHER SIDE OF THE LINE, and it is there
-     for room rather than for effect: the two stops on Shree's branch fill
-     her lane end to end, so a name at the lane's head sat on the near card.
-     Left of the line it labels the junction the way a signal box does, and
-     it fills the one band of this plate that was genuinely blank at every
-     two-column seat. It is set right-aligned into `--spx - 54`: G10c's 16px
-     floor plus the hand's full 24px reach plus 14 of margin, so the line
-     cannot reach the words at any wobble.
+     for room rather than for effect: the halt fills the lane from its head
+     to the plate's edge, so a name at the lane's head would stand on the
+     desk. Left of the line it labels the junction the way a signal box does,
+     and it fills the one band of this plate that is genuinely blank at
+     every two-column seat. It is set right-aligned into `--spx - 54`: G10c's
+     16px floor plus the hand's full 24px reach plus 14 of margin, so the
+     line cannot reach the words at any wobble.
+     v9 weighed setting it above its row, as the phone does, to give the
+     halt more lane, and measured that it gives none: the lane starts at
+     --gtext, 44px right of the line, wherever the name is, and runs to the
+     plate's edge (344px at 1440 and 324 at 1280 either way). Moved, the name
+     would only empty this band and crowd the boards above Shree's row.
      The phone has no such band — the rail runs in the 26px gutter and --spx
-     is negative — so it keeps the head of its own lane; see the 820 block. */
+     is negative — so it keeps the head of its own row; see the 820 block. */
   .signs .sname{position:absolute; left:0;
     width:max(0px, calc(var(--spx, 230px) - 54px)); text-align:right;
     top:calc(var(--sby) - 30px);
     font-family:var(--body); font-size:var(--fs-note); line-height:1.4;
     letter-spacing:0; word-spacing:.12em; color:var(--ink)}
-  /* the label under a stop: the stop's name in the text face, its clock in
-     mono, because a clock is a machine value and a station's name is not.
-     Both hang UNDER THE LANE below their place (v8): the lane is the ground
-     every place stands on, so a label above it would stand in the drawing,
-     and a station prints its name under the platform. --sby + 10 clears the
-     barrier's near post, whose foot is 7px below the lane; the block is 36
-     tall and runs 12px into the next row's top band at a two-column seat,
-     where nothing is drawn (the next row's tallest thing, the pin, stands
-     62px above its own lane). The x is the drawing's: buildSigns writes
-     --mx as the label's centre, under its stop, kept inside the plate and
-     8px from its neighbour.
-     One offset, relative to the row. The old note is kept because its bug
-     is easy to re-introduce: an offset written INSIDE this box as
-     `calc(var(--sby) + 26px)` adds --sby twice, since the box is itself
-     seated relative to --sby. */
-  .signs .smark{position:absolute; left:var(--mx, 0px);
-    top:calc(var(--sby) + 10px); width:0; height:0;
-    display:flex; flex-direction:column; align-items:center;
+  /* THE STOP'S NAME IS PRINTED ON ITS STATION BOARD (v9): the name in the
+     text face over its clock in mono, because a clock is a machine value and
+     a station's name is not. The words are the HTML they always were, from
+     stations.ts, upright and never scaled; buildSigns measures them, cuts
+     each board to them (SIGN_PAD round the pair) and seats them on it,
+     writing --mx as the board's centre and --my as its top plus the pad,
+     both relative to the row. They ink with their board. */
+  .signs .smark{position:absolute; left:var(--mx, 0px); top:var(--my, 0px);
+    width:0; height:0; display:flex; flex-direction:column; align-items:center;
     white-space:nowrap}
   .signs .sstop{font-family:var(--body); font-size:var(--fs-label);
     line-height:1.4; letter-spacing:0; word-spacing:.12em; color:var(--ink)}
   .signs .sclock{font-family:var(--mono); font-size:var(--fs-micro);
     line-height:1.3; letter-spacing:.04em; color:var(--ink-2)}
-  /* the reader's own digit, when the classifier has read one: the pad on
-     Shree's branch quotes glyph's cargo, and glyph's cargo prints the digit.
-     It is centred in the pad, so its own half-line is taken off the top. */
-  .signs .sdigit{position:absolute; left:var(--dx, 0px); top:var(--dy, 0px);
-    width:0; height:0; display:flex; justify-content:center; align-items:center;
-    font-family:var(--mono); font-size:2.2rem; line-height:1;
-    letter-spacing:0; color:var(--ink)}
-  /* nothing in HTML stands where the page goes (v8): the labels hang under
-     the lane, the digit stands in the pad, the names are across the line,
-     and the page's whole travel is on and under its own desk, so no label
-     is ever clipped to it. v7's holeClip went with the boards. */
+  /* nothing in HTML stands where the letter goes: the words are on their
+     boards at the platform's back, the names are across the line (above the
+     row on the phone), and the letter's whole travel is on its own desk and
+     down to the lane in front of it, so no word is ever clipped to it. */
 
   /* ————— fx: only the JS world hides pre-entrance ————— */
   .js body:not(.settled) [data-fx]{opacity:0}
@@ -2459,23 +2443,20 @@ if (location.hash.length > 1) {
     .gates .gwhy{top:24px; right:0; width:auto}
     .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
     .gates .grow[data-g="0"]{--gx:0px}
-    /* the phone keeps the desktop's card, because the card is what the stop
-       IS and a 316px column still holds one: the scale falls out of the lane
-       the row has, not out of a second edition of the geometry.
+    /* the phone keeps the laptop's halt, simplified by the owner's leave
+       rather than shrunk: Shree's two boards share one pair of legs, so the
+       desk keeps its size (buildSigns' tight edition).
        THE WRITER'S NAME IS THE ONE THING THAT CANNOT STAY. There is no band
        left of the line here — the rail runs in the 26px gutter and --spx is
-       negative — and the desk and two stops on Shree's lane fill the
-       phone's lane end to end, so the name goes ABOVE its own row and the
-       rows take the 34px that needs. Measured at 390x844 (v7): the name sat
-       across "agentic automl" and its clock without it. */
+       negative — and the halt fills the phone's lane end to end, so the
+       name goes ABOVE its own row and the rows take the 34px that needs. */
     .signs{--s1:34px}
     .signs .sname{left:0; width:auto; text-align:left;
-      top:calc(var(--sby) - 152px)} /* v8: the stops' names hang under the
-      lane now, so row 0's label block runs from 48 to 12px above row 1's
-      top, and a name 27 above the row (v7's 171) stood on the clock's line:
-      measured at 390x844, "Shree Chaturvedi" and "07:52" read as one line.
-      The name goes UNDER the block instead, 8px above its own row, where
-      the first thing drawn on the row is 72px lower. */
+      top:calc(var(--sby) - 152px)} /* 8px above its own row, where the
+      first thing drawn is Shree's sign, whose top board stands 6px under
+      the row's top at the plate's right edge, clear of the name by the
+      width of the desk; the stops' names left the lane in v9, so nothing
+      of row 0 reaches down here but the lever's foot. */
   }
   /* 320. Both dockets grow one more line of row, because at 222px of plate
      every reason wraps to two. Nothing is dropped: the drawing lays itself
@@ -4536,30 +4517,25 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on LinkedIn, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/" target="_blank" rel="noopener">the recommendations, in full &#8599;</a></p>
       </div>
-      <figure class="plate bare" data-fx="in .04 .30 | out .80 .97 | drift 0">
+      <figure class="plate bare" data-fx="in .04 .30 | out .80 .97 | drift 0" aria-label="two references, each a writing desk with a lamp on a station platform, the stop's name and time on its board: the yard 07:52; glyph 15:23; agentic automl 22:05. The page written there is sealed in an envelope and collected by the line.">
         <div class="signs" id="signsFig">
-          <!-- EACH ROW IS ONE PLACE WITH A WRITING DESK STANDING IN IT. Back
-               along the lane, the stop as the thing it is: on Randall's row
-               a goods yard (a ladder off the lane, three sidings, buffer
-               stops, two wagons), on Shree's a pad with the handwritten 3
-               and, across the lane's far end, a barrier down with the run's
-               tray stopped at it. At the lane's head, directly across the
-               line from the writer's name, a small desk on trestles: the
-               page is written flat on it, stood up facing the reader and
-               pinned against a rail at the slab's far edge, and the line
-               collects it once the bead has passed.
-               The stops' names and clocks hang under the lane below each
-               place and come from stations.ts; each branch joins the run's
+          <!-- EACH ROW IS ONE HALT AT NIGHT. A low platform along the lane;
+               at its front a writing desk with a desk lamp; at its back the
+               stop's name board on two legs, and these words printed on it
+               (Shree's row has two boards: glyph at 15:23, then agentic
+               automl at 22:05, where her lane ends). The page is written
+               flat on the desk, sealed in an envelope that stands under the
+               lamp, and the line collects it once the bead has passed: it
+               stands on the lane in front of the platform. The stops' names
+               and clocks come from stations.ts; each branch joins the run's
                line through a set of points that closes as the line reaches
                it.
                NOBODY SIGNS. Two people wrote recommendations in public,
                under their own names; a drawn signature for a named real
                person is a fabricated artifact attributed to them. What
-               travels is the written page, and the clay on it is the
-               corridor's quote mark at the head of its first rule, never a
-               seal at a corner. Shree's lane reads left to right in the
-               day: glyph at 15:23, then agentic automl at 22:05, where her
-               lane ends. -->
+               travels is the letter, sealed, and the only clay on the plate
+               is the corridor's quote mark at the head of the page's first
+               rule, never a seal on the envelope. -->
           <div class="srow" data-s="0">
             <span class="sname">Randall Vollen</span>
             <span class="smark" data-m="0"><span class="sstop">the yard</span><span class="sclock" data-machine>07:52</span></span>
@@ -4572,7 +4548,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <i class="sj" aria-hidden="true"></i>
           </div>
         </div>
-        <figcaption>fig. 11 · written at the stops, posted, and collected by the line.</figcaption>
+        <figcaption>fig. 11 · written at the stops, sealed, and collected by the line.</figcaption>
       </figure>
     </div>
   </section>
@@ -7972,95 +7948,98 @@ function drawGates(p) {
     }
   }
 }
-/* ————— fig. 11 · the references: the desk stands in the place (v8) —————
-   THE BOARDS ARE GONE, on the owner's reading of v7: "too vague". Three
-   running-in boards carried quotations of other figures' cargo — a table
-   with two feed curves, a dashed frame, a rail with booms — and a reader who
-   had not memorised figs. 03, 06 and 09 could name none of them; three
-   boards of one silhouette said "three places" and nothing about what was
-   seen at them; the page was a blank card on a ride; and the station's one
-   fact, two people wrote this down in public, needed the caption.
+/* ————— fig. 11 · the references: the letter, written at the halt (v9) —————
+   v8'S PLACES ARE GONE, on the owner's reading of them from the viewer's
+   side: "the individual shape and object of those things is like too big or
+   too small sometimes ... they can just can't grasp what they're looking
+   at". Measured, on one ground line a desk stood four times the width of a
+   goods wagon, the wagons were 24px with 8px buffer stops, a pad stood 64px
+   tall beside them, and the page posted on the desk read as a laptop. The
+   pad's 3 was the one thing a stranger named cold, and it goes with the
+   rest: it was fig. 06's cargo quoted here, a fifth kind of thing on
+   Shree's row, and this plate's sentence is who wrote, not what glyph reads.
 
-   EACH ROW IS ONE PLACE WITH A WRITING DESK STANDING IN IT. Back along the
-   lane, the stop as the thing it is. On Randall's row a goods yard: a ladder
-   leaving the lane itself and climbing the depth, three sidings off it
-   running on to their buffer stops, two wagons, the near one solid and the
-   far one dashed (fig. 03's own count, two in, two out). On Shree's row a
-   pad standing on the lane with the handwritten 3 fig. 06 reads before
-   anyone draws, and across the lane's far end a barrier down, the run's
-   tray stopped at it with the halt ring on it: her lane ends where the run
-   halted. At the lane's head, directly across the line from its writer's
-   name, a small desk on trestles, the same on both rows. The page is
-   written FLAT on the desk — a parallelogram in the receding plane, its
-   rules inking line by line — then stood up about its near edge until it is
-   a true rectangle facing the reader, pushed back along the depth to the
-   rail at the slab's far edge, and pinned where its top meets the rail: a
-   notice posted at the place, with the desk's top in front of it so the
-   desk is still a desk once the notice is up (the critic's phase 1: a page
-   standing at the near edge hid the slab, and A-frames under a board are an
-   easel). The depth says two things the flat plate could not: a page lying
-   down and a page standing up are one object in two planes, so "written,
-   then posted" is one rigid motion rather than a card appearing; and the
-   desk's feet stand on the ground the sidings run on, so "at the stop" is a
-   fact of the drawing. The ladder off the lane and the barrier across its
-   end are concept C's two ideas, kept because A's text already held them.
+   EACH ROW IS ONE HALT AT NIGHT, AT ONE SCALE. A low platform along the
+   lane; at its front a writing desk with a desk lamp on it; at its back the
+   stop's name board on two legs, the stop's name and clock printed on it
+   (Shree's row has two boards, glyph then agentic automl, in the day's
+   order). At rest the letter stands on the desk under the lamp, sealed:
+   fig. 04's envelope, the run's own mail, drawn the way fig. 04 draws it
+   (10:7, the flap's point just past half way). The scale is a writing
+   desk's and the life order holds: the board stands over everything
+   because a station sign does, the lamp is most of the desk's height, the
+   letter is no wider than the lamp is tall. Every object clears the height
+   a stranger named things at: 32px at 1440, 24 on a phone (measured cold,
+   2026-10-14). The words are type and never scale; the boards are cut to
+   them.
 
-   WHAT THE PAGE IS IN FRONT OF IS CUT, NOT PAINTED OVER (nothing is filled
-   at night): flat, it covers the rear trestle's head; standing and pushed
-   back, the desk's far edge, the rear trestles' heads and the rail's middle;
-   on its way down to the line, the slab's face, the
-   front trestles, the lane's head and the blade. Each keeps its authored `d`
-   and is rewritten with the page's own polygon taken out while the two
-   overlap (segOutPoly: a parallelogram through the stand-up, a rectangle
-   before and after it — an axis-aligned box over the parallelogram
-   over-cuts the far edge by 9.8px at θ 45°, measured, so the cut is the
-   quad).
+   NOTHING IS FILLED, so what stands in front is CUT out of what is behind
+   it: at rest the envelope out of the slab's far edge, and on its way down
+   out of the slab, the desk's legs, the kerb and the platform's far edge.
+   Each cuttable path keeps its authored `d` and is rewritten with the
+   envelope's polygon taken out while the two overlap (segOutPoly, v8).
 
-   TWO CLOCKS, ON PURPOSE. The evidence — the place, the desk, the writing,
-   the stand-up, the push, the pin — rides the driver's p; the disposition
-   rides the rail's bead: the points close as the line reaches the junction,
-   as every disposition on both night plates does, and once the bead is well
-   past it the pin goes and the page slides off the desk, forward and down
-   and left, to stand on the line at the lane's head clear of the desk's
-   legs: collected. The descent is the LESSER of the bead's progress and p's
-   last tenth, so a reader whose bead arrives before the page is up (row 0
-   at 1440×900: the bead reaches the junction at p ≈ .66) sees it posted
-   first and collected after, and nothing ever jumps. Gone past exit11, as
-   today. Reduced motion is p 1 with the bead settled: coupled, as today. */
+   TWO CLOCKS, ON PURPOSE (v8, kept). The place, the desk, the writing and
+   the sealing ride the driver's p; the collection rides the rail's bead:
+   the points close as the line reaches the junction, and once the bead is
+   well past it the envelope leaves the desk and stands on the line at the
+   platform's foot, collected. The descent is the LESSER of the bead's
+   progress and p's last tenth, so a fast bead never takes an unsealed
+   letter. Gone past exit11. Reduced motion is p 1 with the bead settled:
+   collected. */
 const signs = { rows: [], svg: null, spx: 0, exit: 0 };
-/* the page and the desk it is written on, per edition, in px. The page is
-   the notice and is never scaled with the stops — its rules have to read at
-   1x — so the desk is sized to it: a top PW + 8 wide and PH + 6 units deep
-   (the flat page's far edge two units short of the desk's), on trestles
-   `leg` tall with feet `foot` either side of the apex and a bar across them,
-   the slab `lip` thick. What the desk costs in lane is PW + 8 + (PH + 6)·
-   cos 30°: 97px at the wide seats, 80 on the phone, the first thing on
-   every lane. */
-const SIGN_ED = {
-  wide: { pw: 56, ph: 32, pitch: 7, dh: 27, leg: 24, lip: 3, foot: 7, bar: 10, pin: 2.6 },
-  tight: { pw: 44, ph: 26, pitch: 5.5, dh: 22, leg: 19, lip: 3, foot: 6, bar: 8, pin: 2.3 },
+/* THE SCENE AT S 1, in px; one S scales all of it. The platform: a kerb
+   `kerb` tall, its top `deep` deep. The desk: a slab `w` wide and `d` deep
+   standing `h` high, its front `at` back from the kerb, a lip and an apron
+   under it, the legs `leg` in from its ends. The lamp stands `u` in from
+   the slab's right end and `d` deep on it, its foot, stem and shade one
+   over the other. The envelope stands `u` along the slab and `d` deep, and
+   lands on the line `land` along from the slab's left end; the page it
+   holds is smaller than it in both directions and is written flat on the
+   slab's left, `u` in and `d` deep, its rules `pitch` apart. */
+const SIGN_SCENE = {
+  kerb: 8, deep: 32,
+  desk: { w: 112, d: 28, h: 50, at: 2, lip: 3, apron: 8, leg: 3 },
+  lamp: { u: 14, d: 18, base: 14, foot: 2.5, stem: 26, shade: 12, top: 11, bot: 22 },
+  env: { w: 40, h: 28, u: 56, d: 8, flap: 0.536, land: 36 },
+  page: { w: 36, h: 20, u: 6, d: 2, rules: 3, pitch: 5.5 },
 };
-const SIGN_RULES = 4;
-/* the desk stands DESK_AT right of the lane's node; the page lies PAGE_X in
-   from the desk's left end and PAGE_IN units deep from its near edge, which
-   is the edge it is stood up about. Posted, it is pushed back to PAGE_BACK
-   units short of the slab's far edge: 16px of slab top stands in front of
-   it at 1440 (13 on the phone), and it is nudged sideways by that depth's
-   own cos 30° so it stands centred between the rail's posts, PAGE_X clear
-   of each. */
-const DESK_AT = 12, PAGE_X = 4, PAGE_IN = 4, PAGE_BACK = 6;
+/* THE BOARDS, per edition. Wide: one board per stop on two legs at the
+   platform's back, `d` deep, the legs `legs` tall at S 1, the boards set
+   from the plate's right edge `right` in and `gap` apart. Tight (the phone,
+   by the owner's leave to simplify): Shree's two boards share ONE pair of
+   legs, glyph over agentic automl, and every board's top stands `top`
+   above the lane, so the desk keeps a laptop's size instead of shrinking
+   under two signs side by side (measured: two boards at 390 leave the lamp
+   at 20px, one pair of legs leaves it at 35). */
+const SIGN_ED = {
+  wide: { d: 24, legs: 56, right: 8, gap: 10, from: 12 },
+  tight: { d: 10, top: 136, right: 6, gap: 4, from: 8 },
+};
+/* the words to their board's edge; the legs at these shares of a board; the
+   most air between the desk and its first board, at S 1 */
+const SIGN_PAD = { x: 7, y: 4 };
+const SIGN_LEGS = [0.22, 0.78];
+const SIGN_AIR = 28;
+/* the lamp is the smallest thing a reader must name, so it sets the floor:
+   S may not take it under 32px on a two-column seat or 24 on the phone */
+const SIGN_LAMP = SIGN_SCENE.lamp.foot + SIGN_SCENE.lamp.stem + SIGN_SCENE.lamp.shade;
+const SIGN_FLOOR = { wide: 32 / SIGN_LAMP, tight: 24 / SIGN_LAMP };
+/* the share of its row's window at which each thing inks: the platform,
+   then the desk and the lamp on it, the boards and their words, the page
+   written flat, and from `seal` the letter sealed and standing */
+const SIGN_AT = { platform: 0.02, desk: 0.1, back: 0.13, lamp: 0.2, legs: 0.26, board: 0.31,
+  words: 0.36, page: 0.42, write: [0.46, 0.56], seal: 0.9 };
 /* THE COLLECTION WINDOW, on the bead: open from this far past the junction,
    over this much. 120 is not a taste. At 1440×900 the bead reaches row 0's
-   junction at p ≈ .66, mid stand-up, and at the centred park (p 1) it stands
-   114px past it; the page has to be posted when a reader parks and collected
-   only once they scroll on, so the window opens past the park and closes
-   before exit11, which is foot + .45 vh ≥ junction + 367 on every seat. */
+   junction at p ≈ .66, and at the centred park (p 1) it stands short of
+   120 past it; the letter has to be on the desk when a reader parks and
+   collected only once they scroll on, so the window opens past the park
+   and closes before exit11, which is foot + .45 vh ≥ junction + 367 on
+   every seat. */
 const SIGN_TAKE = { from: 120, over: 80 };
-/* a label may stand this far left of its stop's centre, pushed there by the
-   plate's edge or by its neighbour; past this the stops shrink instead */
-const LABEL_SLIP = 16;
 /* a stroked path's own geometry as segments, for the cut. Everything the
-   page can cover is drawn with seg and box, so M, L, h, v and z are the
+   envelope can cover is drawn with seg and box, so M, L, h, v and z are the
    whole alphabet. */
 function pathSegs(d) {
   const out = [];
@@ -8085,8 +8064,7 @@ const segsBox = (segs) => {
   }
   return bb;
 };
-/* a cuttable path: its authored d, segments and box; re-read when the
-   author (the bead, for the blade) rewrites it */
+/* a cuttable path: its authored d, segments and box */
 const cutOf = (el, d) => { const d0 = d ?? el.getAttribute("d"), segs = pathSegs(d0); return { el, d0, segs, bb: segsBox(segs) }; };
 /* the part of a segment OUTSIDE a convex polygon, as path data (Cyrus–Beck
    for the span inside, the rest drawn): fig. 08's q3below for any convex
@@ -8120,147 +8098,7 @@ const polyOf = (pts) => {
     y0: Math.min(...pts.map((p) => p[1])), y1: Math.max(...pts.map((p) => p[1])) };
   return pts;
 };
-/* Each stop is the place itself, drawn at its right edge x1 on the lane at
-   y, scaled by S, its pieces staged by `parts` (the share of the row's
-   window at which each inks). `w` is the drawing's width at S 1, `pad` what
-   it keeps unscaled. */
-const MARKS = {
-  /* the goods yard: a ladder leaving the lane and climbing the depth, three
-     sidings off it running on to their buffer stops, two wagons. The wagons
-     stand where no siding behind them crosses their top face — the near one
-     at the head of its siding, 12 units deep, so its top clears the middle
-     siding's start by 1.4px at S 1 — because nothing here is filled, and a
-     track drawn through a wagon reads as a wagon drawn on a track. The
-     ladder is the lane's own branch and stands at p 0. */
-  yard: { w: 180, pad: 0, draw: (g, x1, y, s, parts) => {
-    const xl = x1 - 180 * s;
-    const sd = [34, 68, 102].map((d) => d * s);
-    const at = (d) => [xl + d * Q3.x, y - d * Q3.y];
-    add(g, parts(dPath("s-track", seg(xl, y, ...at(sd[2]))), 0));
-    let stops = "";
-    sd.forEach((d, k) => {
-      const [sx, sy] = at(d), ex = xl + 90 * s + d * Q3.x;
-      add(g, parts(dPath("s-track", seg(sx, sy, ex, sy)), 0.12 - 0.04 * k));
-      stops += seg(ex, sy - 4 * s, ex, sy + 4 * s);
-    });
-    add(g, parts(dPath("s-stop", stops), 0.16));
-    /* a wagon: the body on two wheels, the wheels filled squares a reader
-       can see at 1x (r 2 at S 1: 1.5 read as a crate on a line) */
-    const wagon = (x, sy, deep, cls, at2) => {
-      const h = 11 * s, w2 = 24 * s, top = sy - 4 * s - h;
-      add(g, parts(dPath(cls, box(x, top, w2, h) + recede(x, top, w2, h, deep * s)), at2));
-      add(g, parts(dPath("s-node", dot(x + 5 * s, sy - 2 * s, 2 * s) +
-        dot(x + w2 - 5 * s, sy - 2 * s, 2 * s)), at2));
-    };
-    wagon(xl + 118 * s, at(sd[2])[1], 16, "s-wagon out", 0.21);
-    wagon(xl + 30 * s, at(sd[0])[1], 12, "s-wagon", 0.26);
-    return { c: x1 - 90 * s };
-  } },
-  /* the pad, standing on the lane with the digit fig. 06 reads before
-     anyone draws — MNIST test #9370, a 3 — inked cell by cell at 64/28 px a
-     cell, --ink fill on the s-node precedent (check-palette reads the token
-     out of the rule and holds it to the night floor). Below 1.9px a cell the
-     bitmap is a smudge, so the tight edition prints the mono digit instead,
-     as the pad does once a reader has drawn one of their own. The frame
-     draws inside the row's window, never at p 0: an empty frame at the
-     plate's entry was v7's empty dashed frame for a beat. */
-  pad: { w: 64 + 6 * C30, pad: 0, draw: (g, x1, y, s, parts, digit) => {
-    const W2 = 64 * s, dp = 6 * s, x = x1 - dp * Q3.x - W2, top = y - W2;
-    add(g, parts(dPath("s-pad", box(x, top, W2, W2)), 0.02));
-    add(g, parts(dPath("s-far", recede(x, top, W2, W2, dp)), 0.02));
-    let t = "";
-    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-      const cx = x + W2 / 2 + sx * W2 / 2, cy = top + W2 / 2 + sy * W2 / 2;
-      t += seg(cx, cy - sy * 9 * s, cx, cy) + seg(cx - sx * 9 * s, cy, cx, cy);
-    }
-    add(g, parts(dPath("s-reg", t), 0.05));
-    const cell = W2 / 28;
-    let bits = "";
-    if (digit === null && cell >= 1.9) {
-      const px = samplePixels();
-      for (let i = 0; i < 784; i++)
-        if (px[i] >= 0.5) bits += box(x + (i % 28) * cell, top + Math.floor(i / 28) * cell, cell, cell);
-      add(g, parts(dPath("s-bit", bits), 0.08));
-    }
-    return { c: x + W2 / 2, cy: top + W2 / 2, mono: !bits };
-  } },
-  /* the barrier, down across the lane's far end. The lane is the road's near
-     edge and the road runs 32 units back from it: a post on the lane, raised
-     eight units above its hinge, and a full-height post at the far edge with
-     a cradle the arm's tip sits in; the arm the heavy stroke, hinged on the
-     near post and lowered along the depth into the cradle, three stripes
-     across it, the counterweight below the hinge; the run's tray (fig. 10's)
-     stopped sixteen units short of the post, clear of it with its depth,
-     the halt ring centred on the tray's near face. The far post stands ten
-     px inside the object's edge: at the plate's edge (phase 1) the second
-     post was not seen and the striped diagonal read as a pole pointing at
-     the sky. The arm swings down as the place is drawn: the run halts. */
-  automl: { w: 83.7, pad: 10, draw: (g, x1, y, s, parts) => {
-    const rd = 32 * s, rx = rd * Q3.x, ry = rd * Q3.y, ph2 = 22 * s;
-    const fx = x1 - 10, fy = y - ry, xb = fx - rx;
-    const tw = 40 * s, tx = xb - 16 * s - tw, ty = y - 17 * s, lip = 5 * s;
-    /* the road's far edge, so the two posts stand on something and the arm
-       lies ACROSS a road rather than up a slope */
-    add(g, parts(dPath("s-track", seg(tx - 8 * s, fy, fx, fy)), 0.13));
-    add(g, parts(dPath("s-post", seg(xb, y, xb, y - ph2 - 8 * s) +
-      seg(fx, fy, fx, fy - ph2 - 4 * s) + seg(fx - 4 * s, fy - ph2, fx, fy - ph2)), 0.13));
-    const hx = xb, hy = y - ph2;
-    add(g, parts(dPath("s-hinge", box(hx - 2.2 * s, hy - 2.2 * s, 4.4 * s, 4.4 * s)), 0.13));
-    const arm = parts(el("path", { class: "s-arm", d: "" }), 0.13);
-    const weight = parts(el("path", { class: "s-weight", d: "" }), 0.13);
-    add(g, arm); add(g, weight);
-    add(g, parts(dPath("s-tray", box(tx, ty, tw, lip) + recede(tx, ty, tw, lip, 12 * s) +
-      seg(tx + 6 * s, y - 12 * s, tx + 6 * s, y) + seg(tx + tw - 6 * s, y - 12 * s, tx + tw - 6 * s, y)), 0.26));
-    add(g, parts(el("circle", { class: "s-ring", cx: n1(tx + tw / 2), cy: n1(ty + lip / 2), r: n1(9 * s) }), 0.29));
-    return { c: (tx + x1) / 2, laneEnd: xb + 4 * s, far: fx, near: xb,
-      /* the arm at f: straight up (open) at 0, down the depth into the far
-         post's cradle at 1 — one plane, the one across the road */
-      swing: (f) => {
-        const a = (f * Math.PI) / 2, dx = Math.sin(a) * Q3.x, dy = -Math.sin(a) * Q3.y - Math.cos(a);
-        const px = -dy, py = dx;
-        let d = seg(hx, hy, hx + rd * dx, hy + rd * dy);
-        for (const t of [0.3, 0.55, 0.8]) {
-          const mx = hx + rd * t * dx, my = hy + rd * t * dy;
-          d += seg(mx - 2.5 * s * px, my - 2.5 * s * py, mx + 2.5 * s * px, my + 2.5 * s * py);
-        }
-        a4put(arm, "d", d);
-        a4put(weight, "d", seg(hx, hy, hx - 7 * s * dx, hy - 7 * s * dy));
-      } };
-  } },
-};
-/* the desk: a slab on two trestles with a rail at its far edge, drawn once
-   per row, its five paths the ones the page can cover. Front faces --ink,
-   what recedes --ink-2. */
-function drawDesk(g, x0, y, ed, parts) {
-  const dw = ed.pw + 8, D = ed.ph + 6, dx = D * Q3.x, dy = D * Q3.y, top = y - ed.dh;
-  const A = (xa, yb) => `M${n1(xa - ed.foot)} ${n1(yb)}L${n1(xa)} ${n1(yb - ed.leg)}L${n1(xa + ed.foot)} ${n1(yb)}`;
-  const xa = [x0 + ed.bar, x0 + dw - ed.bar];
-  const bar = (x) => seg(x - ed.foot * 0.6, y - ed.leg * 0.42, x + ed.foot * 0.6, y - ed.leg * 0.42);
-  const front = parts(dPath("s-desk", xa.map((x) => A(x, y) + bar(x)).join("")), 0.30);
-  const rear = parts(dPath("s-far", xa.map((x) => A(x + dx, y - dy)).join("")), 0.33);
-  const face = parts(dPath("s-desk", box(x0, top, dw, ed.lip)), 0.36);
-  const back = parts(dPath("s-far", recede(x0, top, dw, ed.lip, D)), 0.36);
-  /* the rail: two short posts at the slab's far corners and a rail between
-     them at the height the posted page's top will stand, so the pin seats
-     where the page meets the rail */
-  const U = D - PAGE_IN - PAGE_BACK, ny = top - PAGE_IN * Q3.y;
-  const railY = ny - U * Q3.y - ed.ph, fy = top - dy;
-  const rail = parts(dPath("s-far", seg(x0 + dx, fy, x0 + dx, railY) + seg(x0 + dw + dx, fy, x0 + dw + dx, railY) +
-    seg(x0 + dx, railY, x0 + dw + dx, railY)), 0.36);
-  for (const n of [rear, back, rail, front, face]) add(g, n);
-  return { cuts: [front, rear, face, back, rail], nx: x0 + PAGE_X + PAGE_IN * Q3.x, ny,
-    /* the push is along the depth, plus the sideways share of PAGE_BACK's
-       own depth, so the posted page stands centred between the posts in
-       projection (PAGE_X of air each side) instead of flush with the left
-       one and PAGE_X + PAGE_BACK·cos 30° from the right (the coordinator's
-       cosmetic, after the critic's second pass) */
-    push: { x: (U + PAGE_BACK) * Q3.x, y: -U * Q3.y }, posts: [x0 + dx, x0 + dw + dx], slab: +(U * Q3.y + PAGE_IN * Q3.y).toFixed(1),
-    /* where the collected page lands: standing on the lane at its head, its
-       right edge two px clear of the right front trestle's near foot, so
-       the desk keeps a whole trestle beside it (the phase 1 still showed a
-       floating top over a card) */
-    land: x0 + dw - ed.bar - ed.foot - ed.pw - 2, trestle: [xa[1] - ed.foot, xa[1] + ed.foot] };
-}
+const quad = (pts) => "M" + pts.map(([x, y]) => `${n1(x)} ${n1(y)}`).join("L") + "z";
 function buildSigns(js) {
   const host = $("signsFig");
   const plate = host?.closest("figure");
@@ -8271,61 +8109,53 @@ function buildSigns(js) {
   const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
   const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
   const R = W - 10, lane = R - T;
-  /* the tight edition starts under 290 of lane: the phone has 262, and the
-     narrowest two-column seat, 1250, has 299.5 and keeps the wide page */
-  const tight = lane < 290;
-  const ed = tight ? SIGN_ED.tight : SIGN_ED.wide;
-  const GAP = tight ? 12 : 16;
   const svg = figSvg(host, "sline", W, H);
   signs.svg = svg; signs.spx = spx; signs.rows = [];
   const rows = [...host.querySelectorAll(".srow")];
   const railless = plate.classList.contains("railless");
-  /* the desk, the same on both rows: where it stands and what it spans */
-  const x0 = T + DESK_AT, DW = ed.pw + 8, DD = ed.ph + 6;
-  const deskR = x0 + DW + DD * Q3.x;
-  /* ————— ONE SCALE FOR THE STOPS, and it is measured —————
-     It is solved on the row that runs out of lane first — Shree's two stops
-     at a two-column seat, the yard's 180px on the phone — and spent on both
-     rows: places that shrink together stay one family, and a narrow seat
-     gets a smaller drawing rather than a missing one. The desk and its page
-     are not scaled: the notice has to read.
-     A LABEL IS NEVER SCALED EITHER. The stop's name and clock stand under
-     the lane below their stop, measured with getBoundingClientRect and
-     never guessed from a per-character budget (the rule
-     [[figure-label-budget-constant]] cost a sitewide 10% to learn); a label
-     is kept inside the plate and 8px from its neighbour, which can push it
-     up to LABEL_SLIP left of its stop's centre, and where that is not
-     enough the stops shrink until it is. The labels, not the drawings, are
-     what the phone's S is solved against. */
-  const labW = (row, n) => {
-    const m = row.querySelectorAll(".smark")[n];
-    if (!m) return 0;
-    return Math.max(...[...m.querySelectorAll(".sstop, .sclock")].map((e2) => e2.getBoundingClientRect().width)) + 8;
+  const { kerb, deep, desk: K, lamp: L, env: E, page: PG } = SIGN_SCENE;
+  /* ————— THE BOARDS ARE MEASURED, AND THE DRAWING IS SOLVED ROUND THEM —————
+     A stop's name over its clock, both measured where they print
+     (getBoundingClientRect, never a per-character budget: the rule
+     [[figure-label-budget-constant]] cost a sitewide 10% to learn), and a
+     board is its words plus SIGN_PAD. The opacity is written before the
+     seat on purpose: the style attribute keeps the order its properties
+     were first set in, and the purity spec reads it as a string. */
+  const marks = rows.map((row) => [...row.querySelectorAll(".smark")].map((m) => {
+    if (!m.style.opacity) m.style.opacity = "0";
+    const k = [...m.children].map((c) => c.getBoundingClientRect());
+    return { m, w: Math.max(...k.map((c) => c.width)) + 2 * SIGN_PAD.x,
+      h: k.reduce((s2, c) => s2 + c.height, 0) + 2 * SIGN_PAD.y };
+  }));
+  const busy = marks.reduce((a, b) => (b.length > a.length ? b : a), []);
+  /* ————— ONE SCALE, and the desk binds it —————
+     The boards stand from the plate's right edge in; the desk stands at the
+     lane's head and may run to 12px short of the first board. The subject
+     may take 45% of the lane and no more (the diagnosis's ceiling, amended
+     for the one subject); S never passes 1, the scene as authored. If the
+     wide edition would take the lamp under its floor, the tight one is
+     used: one pair of legs for Shree's two boards, and the room they gave
+     back goes to the desk. */
+  const span = (S) => (4 + K.at * C30 + K.w + K.d * C30) * S;
+  const solve = (ed) => {
+    const Z = SIGN_ED[ed], P0 = T + Z.from;
+    const firstX = ed === "wide"
+      ? W - Z.right - busy.reduce((s2, b) => s2 + b.w, 0) - Z.gap * (busy.length - 1)
+      : W - Z.right - Math.max(...busy.map((b) => b.w));
+    const S = Math.min(1, (0.45 * lane) / (K.w + K.d * C30), (firstX - 12 - P0) / span(1));
+    return { ed, Z, P0, firstX, S: +S.toFixed(3) };
   };
-  const kindsOf = (i) => (i === 0 ? ["yard"] : ["pad", "automl"]);
-  /* a row's stops seated from the lane's end in, with their label centres */
-  const seatRow = (row, kinds, S) => {
-    let edge = R;
-    const objs = kinds.slice().reverse().map((k) => {
-      const w2 = MARKS[k].w * S + MARKS[k].pad;
-      const o = { k, x0: edge - w2, x1: edge, c: edge - w2 / 2 };
-      edge = o.x0 - GAP;
-      return o;
-    }).reverse();
-    const lws = kinds.map((_, n) => labW(row, n));
-    const lcs = objs.map((o) => o.c);
-    for (let n = objs.length - 1; n >= 0; n--) {
-      lcs[n] = Math.min(lcs[n], W - 2 - lws[n] / 2);
-      if (n < objs.length - 1) lcs[n] = Math.min(lcs[n], lcs[n + 1] - lws[n + 1] / 2 - 8 - lws[n] / 2);
-    }
-    const slip = Math.max(...objs.map((o, n) => o.c - lcs[n]));
-    return { objs, lcs, slip, fits: objs[0].x0 >= deskR + GAP && slip <= LABEL_SLIP };
-  };
-  /* solved against EVERY row: Shree's two stops bind first on a two-column
-     seat, but on the phone it is the yard, 180 wide, that reaches the desk */
-  let S = 1;
-  for (; S > 0.5; S = +(S - 0.05).toFixed(2)) if (rows.every((row, i) => seatRow(row, kindsOf(i), S).fits)) break;
-  S = Math.max(S, 0.5);
+  let lay = solve("wide");
+  if (lay.S < SIGN_FLOOR.wide) lay = solve("tight");
+  const { ed, Z, P0, S } = lay;
+  const tight = ed === "tight";
+  /* where the lane is long (a tablet held upright has 546px of it) the
+     boards follow the desk at most SIGN_AIR along, rather than standing at
+     the plate's far edge with an empty platform between: one halt, not a
+     desk and a sign a street apart. Under SIGN_FLOOR.tight (a 320px phone)
+     the desk is let go below the floor rather than run into the boards,
+     and the census says so. */
+  const firstX = Math.min(lay.firstX, P0 + span(S) + SIGN_AIR * S);
   /* the figure's own spine, for the reader whose arc never arrives: under
      reduced motion the night beats carry opaque resting grounds and the rail
      is painted over, so the lanes would run to nothing. Never clay — this is
@@ -8333,47 +8163,50 @@ function buildSigns(js) {
   if (railless && rows.length)
     add(svg, dPath("s-spine", seg(spx, rows[0].offsetTop + 8, spx,
       rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8)));
-  host.querySelectorAll(".sdigit").forEach((d) => d.remove());
   rows.forEach((row, i) => {
     const g = el("g", {});
     const mark = row.querySelector(".sj");
     const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
-    const kinds = kindsOf(i);
-    const { objs, lcs } = seatRow(row, kinds, S);
-    const boxes = [...row.querySelectorAll(".smark")];
-    objs.forEach((o, n) => boxes[n]?.style.setProperty("--mx", lcs[n].toFixed(1) + "px"));
     const jx = railless ? spx : (js?.[i]?.jx ?? spx);
-    const rec = { el: row, g, i, y, jx, pageY: js?.[i]?.y ?? y, objs, lcs, parts: [], cuts: [],
-      a: 0, w: 0, th: -1, push: -1, P: 0, cs: 0, vis: true, _k: "", _tf: "", _o: "", digitEl: null, auto: null };
+    const rec = { el: row, g, i, y, jx, pageY: js?.[i]?.y ?? y, parts: [], cuts: [], words: marks[i].map((b) => b.m),
+      a: 0, w: 0, P: 0, cs: 0, vis: true, _k: "", _tf: "" };
     /* a piece of the drawing and the share of the row's window it inks at;
        nothing is visible until the driver has drawn a p */
     const parts = (n, at) => { if (n) { n.setAttribute("opacity", "0"); rec.parts.push({ el: n, at }); } return n; };
-    /* the place, back along the lane: glyph nearer, agentic automl at the
-       end, which is the order the markup prints them in */
-    let laneEnd = R;
-    objs.forEach((o) => {
-      const r2 = MARKS[o.k].draw(g, o.x1, y, S, parts, glyphDigit);
-      if (o.k === "automl") { rec.auto = r2; laneEnd = r2.laneEnd; }
-      if (o.k === "pad" && r2.mono) {
-        /* the mono digit in the pad: the reader's own, or the sample's
-           where the bitmap would not read. HTML, upright, never scaled. */
-        const d = document.createElement("span");
-        d.className = "sdigit";
-        d.setAttribute("data-machine", "");
-        d.setAttribute("aria-hidden", "true");
-        d.textContent = glyphDigit ?? String(GLYPH_SAMPLE.label);
-        d.style.setProperty("--dx", r2.c.toFixed(1) + "px");
-        d.style.setProperty("--dy", r2.cy.toFixed(1) + "px");
-        d.style.opacity = "0";
-        host.appendChild(d);
-        rec.digitEl = d;
+    const grp = (o, cls) => { const gg = el("g", cls ? { class: cls, "data-o": o } : { "data-o": o }); g.appendChild(gg); return gg; };
+    /* ————— the boards first: they decide where the platform ends ————— */
+    const sd = Z.d * S, sdx = sd * C30, foot = y - kerb * S - sd * 0.5;
+    const boards = [];
+    if (!tight) {
+      /* one board per stop, from the first board's x, `gap` apart, every
+         board's foot on legs `legs` tall */
+      let x = firstX;
+      for (const b of marks[i]) {
+        const yb = foot - Z.legs * S;
+        boards.push({ x, y: yb - b.h, w: b.w, h: b.h, legs: [yb, foot] });
+        x += b.w + Z.gap;
       }
-    });
-    /* the lane, solid from the node to the place (on Shree's row it ends at
-       the barrier); the dashed register on this run means conditional, and
-       nothing on the lane's head is */
-    const knot = dPath("s-node", dot(T, y, 3));
-    add(g, knot);
+    } else {
+      /* one sign: its boards stacked from `top` down, as wide as the widest,
+         centred where Shree's stack stands, on one pair of legs */
+      const bw = Math.max(...marks[i].map((b) => b.w));
+      const cx = firstX + Math.max(...busy.map((b) => b.w)) / 2;
+      let yy = y - Z.top;
+      marks[i].forEach((b, n) => {
+        const last = n === marks[i].length - 1;
+        boards.push({ x: cx - bw / 2, y: yy, w: bw, h: b.h, legs: last ? [yy + b.h, foot] : [yy + b.h, yy + b.h + Z.gap] });
+        yy += b.h + Z.gap;
+      });
+    }
+    const legX = (b) => SIGN_LEGS.map((f) => b.x + f * b.w);
+    /* the platform runs to just past the last leg, and never so far that
+       its back corner comes within 6px of the plate's edge */
+    const P1 = Math.min(Math.max(...boards.flatMap((b) => legX(b).map((lx) => lx - sdx))) + 6 * S,
+      W - 6 - deep * C30 * S);
+    const laneEnd = P1 + 14 * S;
+    /* the lane, solid from the node to past the platform's end, and the
+       stub off the line */
+    add(g, dPath("s-node", dot(T, y, 3)));
     add(g, dPath("s-lane", seg(T, y, laneEnd, y)));
     const stub = dPath("s-stub", seg(jx, y, T, y));
     stub.setAttribute("data-j", i);
@@ -8399,70 +8232,104 @@ function buildSigns(js) {
     add(g, dPath("s-tie", seg(jx + 44, y - 14, jx + 44, y + 6)));
     add(g, dPath("s-lever", seg(jx + 44, y + 6, jx + 57, y + 16)));
     add(g, dPath("s-node", dot(jx + 57, y + 16, 2.4)));
-    /* the desk, and the page on it. The page's four rules lie parallel to
-       its near edge, so they are horizontal at every θ and only step back;
-       they are one path written by dashoffset in the order they lie, the
-       pen writing top line first. The quote mark — the words are borrowed —
-       stands at the head of the first rule, on the rule, where the corridor
-       reads it as "quoted words begin here"; a filled square at a page's
-       corner is a seal, and nobody signs here. */
-    const dk = drawDesk(g, x0, y, ed, parts);
-    /* the blade's cut record is re-read whenever the bead rewrites it */
-    const bladeCut = cutOf(blade);
-    rec.cuts = [...dk.cuts.map((n) => cutOf(n)), bladeCut];
-    const page = el("g", { class: "s-carry" });
-    const sheet = parts(el("path", { class: "s-page", d: "" }), 0.42);
+    /* ————— the platform: the kerb along the lane, its top running back,
+       its right end showing (the depth runs up and to the right) ————— */
+    const top = y - kerb * S, pdx = deep * C30 * S, pdy = deep * 0.5 * S;
+    const gp = grp("platform");
+    const edge = parts(dPath("s-edge", seg(P0, top, P1, top)), SIGN_AT.platform);
+    const plat = parts(dPath("s-plat", seg(P0, top, P0, y) + seg(P1, top, P1, y) +
+      seg(P0, top, P0 + pdx, top - pdy) + seg(P0 + pdx, top - pdy, P1 + pdx, top - pdy) +
+      seg(P1, top, P1 + pdx, top - pdy) + seg(P1 + pdx, top - pdy, P1 + pdx, y - pdy) +
+      seg(P1, y, P1 + pdx, y - pdy)), SIGN_AT.platform);
+    add(gp, plat); add(gp, edge);
+    /* ————— the desk: slab, apron with its drawer's knob, four legs —————
+       The front legs drop from the apron's ends to the platform; the back
+       left one shows under the apron, the back right one from under the
+       slab's right end, where it leaves the side face. Front faces --ink,
+       what recedes --ink-2. */
+    const x0 = P0 + (4 + K.at * C30) * S, dFoot = top - K.at * 0.5 * S, yt = dFoot - K.h * S;
+    const dw = K.w * S, lip = K.lip * S, ap = K.apron * S, li = K.leg * S, ya = yt + lip + ap;
+    const bk = (K.d - K.leg) * S, bFoot = dFoot - bk * 0.5;
+    const blx = x0 + li + bk * C30, brx = x0 + dw - li + bk * C30;
+    const bry = yt + lip - ((brx - x0 - dw) / C30) * 0.5;
+    const gd = grp("desk");
+    const front = parts(dPath("s-desk", box(x0, yt, dw, lip) + box(x0 + li, yt + lip, dw - 2 * li, ap) +
+      seg(x0 + li, ya, x0 + li, dFoot) + seg(x0 + dw - li, ya, x0 + dw - li, dFoot)), SIGN_AT.desk);
+    const rear = parts(dPath("s-far", recede(x0, yt, dw, lip, K.d * S) +
+      seg(blx, ya, blx, bFoot) + seg(brx, bry, brx, bFoot)), SIGN_AT.back);
+    const knob = parts(dPath("s-node", dot(x0 + dw / 2, yt + lip + ap / 2, 1.2 * S)), SIGN_AT.back);
+    add(gd, rear); add(gd, front); add(gd, knob);
+    /* ————— the lamp, at the slab's back right: a foot, a stem, a shade ————— */
+    const lx = x0 + (K.w - L.u) * S + L.d * C30 * S, ly = yt - L.d * 0.5 * S;
+    const sb = ly - (L.foot + L.stem) * S, st = sb - L.shade * S;
+    const gl = grp("lamp");
+    add(gl, parts(dPath("s-stem", seg(lx, ly - L.foot * S, lx, sb)), SIGN_AT.lamp));
+    add(gl, parts(dPath("s-lamp", box(lx - (L.base / 2) * S, ly - L.foot * S, L.base * S, L.foot * S) +
+      quad([[lx - (L.bot / 2) * S, sb], [lx - (L.top / 2) * S, st], [lx + (L.top / 2) * S, st], [lx + (L.bot / 2) * S, sb]])), SIGN_AT.lamp));
+    /* ————— the signs: legs, then boards, then the words seated on them ————— */
+    boards.forEach((b, n) => {
+      const gs = grp("sign");
+      add(gs, parts(dPath("s-leg", legX(b).map((x) => seg(x, b.legs[0], x, b.legs[1])).join("")), SIGN_AT.legs));
+      add(gs, parts(dPath("s-board", box(b.x, b.y, b.w, b.h)), SIGN_AT.board));
+      const m = marks[i][n].m;
+      m.style.setProperty("--mx", (b.x + b.w / 2).toFixed(1) + "px");
+      m.style.setProperty("--my", (b.y + SIGN_PAD.y - row.offsetTop).toFixed(1) + "px");
+    });
+    /* ————— the page, written flat on the slab's left —————
+       Its rules lie parallel to its near edge, so on the plate they are
+       horizontal and only step back; one path written by dashoffset in the
+       order they lie, the pen on the far line first. The quote mark — the
+       words are borrowed — stands at the head of the first rule, on the
+       rule; a filled square at a page's corner is a seal, and nobody signs
+       here. */
+    const gpg = grp("page");
+    const po = [x0 + (PG.u + PG.d * C30) * S, yt - PG.d * 0.5 * S];
+    const Pf = (u, v) => [po[0] + (u + v * C30) * S, po[1] - v * 0.5 * S];
+    const sheet = dPath("s-page", quad([Pf(0, 0), Pf(PG.w, 0), Pf(PG.w, PG.h), Pf(0, PG.h)]), { opacity: "0" });
     const rules = [];
     let len = 0;
-    for (let k = 0; k < SIGN_RULES; k++) {
-      const u0 = k ? 6 : 11, u1 = ed.pw - 5 - ((k * 9) % 11);
-      rules.push([u0, u1, ed.ph - ((ed.ph - ed.pitch * (SIGN_RULES - 1)) / 2 + ed.pitch * k)]);
-      len += u1 - u0;
+    for (let k = 0; k < PG.rules; k++) {
+      const u0 = k ? 4 : 9, u1 = PG.w - 4 - ((k * 7) % 9), v = PG.h - (PG.h - PG.pitch * (PG.rules - 1)) / 2 - PG.pitch * k;
+      rules.push(seg(...Pf(u0, v), ...Pf(u1, v)));
+      len += (u1 - u0) * S;
     }
-    const writ = parts(el("path", { class: "s-rule", d: "", "stroke-dasharray": n1(len + 2), "stroke-dashoffset": n1(len + 2) }), 0.42);
-    const quote = el("path", { class: "s-quote", d: "", visibility: "hidden" });
-    const pin = el("path", { class: "s-node", d: dot(dk.nx + dk.push.x + ed.pw / 2, dk.ny + dk.push.y - ed.ph, ed.pin), opacity: "0" });
-    for (const n of [sheet, writ, quote]) add(page, n);
-    add(g, page);
-    add(g, pin);
-    Object.assign(rec, { page, sheet, writ, quote, pin, rules, len, blade, bladeCut, knot,
-      knotBox: { x0: T - 3, y0: y - 3, x1: T + 3, y1: y + 3 }, nx: dk.nx, ny: dk.ny, pushTo: dk.push,
-      /* from posted at the rail to standing on the lane at its head: forward
-         off the desk, down its height and left of its legs, in one leg */
-      fall: { x: dk.land - dk.nx - dk.push.x, y: y - dk.ny - dk.push.y }, land: dk.land, trestle: dk.trestle, slab: dk.slab, corners: [] });
-    /* the page's frame — u along the near edge, v deep from it — to the
-       plate at the stand-up's θ and the push: flat at 0 the far edge lies
-       PH·cos 30° right and PH/2 up, standing at 90° it is PH straight up,
-       and pushed the whole frame moves back along the depth */
-    rec.lay = () => {
-      const th = (rec.th * Math.PI) / 2, c = Math.cos(th), s2 = Math.sin(th);
-      const fx = ed.ph * Q3.x * c, fy = -ed.ph * (Q3.y * c + s2);
-      const ox = dk.nx + dk.push.x * rec.push, oy = dk.ny + dk.push.y * rec.push;
-      const P = (u, v) => [ox + u + (fx * v) / ed.ph, oy + (fy * v) / ed.ph];
-      const q = (pts) => "M" + pts.map(([x, y2]) => `${n1(x)} ${n1(y2)}`).join("L") + "z";
-      rec.corners = [P(0, 0), P(ed.pw, 0), P(ed.pw, ed.ph), P(0, ed.ph)];
-      a4put(sheet, "d", q(rec.corners));
-      a4put(writ, "d", rules.map(([u0, u1, v]) => seg(...P(u0, v), ...P(u1, v))).join(""));
-      const v0 = rules[0][2];
-      a4put(quote, "d", q([P(5, v0 + 3), P(9, v0 + 3), P(9, v0 - 3), P(5, v0 - 3)]));
-    };
-    /* the page's own polygon, where the two clocks have put it, and
+    const writ = el("path", { class: "s-rule", d: rules.join(""), "stroke-dasharray": n1(len + 2), "stroke-dashoffset": n1(len + 2), opacity: "0" });
+    const v0 = PG.h - (PG.h - PG.pitch * (PG.rules - 1)) / 2;
+    const quote = el("path", { class: "s-quote", d: quad([Pf(4, v0 + 2.5), Pf(7.5, v0 + 2.5), Pf(7.5, v0 - 2.5), Pf(4, v0 - 2.5)]), opacity: "0" });
+    for (const n of [sheet, writ, quote]) add(gpg, n);
+    /* ————— the letter: fig. 04's envelope, sealed, standing on the desk
+       under the lamp's shade; collected, it stands on the line in front of
+       the platform, under the slab ————— */
+    const ex = x0 + (E.u + E.d * C30) * S, ey = yt - E.d * 0.5 * S, ew = E.w * S, eh = E.h * S;
+    const carry = grp("envelope", "s-carry");
+    const env = el("path", { class: "s-env", d: box(ex, ey - eh, ew, eh), opacity: "0" });
+    const flap = el("path", { class: "s-flap", d: seg(ex, ey - eh, ex + ew / 2, ey - eh + E.flap * eh) +
+      seg(ex + ew / 2, ey - eh + E.flap * eh, ex + ew, ey - eh), opacity: "0" });
+    add(carry, env); add(carry, flap);
+    const land = [x0 + E.land * S, y];
+    rec.cuts = [edge, plat, front, rear].map((n) => cutOf(n));
+    Object.assign(rec, { carry, env, flap, sheet, writ, quote, len, blade, knob,
+      knobBox: { x0: x0 + dw / 2 - 1.2 * S, y0: yt + lip + ap / 2 - 1.2 * S, x1: x0 + dw / 2 + 1.2 * S, y1: yt + lip + ap / 2 + 1.2 * S },
+      env0: [[ex, ey - eh], [ex + ew, ey - eh], [ex + ew, ey], [ex, ey]], fall: { x: land[0] - ex, y: land[1] - ey },
+      geo: { P0, P1, laneEnd, top, deep: [pdx, pdy], desk: { x0, x1: x0 + dw + K.d * S * C30, y0: yt - K.d * S * 0.5, y1: dFoot },
+        lamp: { x0: lx - (L.bot / 2) * S, x1: lx + (L.bot / 2) * S, y0: st, y1: ly }, env: { x0: ex, x1: ex + ew, y0: ey - eh, y1: ey },
+        land: { x0: land[0], x1: land[0] + ew, y0: y - eh, y1: y }, page: [Pf(0, 0), Pf(PG.w, 0), Pf(PG.w, PG.h), Pf(0, PG.h)], boards } });
+    /* the envelope's own polygon, where the two clocks have put it, and
        everything it is in front of. Called by both clocks; every write is
        deduplicated, so the frame that changes nothing costs nothing. */
     rec.ink = () => {
       const D = Math.min(rec.cs, rec.P);
       const tx = rec.fall.x * D, ty = rec.fall.y * D;
       const tf = D > 0 ? `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px)` : "";
-      if (tf !== rec._tf) { rec._tf = tf; page.style.transform = tf; }
-      a4put(pin, "opacity", rec.w >= 0.9 && D <= 0 && rec.vis ? "1" : "0");
-      a4cls(page, "coupled", D >= 0.98);
-      const live = rec.w >= 0.42 && rec.vis;
-      const poly = live ? polyOf(rec.corners.map(([x, y2]) => [x + tx, y2 + ty])) : null;
+      if (tf !== rec._tf) { rec._tf = tf; carry.style.transform = tf; }
+      a4cls(carry, "coupled", D >= 0.98);
+      const live = rec.w >= SIGN_AT.seal && rec.vis;
+      const poly = live ? polyOf(rec.env0.map(([x, y2]) => [x + tx, y2 + ty])) : null;
       const over = (b) => poly && poly.bb.x0 < b.x1 && poly.bb.x1 > b.x0 && poly.bb.y0 < b.y1 && poly.bb.y1 > b.y0;
       for (const c of rec.cuts)
         a4put(c.el, "d", over(c.bb) ? c.segs.map((s3) => segOutPoly(s3[0], s3[1], s3[2], s3[3], poly)).join("") : c.d0);
-      /* the lane's node is a filled square and hides whole */
-      a4put(knot, "visibility", over(rec.knotBox) ? "hidden" : "visible");
+      /* the drawer's knob is a filled square and hides whole */
+      a4put(knob, "visibility", over(rec.knobBox) ? "hidden" : "visible");
     };
     svg.appendChild(g);
     signs.rows.push(rec);
@@ -8470,23 +8337,22 @@ function buildSigns(js) {
   /* the hand is the shared one (THE ASSEMBLIES RIDE THE SCROLL): it hands
      this drawing a p and this drawing sets everything from it */
   signs.e = asmFigure("fig11", { box: () => layoutBox(svg), draw: drawSigns, span: signsSpan });
-  window.__world.fig11 = () => ({ S, T, R, tight, pw: ed.pw, ph: ed.ph, desk: { x0, w: DW, deep: DD, right: +deskR.toFixed(1), h: ed.dh, posts: [+(x0 + DD * Q3.x).toFixed(1), +(x0 + DW + DD * Q3.x).toFixed(1)] },
-    take: SIGN_TAKE, draw: drawSigns,
-    rows: signs.rows.map((r) => ({ i: r.i, y: +r.y.toFixed(1), jy: +r.pageY.toFixed(1), a: +r.a.toFixed(3),
-      objs: r.objs.map((o) => ({ k: o.k, x0: +o.x0.toFixed(1), x1: +o.x1.toFixed(1), c: +o.c.toFixed(1) })),
-      labels: r.lcs.map((v) => +v.toFixed(1)), page: { nx: +r.nx.toFixed(1), ny: +r.ny.toFixed(1), push: r.pushTo, land: +r.land.toFixed(1), fall: r.fall },
-      trestle: r.trestle, slab: r.slab, far: r.auto ? +r.auto.far.toFixed(1) : null, near: r.auto ? +r.auto.near.toFixed(1) : null,
-      corners: r.corners.map(([x, y2]) => [+x.toFixed(1), +y2.toFixed(1)]), cuts: r.cuts.length, parts: r.parts.length })) }); /* probe hook */
+  const r1 = (v) => +(+v).toFixed(1);
+  const bb = (o) => ({ x0: r1(o.x0), y0: r1(o.y0), x1: r1(o.x1), y1: r1(o.y1) });
+  window.__world.fig11 = () => ({ S, T, R, W, lane, edition: ed, lamp: r1(SIGN_LAMP * S), take: SIGN_TAKE, draw: drawSigns,
+    rows: signs.rows.map((r) => ({ i: r.i, y: r1(r.y), jy: r1(r.pageY), a: +r.a.toFixed(3), P0: r1(r.geo.P0), P1: r1(r.geo.P1),
+      laneEnd: r1(r.geo.laneEnd), platform: { x0: r1(r.geo.P0), x1: r1(r.geo.P1 + r.geo.deep[0]), y0: r1(r.geo.top - r.geo.deep[1]), y1: r1(r.y) },
+      desk: bb(r.geo.desk), lamp: bb(r.geo.lamp), env: bb(r.geo.env), land: bb(r.geo.land),
+      page: r.geo.page.map(([x, y2]) => [r1(x), r1(y2)]), boards: r.geo.boards.map((b) => ({ x0: r1(b.x), y0: r1(b.y), x1: r1(b.x + b.w), y1: r1(b.y + b.h) })),
+      fall: { x: r1(r.fall.x), y: r1(r.fall.y) }, cuts: r.cuts.length, parts: r.parts.length })) }); /* probe hook */
 }
 
 /* ————— the schedule: each row from the p at which its own place is on screen —————
    The plate is two rows tall and the lower row is below the fold for most
    of the window on a laptop, and nothing important moves below the fold.
    So a row's motion is laid inside [a, 1], where a is the p at which the
-   row's label band is on screen (at .95 vh, stricter than the driver's
-   80%), capped so a late row keeps .4 of the window: the place over the
-   first .30 of that, the desk and the writing to .55, the stand-up to .85,
-   the push back to the rail to .88, the pin from .90. */
+   row's lane, and the band under it, is on screen (at .95 vh, stricter
+   than the driver's 80%), capped so a late row keeps .4 of the window. */
 function signsSpan(e) {
   const span = Math.max(1, e.yB - e.yA);
   const at = (yy) => clamp((e.top + yy - 0.95 * vh - e.yA) / span, 0, 1);
@@ -8502,16 +8368,18 @@ function drawSigns(p) {
   for (const r of signs.rows) {
     const w = clamp((p - r.a) / Math.max(1e-3, 1 - r.a), 0, 1);
     for (const q of r.parts) a4put(q.el, "opacity", w >= q.at ? "1" : "0");
-    if (r.digitEl) {
-      const o = w >= 0.08 ? "1" : "0";
-      if (o !== r._o) { r._o = o; r.digitEl.style.opacity = o; }
-    }
-    if (r.auto) r.auto.swing(smooth((w - 0.16) / 0.09));
-    const write = clamp((w - 0.46) / 0.07, 0, 1);
+    const o = w >= SIGN_AT.words ? "1" : "0";
+    for (const m of r.words) if (m.style.opacity !== o) m.style.opacity = o;
+    /* the page lies on the desk from SIGN_AT.page until it is sealed; then
+       the letter stands */
+    const sealed = w >= SIGN_AT.seal, flat = w >= SIGN_AT.page && !sealed ? "1" : "0";
+    const write = clamp((w - SIGN_AT.write[0]) / (SIGN_AT.write[1] - SIGN_AT.write[0]), 0, 1);
     a4put(r.writ, "stroke-dashoffset", n1((r.len + 2) * (1 - write)));
-    a4put(r.quote, "visibility", write >= 1 ? "visible" : "hidden");
-    const th = smooth((w - 0.55) / 0.3), push = smooth((w - 0.85) / 0.03);
-    if (th !== r.th || push !== r.push) { r.th = th; r.push = push; r.lay(); }
+    a4put(r.sheet, "opacity", flat);
+    a4put(r.writ, "opacity", flat);
+    a4put(r.quote, "opacity", write >= 1 && !sealed ? "1" : "0");
+    a4put(r.env, "opacity", sealed ? "1" : "0");
+    a4put(r.flap, "opacity", sealed ? "1" : "0");
     r.P = smooth((w - 0.92) / 0.08);
     r.w = w;
     r.ink();
@@ -8568,21 +8436,18 @@ function scrubSigns(tokenY, settled) {
     const close = smooth((u - 0.1) / 0.7);
     const gone = !settled && tokenY >= signs.exit ? "0" : "1";
     /* the collection: once the bead is well past the junction (SIGN_TAKE),
-       the pin goes and the page slides off the desk onto the line — but
-       never before the page is up; ink() takes the lesser of this and p's own */
+       the envelope leaves the desk for the line — but never before it is
+       sealed; ink() takes the lesser of this and p's own */
     const cs = settled ? 1 : smooth((tokenY - r.pageY - SIGN_TAKE.from) / SIGN_TAKE.over);
     const key = close.toFixed(3) + "|" + gone + "|" + cs.toFixed(3);
     if (key === r._k) continue;
     r._k = key;
-    r.page.style.opacity = gone;
+    r.carry.style.opacity = gone;
     /* the points close as the line reaches the junction: the one thing on
        this plate the bead sets, whether the page is still being written or
-       already posted. The blade is the page's to cut once it has landed, so
-       its cut record follows its authored d. */
-    const bd = `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`;
-    if (bd !== r.bladeCut.d0) Object.assign(r.bladeCut, cutOf(r.blade, bd));
-    const vis = gone === "1";
-    r.cs = cs; r.vis = vis;
+       already sealed */
+    a4put(r.blade, "d", `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`);
+    r.cs = cs; r.vis = gone === "1";
     r.ink();
   }
 }
