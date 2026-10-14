@@ -282,7 +282,7 @@ curtain, so the contract's own clause (no text at full ink on the darkening
 stops) is untouched. Each figure is drawn in parallel
 projection (cabinet oblique, front faces at 1:1, text never scaled), is a
 complete drawing at every point a reader can stop on, and is finished by the
-time its centre reaches the reading line. It stays inside its own plate, and
+time its centre reaches the end line, or a pause (amended below). It stays inside its own plate, and
 the plate never moves for it. What moves is the figure's own subject: strokes
 drawn in the order the process runs (figs. 07 and 08), units called out of
 the field on leaders (fig. 06), and the morning post riding its own belt,
@@ -291,9 +291,27 @@ inside it to its pigeonhole, seen through the openings, and the one held for
 review ringed in clay at the belt's end (fig. 04), where the post's travel
 along the belt was already the figure's content.
 
+**Amended 2026-10-14 (owner: "by the time we get and can see the fig, it is
+already done with half the animation ... doesn't miss more than 20-30% of the
+scroll animation until we can see the whole or main part of the fig").** The
+window now opens where 80% of the drawing is on screen and closes where its
+centre reaches 0.45 of the screen, so nothing a reader is meant to watch
+begins below the fold (measured on v6: 0.56-0.61 of the motion was spent
+before a figure was wholly visible). One grace, bounded: a reader who has
+been still for 0.6 s with a figure at least 90% on screen and its centre at
+or above 0.70 of the screen is shown the rest of it by the same hand at the
+same speed limit, and that figure's window closes where they paused —
+scrolling on holds it finished, scrolling back up takes it apart over the
+shortened window, leaving the screen restores the window. The scroll alone
+does at least 0.4 of the work at every natural park; one figure at a time;
+never while scrolling (every scroll re-arms it), never a replay, never under
+reduced motion. A stop at the fold with the figure barely in is not a park,
+so nothing plays itself there. fig. 08 keeps the dusk contract's own window.
+
 **Still banned, unchanged:** a camera that orbits, tilts or flies; parts that
 fly in from off the plate, drop or fall into place; shadows; anything that
 changes size for its own sake; a plate that tilts or follows the pointer;
 scroll-snap, pinning or any scroll hijack; a second rAF loop; idle motion of
-any kind; and motion under reduced motion, where every figure is shown
-finished.
+any kind (the grace is a completion, once, of what the reader was watching,
+never idle motion); and motion under reduced motion, where every figure is
+shown finished.

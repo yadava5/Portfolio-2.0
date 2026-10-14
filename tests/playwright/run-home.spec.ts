@@ -912,8 +912,17 @@ test.describe("the type answers the hand, and comes back to rest", () => {
    gives the same drawing, coming down and going back up), a centred park is
    the finished drawing, a flick that stops at the figure still shows it
    assembling, a slow scroll drives it both ways, and once it lands nothing
-   runs. The driver's probes are __world.asm[key] = { t, s, v, yA, yB } and
-   __world.asmRest(). */
+   runs. The driver's probes are __world.asm[key] = { t, s, v, yA, yB, g } and
+   __world.asmRest().
+   v7 (2026-10-14), the owner again: "by the time we get and can see the fig,
+   it is already done with half the animation ... doesn't miss more than
+   20-30%". The window now opens at 80% of the drawing on screen and closes at
+   its centre on 0.45 of the screen, and a reader who pauses with a figure in
+   view below that line is shown the rest by the same hand (the grace), after
+   which the figure's window is closed where they paused (g): scrolling on
+   holds it, scrolling back takes it apart over the shortened window. The
+   scroll alone does at least 0.4 of the work at a centred park, a stop at
+   the fold is not a park, and nothing graces while the reader scrolls. */
 test.describe("the figures assemble with the scroll", () => {
   const FIGS = [
     ["fig04", "appliedFig"],
@@ -921,7 +930,14 @@ test.describe("the figures assemble with the scroll", () => {
     ["fig07", "jetFig"],
     ["fig08", "questFig"],
   ] as const;
-  type A = { t: number; s: number; v: number; yA: number; yB: number };
+  type A = {
+    t: number;
+    s: number;
+    v: number;
+    yA: number;
+    yB: number;
+    g: number | null;
+  };
   type W = { __world: { asm: Record<string, A>; asmRest: () => boolean } };
   const frames = (page: import("@playwright/test").Page, n = 2) =>
     page.evaluate(
@@ -999,23 +1015,37 @@ test.describe("the figures assemble with the scroll", () => {
       const ys = [0.2, 0.5, 0.8].map((f) =>
         Math.round(w.yA + f * (w.yB - w.yA))
       );
+      /* THE PURE LAW IS SAMPLED, NOT HOPED FOR. A sample is a jump in from
+         off the screen (no window closed) and a read; if the read ran long
+         enough for the grace to fire (600 ms still, under a 5-project smoke
+         it can), the sample is void and is taken again — the premise "no
+         pause" is the test's to keep, not the page's to survive */
+      const sample = async (y: number) => {
+        for (let k = 0; k < 4; k++) {
+          await jump(page, y - 2000 < 0 ? y + 2000 : y - 2000);
+          await jump(page, y);
+          const a = await asmOf(page, key);
+          const c = await canon(page, id);
+          const after = await asmOf(page, key);
+          if (after.g === null) return { a, c };
+        }
+        throw new Error(`reads too slow to sample the pure law at ${y}`);
+      };
       const down: string[] = [];
       for (const y of ys) {
-        await jump(page, y - 2000 < 0 ? y + 2000 : y - 2000);
-        await jump(page, y);
-        const a = await asmOf(page, key);
+        const { a, c } = await sample(y);
         expect(a.s, `mid-assembly at ${y}`).toBeGreaterThan(0);
         expect(a.s).toBeLessThan(1);
         expect(a.s).toBe(a.t);
-        down.push(await canon(page, id));
+        expect(a.g, "no grace while the reader scrolls").toBeNull();
+        down.push(c);
       }
       /* the assembly changes the drawing: 0.2 and 0.8 are not one picture */
       expect(down[0]).not.toBe(down[2]);
       await jump(page, Math.round(w.yB + 1200));
       for (let i = ys.length - 1; i >= 0; i--) {
-        await jump(page, ys[i]);
         expect(
-          await canon(page, id),
+          (await sample(ys[i])).c,
           `the same drawing at ${ys[i]} both ways`
         ).toBe(down[i]);
       }
@@ -1028,17 +1058,66 @@ test.describe("the figures assemble with the scroll", () => {
         const r = document.getElementById(i)!.getBoundingClientRect();
         return Math.round(scrollY + r.top + r.height / 2 - innerHeight / 2);
       }, id);
+      /* a park is ARRIVED at: from off the screen, where no window is closed
+         (a slow read above could have paused long enough for a grace) */
+      await jump(page, Math.round(w.yA - 1500));
       await jump(page, centre);
+      /* the scroll alone must do most of it — the grace is a completion,
+         never the play the owner rejected: pure p at a centred park is at
+         least 0.4 (measured .49-.9 across seats) */
+      const parked = await asmOf(page, key);
       expect(
-        (await asmOf(page, key)).s,
-        "a centred figure is the finished drawing"
-      ).toBe(1);
+        parked.t,
+        "a centred park is mostly assembled by the scroll alone"
+      ).toBeGreaterThanOrEqual(0.4);
+      /* ... and after the grace's stillness the hand finishes it, and the
+         window is closed where the reader paused */
+      await expect
+        .poll(async () => (await asmOf(page, key)).s, { timeout: 4000 })
+        .toBe(1);
+      const graced = await asmOf(page, key);
+      /* a park the scroll alone finished (fig. 08's dusk window ends at the
+         reading line, above a centred park) needs no grace and gets none */
+      if (parked.t < 1)
+        expect(
+          graced.g,
+          "the window closed where the reader paused"
+        ).not.toBeNull();
+      else expect(graced.g, "nothing to grace: no closed window").toBeNull();
       const finished = await canon(page, id);
+      /* scrolling on from the pause holds it finished: between the closed
+         window's end and the open one's, p is 1 (a plain finish would read
+         the open window here and take it apart on the way DOWN) */
+      if (graced.g !== null && graced.g < w.yB - 4) {
+        await jump(page, Math.round((graced.g + w.yB) / 2));
+        expect(
+          (await asmOf(page, key)).s,
+          "scrolling on from the pause holds the figure finished"
+        ).toBe(1);
+      }
       await jump(page, Math.round(w.yB + 0.4 * (w.yB - w.yA)));
       expect(
         await canon(page, id),
         "and it is the same drawing as any later scroll"
       ).toBe(finished);
+      /* back up from the park it comes apart again, continuously, over the
+         closed window: p falls with y, never jumps, never sticks */
+      const yG = graced.g ?? w.yB;
+      const ups: number[] = [];
+      for (const f of [0.8, 0.5, 0.2]) {
+        await jump(page, Math.round(w.yA + f * (yG - w.yA)));
+        ups.push((await asmOf(page, key)).s);
+      }
+      expect(ups[0], "up from the park: coming apart").toBeLessThan(1);
+      expect(ups[1]).toBeLessThan(ups[0]);
+      expect(ups[2]).toBeLessThan(ups[1]);
+      expect(ups[2]).toBeGreaterThan(0);
+      /* and off the screen the window is whole again */
+      await jump(page, Math.round(w.yA - 1500));
+      expect(
+        (await asmOf(page, key)).g,
+        "off screen: no closed window"
+      ).toBeNull();
       if (!isMobile) {
         await jump(page, Math.round(w.yA - 1500));
         await page.evaluate(
@@ -1051,10 +1130,40 @@ test.describe("the figures assemble with the scroll", () => {
         await frames(page);
         await rest(page);
         expect(
-          (await asmOf(page, key)).s,
-          "scrollIntoView centre, desktop"
-        ).toBe(1);
+          (await asmOf(page, key)).t,
+          "scrollIntoView centre, desktop: mostly by the scroll"
+        ).toBeGreaterThanOrEqual(0.4);
+        await expect
+          .poll(async () => (await asmOf(page, key)).s, { timeout: 4000 })
+          .toBe(1);
       }
+    });
+
+    test(`${key}: a stop at the fold is not a park, and nothing plays itself there`, async ({
+      page,
+    }) => {
+      await open(page);
+      /* THE PARK MUST BE INELIGIBLE BY THE EYE LINE ALONE. A first version
+         parked the centre at 0.85 of the screen, where a 0.46 vh drawing is
+         only 83% visible: the visibility rule refused the grace and a copy
+         with no eye line at all passed this test. So: the centre just below
+         the eye line (0.72) with the drawing at least 90% in view, wherever
+         the drawing is short enough for that to exist; a drawing too tall
+         for it parks just under 90% visible instead (both rules refuse) */
+      const low = await page.evaluate((i) => {
+        const r = document.getElementById(i)!.getBoundingClientRect();
+        const h = r.height / innerHeight;
+        const cMax = 1 + 0.1 * h - h / 2; /* the lowest centre at 90% visible */
+        const c = cMax >= 0.72 ? 0.72 : cMax + 0.02;
+        return Math.round(scrollY + r.top + r.height / 2 - innerHeight * c);
+      }, id);
+      await jump(page, low);
+      const a0 = await asmOf(page, key);
+      expect(a0.s, "not finished at the fold").toBeLessThan(1);
+      await page.waitForTimeout(1800);
+      const a1 = await asmOf(page, key);
+      expect(a1.g, "no grace with the centre below the eye line").toBeNull();
+      expect(a1.s, "and the drawing did not move on its own").toBe(a0.s);
     });
 
     test(`${key}: a flick that stops at the figure still shows it assembling`, async ({
@@ -1135,7 +1244,9 @@ test.describe("the figures assemble with the scroll", () => {
       await frames(page, 1);
     }
     await rest(page);
-    await page.waitForTimeout(400);
+    /* past the grace (600 ms of stillness) and the hand it may move (≤ 0.8 s):
+       what this counts is the page at rest, after everything it may do */
+    await page.waitForTimeout(1900);
     const n0 = await page.evaluate(
       () => (window as unknown as { __rafN: number }).__rafN
     );

@@ -9957,20 +9957,22 @@ function stirAll(now) {
 window.__world.hand = () => stirring.size;
 window.__stir = stir; /* the nameplate's module mounts its own hand and has no other way into this loop */
 
-/* ————— THE ASSEMBLIES RIDE THE SCROLL (v6) —————
+/* ————— THE ASSEMBLIES RIDE THE SCROLL (v6 · the window and the grace, v7) —————
    The owner, shown figures that played once when the reader stopped at them:
    "make sure to make them work with scrolling, not like single play, they
    should assemble with rail scroll!" — and a round before that, of figures
    that were a pure function of the scroll: "if someone scrolls fast, they'll
    miss it". Both are answered here, once, for every figure that assembles.
    THE SCROLL SETS WHERE A FIGURE IS GOING. A figure registers its drawing's
-   layout box and draw(p), and gets a window in page space: p = 1 when the
-   drawing's centre reaches the reading line, so every centred park in both
-   engines is the finished drawing (WebKit's scrollIntoView lands a phone
-   figure's centre as low as 0.565 vh, which is why the plates' depth windows
-   ended there too), and p = 0 ASM_LEAD of a viewport earlier, or wherever the
-   drawing is first wholly on screen if that is earlier still. target is a
-   function of scrollY alone, so scrolling back up takes the figure apart.
+   layout box and draw(p), and gets a window in page space: p = 0 where
+   ASM_START of the drawing is on screen, so nothing a reader is meant to
+   watch begins below the fold (the owner, v7: "by the time we get and can see
+   the fig, it is already done with half the animation" — measured, 0.56-0.61
+   of the motion was spent before a figure was wholly visible, because v6's
+   window opened as the drawing's top entered), and p = 1 where the drawing's
+   centre reaches ASM_END, where a figure is read. target is a function of
+   scrollY alone, so scrolling back up takes the figure apart — with one
+   exception, the grace below, which closes the window where a reader paused.
    A HAND TAKES IT THERE, AND THE HAND HAS A SPEED LIMIT. The shown p follows
    the target on a critically damped spring stiff enough to track a reading
    scroll by about a tenth of a second, and its speed is clamped so that the
@@ -9995,13 +9997,17 @@ window.__stir = stir; /* the nameplate's module mounts its own hand and has no o
    [0, 1], in any order, as often as the scroll asks. */
 const ASM_OMEGA = 18;  /* rad/s · the spring: a steady scroll is followed 2/ω ≈ 0.11 s behind */
 const ASM_RATE = 2.5;  /* motions/s · the speed limit: a figure's whole motion takes ≥ 0.4 s */
-const ASM_LEAD = 0.5;  /* vh · the window's floor */
+const ASM_START = 0.8; /* of the drawing on screen · p = 0 here: nothing starts below the fold (owner, v7) */
+const ASM_END = 0.45;  /* vh · the drawing's centre here is p = 1: where a figure is read; lower parks are graced */
+const ASM_GRACE = 600; /* ms still before the grace · 400 fired inside a slow wheel's notch gaps (measured, v7) */
+const ASM_EYE = 0.70;  /* vh · the grace needs the centre at or above this: a stop at the fold is not a park */
+const ASM_SEEN = 0.9;  /* of the drawing on screen · the grace needs this much of it in view */
 const ASM_JUMP = 0.3;  /* vh · a scroll this far in one frame is a jump, and lands at once */
 const ASM_EPS = 5e-4, ASM_VEPS = 0.02; /* rest: within half a thousandth, nearly still */
 /* ?asm=0.4 pins every assembled figure at one p — for looking at stills */
 const ASM_PIN = FLAGS.has("asm") ? clamp(+FLAGS.get("asm") || 0, 0, 1) : null;
 const asm = new Map();
-let asmY = null, asmMoving = false, asmT = 0;
+let asmY = null, asmMoving = false, asmT = 0, asmGraceT = 0, asmGracing = null;
 /* the drawing's LAYOUT box in page space: an html ancestor's absTop is blind
    to the plate's arrival transform, and the drawing's offset inside it is
    read off their two rects with the host's own scale undone */
@@ -10016,15 +10022,15 @@ function layoutBox(el) {
 }
 /* register (again, on every build: an edition change rebuilds the drawing,
    and a new drawing has never been drawn, so its first frame snaps).
-   spec: { box: () => ({ top, h }) page px, draw(p), lead?: px,
+   spec: { box: () => ({ top, h }) page px, draw(p),
            span?: (e) => [p0, p1], the part of p the motion fills, read after
            each measure (default the whole window),
            window?: (e) => ({ yA, yB }) | null, a window a figure's station
            already decides (fig. 08's dusk contract), read after each measure
            in place of the driver's own; null falls back to it } */
 function asmFigure(key, spec) {
-  const e = { key, box: spec.box, draw: spec.draw, lead: spec.lead || 0, span: spec.span || null, win: spec.window || null,
-    top: 0, h: 0, yA: 0, yB: 1, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
+  const e = { key, box: spec.box, draw: spec.draw, span: spec.span || null, win: spec.window || null,
+    top: 0, h: 0, yA: 0, yB: 1, yG: null, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
   asm.set(key, e);
   if (booted) asmMeasure(e);
   if (RM) { e.t = e.s = 1; asmPut(e, 1); }
@@ -10034,9 +10040,12 @@ function asmFigure(key, spec) {
 function asmMeasure(e) {
   const b = e.box();
   e.top = b.top; e.h = b.h;
-  e.yB = b.top + b.h / 2 - READ_LINE * vh;
+  e.yB = b.top + b.h / 2 - ASM_END * vh;
   const yFull = b.top + b.h - 0.95 * vh; /* the drawing wholly on screen */
-  e.yA = Math.min(yFull, e.yB - Math.max(ASM_LEAD * vh, e.lead));
+  /* p = 0 where ASM_START of the drawing is on screen, floored so a drawing
+     taller than the screen still has a window: the whole or main part of the
+     figure is in view before anything the reader is meant to watch begins */
+  e.yA = Math.min(b.top + ASM_START * b.h - vh, e.yB - 0.12 * vh);
   const w = e.win ? e.win(e) : null;
   if (w && w.yB - w.yA >= 1) { e.yA = w.yA; e.yB = w.yB; }
   /* where the drawing is first wholly on screen, as a p: a figure schedules
@@ -10046,8 +10055,16 @@ function asmMeasure(e) {
   e.vmax = ASM_RATE * clamp(p1 - p0, 0.1, 1);
 }
 function asmGeometry() { for (const e of asm.values()) asmMeasure(e); asmProbe(); }
-const asmTarget = (e, y) => ASM_PIN ?? clamp((y - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
+/* the target: the window, or the window CLOSED where a reader paused (yG) */
+const asmTarget = (e, y) => ASM_PIN ?? clamp((y - e.yA) / Math.max(1, (e.yG ?? e.yB) - e.yA), 0, 1);
 const asmSeen = (e, y) => e.top - y < vh && e.top + e.h - y > 0;
+/* how much of the drawing is on screen at y, 0..1 */
+const asmVis = (e, y) => Math.max(0, Math.min(e.top + e.h, y + vh) - Math.max(e.top, y)) / Math.max(1, e.h);
+/* the p at which the drawing is on screen down to fraction u of its height:
+   a plan schedules a region's motion no earlier than this, so nothing a
+   reader is meant to watch moves below the fold (on the whole window; a
+   closed one only ever shortens the end) */
+const asmBandP = (e, u) => clamp((e.top + u * e.h - vh - e.yA) / Math.max(1, e.yB - e.yA), 0, 1);
 function asmPut(e, p) {
   if (p === e.last) return;
   e.last = p;
@@ -10056,8 +10073,12 @@ function asmPut(e, p) {
 function asmWork(y) {
   const jump = asmY === null || Math.abs(y - asmY) > ASM_JUMP * vh;
   asmY = y;
+  /* the grace is armed by every scroll and fires only after ASM_GRACE of
+     stillness: a reader who is scrolling never meets it */
+  if (!RM && ASM_PIN === null) { clearTimeout(asmGraceT); asmGraceT = setTimeout(asmGrace, ASM_GRACE); }
   let moving = false;
   for (const e of asm.values()) {
+    if (!asmSeen(e, y)) { e.yG = null; if (asmGracing === e) asmGracing = null; } /* off screen: the window is whole again */
     e.t = asmTarget(e, y);
     if (jump || ASM_PIN !== null || Number.isNaN(e.s) || !asmSeen(e, y)) { e.s = e.t; e.v = 0; }
     if (Math.abs(e.t - e.s) > ASM_EPS || Math.abs(e.v) > ASM_VEPS) moving = true;
@@ -10078,26 +10099,60 @@ function asmStep(now) {
       e.v = clamp(e.v + (ASM_OMEGA * ASM_OMEGA * (e.t - e.s) - 2 * ASM_OMEGA * e.v) * h, -e.vmax, e.vmax);
       e.s += e.v * h;
     }
-    if (Math.abs(e.t - e.s) < ASM_EPS && Math.abs(e.v) < ASM_VEPS) { e.s = e.t; e.v = 0; }
-    else moving = true;
+    if (Math.abs(e.t - e.s) < ASM_EPS && Math.abs(e.v) < ASM_VEPS) {
+      e.s = e.t; e.v = 0;
+      /* the graced figure has landed: the next parked one, if any, may go */
+      if (asmGracing === e) { asmGracing = null; clearTimeout(asmGraceT); asmGraceT = setTimeout(asmGrace, ASM_GRACE); }
+    } else moving = true;
     asmPut(e, clamp(e.s, 0, 1));
   }
   asmProbe();
   if (!moving) { asmMoving = false; asmT = 0; }
   return moving;
 }
+/* THE GRACE (v7). Moving p = 0 to where 80% of the drawing is on screen and
+   p = 1 to where its centre is read left the old reading line (0.62) 135 px
+   past the end of the window on a 0.46 vh figure, and a reader who stops
+   there — or anywhere between — would sit on a half-built plate. So: after
+   ASM_GRACE of stillness, a figure at least ASM_SEEN on screen with its
+   centre at or above ASM_EYE is carried to finished by the same hand at the
+   same speed limit, and its window CLOSES where the reader paused (yG):
+   scrolling on holds it finished, scrolling back up takes it apart over the
+   shortened window, leaving the screen restores the window. The grace never
+   does the majority (pure p at every natural park is >= 0.4, measured), goes
+   one figure at a time, never fires while scrolling (every scroll re-arms
+   it), never under reduced motion or a pinned p, and its eligibility is
+   positional: a stop at the fold with the figure barely in is not a park,
+   so nothing plays itself there — that was the round the owner rejected. */
+function asmGrace() {
+  asmGraceT = 0;
+  if (RM || ASM_PIN !== null || asmGracing) return;
+  const y = scrollY;
+  for (const e of asm.values()) {
+    if (e.yG !== null || e.t >= 1 || e.t <= 0) continue;
+    if (asmVis(e, y) < ASM_SEEN || (e.top + e.h / 2 - y) / vh > ASM_EYE) continue;
+    e.yG = y; e.t = 1; asmGracing = e;
+    window.__world.asmGraces = (window.__world.asmGraces || 0) + 1; /* probe: how many graces this visit */
+    if (!asmMoving) { asmMoving = true; asmT = 0; }
+    stir(asmStep);
+    asmProbe();
+    return;
+  }
+}
 /* the settled world (reduced motion, a dead module): every figure finished */
 function asmSettle() { for (const e of asm.values()) { e.t = e.s = 1; e.v = 0; asmPut(e, 1); } asmProbe(); }
 /* probe hooks: each figure's window, target, shown p and drawn p (d, the p
    draw() was last called with, so a spec can tell the ink from the
-   bookkeeping); and whether the hand is at rest, which a spec that parks
-   waits on before it asserts */
+   bookkeeping), g (where its window closed at a pause, or null) and vis (how
+   much of it is on screen); and whether the hand is at rest, which a spec
+   that parks waits on before it asserts */
 function asmProbe() {
   const o = {};
   for (const e of asm.values())
     o[e.key] = { t: +e.t.toFixed(4), s: +(Number.isNaN(e.s) ? -1 : e.s).toFixed(4), v: +e.v.toFixed(3),
       d: +(Number.isNaN(e.last) ? -1 : e.last).toFixed(4), /* the p the drawing was last drawn at: the ink, not the bookkeeping */
-      yA: Math.round(e.yA), yB: Math.round(e.yB), pFull: +e.pFull.toFixed(3), vmax: +e.vmax.toFixed(3) };
+      yA: Math.round(e.yA), yB: Math.round(e.yB), g: e.yG === null ? null : Math.round(e.yG), /* the window closed at a pause, or whole */
+      vis: +asmVis(e, scrollY).toFixed(3), pFull: +e.pFull.toFixed(3), vmax: +e.vmax.toFixed(3) };
   window.__world.asm = o;
 }
 window.__world.asmRest = () => [...asm.values()].every((e) => e.s === e.t && e.v === 0);

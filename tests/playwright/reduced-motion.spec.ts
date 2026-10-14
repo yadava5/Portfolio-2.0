@@ -160,7 +160,14 @@ test.describe("reduced motion and keyboard access", () => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await page.waitForTimeout(800);
-    type A = { t: number; s: number; d: number; yA: number; yB: number };
+    type A = {
+      t: number;
+      s: number;
+      d: number;
+      yA: number;
+      yB: number;
+      g: number | null;
+    };
     const asm = () =>
       page.evaluate(
         () =>
@@ -211,6 +218,7 @@ test.describe("reduced motion and keyboard access", () => {
         const a = (await asm())[key];
         expect(a.s, `${key} at ${f} of its window`).toBe(1);
         expect(a.d, `${key} is drawn finished at ${f} of its window`).toBe(1);
+        expect(a.g, `${key}: no grace under reduced motion`).toBeNull();
         seen.push(await canon(ids[key]));
       }
       expect(
