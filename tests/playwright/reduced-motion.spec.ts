@@ -181,6 +181,7 @@ test.describe("reduced motion and keyboard access", () => {
       "fig07",
       "fig08",
       "fig10",
+      "fig11",
     ]);
     /* THE INK, NOT THE BOOKKEEPING. labrat's negative proof (v6) drew every
        figure at p 0 under reduced motion while the driver still said s = 1,
@@ -192,6 +193,7 @@ test.describe("reduced motion and keyboard access", () => {
       fig07: "jetFig",
       fig08: "questFig",
       fig10: "gatesFig",
+      fig11: "signsFig",
     };
     const canon = (id: string) =>
       page.evaluate(
@@ -245,7 +247,47 @@ test.describe("reduced motion and keyboard access", () => {
     await page.goto("/?asm=1");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await page.waitForTimeout(800);
+    /* A SECOND CLOCK. fig. 11's points close as the LINE reaches each
+       junction and its pages leave past the plate's exit: the bead's clock,
+       not p, so at the top of the page ?asm=1 draws its assembly finished
+       and its points still open. Such a figure's reference is read where
+       every clock of its has arrived — the bead past its last junction and
+       short of the exit, both checked — and the others at the top, as
+       before. */
+    type Bead = {
+      __world: {
+        junctions: { fig: number; y: number }[];
+        exit11: number;
+        token: { y: number };
+      };
+    };
+    const arrived: Record<string, () => Promise<number>> = {
+      fig11: () =>
+        page.evaluate(() => {
+          const w = (window as unknown as Bead).__world;
+          const j = w.junctions.filter((q) => q.fig === 11);
+          const last = j[j.length - 1].y + 60;
+          return Math.round((last + w.exit11) / 2 - innerHeight * 0.55);
+        }),
+    };
     for (const key of Object.keys(ids)) {
+      await page.evaluate(
+        (y) => window.scrollTo({ top: y, behavior: "instant" }),
+        arrived[key] ? await arrived[key]() : 0
+      );
+      await page.waitForTimeout(200);
+      if (arrived[key]) {
+        const b = await page.evaluate(() => {
+          const w = (window as unknown as Bead).__world;
+          const j = w.junctions.filter((q) => q.fig === 11);
+          return { y: w.token.y, last: j[j.length - 1].y + 60, exit: w.exit11 };
+        });
+        expect(
+          b.y,
+          `${key}: the bead is past the last junction`
+        ).toBeGreaterThanOrEqual(b.last);
+        expect(b.y, `${key}: and short of the exit`).toBeLessThan(b.exit);
+      }
       expect(
         finished[key],
         `${key}: the still reader's drawing is the finished one`

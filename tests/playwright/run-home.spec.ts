@@ -930,6 +930,7 @@ test.describe("the figures assemble with the scroll", () => {
     ["fig07", "jetFig"],
     ["fig08", "questFig"],
     ["fig10", "gatesFig"],
+    ["fig11", "signsFig"],
   ] as const;
   type A = {
     t: number;
