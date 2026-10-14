@@ -1070,22 +1070,34 @@ test.describe("the figures assemble with the scroll", () => {
          screen depending on the scroll that came before it (measured, v6),
          which on a figure 70% of the screen tall is a park with its bottom
          off the screen. On a desktop seat both are checked. */
-      const centre = await page.evaluate((i) => {
+      const { centre, tall } = await page.evaluate((i) => {
         const r = document.getElementById(i)!.getBoundingClientRect();
-        return Math.round(scrollY + r.top + r.height / 2 - innerHeight / 2);
+        return {
+          centre: Math.round(scrollY + r.top + r.height / 2 - innerHeight / 2),
+          tall: r.height > innerHeight,
+        };
       }, id);
+      /* TALLER THAN THE SCREEN (fig. 09's tight plate, 887 px on a 664 px
+         phone): no scroll position shows the whole drawing, so there is no
+         centred park and the grace can never fire (ASM_SEEN .9). Such a
+         figure declares a window that closes with its fact on screen, and
+         the honest park is that close, reached by the scroll alone. */
+      const park = tall ? w.yB : centre;
       /* a park is ARRIVED at: from off the screen, where no window is closed
          (a slow read above could have paused long enough for a grace) */
       await jump(page, Math.round(w.yA - 1500));
-      await jump(page, centre);
+      await jump(page, park);
       /* the scroll alone must do most of it — the grace is a completion,
          never the play the owner rejected: pure p at a centred park is at
-         least 0.4 (measured .49-.9 across seats) */
+         least PARK_FLOOR (measured .82-.89 across seats); at a declared
+         close it is 1 */
       const parked = await asmOf(page, key);
       expect(
         parked.t,
-        "a centred park is mostly assembled by the scroll alone"
-      ).toBeGreaterThanOrEqual(PARK_FLOOR);
+        tall
+          ? "the declared window closes by the scroll alone"
+          : "a centred park is mostly assembled by the scroll alone"
+      ).toBeGreaterThanOrEqual(tall ? 0.99 : PARK_FLOOR);
       /* ... and after the grace's stillness the hand finishes it, and the
          window is closed where the reader paused */
       await expect
