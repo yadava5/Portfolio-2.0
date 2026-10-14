@@ -115,6 +115,41 @@ await page.addInitScript(() => {
 await page.goto(`http://127.0.0.1:${port}/`);
 await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
 
+/* THE FIRST FRAME IS NOT THE PAGE. `[data-beat="0"]` is attached at first
+   paint, before the figures have laid out: at 1440x900 the last beat reads
+   11517.5 px in that frame and 12328.5 px once settled (7% short), and every
+   stop and every corridor boundary below derives from these offsets. v6 lost
+   that race one run in three; v7's heavier night plates lose it every time,
+   and CI's ubuntu runner lays out slower still. So: the page's own ready mark
+   first, then the offsets must hold still across two reads a fifth of a
+   second apart. A page that never settles is a finding, not a timeout. */
+await page
+  .waitForSelector("html[data-np-ready]", { timeout: 45000 })
+  .catch(() => {});
+const readBeats = () =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("[data-beat]")]
+      .map((el) => ({
+        beat: Number(el.getAttribute("data-beat")),
+        top: el.getBoundingClientRect().top + window.scrollY,
+      }))
+      .sort((a, b) => a.top - b.top)
+  );
+let beats = await readBeats();
+let settled = false;
+for (let i = 0; i < 50 && !settled; i++) {
+  await page.waitForTimeout(200);
+  const again = await readBeats();
+  settled = JSON.stringify(again) === JSON.stringify(beats);
+  beats = again;
+}
+if (!settled) {
+  console.error(
+    "check-cargo-fixture: the station offsets never held still for 200 ms in 10 s; the page did not settle"
+  );
+  process.exit(1);
+}
+
 /* Read the stations FIRST, and sample each corridor at fractions OF ITSELF.
 
    An absolute pixel step is the fragile way to do this and it would have been a
@@ -126,15 +161,6 @@ await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
    that it gets believed. Fractions of each corridor's own span are invariant to
    all of that, and they do not require knowing how the run maps scroll to prog:
    any monotonic mapping is covered by sampling across the span. */
-const beats = await page.evaluate(() =>
-  [...document.querySelectorAll("[data-beat]")]
-    .map((el) => ({
-      beat: Number(el.getAttribute("data-beat")),
-      top: el.getBoundingClientRect().top + window.scrollY,
-    }))
-    .sort((a, b) => a.top - b.top)
-);
-
 const FRACTIONS = [0.12, 0.2, 0.28, 0.36, 0.44, 0.52, 0.6, 0.68];
 const stops = [];
 for (let i = 0; i < beats.length - 1; i++) {
