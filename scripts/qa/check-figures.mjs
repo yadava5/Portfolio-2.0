@@ -1064,7 +1064,14 @@ const FIGURES = [
     },
     {
       fig: "10",
-      what: "the reviewer's marks",
+      what: "the signals",
+      /* v9: the plate is three railway signals, each with a goods wagon at
+         it and a signboard carrying the verdict. The drawing is an
+         aria-hidden svg by design and the plate carries NO aria-label: it is
+         a text plate, and everything the drawing says (which check, what it
+         decided) is said by the rows' own words, which is what the claims
+         and the exposed stamps below hold. A role="img" here would make
+         those words presentational, so the TEXT_PLATES loop forbids it. */
       claims: [
         /* "a refused gate…" until 2026-09-23. The three stamps below it now
            read passed / declined / caught, and "refused" was the word a
