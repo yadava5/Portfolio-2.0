@@ -2220,8 +2220,8 @@ if (location.hash.length > 1) {
      platform, and a letter on its way to the line slides along the lane
      itself. The 144px above the lane is the room the tallest thing on a row
      needs — the folded page lifted over the envelope's open flap, 111px
-     above it at S 1 and S tops out at 1.2 for that reason; Shree's board on
-     the phone reaches about 80 — and the 24 under it
+     above it at S 1 and S tops out at 1.2 for that reason; Shree's two boards
+     on the phone reach about 134 — and the 24 under it
      is where the lever's foot stands; nothing else is drawn under the lane
      now that the stops' names are on their boards (v9). --srh is --sby plus
      that room. The two blockquotes' centres are 178px apart at every
@@ -2456,29 +2456,30 @@ if (location.hash.length > 1) {
     .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
     .gates .grow[data-g="0"]{--gx:0px}
     /* the phone keeps the laptop's halt, simplified by the owner's leave
-       rather than shrunk: one board per row, the row's stops listed on it
-       and THE CLOCKS DROPPED (buildSigns' tight edition). Two stops with
-       their clocks do not fit beside a desk in a 316px column (a board
-       carrying both is 153px wide, 39 past the plate at 390), and stacked
-       they stood 2.43 desk heights over the platform at 360 with the stops
-       louder than the people (v9 phase 2, measured). A name alone on two
-       legs is the station nameboard every reader knows; the clocks stay in
-       the kickers and the manifest, where the phone already reads them. The
-       nodes stay in the HTML: the figures gate binds them and the
-       aria-label still says them.
+       rather than shrunk: Shree's two boards stand one over the other on
+       one pair of posts, each in its own frame with its clock, 10px of post
+       showing between them (buildSigns' tight edition). One board listing
+       both stops without clocks (1fcb888) read cold as "one sign saying
+       glyph agentic automl, a wrapped two-line name" and boards without
+       times as desk name-tags; two boards beside each other do not fit a
+       316px column at any S over the lamp's floor. The sign is the tallest
+       thing on its row (about 2.2 desk heights over the platform at 390,
+       2.4 at 360, against the 1.4 the wide edition keeps): the reading wins
+       over the rule, measured.
        THE WRITER'S NAME IS THE ONE THING THAT CANNOT STAY. There is no band
        left of the line here — the rail runs in the 26px gutter and --spx is
        negative — and the halt fills the phone's lane end to end, so the
        name goes ABOVE its own row and the rows take the 34px that needs. */
     .signs{--s1:34px}
-    .signs .smark .sclock{display:none}
-    .signs .sname{left:0; width:auto; text-align:left;
-      top:calc(var(--sby) - 152px)} /* 8px above its own row, where the
-      first thing drawn is Shree's board, whose top stands 1.35 desk heights
-      over the platform (about 80px over the lane, 50 under the name) at
-      the plate's right, clear of the name by the width of the desk; the
-      stops' names left the lane in v9, so nothing of row 0 reaches down
-      here but the lever's foot. */
+    .signs .sname{left:var(--lhead, 0px); width:auto; text-align:left;
+      top:calc(var(--sby) - 164px)} /* 20px above its own row, over the
+      lane's head (--lhead is T, written by buildSigns), where the first
+      thing drawn is Shree's sign, whose upper frame tops out about 134px
+      over the lane at the plate's right, clear of the name by the width of
+      the desk, and the lamp's shade 18px under the name's box; the letter
+      riding beside the bead in the gutter stops 10px short of the name's
+      first letter. Nothing of row 0 reaches down here but the lever's
+      foot. */
   }
   /* 320. Both dockets grow one more line of row, because at 222px of plate
      every reason wraps to two. Nothing is dropped: the drawing lays itself
@@ -4545,13 +4546,14 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                at its front a writing desk with a desk lamp; at its back the
                stop's name board on two legs, and these words printed on it
                (Shree's row has two boards: glyph at 15:23, then agentic
-               automl at 22:05, where her lane ends; the phone prints both
-               stops on one board and drops the clocks). A page is written
+               automl at 22:05, where her lane ends; on the phone they stand
+               one over the other on one pair of posts). A page is written
                standing on the desk, folded and put into an envelope beside
                the lamp; as the line's bead comes to the junction the letter
-               goes down to the lane and along it into the line, so a reader
-               resting on the plate sees one row collected and the other
-               waiting. The stops' names
+               goes down to the lane and along it into the line, and rides
+               beside the bead to the next halt, so a reader resting on the
+               plate sees the line carrying one letter while the other
+               waits. The stops' names
                and clocks come from stations.ts; each branch joins the run's
                line through a set of points that closes as the line reaches
                it.
@@ -7988,8 +7990,8 @@ function drawGates(p) {
    lane, as long as what stands on it; at its front a writing desk with a desk
    lamp; at its back the stop's name board on two short legs, the stop's
    name and clock printed on it (Shree's row has two boards, glyph then
-   agentic automl, in the day's order; the phone lists both stops on one
-   board and drops the clocks: SIGN_ED). The scale is a writing desk's and
+   agentic automl, in the day's order; on the phone they stand one over
+   the other on one pair of posts: SIGN_ED). The scale is a writing desk's and
    the life order holds: the lamp is most of the desk's height, the page is
    A-sized against the lamp, the letter is a letter's size beside it, and
    the board stands a little over the desk, never over the person whose
@@ -8021,9 +8023,13 @@ function drawGates(p) {
    drawing on READ_LINE and closes 10px short of where it stands at the
    centred park, so a reader resting at either line sees the letter on its
    desk or gone, never in the air, and at the centred park the top row's
-   letter has been collected while the bottom row's still waits. The route
-   is the LESSER of the bead's window and p's last fifth, so a fast bead
-   never takes an unsealed letter. Reduced motion shows each letter
+   letter has been collected while the bottom row's still waits. ONCE
+   TAKEN, THE LETTER RIDES BESIDE THE BEAD down the line (SIGN_RIDE right
+   of the rail's own sampled x) until the next junction's tie or the
+   plate's foot, so the frame most readers study shows the line carrying
+   Randall's letter while Shree's waits. The route is the LESSER of the
+   bead's window and p's last fifth, so a fast bead never takes an unsealed
+   letter. Reduced motion shows each letter
    standing on its stub at the line: collected, and still there to see. */
 const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20] };
 /* THE SCENE AT S 1, in px; one S scales all of it. The platform: a kerb
@@ -8031,7 +8037,8 @@ const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20] };
    end was tried and at 1x its slope and far edge drew an arrowhead). The desk: a slab `w` wide and `d` deep standing `h` high, its front
    `at` back from the kerb, a lip and an apron under it, the legs `leg` in
    from its ends. The lamp stands `u` in from the slab's right end and `d`
-   deep on it. The envelope is fig. 04's 10:7, standing `u` along the slab
+   deep on it, on a disc `base` across and `foot` deep, its stem up from
+   the disc's centre. The envelope is fig. 04's 10:7, standing `u` along the slab
    and `d` deep, its flap's point `flap` of its height; 16.45 tall at S 1
    (19.7px at S 1.2), a letter's size beside a 40.5 lamp and inside the
    16-20 the cold reader named one at, and the folded page (21 by 15) goes
@@ -8041,41 +8048,40 @@ const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20] };
 const SIGN_SCENE = {
   kerb: 12, deep: 32,
   desk: { w: 92, d: 28, h: 50, at: 2, lip: 3, apron: 8, leg: 3 },
-  lamp: { u: 14, d: 18, base: 14, foot: 2.5, stem: 26, shade: 12, top: 11, bot: 22 },
+  lamp: { u: 14, d: 18, base: 10, foot: 2.2, stem: 26, shade: 12, top: 11, bot: 22 },
   env: { w: 23.5, h: 16.45, u: 35, d: 10, flap: 0.536 },
   page: { w: 21, h: 30, u: 6, ear: 5, fold: 15,
     rules: [[25, 7, 14], [21, 3, 18], [17, 3, 13], [13, 3, 17], [9, 3, 15], [5, 3, 10]] },
 };
 /* THE BOARDS, per edition. Wide: one board per stop at the platform's back,
-   `d` deep, `gap` apart. Tight (the phone, by the owner's leave to
-   simplify by dropping, never by shrinking): one board per row, the row's
-   stops listed on it one under the other and THE CLOCKS DROPPED (CSS, the
-   820 block). Two stops with their clocks do not fit beside a desk in a
-   316px column at any S over the lamp's floor: a two-line board carrying
-   both clocks measures 153px wide at 390 and overshoots the plate by 39;
-   two boards stacked on one pair of legs (phase 2's answer) stood 2.43
-   desk heights over the platform at 360, and the cold reader called the
-   stops louder than the people. The board stands `d` deep on the
-   platform, nearer its front than the wide edition's, so its top keeps
-   under 1.4 desk heights at 360 with 10px of leg under it (measured 1.38
-   there, 1.35 at 390 where SIGN_TALL binds). `lead` is the air between
-   its two lines' boxes, so their ink stands 8px apart and not the 6 the
-   face's own leading gives. `right` is the air kept inside the plate's
-   edge; the solver meets it exactly whenever S is width-bound, so it is 12
-   and not the 9 the brief floors at (a control on the floor flips on
-   Linux; phase 2's 6 sat on its own floor at every width-bound seat).
-   `from` is the platform's start past the lane's node. */
+   `d` deep, `gap` apart, on `legs` of post. Tight (the phone, by the
+   owner's leave to simplify by dropping, never by shrinking): Shree's two
+   boards stand one over the other on one pair of posts, each in its own
+   frame with its clock, `gap` of post showing between the frames. Two
+   boards beside each other do not fit a 316px column at any S over the
+   lamp's floor; one board listing both stops without clocks (1fcb888)
+   read cold as "one sign saying glyph agentic automl, a wrapped two-line
+   name", and boards without times as desk name-tags. The sign is then the
+   tallest thing on its row, about 2.2 desk heights over the platform at
+   390 and 2.4 at 360 against the 1.4 the wide edition keeps: the reading
+   wins over the rule, and the numbers are in the lane note. The phone's
+   sign stands `d` deep (its feet mid-platform) on `legs` of post, so the
+   lowest frame stands 10px clear above the platform's far edge instead of
+   riding on it (at 14 of post it cleared by 6 at 360 and the frame read as
+   floating). `right` is the air kept inside the plate's edge; the solver meets
+   it exactly whenever S is width-bound, so it is 12 and not the 9 the
+   brief floors at (a control on the floor flips on Linux). `from` is the
+   platform's start past the lane's node. */
 const SIGN_ED = {
-  wide: { d: 24, right: 12, gap: 10, from: 10 },
-  tight: { d: 4, right: 12, lead: 2, from: 8 },
+  wide: { d: 24, right: 12, gap: 10, legs: 10, from: 10 },
+  tight: { d: 16, right: 12, gap: 10, legs: 18, from: 8 },
 };
-/* the words to their board's edge (the tight edition's two-line board
-   keeps a pixel less above and below: that is what holds its top under 1.4
-   desk heights at 360); the legs at these shares of a board; the air from
-   the desk to its first board at S 1 (never under 14px); a board's top over
-   the platform in desk heights, on legs at least 10px at S 1; S's ceiling,
-   where the folded page lifted over the envelope's flap reaches 10px under
-   the row's top */
+/* the words to their board's edge (the phone's frames keep a pixel less
+   above and below); the legs at these shares of a board; the air from the
+   desk to its first board at S 1 (never under 14px); a board's top over
+   the platform in desk heights, on posts at least SIGN_ED.legs at S 1;
+   S's ceiling, where the folded page lifted over the envelope's flap
+   reaches 10px under the row's top */
 const SIGN_PAD = { x: 7, y: { wide: 5, tight: 4 } };
 const SIGN_LEGS = [0.22, 0.78];
 const SIGN_AIR = 16;
@@ -8105,6 +8111,13 @@ const SIGN_ROUTE = [0, 0.1, 0.16, 0.2, 0.86, 1];
    moves this has to follow), a reader parks the drawing's centre at .5 vh
    or reads it on READ_LINE, and the window keeps `margin` clear of both. */
 const SIGN_REST = { bead: 0.55, park: 0.5, margin: 10 };
+/* THE LINE CARRYING THE LETTER: once taken, the sealed letter rides beside
+   the bead, this far right of the rail's own sampled x (xAtY), until the
+   bead is 2px short of the next junction's tie, or of the plate's foot.
+   The second cold read found "collected by the line" nowhere in the park
+   frame, the one most readers study: the top row's letter had gone with
+   nothing left to show where. */
+const SIGN_RIDE = 7;
 /* a stroked path's own geometry as segments, for the cut. Everything that
    can be covered is drawn with seg, box and quad, so M, L, h, v and z are
    the whole alphabet. */
@@ -8189,7 +8202,15 @@ function buildSigns(js) {
   if (W < 40 || H < 40) return;
   const cs = getComputedStyle(host);
   const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
-  const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
+  /* THE LANE'S HEAD IS 44 RIGHT OF THE SPINE ON EVERY SEAT. The laptop's
+     --gtext is exactly that (TEXT_IN.wide); the phone's is clamped to the
+     plate's edge for fig. 10's words, and reading it with `|| 44` turned
+     its 0px into 44, so the stub ran 73px from the gutter's rail to the
+     node and the second cold reader called it a siding. The stub is page
+     grammar: it keeps the laptop's length here, and the halt starts where
+     it ends. --lhead hands the phone's names the same x (the 820 block). */
+  const T = spx + TEXT_IN.wide;
+  host.style.setProperty("--lhead", T.toFixed(1) + "px");
   const R = W - 10, lane = R - T;
   const svg = figSvg(host, "sline", W, H);
   signs.svg = svg; signs.spx = spx; signs.rows = [];
@@ -8234,8 +8255,14 @@ function buildSigns(js) {
     for (let k = 0; k < 24; k++) { const m = (lo + hi) / 2; if (fits(m)) lo = m; else hi = m; }
     return lo;
   };
-  let ed = "wide", S = solve("wide");
-  if (S < SIGN_FLOOR.wide) { ed = "tight"; S = solve("tight"); }
+  /* THE PHONE TAKES THE TIGHT EDITION OUTRIGHT (the 820 block's seat): with
+     the lane's head at the spine + 44, the wide edition fits a 390 column
+     at S .796, exactly its 32px floor, and that is the halt shrunk by a
+     fifth to seat two boards side by side, which the owner's leave (drop,
+     never shrink) forbids. A seat above the phone drops to tight only if
+     the wide edition would take the lamp under its floor. */
+  let ed = mobile ? "tight" : "wide", S = solve(ed);
+  if (ed === "wide" && S < SIGN_FLOOR.wide) { ed = "tight"; S = solve("tight"); }
   S = +S.toFixed(3);
   const tight = ed === "tight", Z = SIGN_ED[ed], P0 = T + Z.from, padY = SIGN_PAD.y[ed];
   for (const b of marks.flat()) b.h = b.th + 2 * padY;
@@ -8273,10 +8300,10 @@ function buildSigns(js) {
     const top = y - kerb * S, pdx = deep * C30 * S, pdy = deep * 0.5 * S;
     const x0 = P0 + (4 + K.at * C30) * S, dFoot = top - K.at * 0.5 * S, yt = dFoot - K.h * S;
     const sd = Z.d * S, sdx = sd * C30, sFoot = top - sd * 0.5;
-    /* a board's bottom: on legs that keep its top SIGN_TALL desks over the
-       platform, and the legs at least 10px (the legs win when the board is
-       tall). `seats` are the words it carries and their top on it. */
-    const bottom = (h) => Math.min(top - SIGN_TALL * (top - yt) + h, sFoot - 10 * S);
+    /* a board's bottom: on posts that keep its top SIGN_TALL desks over the
+       platform, and the posts at least Z.legs (the posts win when the board
+       is tall). `seats` are the words it carries and their top on it. */
+    const bottom = (h) => Math.min(top - SIGN_TALL * (top - yt) + h, sFoot - Z.legs * S);
     const boards = [];
     if (!tight) {
       /* one board per stop, `gap` apart */
@@ -8286,14 +8313,20 @@ function buildSigns(js) {
         boards.push({ x, y: yb - b.h, w: b.w, h: b.h, legs: [yb, sFoot], seats: [{ m: b.m, dy: padY }] });
         x += b.w + Z.gap;
       }
+    } else if (marks[i].length === 1) {
+      /* one board, centred where the busiest row's sign stands */
+      const b = marks[i][0], yb = bottom(b.h);
+      boards.push({ x: firstX + (stackW - b.w) / 2, y: yb - b.h, w: b.w, h: b.h, legs: [yb, sFoot], seats: [{ m: b.m, dy: padY }] });
     } else {
-      /* one board per row, as wide as its widest words and centred on the
-         busiest row's, the stops listed on it one under the other at their
-         own leading */
-      const w = Math.max(...marks[i].map((b) => b.w)), h = marks[i].reduce((s2, b) => s2 + b.th + Z.lead, -Z.lead) + 2 * padY, yb = bottom(h);
-      let dy = padY;
-      const seats = marks[i].map((b) => { const q = { m: b.m, dy }; dy += b.th + Z.lead; return q; });
-      boards.push({ x: firstX + (stackW - w) / 2, y: yb - h, w, h, legs: [yb, sFoot], seats });
+      /* one sign: its boards framed one over the other on one pair of
+         posts, as wide as the widest, `gap` of post showing between the
+         frames, the lowest on Z.legs of post */
+      let yb = sFoot - Z.legs * S;
+      for (let n = marks[i].length - 1; n >= 0; n--) {
+        const b = marks[i][n];
+        boards.unshift({ x: firstX, y: yb - b.h, w: stackW, h: b.h, legs: [yb, n === marks[i].length - 1 ? sFoot : yb + Z.gap], seats: [{ m: b.m, dy: padY }] });
+        yb -= b.h + Z.gap;
+      }
     }
     const legX = (b) => SIGN_LEGS.map((f) => b.x + f * b.w);
     const P1 = Math.max(...boards.flatMap((b) => legX(b).map((lx) => lx - sdx))) + 6 * S;
@@ -8358,9 +8391,14 @@ function buildSigns(js) {
     const lx = x0 + (K.w - L.u) * S + L.d * C30 * S, ly = yt - L.d * 0.5 * S;
     const sb = ly - (L.foot + L.stem) * S, st = sb - L.shade * S;
     const gl = grp("lamp");
-    add(gl, parts(dPath("s-stem", seg(lx, ly - L.foot * S, lx, sb)), SIGN_AT.lamp));
-    add(gl, parts(dPath("s-lamp", box(lx - (L.base / 2) * S, ly - L.foot * S, L.base * S, L.foot * S) +
-      quad([[lx - (L.bot / 2) * S, sb], [lx - (L.top / 2) * S, st], [lx + (L.top / 2) * S, st], [lx + (L.bot / 2) * S, sb]])), SIGN_AT.lamp));
+    add(gl, parts(dPath("s-stem", seg(lx, ly, lx, sb)), SIGN_AT.lamp));
+    /* the base is a filled disc on the desk, foreshortened, the stem up from
+       its centre: the old 17 by 3 box read cold as "a flat card, a notepad
+       or a letter face down", so an emptied desk never read empty. The one
+       kind of fill this plate has (the s-node precedent), and small. */
+    const foot = Array.from({ length: 12 }, (_, k) => { const a = (k / 12) * 2 * Math.PI; return [lx + L.base * 0.5 * S * Math.cos(a), ly + L.foot * S * Math.sin(a)]; });
+    add(gl, parts(dPath("s-node", quad(foot)), SIGN_AT.lamp));
+    add(gl, parts(dPath("s-lamp", quad([[lx - (L.bot / 2) * S, sb], [lx - (L.top / 2) * S, st], [lx + (L.top / 2) * S, st], [lx + (L.bot / 2) * S, sb]])), SIGN_AT.lamp));
     /* ————— the signs: legs, then boards, then the words seated on them ————— */
     for (const b of boards) {
       const gs = grp("sign");
@@ -8403,6 +8441,13 @@ function buildSigns(js) {
     const env = el("path", { class: "s-env", d: box(ex, etop, ew, eh), opacity: "0" });
     const flap = el("path", { class: "s-flap", d: "", opacity: "0" });
     add(carry, env); add(carry, flap);
+    /* the rider: the same sealed letter, outside the take's clip, moved as
+       a whole by the bead (SIGN_RIDE); its transform is written at rest too
+       so a letter that has ridden and come back leaves no trace */
+    const rider = el("g", { class: "s-rider", opacity: "0", transform: "translate(0 0)" });
+    rider.appendChild(el("path", { class: "s-env", d: box(0, -eh / 2, ew, eh) }));
+    rider.appendChild(el("path", { class: "s-flap", d: seg(0, -eh / 2, ew / 2, -eh / 2 + fh) + seg(ew / 2, -eh / 2 + fh, ew, -eh / 2) }));
+    g.appendChild(rider);
     /* the route, as the envelope's own offsets from where it stands on the
        desk: forward along the slab, the drop, the kerb, the lane and the
        stub to the rail, and into it */
@@ -8415,10 +8460,12 @@ function buildSigns(js) {
     /* the boards stand in front of the platform's far edge */
     rec.boardPolys = boards.map((b) => polyOf([[b.x, b.y], [b.x + b.w, b.y], [b.x + b.w, b.y + b.h], [b.x, b.y + b.h]]));
     rec.bladeCut = cutOf(blade);
-    Object.assign(rec, { carry, ride, env, flap, pTop, pEar, pBot, pTopR, pBotR, pQuote, lt, lb, blade, knot, knob,
+    Object.assign(rec, { carry, ride, env, flap, rider, eh, ty: Infinity, rideEnd: Infinity,
+      railOff: js?.[i] ? js[i].railX - js[i].jx : null, docOff: (js?.[i]?.y ?? y) - y,
+      pTop, pEar, pBot, pTopR, pBotR, pQuote, lt, lb, blade, knot, knob,
       knotBox: { x0: T - 3, y0: y - 3, x1: T + 3, y1: y + 3 }, knobBox: { x0: kx - kr, y0: ky - kr, x1: kx + kr, y1: ky + kr }, route,
       geo: { P0, P1, laneEnd, top, deep: [pdx, pdy], desk: { x0, x1: x0 + dw + K.d * S * C30, y0: yt - K.d * S * 0.5, y1: dFoot },
-        lamp: { x0: lx - (L.bot / 2) * S, x1: lx + (L.bot / 2) * S, y0: st, y1: ly }, env: { x0: ex, x1: ex + ew, y0: etop, y1: ey },
+        lamp: { x0: lx - (L.bot / 2) * S, x1: lx + (L.bot / 2) * S, y0: st, y1: ly + L.foot * S }, env: { x0: ex, x1: ex + ew, y0: etop, y1: ey },
         page: { x0: px, x1: px + PG.w * S, y0: ey - PG.h * S, y1: ey }, boards } });
     /* ————— the page and the envelope at w —————
        θ folds the upper half back, away from the reader and down behind the
@@ -8487,6 +8534,12 @@ function buildSigns(js) {
       a4put(carry, "transform", `translate(${tx.toFixed(2)} ${ty.toFixed(2)})`);
       a4put(ride, "opacity", rec.vis && D < 0.999 ? "1" : "0");
       a4cls(carry, "coupled", D >= SIGN_ROUTE[4]);
+      /* the line carrying the letter: beside the bead once the take is done,
+         at the rail's own x at the bead's y, in the plate's space */
+      const riding = rec.vis && D >= 0.999 && Number.isFinite(rec.ty) && rec.railOff !== null && rec.ty < rec.rideEnd;
+      a4put(rider, "transform", riding
+        ? `translate(${(xAtY(rec.ty) - rec.railOff + SIGN_RIDE).toFixed(2)} ${(rec.ty - rec.docOff).toFixed(2)})` : "translate(0 0)");
+      a4put(rider, "opacity", riding ? "1" : "0");
       const ep = rec.envPoly && rec.vis ? polyOf(rec.envPoly.map(([x, y2]) => [x + tx, y2 + ty])) : null;
       const polys = [ep, ...(rec.standing || []), ...rec.boardPolys];
       for (const c of rec.cuts) a4put(c.el, "d", cutAll(c.segs, c.bb, polys));
@@ -8498,6 +8551,13 @@ function buildSigns(js) {
     svg.appendChild(g);
     signs.rows.push(rec);
   });
+  /* where each letter leaves the plate's story: 2px short of the next
+     junction's tie (its top is 14 over the lane), or 2px short of the
+     plate's foot for the last row, since the caption stands under it
+     (measured at 390: a rider let run rode over "fig. 11"). Where the
+     take's window closes past the foot, as it does on the phone, the last
+     letter is simply taken. */
+  signs.rows.forEach((r, i) => { const nx = signs.rows[i + 1]; r.rideEnd = nx ? nx.pageY - 16 - r.eh / 2 : r.docOff + H - r.eh / 2 - 2; });
   /* the hand is the shared one (THE ASSEMBLIES RIDE THE SCROLL): it hands
      this drawing a p and this drawing sets everything from it */
   signs.e = asmFigure("fig11", { box: () => layoutBox(svg), draw: drawSigns, span: signsSpan });
@@ -8507,7 +8567,10 @@ function buildSigns(js) {
     rows: signs.rows.map((r) => ({ i: r.i, y: r1(r.y), jy: r1(r.pageY), jx: r1(r.jx), a: +r.a.toFixed(3), P0: r1(r.geo.P0), P1: r1(r.geo.P1),
       laneEnd: r1(r.geo.laneEnd), platform: { x0: r1(r.geo.P0), x1: r1(r.geo.P1 + r.geo.deep[0]), y0: r1(r.geo.top - r.geo.deep[1]), y1: r1(r.y) },
       desk: bb(r.geo.desk), lamp: bb(r.geo.lamp), env: bb(r.geo.env), page: bb(r.geo.page),
-      boards: r.geo.boards.map((b) => ({ x0: r1(b.x), y0: r1(b.y), x1: r1(b.x + b.w), y1: r1(b.y + b.h) })),
+      boards: r.geo.boards.map((b) => ({ x0: r1(b.x), y0: r1(b.y), x1: r1(b.x + b.w), y1: r1(b.y + b.h), legs: r1(b.legs[1] - b.legs[0]) })),
+      stub: r1(T - r.jx), rideEnd: Number.isFinite(r.rideEnd) ? r1(r.rideEnd) : null,
+      rider: r.rider.getAttribute("opacity") === "1" ? r.rider.getAttribute("transform") : null,
+      rail: Number.isFinite(r.ty) && r.railOff !== null ? r1(xAtY(r.ty) - r.railOff) : null,
       route: r.route.map(([x, y2]) => [r1(x), r1(y2)]), D: +Math.min(r.cs, r.P).toFixed(3), cs: +r.cs.toFixed(3), P: +r.P.toFixed(3) })) }); /* probe hook */
 }
 
@@ -8595,7 +8658,9 @@ function scrubSigns(tokenY, settled) {
        window — but never before it is sealed; ink() takes the lesser of
        this and p's own. A still reader is shown it at the line. */
     const cs = settled ? SIGN_ROUTE[4] : clamp((tokenY - r.pageY - ta) / Math.max(1, tb - ta), 0, 1);
-    const key = close.toFixed(3) + "|" + gone + "|" + cs.toFixed(3);
+    /* the bead's y is part of the key only once the take is done: that is
+       the only time the rider moves with it */
+    const key = close.toFixed(3) + "|" + gone + "|" + cs.toFixed(3) + (cs >= 0.999 ? "|" + tokenY.toFixed(1) : "");
     if (key === r._k) continue;
     r._k = key;
     /* the points close as the line reaches the junction: the one thing on
@@ -8604,7 +8669,7 @@ function scrubSigns(tokenY, settled) {
        authored d. */
     const bd = `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`;
     if (bd !== r.bladeCut.d0) Object.assign(r.bladeCut, cutOf(r.blade, bd));
-    r.cs = cs; r.vis = gone === "1";
+    r.cs = cs; r.vis = gone === "1"; r.ty = tokenY;
     r.ink();
   }
 }
