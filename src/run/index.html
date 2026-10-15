@@ -1885,7 +1885,10 @@ if (location.hash.length > 1) {
   .sig{
     font-family:var(--body); font-style:italic; font-size:clamp(1.9rem, 3vw, 2.5rem);
     letter-spacing:.01em; color:var(--ink); display:inline-block; line-height:1.1;
-    clip-path:inset(-10% 100% -14% 0); /* the engine writes the name on */
+    /* the engine writes the name on: a feathered wipe the nib leads (v10),
+       never a hard clip, so no frame shows a glyph cut by a vertical */
+    mask-image:linear-gradient(to right, transparent, transparent);
+    -webkit-mask-image:linear-gradient(to right, transparent, transparent);
   }
   .signib{ /* the pen nib riding the writing edge */
     position:absolute; top:50%; left:0; width:5px; height:5px; border-radius:50%;
@@ -1898,6 +1901,84 @@ if (location.hash.length > 1) {
     padding:.5rem 0; border-bottom:1px solid var(--hair)}
   .engrows li b{font-weight:400; color:var(--ink)}
   .engrows li:last-child{border-bottom:none}
+  /* ····· the record, stood up (v10) ·····
+     The plate is a stage with a camera. One card lies flat on the desk,
+     seen from above, WRITTEN, holds there until it is whole on the screen,
+     then stands up toward the reader in one lift and signs itself. The
+     posed thing is the BODY (paper, its rules, the tab, and a picture of
+     its own ink); the words a reader can select, focus and copy are a flat
+     layer over the body's rest box, never inside the posed element, hidden
+     (visibility) at any angle and shown once the card has landed, where the
+     picture and the live ink coincide (measured per build; the lane note
+     has the numbers). The picture is a canvas drawn once per face and seat
+     from the live ink's own glyph boxes, so it is the same layout at the
+     same pixels, as a raster: G2 counts text nodes, Safari rasterises text
+     in 3D, and a raster is what a card at an angle is. One rotateX child
+     under the stage's `perspective`, no preserve-3d anywhere; no opacity,
+     filter or overflow on the stage or the body. Camera per edition:
+     --f02-cam is its distance (the far edge of the lying card is .55 of the
+     near one), --f02-eye its height above the hinge (35 degrees of
+     elevation; the origin's y is derived from the hinge at build);
+     --f02-head is the tab. THE SHADOW falls on the near desk toward the
+     reader (the light is the page's top, behind and above the card): a
+     contact pool under the foot, an ellipse darkest just under the foot
+     and soft on every side, narrower than the card, L tall standing and 0
+     lying, a gradient, no filter; the caption sits below it. NO LINE IS
+     DRAWN ON THE POSED BODY: a 1 px frame or rule inside a tilted layer
+     renders as a sawtooth (measured: .67 px jumps between scanlines at
+     3 degrees, the "stair-stepped edges" a cold reader saw), while the
+     same line on the picture canvas is sampled smooth (.25 px). So the
+     body is paper and a tab; the picture carries the frame and the row
+     rules while posed, and the live card carries its own border and
+     frame at rest, at the same pixels. --f02-inset keeps the
+     body clear of the corridor's waybill: the rail prints "the engineer's
+     credentials -> manifest" 32 px (1440) / 57 px (1280) into the plate
+     column while the card's top edge rises through its line (measured at
+     every p); the stage stands that far in from the column's left edge
+     rather than the rail moving. Faces, measured the way the gate reads them:
+       card stock  measured: #fdf9f0 on #fbf3e7 — 1.05:1 / Lc 0.0 (a tone;
+                   the card's edge is its hairline, never its fill)
+       thickness   measured: #d8cbb2 on #fdf9f0 — 1.52:1 / Lc 23.7, and on the field
+                   measured: #d8cbb2 on #fbf3e7 — 1.46:1 / Lc 20.5
+       shadow      its darkest, rgba(56,44,32,.16) on the field:
+                   measured: #dcd3c7 on #fbf3e7 — 1.34:1 / Lc 16.1
+       the tab     --clay-g on the stock: measured: #c4532e on #fdf9f0 — 4.32:1 / Lc 67.4 */
+  .plate.record{--f02-head:16px; --f02-foot:3px; --f02-shadow:90px; --f02-cam:550px; --f02-eye:385px; --f02-inset:0px;
+    margin-left:var(--f02-inset)}
+  @media (min-width:1250px){ .plate.record{--f02-inset:72px} }
+  @media (min-width:1440px){ .plate.record{--f02-inset:44px} }
+  .record .stage{position:relative; padding:var(--f02-head) 0 calc(var(--f02-foot) + var(--f02-shadow));
+    perspective:var(--f02-cam); perspective-origin:50% -50%}
+  .record .cardedge{position:absolute; left:0; right:0; bottom:var(--f02-shadow); height:var(--f02-foot); background:#d8cbb2}
+  .record .cardshadow{position:absolute; left:7%; right:7%; bottom:0; height:var(--f02-shadow);
+    transform-origin:50% 0; will-change:transform;
+    background:radial-gradient(ellipse 50% 100% at 50% 0%, rgba(56,44,32,.16), rgba(56,44,32,.07) 45%, rgba(56,44,32,0) 100%)}
+  .record .cardbody{position:absolute; left:0; right:0; top:var(--f02-head); bottom:calc(var(--f02-foot) + var(--f02-shadow));
+    transform-origin:50% 100%; will-change:transform; background:#fdf9f0}
+  .record .cardbody .tab{position:absolute; top:-10px; left:24px; width:56px; height:10px;
+    background:var(--clay-g); border:1px solid var(--clay); border-bottom:0}
+  .record .cardbody canvas{position:absolute; display:block; pointer-events:none}
+  /* data-ink: 0 posed (the picture), 1 live (the words), 2 the handover
+     (both, crossfading over HANDOVER_MS on the stepper) */
+  .record .stage[data-ink="1"] .cardbody canvas{visibility:hidden}
+  /* the ink: today's card, laid out exactly as the plate laid it (the
+     plate's padding moves here), with the plate's frame as its own */
+  .record .engcard{position:relative; z-index:1; padding:clamp(1rem, 2vw, 1.6rem); box-shadow:inset 0 0 0 1px var(--plate-line)}
+  /* THE LINE THE NAME IS WRITTEN ON. A card that lies there with an empty
+     band where the name goes read as "an element that failed to load"; a
+     card with a line to sign reads as a record waiting for its signature,
+     and the name's stroke then has somewhere to land. Drawn on the picture
+     too, at the same pixel (--f02-sigline is the sig's baseline + 4,
+     measured), so the handover changes nothing. */
+  .record .sigwell::before{content:""; position:absolute; left:0; top:var(--f02-sigline, 0); width:var(--f02-siglen, 60%);
+    height:1px; background:var(--hair-strong)}
+  .record .stage[data-ink="0"] .engcard{visibility:hidden}
+  .settled .record .engcard{visibility:visible}
+  @media (max-width:820px){
+    .plate.record{--f02-shadow:60px; --f02-cam:732px; --f02-eye:512px}
+    .record .cardbody .tab{left:16px; width:48px}
+    .record .engcard{padding:.7rem}
+  }
   .dict{margin-top:1.6rem; border-top:1px solid var(--hair-strong); padding-top:1rem; max-width:30ch}
   .dict .hw{font-family:var(--display); font-weight:430; font-size:1.5rem; line-height:1}
   .dict .pr{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); margin-top:.45rem}
@@ -2261,13 +2342,13 @@ if (location.hash.length > 1) {
   /* ————— fx: only the JS world hides pre-entrance ————— */
   .js body:not(.settled) [data-fx]{opacity:0}
   .settled [data-fx]{opacity:1 !important; transform:none !important}
-  .settled .sig{clip-path:none}
+  .settled .sig{mask-image:none; -webkit-mask-image:none}
 
   /* ————— reduced motion: the settled world ————— */
   @media (prefers-reduced-motion: reduce){
     [data-fx]{opacity:1 !important; transform:none !important}
     .cue .a{animation:none}
-    .sig{clip-path:none} /* the settled world: the name is written */
+    .sig{mask-image:none; -webkit-mask-image:none} /* the settled world: the name is written */
     /* dusk beats carry their own resting colors (the thread passes behind)
 
        .bsign IS IN BOTH LISTS, and round 14 is where it arrived. ¶11 is a
@@ -4235,23 +4316,28 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">A record of what I&rsquo;ve built, and how I checked it.</p>
         <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I finished a B.S. in Computer Science at Miami University in <span class="nw">May 2026</span>. During my final year, I also worked as a data intern in IT Services. Three of the six projects below had teammates. Every project number links to its proof, or says why it can&rsquo;t.</p>
       </div>
-      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <div class="engcard">
-          <header><span>who built this</span></header>
-          <div class="sigwell">
-            <span class="sig" id="sig">Ayush Yadav</span>
-            <span class="signib" id="signib" aria-hidden="true"></span>
-            <p class="sigrole">answers for every claim on this page</p>
+      <figure class="plate bare record" data-fx="in .0 .09">
+        <div class="stage" id="fig02">
+          <div class="cardbody"><i class="tab"></i></div>
+          <div class="cardedge"></div>
+          <div class="cardshadow"></div>
+          <div class="engcard">
+            <header><span>who built this</span></header>
+            <div class="sigwell">
+              <span class="sig" id="sig">Ayush Yadav</span>
+              <span class="signib" id="signib" aria-hidden="true"></span>
+              <p class="sigrole">answers for every claim on this page</p>
+            </div>
+            <ul class="engrows">
+              <li><span>base</span><b>Cincinnati, OH</b></li>
+              <li><span>builds</span><b>web apps · APIs · data pipelines · ML</b></li>
+              <li><span>languages</span><b>TypeScript · Python · Java · C++ · SQL</b></li>
+              <li><span>degree</span><b>B.S. Computer Science · Miami University, <span class="nw">May 2026</span></b></li>
+              <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
+              <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
+              <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
+            </ul>
           </div>
-          <ul class="engrows">
-            <li><span>base</span><b>Cincinnati, OH</b></li>
-            <li><span>builds</span><b>web apps · APIs · data pipelines · ML</b></li>
-            <li><span>languages</span><b>TypeScript · Python · Java · C++ · SQL</b></li>
-            <li><span>degree</span><b>B.S. Computer Science · Miami University, <span class="nw">May 2026</span></b></li>
-            <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
-            <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
-            <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
-          </ul>
         </div>
         <figcaption>fig. 02 · the record card.</figcaption>
       </figure>
@@ -7461,22 +7547,368 @@ function polyAt(line, t) {
 /* Who — the engineer of record signs the line. The name is written on
    by a clip-path wipe with a nib dot riding the writing edge — no fake
    stroke data, just the type being revealed at writing speed. */
-const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0 };
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0, feather: 16 /* px of wet edge */ };
 /* D-1 · THE SIGNATURE DOES NOT UN-SIGN. This wipe is a pure function of
    beat progress, so scrolling back up ran the nib backwards and took the
    name off the card — a signature that withdraws when you look at it twice
    is the one thing a reference card may not do. The wipe keeps its high-
-   water mark: it writes at writing speed once and then it is written. */
-function scrubWho(p) {
-  const t = Math.max(smooth((p - 0.28) / 0.34), who.t || 0);
+   water mark: it writes at writing speed once and then it is written.
+   v10: t is the stroke's own progress, 0..1, clocked by fig. 02 below. The
+   beat used to scrub it over .28-.62 of ¶02 with nothing to finish it,
+   which is why a 1440 reader could park on "Ayush Yad"; the mark holds. */
+function scrubWho(t) {
+  t = Math.max(clamp(t, 0, 1), who.t || 0);
   who.t = t;
-  const v = (100 - t * 100).toFixed(1);
+  const v = t.toFixed(4);
   if (v === who.last) return;
   who.last = v;
-  who.sig.style.clipPath = `inset(-10% ${v}% -14% 0)`;
+  /* the wet edge: the wipe's front runs the name's width plus the feather,
+     so the last glyph is whole at t 1 and nothing shows at t 0; the mask
+     is dropped at 1 (an italic's overhang past its box is then the live
+     glyph's, not the mask's); the nib rides mid-feather */
+  const e = (who.w + who.feather) * t;
+  const m = t >= 1 ? "none" : `linear-gradient(to right, #000 ${(e - who.feather).toFixed(1)}px, transparent ${e.toFixed(1)}px)`;
+  who.sig.style.maskImage = m; who.sig.style.webkitMaskImage = m;
   who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
-  who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
+  who.nib.style.transform = `translate(${clamp(e - who.feather / 2, 0, who.w).toFixed(1)}px, -50%)`;
 }
+
+/* ····· fig. 02 · the record, stood up (v10) ·····
+   One object with a camera. The record card lies flat on the desk, seen
+   from above, WRITTEN, holds there until the whole of it is on the screen,
+   then stands up toward the reader in one lift and signs itself: theta is
+   90 for p <= pH (the first p at which the lying card is above the fold by
+   16 px, computed from the driver's own window at every measure), runs
+   90 -> 0 over the lift on a curve with a soft start, its mass early
+   and a long tail (the first cut's smooth^.6 had an infinite slope at the
+   start: the card snapped off the desk, which a cold reader called
+   "stretched"), and is 0 from the lift's end, pH + LIFT_SPAN (a third of the window,
+   however late the hold). pH is never before HOLD_MIN, so the
+   lying card is seen whole for a beat before it moves. The top edge goes
+   AWAY from the lens for the whole lift (z <= 0). A 3-degree settle was
+   tried and dropped: a card being signed holds still.
+   THE INK IS A PICTURE WHILE THE CARD IS POSED. The body carries a canvas
+   drawn from the live ink's own glyph boxes (a Range per character, the
+   parent's computed face and colour, a link's underline from its computed
+   decoration, the line the name is written on), so a lying card reads as a
+   written record and never as a loader; from the lift's end the live HTML takes over
+   at the same pixels in a short crossfade (the picture hides, the words
+   show) and the reader can select and tab. Text nodes are never posed: G2
+   counts them, Safari rasterises text in 3D, and a raster is what a card at
+   an angle is. The picture is drawn on an OffscreenCanvas and blitted once:
+   its fillText is not the thread canvas's (check-cargo-fixture hooks the
+   DOM context's prototype to record waybills, and the card's words are not
+   freight). The name is the one thing the picture does not carry finished:
+   it is WRITTEN BY THE SCROLL over the lift's last NAME_DEG degrees (pure
+   in p: t runs 0 -> 1 over (pName, the lift's end), so a slow reader sees one beat,
+   the stroke ending as the card stands), floored at a pen's pace (the
+   stroke never runs faster than WRITE_MS end to end, so a flick or the
+   grace still shows it being written, finishing just after upright), with
+   its high-water mark kept (D-1). A feathered wipe the nib leads, on a
+   second small canvas over the well while the card is posed and on the
+   live #sig from the lift's end, both from the one progress t (scrubWho). The hand's
+   span is the lift, so a grace stands the card up in no less than 0.4 s.
+   THE SHADOW is the light's: the page's top, behind and above the card, so
+   the card's shadow falls on the near desk toward the reader: the body's
+   contact pool under the foot, an ellipse narrower than the card and soft
+   on every side, scaled by cos(theta) every frame (0 lying, L standing), a
+   gradient. Nothing is ever beside the card.
+   Pure in p for the pose and for whether the ink is live; the name's clock
+   and the crossfade start on their crossings and are skipped on a landing
+   (cold load, a jump of > .3 vh, reduced motion), where the card is simply
+   there, written and signed. Scrolling up lays it back down; the name keeps
+   its high-water mark on both the picture and the live text. */
+const F02 = {
+  LIFT_SPAN: 0.35, /* p · the lift's length, pH to pH + this: a third of the window however late the hold (the phone's park moved its window up and a fixed end left a 24 px lift) */
+  LIFT_MAX: 0.9, /* p · the lift ends no later than this: the stroke's end and the handover need the rest */
+  HOLD_MIN: 0.25, /* pH never earlier than this: the lying card is seen whole before it moves */
+  NAME_DEG: 40,  /* the name is written over the lift's last degrees, ending as the card stands */
+  WRITE_MS: 600, /* the stroke's pace floor, end to end: one stroke, not letters */
+  HANDOVER_MS: 120, /* picture to words: the two coincide to the glyph edge (measured), and a crossfade this short hides the edge */
+  HOLD_MAX: 0.55, /* pH never later than this: past it the window would be shortened instead (lane note) */
+  START: 0.92,   /* phone window · p 0 with this much of the stage on screen */
+  FLOOR: 0.22,   /* phone window · never shorter than this many vh */
+  MAST: 112,     /* phone window · the park never lifts the stage's top above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
+};
+const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, name: 0, tp: 0, rate: 0, fade: -1, t: 0, rT: 0, lift: 0.6,
+  cam: 550, eye: 385, head: 16, H: 0, pH: 0, pName: 0, hold: null, e: null, hook: null, pic: null, npic: null, noff: null, sig: null };
+f02.body = f02.stage.querySelector(".cardbody");
+f02.shadow = f02.stage.querySelector(".cardshadow");
+f02.ink = f02.stage.querySelector(".engcard");
+f02.rows = [f02.ink.querySelector("header"), f02.ink.querySelector(".sigwell"), ...f02.ink.querySelectorAll(".engrows > li")];
+const f02dpr = () => Math.min(3, devicePixelRatio || 1);
+const f02off = (w, h) => {
+  if (typeof OffscreenCanvas === "function") return new OffscreenCanvas(w, h);
+  const c = document.createElement("canvas"); c.width = w; c.height = h; return c;
+};
+/* a canvas font from a computed style; and a text node's ascent MEASURED
+   IN THE DOM: a zero-size inline-block set after the node sits on its
+   line's baseline, and the node's last glyph box gives that line's top */
+const f02font = (cs) => `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+function f02ascent(node, rg) {
+  const s = node.textContent;
+  let last = s.length - 1;
+  while (last > 0 && /\s/.test(s[last])) last--;
+  rg.setStart(node, last); rg.setEnd(node, last + 1);
+  const lr = rg.getClientRects()[0];
+  const probe = document.createElement("i");
+  probe.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline;padding:0;margin:0;border:0";
+  node.parentNode.insertBefore(probe, node.nextSibling);
+  const base = probe.getBoundingClientRect().top;
+  probe.remove();
+  return lr ? base - lr.top : parseFloat(getComputedStyle(node.parentElement).fontSize) * 0.7;
+}
+/* every character of a text node at its own box, relative to `origin`'s
+   rect with an ancestor scale undone; runs on one line keep their underline.
+   The baseline is left fractional: canvas rounds it to a device row itself,
+   and from an integer origin (layWho) that is the row Blink paints the live
+   glyph on (a rounding rule of my own matched one seat and broke another). */
+function f02glyphs(g, node, origin, k, out) {
+  const s = node.textContent, el = node.parentElement, cs = getComputedStyle(el);
+  const rg = document.createRange();
+  const font = f02font(cs), color = cs.color, asc = f02ascent(node, rg);
+  const link = el.closest("a"), ls = link ? getComputedStyle(link) : null;
+  const under = ls ? { color: ls.textDecorationColor, off: parseFloat(ls.textUnderlineOffset) || 3, th: parseFloat(ls.textDecorationThickness) || 1 } : null;
+  let run = null;
+  const flush = () => { if (run && under) out.push({ rect: [run.x0, Math.round(run.y) + under.off, run.x1 - run.x0, under.th], color: under.color }); run = null; };
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === " " || ch === "\n" || ch === "\t") continue;
+    rg.setStart(node, i); rg.setEnd(node, i + 1);
+    const r = rg.getClientRects()[0];
+    if (!r || !r.width) continue;
+    const x = (r.left - origin.left) * k, y = (r.top - origin.top) * k + asc, x1 = x + r.width * k;
+    out.push({ ch, x, y, font, color, asc });
+    if (run && Math.abs(run.y - y) < 0.5) { run.x1 = x1; } else { flush(); run = { x0: x, x1, y }; }
+  }
+  flush();
+  return asc;
+}
+/* the picture of the ink: the live layer, everything but the name, plus the
+   line the name is written on, as the posed body carries it. Drawn
+   offscreen, blitted once. */
+function inkPicture() {
+  const f = f02, dpr = f02dpr();
+  const W = f.ink.offsetWidth, H = f.ink.offsetHeight, ir = f.ink.getBoundingClientRect(), k = W / (ir.width || W);
+  if (!f.pic) { f.pic = document.createElement("canvas"); f.pic.className = "inkpic"; f.pic.setAttribute("aria-hidden", "true"); f.body.appendChild(f.pic); }
+  const c = f.pic, cw = Math.round(W * dpr), chh = Math.round(H * dpr);
+  c.width = cw; c.height = chh; c.style.cssText = `left:0;top:0;width:${W}px;height:${H}px`;
+  const off = f02off(cw, chh), g = off.getContext("2d");
+  g.scale(dpr, dpr); g.textBaseline = "alphabetic";
+  const items = [];
+  const walk = document.createTreeWalker(f.ink, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) => (!n.textContent.trim() || n.parentElement.closest("#sig, #signib") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT) });
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) f02glyphs(g, n, ir, k, items);
+  /* the frame and the row rules, as the live card draws them (its inset
+     hairline and the rows' bottom borders): on the picture so that no line
+     is ever drawn inside the tilted layer */
+  const root = getComputedStyle(document.documentElement);
+  g.strokeStyle = root.getPropertyValue("--plate-line").trim() || "rgba(38,35,28,.14)"; g.lineWidth = 1; g.strokeRect(0.5, 0.5, W - 1, H - 1);
+  for (const row of f.rows) {
+    const cs = getComputedStyle(row), bw = parseFloat(cs.borderBottomWidth);
+    if (!bw) continue;
+    g.fillStyle = cs.borderBottomColor; g.fillRect(row.offsetLeft, row.offsetTop + row.offsetHeight - bw, row.offsetWidth, bw);
+  }
+  for (const it of items) {
+    g.fillStyle = it.color;
+    if (it.rect) g.fillRect(...it.rect);
+    else { g.font = it.font; g.fillText(it.ch, it.x, it.y); }
+  }
+  if (f.sig) { const S = f.sig; g.fillStyle = S.line.color; g.fillRect(S.x0, S.y0 + S.line.top, S.line.len, 1); }
+  c.getContext("2d").drawImage(off, 0, 0);
+  f.glyphs = items.length; /* probe */
+}
+/* the name's picture: the well on its own small canvas, the glyphs at the
+   live #sig's boxes clipped at t of its width, the nib where .signib rides;
+   and the line it is written on, measured here and handed to the live well
+   as --f02-sigline / --f02-siglen so both draw it at one pixel */
+function sigPicture() {
+  const f = f02, dpr = f02dpr(), well = f.ink.querySelector(".sigwell"), sig = who.sig, nib = who.nib;
+  const wr = well.getBoundingClientRect(), k = well.offsetWidth / (wr.width || well.offsetWidth);
+  if (!f.npic) { f.npic = document.createElement("canvas"); f.npic.className = "namepic"; f.npic.setAttribute("aria-hidden", "true"); f.body.appendChild(f.npic); }
+  const W = well.offsetWidth, H = well.offsetHeight;
+  f.npic.width = Math.round(W * dpr); f.npic.height = Math.round(H * dpr);
+  f.npic.style.cssText = `left:${well.offsetLeft}px;top:${well.offsetTop}px;width:${W}px;height:${H}px`;
+  f.noff = f02off(f.npic.width, f.npic.height);
+  const g = f.noff.getContext("2d"), items = [];
+  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.textBaseline = "alphabetic";
+  let asc = 0;
+  for (const n of sig.childNodes) if (n.nodeType === 3) asc = f02glyphs(g, n, wr, k, items);
+  const ns = getComputedStyle(nib);
+  const base = items.length ? Math.round(items[0].y) : sig.offsetTop + asc;
+  const line = { top: base + 4, len: Math.round(W * 0.64), color: getComputedStyle(document.documentElement).getPropertyValue("--hair-strong").trim() || "rgba(38,35,28,.34)" };
+  well.style.setProperty("--f02-sigline", `${line.top}px`); well.style.setProperty("--f02-siglen", `${line.len}px`);
+  f.sig = { W, H, x0: well.offsetLeft, y0: well.offsetTop, x: sig.offsetLeft, w: sig.offsetWidth, items, line,
+    nib: { x: parseFloat(ns.width) / 2, y: nib.offsetTop + parseFloat(ns.height) / 2, r: parseFloat(ns.width) / 2, color: ns.backgroundColor } };
+}
+function namePicture(t) {
+  const f = f02, S = f.sig;
+  if (!S) return;
+  const dpr = f02dpr(), g = f.noff.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, S.W, S.H);
+  const e = S.x + (S.w + who.feather) * t; /* the wet edge, as the live wipe has it */
+  if (t > 0) {
+    g.textBaseline = "alphabetic";
+    for (const it of S.items) { g.font = it.font; g.fillStyle = it.color; g.fillText(it.ch, it.x, it.y); }
+    if (t < 1) {
+      const grad = g.createLinearGradient(e - who.feather, 0, e, 0);
+      grad.addColorStop(0, "rgba(0,0,0,1)"); grad.addColorStop(1, "rgba(0,0,0,0)");
+      g.globalCompositeOperation = "destination-in"; g.fillStyle = grad; g.fillRect(0, 0, S.W, S.H);
+      g.globalCompositeOperation = "source-over";
+    }
+  }
+  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + clamp(e - S.x - who.feather / 2, 0, S.w), S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
+  const c = f.npic.getContext("2d");
+  c.clearRect(0, 0, f.npic.width, f.npic.height); c.drawImage(f.noff, 0, 0);
+}
+/* the layout, once per face and seat: the camera's origin is set from the
+   hinge so --f02-eye reads as a height above it whatever the card's height
+   here, and the two pictures are drawn */
+function layWho() {
+  const f = f02, cs = getComputedStyle(f.stage.parentElement), v = (k) => parseFloat(cs.getPropertyValue(k));
+  f.cam = v("--f02-cam"); f.eye = v("--f02-eye"); f.head = v("--f02-head");
+  /* AN INTEGER ORIGIN. The body and the ink are two layers on one document
+     box; Blink paints a glyph at round(origin + y) and places a layer at
+     round(origin), and the two agree only when the origin is whole. The
+     stage's document top is whatever the prose above made it (191.5 at
+     1440, 99.9 at 390), so the stage is nudged up and left by that
+     fraction: invisible, and it makes the canvas's own baseline rounding
+     the live text's. Measured at the handover (lane note). */
+  f.stage.style.top = ""; f.stage.style.left = "";
+  const sr = f.stage.getBoundingClientRect(), fy = (sr.top + scrollY) % 1, fx = (sr.left + scrollX) % 1;
+  if (fy > 0.001 || fx > 0.001) { f.stage.style.top = `${(-fy).toFixed(3)}px`; f.stage.style.left = `${(-fx).toFixed(3)}px`; }
+  f.H = f.ink.offsetHeight;
+  f.stage.style.perspectiveOrigin = `50% ${(f.head + f.H - f.eye).toFixed(1)}px`;
+  sigPicture(); inkPicture(); namePicture(Math.max(f.name, who.t || 0));
+  f.hold = null; /* pH is re-derived from the window on the next draw */
+  if (!Number.isNaN(f.th)) poseWho(f.th); /* the same pose under the new camera */
+  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, W: f.ink.offsetWidth, hinge: f.head + f.H, glyphs: f.glyphs, inset: v("--f02-inset"), nudge: [+fx.toFixed(3), +fy.toFixed(3)], sigline: f.sig && f.sig.line.top }; /* probe hook */
+}
+/* THE HOLD. pH is the first p at which the lying card (its far edge is
+   above the foot, so its foot) sits 16 px above the fold, from the driver's
+   window: the stage's top at p is e.top - (yA + p (yB - yA)). Re-derived
+   whenever the window moves; never before HOLD_MIN, never after HOLD_MAX. */
+function whoHold() {
+  const f = f02, e = f.e;
+  if (!e || e.yB <= e.yA) return F02.HOLD_MIN;
+  const key = `${e.top}|${e.yA}|${e.yB}|${vh}`;
+  if (f.hold && f.hold.key === key) return f.hold.pH;
+  const foot = e.top + f.head + f.H + 3; /* document y of the foot's underside */
+  const pH = clamp((foot - (e.yA + vh - 16)) / (e.yB - e.yA), F02.HOLD_MIN, F02.HOLD_MAX);
+  f.lift = Math.min(F02.LIFT_MAX, pH + F02.LIFT_SPAN);
+  /* and the p at which the lift passes NAME_DEG: the lift's curve inverted by bisection */
+  const want = 1 - F02.NAME_DEG / 90;
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 24; i++) { const mid = (lo + hi) / 2; if (whoLift(mid) < want) lo = mid; else hi = mid; }
+  f.pName = pH + ((lo + hi) / 2) * (f.lift - pH);
+  f.hold = { key, pH };
+  f.pH = pH;
+  return pH;
+}
+/* the lift: a soft start, its mass early, a long tail (two thirds done at
+   the midpoint; zero slope at both ends) */
+const whoLift = (u) => 1 - Math.pow(1 - smooth(u), 1.6);
+function whoTheta(p) {
+  const pH = whoHold();
+  if (p <= pH) return 90;
+  if (p < f02.lift) return 90 * (1 - whoLift((p - pH) / (f02.lift - pH)));
+  return 0;
+}
+/* the pose at theta (degrees from face-on; 90 is lying): the body about
+   its foot, the shadow's length */
+function poseWho(th) {
+  const f = f02, c = Math.cos((th * Math.PI) / 180);
+  f.body.style.transform = `rotateX(${th.toFixed(3)}deg)`;
+  f.shadow.style.transform = `scaleY(${c.toFixed(4)})`;
+}
+function drawWho(p) {
+  const f = f02;
+  const landed = RM || Number.isNaN(f.p) || Math.abs(p - f.p) > 0.3; /* a landing, not a motion: no clock */
+  f.p = p;
+  const th = whoTheta(p);
+  if (th !== f.th) { f.th = th; poseWho(th); }
+  const on = p >= f.lift;
+  if (on !== f.on) {
+    f.on = on;
+    if (!on) { f.stage.dataset.ink = "0"; whoFade(-1); namePicture(f.name); } /* posed again: the picture carries the name where the live text has it */
+    else if (landed) { f.stage.dataset.ink = "1"; whoFade(-1); }
+    else { f.stage.dataset.ink = "2"; whoFade(0); stir(whoStep); }  /* landed by the hand: the words take over from the picture */
+  }
+  /* the name: the scroll's own progress over the lift's last stretch; a
+     landing takes it there at once, a motion no faster than the pen */
+  f.tp = p >= f.lift ? 1 : p <= f.pName ? 0 : (p - f.pName) / (f.lift - f.pName);
+  if (landed) f.rate = Math.max(f.rate, f.tp);
+  whoName(Math.min(f.tp, f.rate));
+  if (f.rate < Math.min(1, f.tp)) stir(whoStep);
+  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), lift: +f.lift.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
+}
+/* the name at t, high-water mark kept, on the live text and the picture
+   both (the picture is hidden while the card is live, but it must carry
+   the name the live text has: a landing at the park that skipped it left
+   the picture unsigned, which the coincidence instrument saw) */
+function whoName(t) {
+  const f = f02;
+  if (t <= f.name) return;
+  f.name = t;
+  scrubWho(t);
+  namePicture(t);
+  if (f.hook) f.hook.name = +t.toFixed(3);
+}
+/* the handover's crossfade: t 0..1 live over picture; -1 clears it */
+function whoFade(t) {
+  const f = f02;
+  f.fade = t;
+  const live = t < 0 ? "" : t.toFixed(3), pic = t < 0 ? "" : (1 - t).toFixed(3);
+  f.ink.style.opacity = live;
+  if (f.pic) f.pic.style.opacity = pic;
+  if (f.npic) f.npic.style.opacity = pic;
+}
+/* the hand: the pen's pace and the handover, one stepper on the engine's
+   loop. rate is how far the pen has had time to get; it catches up to the
+   scroll's t and the stepper drops, so a reader parked mid-stroke holds a
+   still (no idle motion) and the stroke resumes with the scroll */
+function whoStep(now) {
+  const f = f02;
+  const dt = f.t ? Math.min(0.05, (now - f.t) / 1000) : 1 / 60;
+  f.t = now;
+  let moving = false;
+  const want = Math.min(1, f.tp);
+  if (f.rate < want) {
+    f.rate = Math.min(want, f.rate + (dt * 1000) / F02.WRITE_MS);
+    whoName(f.rate);
+    moving = f.rate < want;
+  }
+  if (f.fade >= 0) {
+    const t = Math.min(1, f.fade + (dt * 1000) / F02.HANDOVER_MS);
+    if (t >= 1) { f.stage.dataset.ink = "1"; whoFade(-1); } else { whoFade(t); moving = true; }
+  }
+  if (!moving) f.t = 0;
+  return moving;
+}
+/* the phone's window (the driver's own per-figure option): the lying card
+   lives at the stage's foot, so p 0 waits until START of the stage is on
+   screen; the park never lifts the stage's top under the masthead; and the
+   window is never shorter than FLOOR of the screen (a 667-tall phone has
+   no park that fits this stage, so there the top wins and the handles row
+   waits under the fold) */
+function whoWindow(e) {
+  if (!mobile) return null;
+  const yB = Math.min(e.top + e.h / 2 - ASM_END * vh, e.top - F02.MAST);
+  const yA = Math.min(e.top + F02.START * e.h - vh, yB - F02.FLOOR * vh);
+  return { yA, yB };
+}
+/* built on the real face (the rules and the pictures are measured off the
+   ink), registered before boot's own continuation of the same promise
+   measures the window; re-laid on every seat change after the engine's own
+   pass */
+function buildWho() {
+  layWho();
+  f02.e = asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho, window: whoWindow,
+    span: (e) => { f02.e = e; const pH = whoHold(); return [pH, f02.lift]; } });
+}
+document.fonts.ready.then(buildWho, buildWho);
+addEventListener("resize", () => { if (seatChanged) { clearTimeout(f02.rT); f02.rT = setTimeout(layWho, 200); } });
 
 /* ····· fig. 03 · the yard · the ITSM job as freight ·····
    Two feeders (1.6M+ query logs, the Tableau/Workday silos) run through one
@@ -11662,7 +12094,7 @@ function work(y) {
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
   /* stations scrub only near their own beat */
-  if (Math.abs(beat - 1) <= 1) scrubWho(beat < 1 ? 0 : beat > 1 ? 1 : bp);
+  /* beat 1's card rides the assembly driver (v10): fig. 02 clocks the name itself */
   if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
   if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
