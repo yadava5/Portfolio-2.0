@@ -1114,11 +1114,13 @@ const FIGURES = [
          block with its tags stripped, so "the yard" still passes when the
          plate says "the yards". A tag-delimited match cannot. */
       claims: [
-        /* v8: the boards went and the sentence changed with them. "posted"
-           is the load-bearing word, because public is the station's fact;
-           v7's "joins the line from the stops" described a motion the plate
-           no longer makes. */
-        "written at the stops, posted, and collected by the line.",
+        /* v9: the page is sealed in an envelope on the desk and the line
+           collects the letter, so "sealed" replaces v8's "posted": the plate
+           no longer pins a notice up, and a caption that names a motion the
+           drawing does not make is the defect v8 already retired once ("joins
+           the line from the stops", v7). Public stays the station's fact, in
+           its heading and its prose. */
+        "written at the stops, sealed, and collected by the line.",
       ],
       exposed: [
         />Randall Vollen</,
