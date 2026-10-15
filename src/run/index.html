@@ -1898,6 +1898,60 @@ if (location.hash.length > 1) {
     padding:.5rem 0; border-bottom:1px solid var(--hair)}
   .engrows li b{font-weight:400; color:var(--ink)}
   .engrows li:last-child{border-bottom:none}
+  /* ····· the record, stood up (v10) ·····
+     The plate is a stage with a camera. One card lies flat on the desk,
+     seen from above, hinged at its foot, and stands up toward the reader as
+     they scroll; the ink prints the instant it is face-on and the name
+     writes at the park. The posed thing is the BODY (paper, its rules, the
+     tab) and the shadow on the ground; the words are a flat layer over the
+     body's rest box and are never inside a posed element — hidden
+     (visibility and opacity) at any angle, so no word is ever foreshortened
+     under the floor. One rotateX child under the stage's `perspective`, no
+     preserve-3d anywhere (a WebKit screenshot flattens nothing it needs),
+     no opacity, filter or overflow on the stage or the body. The camera is
+     per edition: --f02-cam is its distance, --f02-eye its height above the
+     hinge (the origin's y is derived from the hinge at build), --f02-head
+     the headroom the tilted top edge rises into: under a camera this high a
+     card tilted 15-20 degrees projects its far edge HIGHER than the
+     standing card's top (21 px at 1440, computed and measured), so the
+     head is the tab plus that. --f02-sx is the contact shadow's reach past
+     the card's right edge: a line, not a slab (16 px read as a thick side). Faces, measured the way the gate reads them:
+       card stock  measured: #fdf9f0 on #fbf3e7 — 1.05:1 / Lc 0.0 (a tone;
+                   the card's edge is its hairline, never its fill)
+       thickness   measured: #d8cbb2 on #fdf9f0 — 1.52:1 / Lc 23.7, and on the field
+                   measured: #d8cbb2 on #fbf3e7 — 1.46:1 / Lc 20.5
+       shadow      the contact band, rgba(56,44,32,.32) composited on the
+                   field: measured: #bdb3a7 on #fbf3e7 — 1.88:1 / Lc 33.7;
+                   its far tone at .17: measured: #dad1c5 on #fbf3e7 — 1.37:1 / Lc 17.2
+       the tab     --clay-g on the stock: measured: #c4532e on #fdf9f0 — 4.32:1 / Lc 67.4 */
+  .plate.record{--f02-head:36px; --f02-foot:12px; --f02-cam:800px; --f02-eye:720px; --f02-sx:6px; --f02-kx:.29}
+  .record .stage{position:relative; padding:var(--f02-head) 0 var(--f02-foot);
+    perspective:var(--f02-cam); perspective-origin:50% -50%}
+  .record .ground{position:absolute; left:-24px; right:-24px; bottom:calc(var(--f02-foot) - 4px); height:1px;
+    background:var(--hair-strong)}
+  .record .cardedge{position:absolute; left:0; right:0; bottom:calc(var(--f02-foot) - 3px); height:3px; background:#d8cbb2}
+  .record .cardshadow, .record .cardbody{position:absolute; left:0; right:0; top:var(--f02-head); bottom:var(--f02-foot);
+    transform-origin:50% 100%; will-change:transform}
+  .record .cardshadow{transform:rotateX(90deg);
+    background:linear-gradient(to top, rgba(56,44,32,.32), rgba(56,44,32,.2) 40%, rgba(56,44,32,.17) 92%, rgba(56,44,32,0))}
+  .record .cardbody{background:#fdf9f0; box-shadow:inset 0 0 0 1px var(--plate-line)}
+  .record .cardbody .tab{position:absolute; top:-10px; left:24px; width:56px; height:10px;
+    background:var(--clay-g); border:1px solid var(--clay); border-bottom:0}
+  .record .cardbody .rule{position:absolute; height:1px; background:var(--hair)}
+  .record .cardbody .rule.strong{background:var(--hair-strong)}
+  /* the ink: today's card, laid out exactly as the plate laid it (the
+     plate's padding moves here); its row rules are the body's now, and the
+     borders stay in the flow, transparent, so nothing else moves */
+  .record .engcard{position:relative; z-index:1; padding:clamp(1rem, 2vw, 1.6rem)}
+  .record .engcard header, .record .sigwell, .record .engrows li{border-bottom-color:transparent}
+  .record .stage[data-ink="0"] .engcard{visibility:hidden}
+  .settled .record .engcard{visibility:visible}
+  @media (max-width:820px){
+    .plate.record{--f02-head:28px; --f02-cam:800px; --f02-eye:740px; --f02-sx:5px; --f02-kx:.12}
+    .record .ground{left:-8px; right:-8px}
+    .record .cardbody .tab{left:16px; width:48px}
+    .record .engcard{padding:.7rem}
+  }
   .dict{margin-top:1.6rem; border-top:1px solid var(--hair-strong); padding-top:1rem; max-width:30ch}
   .dict .hw{font-family:var(--display); font-weight:430; font-size:1.5rem; line-height:1}
   .dict .pr{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); margin-top:.45rem}
@@ -4235,23 +4289,29 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">A record of what I&rsquo;ve built, and how I checked it.</p>
         <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I finished a B.S. in Computer Science at Miami University in <span class="nw">May 2026</span>. During my final year, I also worked as a data intern in IT Services. Three of the six projects below had teammates. Every project number links to its proof, or says why it can&rsquo;t.</p>
       </div>
-      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <div class="engcard">
-          <header><span>who built this</span></header>
-          <div class="sigwell">
-            <span class="sig" id="sig">Ayush Yadav</span>
-            <span class="signib" id="signib" aria-hidden="true"></span>
-            <p class="sigrole">answers for every claim on this page</p>
+      <figure class="plate bare record" data-fx="in .0 .09">
+        <div class="stage" id="fig02">
+          <div class="ground"></div>
+          <div class="cardshadow"></div>
+          <div class="cardbody"><i class="tab"></i></div>
+          <div class="cardedge"></div>
+          <div class="engcard">
+            <header><span>who built this</span></header>
+            <div class="sigwell">
+              <span class="sig" id="sig">Ayush Yadav</span>
+              <span class="signib" id="signib" aria-hidden="true"></span>
+              <p class="sigrole">answers for every claim on this page</p>
+            </div>
+            <ul class="engrows">
+              <li><span>base</span><b>Cincinnati, OH</b></li>
+              <li><span>builds</span><b>web apps · APIs · data pipelines · ML</b></li>
+              <li><span>languages</span><b>TypeScript · Python · Java · C++ · SQL</b></li>
+              <li><span>degree</span><b>B.S. Computer Science · Miami University, <span class="nw">May 2026</span></b></li>
+              <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
+              <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
+              <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
+            </ul>
           </div>
-          <ul class="engrows">
-            <li><span>base</span><b>Cincinnati, OH</b></li>
-            <li><span>builds</span><b>web apps · APIs · data pipelines · ML</b></li>
-            <li><span>languages</span><b>TypeScript · Python · Java · C++ · SQL</b></li>
-            <li><span>degree</span><b>B.S. Computer Science · Miami University, <span class="nw">May 2026</span></b></li>
-            <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
-            <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
-            <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
-          </ul>
         </div>
         <figcaption>fig. 02 · the record card.</figcaption>
       </figure>
@@ -7466,9 +7526,12 @@ const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0 };
    beat progress, so scrolling back up ran the nib backwards and took the
    name off the card — a signature that withdraws when you look at it twice
    is the one thing a reference card may not do. The wipe keeps its high-
-   water mark: it writes at writing speed once and then it is written. */
-function scrubWho(p) {
-  const t = Math.max(smooth((p - 0.28) / 0.34), who.t || 0);
+   water mark: it writes at writing speed once and then it is written.
+   v10: t is the stroke's own progress, 0..1, clocked by fig. 02 below. The
+   beat used to scrub it over .28-.62 of ¶02 with nothing to finish it,
+   which is why a 1440 reader could park on "Ayush Yad"; the mark holds. */
+function scrubWho(t) {
+  t = Math.max(clamp(t, 0, 1), who.t || 0);
   who.t = t;
   const v = (100 - t * 100).toFixed(1);
   if (v === who.last) return;
@@ -7477,6 +7540,122 @@ function scrubWho(p) {
   who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
   who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
 }
+
+/* ····· fig. 02 · the record, stood up (v10) ·····
+   One object with a camera. The record card lies flat on the desk, seen
+   from above, and stands up toward the reader as they scroll, hinged at its
+   foot: theta runs 90 -> 0 over p 0 -> STAND on one smooth curve, the top
+   edge going AWAY from the lens (z <= 0 at every theta: nothing balloons,
+   and the body's projection stays inside the stage by construction, the
+   headroom covering what a tilted far edge gains). The shadow lies on the
+   ground plane from the hinge: the card's footprint plus what its standing
+   height casts back and to the right (light from the upper left, in front;
+   KZ and --f02-kx are that light), so a lying card sits in its own contact
+   shadow and a standing one leaves a wedge beside its foot. The words are
+   never posed: a flat layer over the body's rest box, hidden at any angle,
+   that PRINTS the instant the card is face-on — a pass down the rows on
+   the engine's stepper, not a fade — and then the name writes at writing
+   speed, the nib riding the edge, on the same stepper. Pure in p for the
+   pose and for whether the ink is on; the two clocks start on the crossing
+   and are skipped on a landing (cold load, a jump of > .3 vh, reduced
+   motion), where the card is simply there, printed and signed. Scrolling up
+   lays it back down and hides the ink at once; the name keeps its high-
+   water mark underneath (D-1). */
+const F02 = {
+  STAND: 0.86,   /* p · theta is 0 here: face-on, and the ink prints */
+  NAME: 0.9,     /* p · the name starts writing (after the print pass) */
+  PASS_MS: 280,  /* the print pass, header to handles */
+  ROW_MS: 90,    /* one row's print inside it */
+  WRITE_MS: 900, /* the name, at writing speed */
+  KZ: 0.55,      /* the light's reach back along the ground per unit of standing height */
+  FRINGE: 0.06,  /* the shadow's reach past a lying card's far edge: a card on a desk, not in a void */
+};
+const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, print: -1, name: 0, writing: false, t: 0, rules: [], rT: 0,
+  cam: 800, eye: 720, sx: 6, kx: 0.29, head: 36, H: 0, hook: null };
+f02.body = f02.stage.querySelector(".cardbody");
+f02.shadow = f02.stage.querySelector(".cardshadow");
+f02.ink = f02.stage.querySelector(".engcard");
+f02.rows = [f02.ink.querySelector("header"), f02.ink.querySelector(".sigwell"), ...f02.ink.querySelectorAll(".engrows > li")];
+/* the layout, once per face and seat: the body's rules sit where the ink's
+   row borders are, and the camera's origin is set from the hinge so
+   --f02-eye reads as a height above it whatever the card's height here */
+function layWho() {
+  const f = f02, cs = getComputedStyle(f.stage.parentElement), v = (k) => parseFloat(cs.getPropertyValue(k));
+  f.cam = v("--f02-cam"); f.eye = v("--f02-eye"); f.sx = v("--f02-sx"); f.kx = v("--f02-kx"); f.head = v("--f02-head");
+  f.H = f.ink.offsetHeight;
+  f.stage.style.perspectiveOrigin = `50% ${(f.head + f.H - f.eye).toFixed(1)}px`;
+  f.rows.forEach((row, i) => {
+    if (i === f.rows.length - 1) return; /* the last row has no rule */
+    let r = f.rules[i];
+    if (!r) { r = document.createElement("i"); r.className = i ? "rule" : "rule strong"; f.body.appendChild(r); f.rules[i] = r; }
+    r.style.cssText = `top:${row.offsetTop + row.offsetHeight - 1}px; left:${row.offsetLeft}px; width:${row.offsetWidth}px`;
+  });
+  if (!Number.isNaN(f.th)) poseWho(f.th); /* the same pose under the new camera */
+  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, hinge: f.head + f.H, rules: f.rules.length }; /* probe hook */
+}
+/* the pose at theta (degrees from face-on; 90 is lying): the body about its
+   foot, and the shadow's depth and skew on the ground */
+function poseWho(th) {
+  const f = f02, a = (th * Math.PI) / 180, s = Math.sin(a), c = Math.cos(a);
+  f.body.style.transform = `rotateX(${th.toFixed(3)}deg)`;
+  const k = s + F02.KZ * c + F02.FRINGE, skew = (Math.atan2(f.kx * c, k) * 180) / Math.PI;
+  f.shadow.style.transform = `rotateX(90deg) translateX(${f.sx}px) skewX(${(-skew).toFixed(3)}deg) scaleY(${k.toFixed(4)})`;
+}
+/* the rows' print, t 0..1 of the pass: each row inks over ROW_MS, the next
+   starting a stagger later, header first and the handles last */
+function whoRows(t) {
+  const f = f02, stagger = (F02.PASS_MS - F02.ROW_MS) / Math.max(1, f.rows.length - 1);
+  f.rows.forEach((row, i) => {
+    const o = t >= 1 ? "" : clamp((t * F02.PASS_MS - i * stagger) / F02.ROW_MS, 0, 1).toFixed(3);
+    if (row._o !== o) { row._o = o; row.style.opacity = o; }
+  });
+}
+function drawWho(p) {
+  const f = f02;
+  const landed = RM || Number.isNaN(f.p) || Math.abs(p - f.p) > 0.3; /* a landing, not a motion: no clocks */
+  f.p = p;
+  const th = 90 * (1 - smooth(p / F02.STAND));
+  if (th !== f.th) { f.th = th; poseWho(th); }
+  const on = th === 0;
+  if (on !== f.on) {
+    f.on = on;
+    f.stage.dataset.ink = on ? "1" : "0";
+    if (!on) { f.print = -1; whoRows(0); }           /* at any angle: hidden at once */
+    else if (landed) { f.print = 1; whoRows(1); }     /* arrived: printed */
+    else { f.print = 0; whoRows(0); stir(whoStep); }  /* face-on: the pass runs */
+  }
+  if (p >= F02.NAME && f.name < 1 && !f.writing) {
+    if (landed) { f.name = 1; scrubWho(1); }
+    else { f.writing = true; stir(whoStep); }
+  }
+  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), ink: on ? 1 : 0, print: +f.print.toFixed(3), name: +f.name.toFixed(3), landed }; /* probe hook; the clocks below keep it current */
+}
+/* the hand: the print pass, then the name, one stepper on the engine's loop */
+function whoStep(now) {
+  const f = f02;
+  const dt = f.t ? Math.min(0.05, (now - f.t) / 1000) : 1 / 60;
+  f.t = now;
+  let moving = false;
+  const printing = f.print >= 0 && f.print < 1;
+  if (printing) {
+    f.print = Math.min(1, f.print + (dt * 1000) / F02.PASS_MS);
+    whoRows(f.print);
+    moving = f.print < 1;
+  }
+  if (f.writing) {
+    if (!printing) { f.name = Math.min(1, f.name + (dt * 1000) / F02.WRITE_MS); scrubWho(f.name); }
+    if (f.name >= 1) f.writing = false; else moving = true;
+  }
+  if (f.hook) { f.hook.print = +f.print.toFixed(3); f.hook.name = +f.name.toFixed(3); }
+  if (!moving) f.t = 0;
+  return moving;
+}
+/* built on the real face (the rules are measured off the ink), registered
+   before boot's own continuation of the same promise measures the window;
+   re-laid on every seat change after the engine's own pass */
+function buildWho() { layWho(); asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho }); }
+document.fonts.ready.then(buildWho, buildWho);
+addEventListener("resize", () => { if (seatChanged) { clearTimeout(f02.rT); f02.rT = setTimeout(layWho, 200); } });
 
 /* ····· fig. 03 · the yard · the ITSM job as freight ·····
    Two feeders (1.6M+ query logs, the Tableau/Workday silos) run through one
@@ -11619,7 +11798,7 @@ function work(y) {
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
   /* stations scrub only near their own beat */
-  if (Math.abs(beat - 1) <= 1) scrubWho(beat < 1 ? 0 : beat > 1 ? 1 : bp);
+  /* beat 1's card rides the assembly driver (v10): fig. 02 clocks the name itself */
   if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
   if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
