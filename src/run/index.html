@@ -7843,14 +7843,16 @@ function drawWho(p) {
   if (f.rate < Math.min(1, f.tp)) stir(whoStep);
   f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), lift: +f.lift.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
 }
-/* the name at t, high-water mark kept: on the live text always, and on
-   the picture while the card is posed or crossfading */
+/* the name at t, high-water mark kept, on the live text and the picture
+   both (the picture is hidden while the card is live, but it must carry
+   the name the live text has: a landing at the park that skipped it left
+   the picture unsigned, which the coincidence instrument saw) */
 function whoName(t) {
   const f = f02;
   if (t <= f.name) return;
   f.name = t;
   scrubWho(t);
-  if (!f.on || f.fade >= 0) namePicture(t);
+  namePicture(t);
   if (f.hook) f.hook.name = +t.toFixed(3);
 }
 /* the handover's crossfade: t 0..1 live over picture; -1 clears it */
