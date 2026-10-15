@@ -351,56 +351,8 @@ if (location.hash.length > 1) {
 
   :root{--plate-solid:rgba(255,252,244,.86)}
   :root[data-night]{--plate-solid:rgba(30,25,21,.82)}
-  #manifest{
-    position:fixed; right:clamp(14px, 2.4vw, 34px); bottom:clamp(14px, 3vh, 30px); z-index:6;
-    width:262px; padding:.8rem .95rem .9rem;
-    background:var(--plate-solid); border:1px solid var(--plate-line);
-    box-shadow:var(--shadow); backdrop-filter:none;
-    font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
-  }
-  #manifest.landed{opacity:0; transform:translateY(10px); pointer-events:none}
-  /* the arrival state — see the rejoin guard in the head. Same property
-     grammar as .landed above, deliberately: the dock has exactly ONE way to
-     yield. opacity:0 keeps it in the accessibility tree (the instrument is
-     withdrawn, not ruled away), and pointer-events:none is the load-bearing
-     half — it is what lets a hit test, and a reader's finger, reach the
-     cited glyphs underneath. Specificity 1,2,0 outranks the base #manifest
-     and both #manifest.compact and .landed at 1,1,0, and it sets the same
-     values .landed sets, so arriving at /#gate composes without a flash. */
-  :root[data-arrive] #manifest{opacity:0; transform:translateY(10px); pointer-events:none}
-  /* while AT a station the manifest folds to a pill (attention belongs
-     to the work); in the corridors it opens — the collection breathes */
-  @media (min-width:821px){
-    #manifest.compact{width:auto}
-    #manifest.compact ol, #manifest.compact .foot{display:none}
-    #manifest.compact header{margin-bottom:0; gap:.7rem}
-  }
-  @media (prefers-reduced-motion: no-preference){
-    #manifest{transition:opacity .6s ease, transform .6s ease}
-  }
-  #manifest header{display:flex; justify-content:space-between; margin-bottom:.55rem; color:var(--ink)}
-  #manifest header .n i{font-style:normal; color:var(--clay)}
-  #manifest ol{list-style:none}
-  #manifest li{
-    display:grid; grid-template-columns:1.4rem 1fr; gap:.15rem .4rem;
-    padding:.32rem 0; border-top:1px solid var(--hair);
-  }
-  #manifest li b{font-weight:400; color:var(--ink-2)}
-  #manifest li .m{color:var(--ink-2); opacity:0; height:0; overflow:hidden}
-  #manifest li.stamped .mt{color:var(--clay)}
-  #manifest li.stamped b{color:var(--ink)}
-  #manifest li.stamped .m{opacity:1; height:auto}
-  /* The unreached rows used to sit at opacity .55 and slide in when they
-     stamped. That was right for a six-row score and wrong for a timetable:
-     eight of the twelve stops never stamp at all, so eight rows would have
-     stood permanently at .55 of ink-2 — under the Lc 60 dim-text floor, on
-     the one surface whose job is to be read. The whole table is printed at
-     full ink; what is withheld is the metric, not the stop. */
-  @media (prefers-reduced-motion: no-preference){
-    #manifest li{transition:transform .45s cubic-bezier(.22,1,.36,1)}
-    #manifest li:hover{transform:translateX(-2px)}
-  }
-  #manifest .foot{margin-top:.5rem; padding-top:.4rem; border-top:1px solid var(--hair); color:var(--ink-2)}
+  /* the manifest's own rules live with the strip ("the strip above the
+     doors", after the chip's); only the chip's and its bump stay here */
   #mtoggle{background:none; border:none; font:inherit; color:var(--ink); padding:0; letter-spacing:inherit}
   #mtoggle i{font-style:normal; color:var(--clay)}
   @media (prefers-reduced-motion: no-preference){
@@ -1613,8 +1565,6 @@ if (location.hash.length > 1) {
      inside a sticky panel every child reports the section's static top while
      being painted a screen below it — p resolved to ~3 at the document's end,
      past the engine's own skip, so nothing ever entered. */
-  #manifest.filed{opacity:0; pointer-events:none;
-    transition:opacity .8s ease}
   .dawnhead > *, .dawnfoot > *, .dawnrun{opacity:0; transform:translateY(12px)}
   body.atmorning :is(.dawnhead > *, .dawnfoot > *, .dawnrun){opacity:1; transform:none}
   @media (prefers-reduced-motion: no-preference){
@@ -2299,7 +2249,6 @@ if (location.hash.length > 1) {
     [data-fx]{opacity:1 !important; transform:none !important}
     .cue .a{animation:none}
     .sig{clip-path:none} /* the settled world: the name is written */
-    #manifest li{transform:none; opacity:1; transition:none}
     /* dusk beats carry their own resting colors (the thread passes behind)
 
        .bsign IS IN BOTH LISTS, and round 14 is where it arrived. ¶11 is a
@@ -2323,12 +2272,8 @@ if (location.hash.length > 1) {
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
       ink at body scope — headings went dark-on-dark without this */
     /* settled chrome: the masthead prints once at the top (dawn ground, so
-       its day ink always reads); the manifest folds to its pill so it
-       never sits over station prose — the gate card carries the ledger */
+       its day ink always reads); the strip opens from it in its open state */
     #mast{position:absolute}
-    #manifest{width:auto}
-    #manifest ol, #manifest .foot{display:none}
-    #manifest header{margin-bottom:0; gap:.7rem}
   }
 
   /* ————— stacked composition (≤1249) ————— the round-2 census caught
@@ -2413,13 +2358,6 @@ if (location.hash.length > 1) {
     #stamp{top:4px; right:0; font-size:.72rem; letter-spacing:.24em;
       padding:.32rem .5rem .32rem .74rem; transform:rotate(-7deg) scale(1.25)}
     #stamp.inked{transform:rotate(-7deg) scale(1)}
-    /* manifest collapses to a pill; tap to open */
-    #manifest{width:auto; right:14px; bottom:14px; padding:.5rem .7rem}
-    #manifest ol, #manifest .foot{display:none}
-    #manifest header{margin-bottom:0; gap:.7rem}
-    #manifest.open{width:min(78vw, 300px); padding:.8rem .95rem .9rem}
-    #manifest.open header{margin-bottom:.55rem}
-    #manifest.open ol, #manifest.open .foot{display:block}
     #mtoggle{cursor:pointer}
     /* ¶12 on the phone. The timetable loses its lane — the rail runs in its
        own 26px gutter left of the content at every station — so the row is a
@@ -3277,8 +3215,8 @@ body{font-synthesis:none}
   font-variant-numeric:tabular-nums;
 }
 /* …and the values inside them stay machine values. */
-.prose .prov b, .bench .brow span, .bench .bval, .gl li .gm, #manifest li .m,
-#manifest li .idx, .kicker i,
+.prose .prov b, .bench .brow span, .bench .bval, .gl li .gm,
+.kicker i,
 .ladder li span, #mclock, #conf, #fwd, #verdict,
 .engcard header i, .dawnrow a[href^="mailto"]{
   font-family:var(--mono); letter-spacing:.04em; word-spacing:normal;
@@ -3376,61 +3314,309 @@ body{font-synthesis:none}
 #mtoggle #mcount{font-family:var(--mono); font-size:var(--fs-micro);
   font-variant-numeric:tabular-nums; color:var(--clay); margin-left:.45em}
 #mtoggle[aria-expanded="true"]{background:var(--plate-solid)}
-/* THE SCRIM IS NOT JUST A CLICK CATCHER ANY MORE. With six rows the panel
-   was about 400px tall and stopped above the nameplate; with twelve it runs
-   to 697px at 1512 and reaches into it — measured at scrollY 0, the panel's
-   left edge is 41px INSIDE the nameplate's right edge at 1512, 77px at 1440
-   and 154px at 1280, and the letters it lands on are the end of "Yadav".
-   Narrowing cannot fix that: clearing the nameplate by 24px at 1280 would
-   need a 166px panel, which is narrower than one of its own rows.
-   So the overlap is made legible instead of pretended away. A disclosure the
-   reader asked for, sitting in front of a page that visibly recedes, is a
-   layer; the same panel with no scrim is a collision. This is the treatment
-   the phone sheet has always had, and it is now the same everywhere.
-   This is a deviation from yoda's "≥24px clearance from the nameplate at
-   1512", which was written for a panel that no longer exists. */
-#mscrim{position:fixed; inset:0; z-index:5; background:rgba(38,35,28,.28)}
+/* THE SCRIM. The strip is a disclosure the reader asked for, and at every
+   width it hangs over the top of whatever station sits under the masthead,
+   so the page behind visibly recedes rather than pretending there is no
+   overlap: a layer, not a collision. It rises under the first half of the
+   pull and falls WITH the reel, not ahead of it (the open's ease-out run in
+   reverse had the page clear while the tape was still 60% out). */
+#mscrim{position:fixed; inset:0; z-index:5; background:rgba(38,35,28,.28); opacity:0}
+#mscrim.open{opacity:1}
 #mscrim[hidden]{display:none}
-#manifest{
-  position:fixed; top:calc(2.6rem + 10px); right:clamp(14px,2.4vw,34px);
-  bottom:auto; width:300px; max-height:76vh; overflow:hidden; z-index:7;
-  opacity:0; transform:translateY(-6px); pointer-events:none; visibility:hidden}
-#manifest.open{opacity:1; transform:none; pointer-events:auto; visibility:visible}
-/* A ledger you asked for is a solid object, not a veil. --ink-inverse is an
-   existing token and it reads better than the .86 plate it replaces. Day
-   field first, then the same three inks on the night field:
+
+/* ── the strip above the doors (v9): the line diagram, on request ────────
+   Press the chip and a printed tape runs out leftward from under its right
+   edge, along the underside of the masthead: one line from a terminus bar at
+   06:12 to a terminus bar at 22:41, twelve ticks, every stop's clock and
+   name printed, a project's noun under its name, and its metric printed only
+   once the reader has passed that station. Built and polished in the v9
+   strip lab (lab/v8-stops/strip.html on v9/strip-lab); the numbers below are
+   that lab's, re-measured on this page in the v9 stops lane.
+
+   #manifest IS THE BAND, not a full-viewport layer: its rect is the rect a
+   reader sees, so G4 measures exactly the strip's footprint, and closed is
+   `hidden` (display:none) once the reel has finished, so a closed strip has
+   no rect at all. The engine still writes .landed, .filed and .compact on
+   this element every frame; no rule reads them any more (the corner dock
+   they folded is gone), so they are inert by construction.
+
+   THE TAPE IS A PRINTED OBJECT, in both of the page's modes. Its ground is
+   one continuous run of the page's own light by clock (laid on open from
+   WAY, DUSK and DAY_ANCHOR: see "the strip above the doors: its light" in
+   the engine). Its inks are the print's, set here BY VALUE: the page's day
+   tokens, and the night's from 22:05 on (li[data-print="night"]). The page goes dark
+   only at the run's evening, so a reader at night is looking back at a day
+   they have travelled, printed as it was; printing it darker would misstate
+   it. What takes the page's mode is the frame alone, the page's own
+   --hair-strong, which by construction shows only where the tape would
+   otherwise merge with the page: dark along the cream end by day, cream
+   along the dark end by night. The close and the title are printed on it.
+
+   THE TERMINATOR CARRIES NO WORDS. The 21:07 leg holds W4 until the last
+   label that reaches into it has cleared, plus --air, and only then falls.
+
+   ONE READING ORDER. Every label is a stack read top-down, name, noun,
+   metric: above the line it hangs from the tape's top edge, below it from
+   the line, so every name on a side sits on one baseline, and an earned
+   metric prints into a row already held for it (a 3-row floor): nothing
+   moves when it arrives. Labels alternate above (odd) and below (even) and
+   hang right from their tick, capped at two legs less --air; clocks sit in
+   the line zone on the side the label is not. A metric's words are the text
+   face and only its value (.mv) is mono, which is also what puts "9,701 of
+   10,000 right" on one line at 1280 (128.5px; all mono it was 171.5).
+   Every label is one line at 1280 and 1440; a narrower desktop wraps a noun
+   or a metric downward and fit() grows the zone to hold it (1024: three
+   wrap, nothing overflows).
+
+   THE MARKS ARE THREE AND NONE IS A BOX ROUND ANOTHER. Here: a 9px clay
+   square on the line at the stop's tick, its clock in clay, landing as the
+   tape comes to rest. Keyboard focus: a 2px clay ring round the whole stack,
+   offset 4px, so it crosses no word. Hover: the name underlined.
+
+   Motion: one translate of the tape under a static clip (the pull and the
+   reel), one fade of the scrim, one scale of the here-mark. Transforms and
+   opacity only, no layout per frame; reduced motion is the open state with
+   no transition.
+
+   The inks against the grounds they actually sit on, the floor per kind over
+   every state the lab measured (open at 4, at 9, at 12; 1440, 1280, 1024,
+   390, 360; Chromium and WebKit identical). #f2e4c9 is W4, the 19:36 to
+   21:07 field; #3e342c is the ground under automl's clock and name, 7px past
+   the 22:05 tick on the W5 to W6 deepening; #2c2622 is W6, the night end;
+   #fbf3e7 is first light, under the title and the phone's housing:
+   measured: #26231c on #f2e4c9 — 12.48:1 / Lc 87.5
+   measured: #5c564a on #f2e4c9 — 5.79:1 / Lc 70.1
+   measured: #a03f20 on #f2e4c9 — 5.18:1 / Lc 66.4
+   measured: #f6efe2 on #3e342c — 10.60:1 / Lc 91.1
+   measured: #f4b090 on #3e342c — 6.61:1 / Lc 61.7
+   measured: #d9d0c3 on #2c2622 — 9.78:1 / Lc 75.4
+   measured: #f6efe2 on #2c2622 — 13.05:1 / Lc 94.5
    measured: #26231c on #fbf3e7 — 14.24:1 / Lc 96.0
-   measured: #5c564a on #fbf3e7 — 6.61:1 / Lc 78.7
-   measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
-   measured: #f6efe2 on #26231c — 13.71:1 / Lc 95.2
-   measured: #d9d0c3 on #26231c — 10.27:1 / Lc 76.1
-   measured: #f4b090 on #26231c — 8.55:1 / Lc 65.7
-   Lc IS UNSIGNED HERE, and the three night rows are why it is worth saying.
-   A first draft wrote them -95.2 / -76.1 / -65.7, which is APCA's own
-   polarity notation and correct English — and check-palette's CLAIM regex
-   reads `Lc (\d+(?:\.\d+)?)`, so a leading minus does not fail the claim,
-   it makes the gate skip the line entirely. Three measured numbers would
-   have shipped unbound, printing green. The gate's own `lc()` is documented
-   "Absolute Lc. Polarity is carried by which argument is the text", and
-   every one of the eleven claims above follows that. So do these.
-   All six clear 4.5:1 and Lc 60, and all six are better than the same ink
-   on the binding day field w05 (#5c564a on #f2e4c9 · 5.79:1 / Lc 70.1). */
-#manifest{background:var(--ink-inverse); border:1px solid var(--hair-strong)}
-/* the engine still writes .compact/.landed every frame; with the ledger on
-   request they are inert, and .open is the single source of truth · which
-   is what lets aria-expanded finally be true. */
-#manifest.compact ol, #manifest.compact .foot{display:block}
-#manifest.compact{width:300px}
-#manifest header{align-items:center}
-#manifest header .n{font-family:var(--body); font-size:var(--fs-label)}
-#manifest li b, #manifest li b a{font-family:var(--body); font-size:var(--fs-note);
-  color:var(--ink); text-decoration:none}
-#manifest li b a:hover{text-decoration:underline; text-underline-offset:3px}
-#manifest li .m{font-size:var(--fs-small)}
-#mclose{background:none; border:none; cursor:pointer; color:var(--ink-2);
-  font-family:var(--body); font-size:var(--fs-label);
-  padding:.35rem .35rem .35rem .6rem; margin:-.35rem 0 -.35rem -.6rem;
-  min-height:32px}
+   The names' floor, Lc 87.5, is under the Lc 90 body target: it is the
+   page's darkest ink on the page's own 19:36 to 21:07 field, and no darker
+   token exists, so it is stated rather than "fixed". The noun's pair is the
+   page's own binding w05 claim. Lc is unsigned, as check-palette reads it. */
+#mscrim, #manifest{--t-pull:620ms; --t-reel:360ms; --t-choose:260ms; --t-mark:220ms; --t-scrim:320ms}
+#manifest{
+  /* written on open by stripFit(); these are the pre-open values */
+  --band-top:60px; --zone-a:66px; --zone-b:66px; --line:34px; --leg:80px;
+  --lead:10px; --dusk-x:187px; --last:80px; --air:10px;
+  --p0:#fbf3e7; --in:0px;
+  /* declared here and not on :root: a custom property resolves where it is
+     declared, and stripFit() writes the zones on this element */
+  --band:calc(var(--zone-a) + var(--line) + var(--zone-b));
+  --ink:#26231c; --ink-2:#5c564a; --clay:#a03f20; --clay-g:#c4532e;
+  /* right is the chip's right edge: the tape comes from under it */
+  position:fixed; left:var(--pad-x); right:var(--pad-x); top:var(--band-top);
+  height:var(--band); z-index:7; pointer-events:none}
+#manifest[hidden]{display:none}
+#manifest .housing{display:none} /* the phone's; see the phone block */
+/* the clip: a static window the tape moves under. Its right edge is the
+   housing's mouth, drawn: a 2px rule the tape slides out from behind, so a
+   word half out reads as still inside rather than cut. One pixel is the
+   print's dark hairline (it shows over the cream tape mid-pull in both
+   modes), the other the page's own, which closes the frame at rest; at
+   night the page's alone vanished into the cream. */
+#manifest .clip{position:absolute; inset:0; overflow:clip}
+#manifest .clip::after{content:""; position:absolute; top:0; right:0; bottom:0; width:2px; z-index:5;
+  background:linear-gradient(to right, rgba(38,35,28,.34) 50%, var(--hair-strong) 50%); pointer-events:none}
+#manifest .tape{position:absolute; inset:0; transform:translateX(var(--in)); will-change:transform; pointer-events:none}
+/* the frame, three sides on the tape and the fourth from the mouth */
+#manifest .tape::before{content:""; position:absolute; inset:0; z-index:3;
+  border:1px solid var(--hair-strong); border-right:none; pointer-events:none}
+#manifest:not(.open) .tape{--in:100%} /* home: wholly inside the housing */
+/* THE PULL is from rest on a critically damped settle, x = 1 - (1 + s)e^-s
+   over s 0..7, normalised, so the first frame moves about 20px at 1440 where
+   the first build's cubic-bezier(.16,1,.3,1) threw 227px. The stops are 1%
+   apart through the first fifth, where the velocity changes fastest: at 5%
+   the sampled curve was piecewise-constant there and rendered 34, 40, 75 px
+   for the curve's 20, 52, 72. The cubic is the fallback where linear() is
+   not read. THE REEL gathers speed into the
+   housing (its arrival is unseen), quicker when a stop was chosen. */
+@media (prefers-reduced-motion: no-preference){
+  #manifest .tape, #manifest .clip{transition:transform var(--t-pull) cubic-bezier(.3,.6,.2,1);
+    transition-timing-function:linear(0, .0024 1%, .009 2%, .0193 3%, .0328 4%, .049 5%, .0675 6%,
+      .0878 7%, .1097 8%, .1328 9%, .1569 10%, .1818 11%, .2072 12%, .2329 13%, .2588 14%, .2847 15%,
+      .3106 16%, .3362 17%, .3616 18%, .3866 19%, .4112 20%, .526 25%, .6249 30%, .7074 35%, .7746 40%,
+      .8282 45%, .8705 50%, .9034 55%, .9288 60%, .9483 65%, .9631 70%, .9743 75%, .9828 80%,
+      .9891 85%, .9938 90%, .9974 95%, 1)}
+  #manifest.closing .tape, #manifest.closing .clip{transition:transform var(--t-reel) cubic-bezier(.55,0,.75,.6)}
+  #manifest.closing.chosen .tape, #manifest.closing.chosen .clip{transition-duration:var(--t-choose)}
+  #mscrim{transition:opacity var(--t-scrim) cubic-bezier(.2,.8,.3,1)}
+  #mscrim:not(.open){transition:opacity var(--t-reel) cubic-bezier(.45,0,.55,1)}
+  #manifest .line li .you{transition:transform var(--t-mark) cubic-bezier(.2,.8,.3,1)}
+  /* after 0.7 of the pull, when the tape is about 96% out, and ONLY while it
+     is opening: once open, a stop that changes under the strip (the page
+     still scrolls behind it) moves its square at once */
+  #manifest.open[data-state="opening"] .line li.here .you{transition-delay:calc(var(--t-pull) * .7)}
+}
+/* the close: printed at the tape's night end, top right, under the chip. A
+   32px target in the night print's ink and strong hairline in both modes,
+   because the terminus is always night. */
+#manifest .tclose{position:absolute; top:8px; right:8px; z-index:4; display:grid; place-items:center;
+  width:32px; height:32px; margin:0; padding:0 0 2px; font-family:var(--body); font-size:1.25rem;
+  line-height:1; color:#f6efe2; background:none; border:1px solid rgba(246,239,226,.45);
+  border-radius:2px; pointer-events:auto; cursor:pointer}
+#manifest .tclose:hover{border-color:#f6efe2}
+#manifest .tclose:focus-visible{outline:2px solid #e08a5f; outline-offset:2px}
+#manifest nav{display:contents}
+/* width explicit: WebKit sizes a shrink-to-fit flex line from its labels,
+   Chromium from its legs; neither is asked. The tape catches its own clicks;
+   only the scrim closes. */
+#manifest .line{pointer-events:auto; display:flex; width:100%; min-width:0; height:100%;
+  padding-left:var(--lead); list-style:none; font-family:var(--body); letter-spacing:0}
+/* ── one leg: the label overflows it on purpose ── */
+#manifest .line li{position:relative; flex:0 0 var(--leg); min-width:0; height:100%}
+#manifest .line li[data-print="night"]{--ink:#f6efe2; --ink-2:#d9d0c3; --clay:#f4b090; --clay-g:#e08a5f}
+#manifest .line li:nth-child(8){flex-basis:calc(var(--leg) + var(--dusk-x))}
+#manifest .line li:last-child{flex:1 1 var(--last)} /* the rounding slack, at the housing end */
+/* the line, a segment per leg: travelled legs heavier and in the ink, the
+   legs ahead a hairline in the second ink. Across the dusk it changes ink
+   where the field does, and each pair at its own point (written by
+   stripLay): where the day ink and the night ink stand at equal contrast on
+   the ground. For the ink pair that is the masthead's MAST_CROSS; for the
+   ahead pair it is lighter, and switching it there too left the hairline at
+   1.7:1 before a light dash appeared. */
+#manifest .line li::after{content:""; position:absolute; left:0; right:0;
+  top:calc(var(--zone-a) + var(--line) / 2); height:1px; background:var(--ink-2)}
+#manifest .line li.gone::after{top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; background:var(--ink)}
+#manifest .line li:nth-child(8)::after{--seg-a:var(--ink-2); --seg-b:#d9d0c3; --sw:var(--switch-ahead, 50%);
+  background:linear-gradient(to right, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
+#manifest .line li.gone:nth-child(8)::after{--seg-a:var(--ink); --seg-b:#f6efe2; --sw:var(--switch-gone, 50%)}
+#manifest .line li:last-child::after{display:none} /* the line ends at the terminus; the tape goes on */
+/* the tick, through the line at the leg's left edge; the two termini are
+   one bar each, so the line reads as running from here to there */
+#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + 5px);
+  width:1px; height:calc(var(--line) - 10px); background:var(--ink-2); z-index:1}
+#manifest .line li[data-reached]::before{background:var(--ink)}
+#manifest .line li:first-child::before, #manifest .line li:last-child::before{
+  left:-1px; width:3px; top:var(--zone-a); height:var(--line); background:var(--ink)}
+/* here: the clay square, grown to sit on the line, centred on its tick */
+#manifest .line li .you{position:absolute; left:-4px; top:calc(var(--zone-a) + var(--line) / 2 - 4px);
+  width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0)}
+#manifest.open .line li.here .you{transform:scale(1)}
+/* THE LEG IS THE TARGET: the anchor is the grid (zone, line zone, zone)
+   and fills the leg, so the whole leg is the hit area and G9 can see it */
+#manifest .line li .mrow{display:grid; grid-template-rows:var(--zone-a) var(--line) var(--zone-b);
+  grid-template-columns:100%; height:100%; width:100%; padding:0; text-decoration:none; color:inherit}
+#manifest .line li .mt{grid-row:2; align-self:end; justify-self:start; padding:0 0 2px 7px;
+  font-family:var(--mono); font-style:normal; font-size:var(--fs-micro); font-variant-numeric:tabular-nums;
+  letter-spacing:.02em; line-height:1; color:var(--ink-2); white-space:nowrap}
+#manifest .line li:nth-child(even) .mt{align-self:start; padding:2px 0 0 7px}
+#manifest .line li[data-reached] .mt{color:var(--ink)}
+#manifest .line li.stamped .mt, #manifest .line li.here .mt{color:var(--clay)}
+/* the stack: its box is its ink (the tick's 7px lead-in is a margin), so
+   the focus ring drawn on it hugs the words; its cap resolves here, where
+   the dialog's --leg is in scope */
+#manifest .line li .lab{grid-row:1; align-self:start; justify-self:start; display:flex;
+  flex-direction:column; align-items:flex-start; width:max-content;
+  max-width:calc(2 * var(--leg) - var(--air) - 7px); min-width:0; margin:8px 0 0 7px;
+  position:relative; z-index:1}
+#manifest .line li:nth-child(even) .lab{grid-row:3; margin-top:4px}
+#manifest .line li .lab > b{font-family:var(--body); font-weight:400; font-size:var(--fs-note);
+  line-height:20px; color:var(--ink); white-space:nowrap}
+#manifest .line li .lab .mnoun{font-family:var(--body); font-style:italic; font-size:var(--fs-small);
+  line-height:16px; color:var(--ink-2)}
+#manifest .line li .lab .m{margin:0; font-family:var(--body); font-size:var(--fs-small); letter-spacing:0;
+  word-spacing:normal; font-variant-numeric:normal; line-height:18px; color:var(--ink-2)}
+/* WITHHELD MEANS ABSENT: display:none, so an unearned metric is out of the
+   accessibility tree and find-in-page, and the 3-row floor holds its row */
+#manifest .line li:not(.stamped) .m{display:none}
+/* the value, mono, inside the serif's line box (line-height 1), so the row
+   stays 18px; this out-specifies the page's own .mv size */
+#manifest .line li .lab .m .mv{font-family:var(--mono); font-weight:400; font-size:var(--fs-micro);
+  letter-spacing:.02em; line-height:1; color:var(--ink); white-space:nowrap}
+/* ONE UNDERLINE, and it means hover. Keyboard focus is the ring and the
+   here-mark is the square: three marks, none standing in for another. An
+   underline on :focus-within also caught the here-name that focus lands on
+   at open, so hovering another stop drew two. */
+#manifest .line li:hover .lab > b{
+  text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
+#manifest .line li .mrow:focus-visible{outline:none}
+#manifest .line li .mrow:focus-visible .lab{outline:2px solid var(--clay-g); outline-offset:4px; border-radius:1px}
+/* the dialog's name, printed on the lead below the line in the metric row,
+   and the foot, which hangs back from the tape's end on the same baseline */
+#manifest .line li .title{position:absolute; left:7px; bottom:8px; z-index:2; font-family:var(--body);
+  font-size:var(--fs-label); line-height:18px; color:var(--ink); white-space:nowrap}
+#manifest .title i, #manifest .htitle i{font-family:var(--mono); font-style:normal;
+  font-size:var(--fs-micro); color:var(--clay); letter-spacing:.04em}
+#manifest .line li .foot{position:absolute; right:12px; bottom:8px; z-index:2; font-family:var(--body);
+  font-style:italic; font-size:var(--fs-small); line-height:18px; letter-spacing:0; word-spacing:normal;
+  color:var(--ink-2); white-space:nowrap}
+#manifest .line li .foot i{font-family:var(--mono); font-style:normal; line-height:1; font-size:var(--fs-micro);
+  font-variant-numeric:tabular-nums; letter-spacing:.02em}
+
+/* ── the column: the phone, and every seat narrower than 1024 ─────────────
+   THE TAPE NEEDS 1024px. Measured with all six earned: at 1000 "the
+   references" stands 4px from the close; at 900 nine labels wrap and the
+   band is 234px tall; at 866 it runs into the close and at 821 automl runs
+   into "the references" too. So below 1024 the strip hangs as a column from
+   the chip, at most 26rem wide and right-aligned under it (the tape comes
+   from under the chip at every width; a 768 seat had 732px rows with the
+   metric 500px from its name), and on a phone it is the full measure.
+   The housing is a bar across the top, the title at its left and a 44px
+   close at its right, printed in the tape's first light (--p0, written from
+   the ground's own first sample, so bar and tape meet without a seam), and
+   the tape hangs from it as a column: the line down the left, one row a stop
+   (clock, name, and at the row's end what the project is until the reader
+   has passed it, then what it proved: the noun holds the metric's slot until
+   the metric is earned, so a stranger is told what "glyph" is, and the row
+   stays one line; at 390 and 360 every noun fits with 31px to spare, at 320
+   jetpack-compress's and automl's drop to a second line, as automl's metric
+   already did). The same ground runs top to bottom, with the fade under
+   lifequest's row. THE COLUMN ITSELF SLIDES, not the
+   tape inside it: twelve rows fit 780 with every metric earned, a shorter
+   screen scrolls the column under the bar, and stripFitPhone() opens it
+   scrolled to the current stop. A transform on the tape would collapse the
+   column's scroll extent at the start of the pull (a transformed box counts
+   where it is drawn), and that scroll would not hold. */
+@media (max-width:1023px){
+  #manifest{--housing:44px; --row:44px; --dusk-y:64px; height:auto; max-width:26rem; margin-left:auto;
+    max-height:calc(100vh - var(--band-top) - 8px); max-height:calc(100dvh - var(--band-top) - 8px);
+    display:flex; flex-direction:column; overflow:clip}
+  #manifest .housing{position:relative; z-index:2; flex:0 0 var(--housing); display:flex; align-items:center;
+    justify-content:space-between; gap:.5rem; padding:0 0 0 .7rem; background:var(--p0);
+    border:1px solid var(--hair-strong); border-bottom:1px solid rgba(38,35,28,.16); pointer-events:auto}
+  #manifest .htitle{font-family:var(--body); font-size:var(--fs-label); color:var(--ink); white-space:nowrap}
+  #manifest .housing .mclose{display:inline-flex; align-items:center; gap:.35em; height:100%; min-height:44px;
+    margin:0; padding:0 .8rem; font-family:var(--body); font-size:var(--fs-label); line-height:1;
+    color:var(--ink); background:none; border:none; border-left:1px solid rgba(38,35,28,.16); cursor:pointer}
+  #manifest .housing .mclose:focus-visible{outline-offset:-4px}
+  #manifest .tclose, #manifest .clip::after{display:none}
+  #manifest .clip{position:relative; inset:auto; z-index:1; flex:1 1 auto; min-height:0; overflow-y:auto;
+    overflow-x:clip; overscroll-behavior:contain; transform:translateY(var(--in)); will-change:transform}
+  #manifest .tape{position:relative; inset:auto; transform:none; will-change:auto}
+  #manifest .tape::before{border-top:none; border-right:1px solid var(--hair-strong)}
+  #manifest:not(.open) .clip{--in:-100%}
+  #manifest .line{flex-direction:column; height:auto; padding:0 0 6px}
+  #manifest .line li{flex:0 0 auto; min-height:var(--row); height:auto}
+  #manifest .line li:nth-child(8){flex-basis:auto; padding-bottom:var(--dusk-y)}
+  #manifest .line li:last-child{flex:0 0 auto}
+  #manifest .line li::after{left:14px; right:auto; top:0; bottom:0; width:1px; height:auto}
+  #manifest .line li.gone::after{left:13px; top:0; width:2px; height:auto}
+  /* the line runs terminus to terminus, not from the bar's edge */
+  #manifest .line li:first-child::after{top:21px}
+  #manifest .line li:last-child::after{display:block; bottom:auto; height:21px}
+  #manifest .line li:nth-child(8)::after{
+    background:linear-gradient(to bottom, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
+  #manifest .line li::before{left:9px; top:21px; width:10px; height:1px}
+  #manifest .line li:first-child::before, #manifest .line li:last-child::before{left:7px; top:20px; width:15px; height:3px}
+  #manifest .line li .you{left:10px; top:17px}
+  #manifest .line li .title{display:none}
+  #manifest .line li .mrow{position:relative; display:flex; flex-wrap:wrap; align-items:baseline;
+    column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto; padding:12px 10px 11px 32px}
+  #manifest .line li .mt, #manifest .line li:nth-child(even) .mt{padding:0; align-self:baseline}
+  #manifest .line li .lab, #manifest .line li:nth-child(even) .lab{display:contents}
+  #manifest .line li .lab .mnoun{display:none}
+  #manifest .line li:not(.stamped) .lab .mnoun{display:inline; margin-left:auto; line-height:20px}
+  #manifest .line li .lab > b{line-height:20px}
+  #manifest .line li .lab .m{margin-left:auto; line-height:20px}
+  #manifest .line li .foot{position:static; display:block; padding:0 10px 12px 32px; white-space:normal}
+  /* the row's ring starts right of the line, so it crosses nothing */
+  #manifest .line li .mrow:focus-visible .lab{outline:none}
+  #manifest .line li .mrow:focus-visible::after{content:""; position:absolute; inset:3px 3px 3px 24px;
+    border:2px solid var(--clay-g); border-radius:1px; pointer-events:none}
+}
 
 /* ── the phone: a reading design, not a squeezed desktop ─────────────────*/
 @media (max-width:820px){
@@ -3456,7 +3642,6 @@ body{font-synthesis:none}
     left:calc(-1 * var(--rail)); top:.55em; width:calc(var(--rail) - 9px); height:1px;
     background:var(--clay-g); opacity:.85}
 
-  /* the manifest is a sheet, not a pill that lands on the reading column */
   /* three items in a 390px band: the name, the clock, the stops control.
      The phase word is dropped · the station heading under it says the same
      thing in more words, and keeping it overflowed the band by 67px. */
@@ -3471,18 +3656,6 @@ body{font-synthesis:none}
      and 320 against the name and the clock, and it fits at both. */
   #mtoggle{padding:.5rem .55rem; min-height:44px; white-space:nowrap}
   #mtoggle #mcount{margin-left:.35em}
-  /* the scrim's own value moved to the base rule — it is the same on every
-     seat now, and it was only ever here because the desktop had none */
-  #manifest{
-    top:auto; bottom:0; right:0; left:0; width:auto; max-height:72vh;
-    border-left:none; border-right:none; border-bottom:none;
-    padding:.5rem var(--pad-x) calc(1rem + env(safe-area-inset-bottom));
-    transform:translateY(12px)}
-  #manifest.open{width:auto; left:0; right:0; padding:.5rem var(--pad-x) calc(1rem + env(safe-area-inset-bottom))}
-  #manifest::before{content:""; display:block; width:40px; height:3px;
-    border-radius:2px; background:var(--hair-strong); margin:.25rem auto .7rem}
-  /* the phone's row height is set with the rest of the timetable further
-     down, after the desktop .mrow rule that would otherwise outrank it */
   /* the label/value grid wrapped values to 3–4 lines at 390; on a phone
      the label goes above the value and the value gets the whole width. */
   .schoolrec .srow{grid-template-columns:1fr; gap:.1rem}
@@ -3603,9 +3776,6 @@ body{font-synthesis:none}
 @media (max-width:460px){
   #mast .mdot, #mast #mphase{display:none}
 }
-@media (prefers-reduced-motion: no-preference){
-  #manifest{transition:opacity .22s ease, transform .22s ease, visibility .22s}
-}
 /* ── the floor, closed ───────────────────────────────────────────────────
    A first pass declared the floor and left 17 runs under it: every rule
    here out-specifies an original that was winning. Measured after: 47 sub-12px
@@ -3625,70 +3795,6 @@ body{font-synthesis:none}
    serif keeps mono's generous rhythm; only the record card, which is where
    the two new contact rows landed, is compressed. */
 
-/* ── the timetable row: a marker gutter · the time · the stop ───────────
-   Three columns. Column 1 is empty on every row but the one the reader is
-   standing in, which is the whole reason it exists: a 6px clay square is
-   drawn there by CSS, so the current stop is marked without a glyph that
-   could fall back to another face. Column 2 is the departure time in mono,
-   because it is a value read off the run. Column 3 is the stop's name in
-   the text face, with a project's noun and its metric stacked under it.
-   The whole row is the link. */
-/* THE ROW IS THE TARGET, and `display:contents` is why it was not. A
-   contents box has no rect at all — getBoundingClientRect returns 0×0 — so
-   the twelve links were only clickable on the glyphs themselves, and on the
-   phone a stop with no subline was a 20px target. The anchor is the grid
-   now and the li only frames it, so the whole row is the hit area and G9
-   can see it. */
-#manifest li{display:block; padding:0; position:relative}
-#manifest li .mrow{display:grid; grid-template-columns:3.1rem 1fr; gap:.05rem .35rem;
-  padding:.42rem 0 .42rem .8rem; text-decoration:none; color:inherit}
-/* 44px per row on the phone, and it is the ANCHOR that carries it. The old
-   rule was `#manifest li b a` up in the phone block, which describes a shape
-   the markup has not had for some time and so matched nothing; it also sat
-   BEFORE the rule above at equal specificity, which is the other half of why
-   nothing happened. It lives here now, next to what it overrides. */
-@media (max-width:820px){
-  #manifest li .mrow{padding:.8rem 0 .8rem .8rem}
-  #manifest li.here::before{top:1.35rem}
-}
-#manifest li .mt{grid-column:1; grid-row:1; font-family:var(--mono); font-style:normal;
-  font-size:var(--fs-micro); font-variant-numeric:tabular-nums; color:var(--ink-2);
-  letter-spacing:.02em}
-#manifest li b{grid-column:2; grid-row:1; font-family:var(--body); font-size:var(--fs-note); color:var(--ink)}
-#manifest li .mnoun{grid-column:2; grid-row:2; font-family:var(--body); font-style:italic;
-  font-size:var(--fs-small); color:var(--ink-2); line-height:1.24}
-/* THE METRIC IS EARNED AND THE OVERRIDE THAT GAVE IT AWAY IS GONE. This rule
-   used to carry `opacity:1; height:auto`, which outranked the base rule's
-   `opacity:0; height:0` and printed all six numbers to anyone who opened the
-   panel at the top of the page — the ledger's one promise is that it fills in
-   as you travel, and that override broke it silently. Only .stamped opens it
-   now, and .stamped comes from the reader passing the station. */
-#manifest li .m{grid-column:2; grid-row:3;
-  font-size:var(--fs-micro); color:var(--ink-2); margin-top:.05rem; line-height:1.3}
-/* the stop the reader is standing in: a 6px clay square in the gutter. Drawn,
-   not lettered — a glyph here would be at the mercy of whichever face the
-   browser found for it, and this mark has to mean the same thing every time. */
-#manifest li.here::before{content:""; position:absolute; left:0; top:.95rem;
-  width:6px; height:6px; background:var(--clay-g)}
-#manifest li.here b{color:var(--ink)}
-#manifest li.here .mt{color:var(--clay)}
-/* desktop only: the phone sheet is full-bleed and must not inherit this */
-@media (min-width:821px){ #manifest, #manifest.compact{width:344px} }
-/* THE TABLE SCROLLS, THE FRAME DOES NOT. Twelve stops with sublines run to
-   about 824px, and the panel gets 76vh — 608px at a 1280×800 seat. When the
-   whole panel was the scroller, the one line that answers "when does this
-   end" was the first thing below the fold. The header and the foot are the
-   frame and stay put; only the timetable moves. */
-#manifest{display:flex; flex-direction:column}
-#manifest>ol{overflow:auto; min-height:0; flex:1 1 auto; overscroll-behavior:contain}
-#manifest>header, #manifest>.foot{flex:0 0 auto}
-#manifest .foot{font-size:var(--fs-small); margin-top:.35rem; padding-top:.35rem}
-#manifest .foot i{font-family:var(--mono); font-style:normal;
-  font-variant-numeric:tabular-nums; color:var(--ink-2)}
-#manifest li.stamped .m, #manifest li.stamped .mnoun{color:var(--ink-2)}
-#manifest li:hover b, #manifest li:focus-within b{text-decoration:underline;
-  text-underline-offset:3px}
-#manifest li .mrow:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
 
 /* ── the one-time peek ──────────────────────────────────────────────────
    Desktop only, once per page load, on the first organic scroll of 60px.
@@ -3742,7 +3848,7 @@ body{font-synthesis:none}
 .engrows li b, .engrows li b a{font-size:var(--fs-note); font-family:var(--body)}
 .engrows a[href^="mailto"]{font-family:var(--mono); font-size:var(--fs-small);
   letter-spacing:.02em; word-spacing:normal}
-#manifest li .idx, #manifest li .m, .gl li .gm,
+.gl li .gm,
 .verdictline span, .verdictline b, #conf, #fwd,
 #mast, #mast .state, .chip, .ladder li span{font-size:var(--fs-micro)}
 #mclock{font-size:var(--fs-micro)}
@@ -3961,36 +4067,47 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 <p id="mpeek" aria-hidden="true">twelve stops &middot; the last at <i>22:41</i></p>
 
 <div id="mscrim" hidden></div>
-<aside id="manifest" aria-label="run manifest" aria-hidden="true">
-  <header>
-    <span class="n">run <i>042</i> · manifest</span>
-    <button id="mclose" type="button" aria-label="close the manifest">close ×</button>
-  </header>
-  <!-- THE WHOLE PAPER, NOT THE SIX PROJECTS. The owner asked for a navigator
-       for the entire working paper with a hint of when it ends. A six-row
-       project list could not give him that: it said nothing about the eight
-       stops that are not projects, and nothing about the end.
-       WHAT IS WITHHELD IS THE POINT. Every stop and its time are shown, so
-       the reader can see the shape of the whole run — but a project's metric
-       stays hidden until the reader has actually reached that station (.m is
-       opacity:0/height:0 until .stamped). ¶13 is not listed at all. The foot
-       says one page follows the gate and does not say what is on it. -->
-  <ol>
-    <li><a class="mrow" href="#start"><i class="mt">06:12</i><b>the start</b></a></li>
-    <li><a class="mrow" href="#who"><i class="mt">06:58</i><b>who</b></a></li>
-    <li><a class="mrow" href="#path"><i class="mt">07:52</i><b>the yard</b></a></li>
-    <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></a></li>
-    <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></a></li>
-    <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></a></li>
-    <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></a></li>
-    <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></a></li>
-    <li data-proj="6"><a class="mrow" href="#automl"><i class="mt">22:05</i><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></a></li>
-    <li><a class="mrow" href="#review"><i class="mt">22:23</i><b>the review</b></a></li>
-    <li><a class="mrow" href="#cosigners"><i class="mt">22:32</i><b>the references</b></a></li>
-    <li><a class="mrow" href="#gate"><i class="mt">22:41</i><b>the gate</b></a></li>
-  </ol>
-  <p class="foot">six of twelve stops carry projects<br>ends <i>22:41</i> &middot; then one page more</p>
-</aside>
+<!-- THE STRIP ABOVE THE DOORS (v9). The chip opens the run as a printed line
+     diagram along the underside of the masthead: every stop and its clock,
+     so the reader can see the shape of the whole paper and when it ends, and
+     a project's metric only once the reader has passed that station
+     (.stamped; until then display:none, so it is out of the accessibility
+     tree and find-in-page). ¶13 is not listed; the foot says one page follows
+     the gate and does not say what is on it.
+     This element IS the visible band (G4 measures its rect) and it is a div,
+     not an aside, because an aside may not take role="dialog". Each li's
+     first child is its anchor because setStop() writes aria-current on
+     li.firstElementChild; data-proj is 1 to 6 because setStamps() filters on
+     it being truthy; data-print="night" marks the stops printed in the night's inks.
+     The title is aria-hidden so it is not read as part of the first stop; it
+     still names the dialog through aria-labelledby. -->
+<div id="manifest" role="dialog" aria-modal="true" aria-labelledby="mtitle" hidden>
+  <div class="housing">
+    <span class="htitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span>
+    <button class="mclose" type="button" aria-label="close the line diagram">close <span aria-hidden="true">×</span></button>
+  </div>
+  <div class="clip">
+    <div class="tape">
+      <button class="mclose tclose" type="button" aria-label="close the line diagram">×</button>
+      <nav aria-label="the twelve stops">
+        <ol class="line">
+          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="you" aria-hidden="true"></span><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span></li>
+          <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a><span class="you" aria-hidden="true"></span></li>
+          <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><span class="lab"><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><span class="lab"><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><span class="lab"><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><span class="lab"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a><span class="you" aria-hidden="true"></span></li>
+          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="you" aria-hidden="true"></span><span class="foot">ends <i>22:41</i> &middot; then one page more</span></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+</div>
 
 <!-- STATION IDS. Every stop is addressable, and the id is the run's OWN
      name for it — the same word the manifest above prints (applied,
@@ -10410,6 +10527,182 @@ function scrubGate(p) {
 /* ————— manifest ————— */
 const maniRows = [...document.querySelectorAll("#manifest li")];
 const maniProj = maniRows.filter((li) => li.dataset.proj);
+/* ————— the strip above the doors: its light, laid on open (v9) —————
+   The dialog itself (open, close, focus, keys, inert) is #manifest-js at the
+   foot of the page, a classic script that runs before this module. What
+   lives HERE is what needs the page's own light (WAY, DUSK, oklchToRgb and
+   DAY_ANCHOR above, fieldLum below), so none of it is copied. #manifest-js
+   calls window.__strip.fit(true) on open, and queues a press that arrives
+   before this module has run (the "stripready" event below releases it): an
+   unlaid tape has no ground, and words on no ground are words on the page.
+   A resize, a stamp, or (under reduced motion, where the masthead scrolls
+   away) a scroll while the strip is open fits it again. It reads on those
+   events only, never per frame.
+
+   THE GROUND is one continuous run of the page's light, by clock. The seven
+   day beats ride DAY_ANCHOR between their ticks, held for the first and last
+   .15 of a beat and eased between, as arcColor does. The 21:07 leg holds W4
+   until the last label that reaches into it has cleared, plus --air, then
+   falls IN LIGHTNESS along the page's own DUSK path to W5 at the 22:05 tick,
+   and automl's leg deepens W5 to W6 over its first three quarters; the two
+   falls meet at one slope, so neither end nor the join shows as a line. The
+   colours are the page's and the positions are not: the page's are scroll
+   positions, and timed by them the strip dwelt at L .64 and again at .43
+   (measured in the lab, the fall slowed from -0.52 to -0.21 per 100px
+   there), which was the taupe band it read as. Here it is crossed, flat out
+   of W4 and fastest through the middle (1.4x its average slope at the peak). */
+const STRIP = $("manifest");
+const stripClip = STRIP.querySelector(".clip");
+const stripTape = STRIP.querySelector(".tape");
+/* the column below 1024 (see the CSS: the tape needs that width) */
+const stripColumn = () => matchMedia("(max-width:1023px)").matches;
+const stripMix = (a, b, t) => oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t));
+const stripWay = (u) => { const i = Math.min(3, Math.floor(u)); return stripMix(WAY[i], WAY[i + 1], u - i); };
+/* the dusk path by lightness: DUSK's stops (its rows are [side, l, c, h,
+   pos]; the path reads l, c, h) and then W6, read off at a given l */
+const STRIP_PATH = [...DUSK.map((d) => d.slice(1, 4)), WAY[6]];
+const stripPathAt = (l) => {
+  let i = 0;
+  while (i < STRIP_PATH.length - 2 && l < STRIP_PATH[i + 1][0]) i++;
+  const a = STRIP_PATH[i], b = STRIP_PATH[i + 1];
+  return stripMix(a, b, clamp((a[0] - l) / (a[0] - b[0]), 0, 1));
+};
+/* a cubic Hermite from 0 to 1 with end slopes m0 and m1, in units of the
+   segment's own average slope; monotone for slopes up to 3 */
+const stripHermite = (s, m0, m1) => {
+  s = clamp(s, 0, 1);
+  const s2 = s * s, s3 = s2 * s;
+  return 3 * s2 - 2 * s3 + m0 * (s3 - 2 * s2 + s) + m1 * (s3 - s2);
+};
+function stripGround(x, ticks, fade) {
+  if (x <= ticks[1]) return stripWay(0);
+  for (let i = 1; i <= 7; i++) {
+    if (x < ticks[i + 1]) {
+      const t = smooth(((x - ticks[i]) / (ticks[i + 1] - ticks[i]) - 0.15) / 0.7);
+      return stripWay(clamp(lerp(DAY_ANCHOR[i - 1], DAY_ANCHOR[i], t), 0, 4));
+    }
+  }
+  const xa = ticks[8] + fade, x9 = ticks[9], xb = x9 + 0.75 * (ticks[10] - ticks[9]);
+  const L4 = WAY[4][0], L5 = WAY[5][0], L6 = WAY[6][0];
+  /* automl's leg eases out from slope 2 (a quadratic); the dusk's end slope
+     is chosen to meet it */
+  const m1 = clamp((2 * (L5 - L6) * (x9 - xa)) / ((xb - x9) * (L4 - L5)), 0, 3);
+  if (x <= xa) return stripWay(4);
+  if (x < x9) return stripPathAt(L4 - (L4 - L5) * stripHermite((x - xa) / (x9 - xa), 0, m1));
+  if (x < xb) return stripPathAt(L5 - (L5 - L6) * stripHermite((x - x9) / (xb - x9), 2, 0));
+  return oklchToRgb(...WAY[6]);
+}
+/* the probe: window.__strip.ground is the function that painted the tape,
+   so what is measured is what is painted */
+window.__strip = { fit: stripFit };
+/* where a day ink and its night ink stand at equal contrast on a ground:
+   the luminance whose ratio to each is the same. For the ink pair it is the
+   masthead's own MAST_CROSS (.198, measured the same way); for the second
+   inks it is about .26. Read off the print's own declarations. */
+const stripHex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+const stripCross = (a, b) => Math.sqrt((fieldLum(stripHex(a)) + 0.05) * (fieldLum(stripHex(b)) + 0.05)) - 0.05;
+/* the ground as one gradient sampled every 4px, and the line's two ink
+   switches on the dusk leg, each where the field's luminance crosses its
+   pair's point. A second open with nothing changed lays nothing. */
+let stripLaid = "";
+function stripLay(ticks, fade, length, dir) {
+  Object.assign(window.__strip, { ticks, fade, length, ground: (x) => stripGround(x, ticks, fade) });
+  const key = JSON.stringify([ticks, fade, length, dir]);
+  if (key === stripLaid) return;
+  stripLaid = key;
+  const stops = [];
+  for (let x = 0; x <= length; x += 4) stops.push(`${rgbCss(stripGround(x, ticks, fade))} ${x}px`);
+  stripTape.style.backgroundImage = `linear-gradient(${dir}, ${stops.join(",")})`;
+  STRIP.style.setProperty("--p0", rgbCss(stripGround(0, ticks, fade)));
+  const ink = (li, t) => getComputedStyle(li).getPropertyValue(t).trim();
+  const day = maniRows[7], night = maniRows[8];
+  const at = (y) => {
+    for (let x = ticks[8] + fade; x < ticks[9]; x++) if (fieldLum(stripGround(x, ticks, fade)) < y) return x - ticks[8];
+    return ticks[9] - ticks[8];
+  };
+  const gone = at(stripCross(ink(day, "--ink"), ink(night, "--ink")));
+  const ahead = at(stripCross(ink(day, "--ink-2"), ink(night, "--ink-2")));
+  day.style.setProperty("--switch-gone", `${gone}px`);
+  day.style.setProperty("--switch-ahead", `${ahead}px`);
+  Object.assign(window.__strip, { switchAt: ticks[8] + gone, switchAheadAt: ticks[8] + ahead });
+}
+/* the band hangs from the masthead's lower edge. The legs share the tape
+   between the lead and the terminus, the 21:07 leg longer by --dusk-x (13%
+   of the width, 150 to 200: at 1280 it is what is left once eleven legs can
+   hold "calendar in plain English" on one line), and the two label zones
+   are as tall as their tallest stack, three rows at the least, so a row is
+   held for every metric. */
+function stripFit(opening) {
+  STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
+  if (STRIP.hidden) return;
+  if (stripColumn()) return stripFitColumn(opening);
+  const cs = getComputedStyle(STRIP);
+  const px = (p) => parseFloat(cs.getPropertyValue(p));
+  const length = stripClip.getBoundingClientRect().width;
+  const lead = px("--lead"), last = px("--last"), air = px("--air");
+  const duskX = Math.round(clamp(0.13 * innerWidth, 150, 200));
+  const leg = Math.floor((length - lead - duskX - last) / 11);
+  STRIP.style.setProperty("--dusk-x", `${duskX}px`);
+  STRIP.style.setProperty("--leg", `${leg}px`);
+  const tall = (odd) => Math.max(54, ...maniRows.filter((li, i) => i % 2 === (odd ? 0 : 1))
+    .map((li) => li.querySelector(".lab").offsetHeight));
+  STRIP.style.setProperty("--zone-a", `${tall(true) + 12}px`);
+  STRIP.style.setProperty("--zone-b", `${tall(false) + 12}px`);
+  /* the dusk begins once both stacks that reach into its leg have cleared
+     it, lifequest's below the line and jetpack's above; the reach is the
+     ink's right edge from the leg's own tick */
+  const reach = (i) => maniRows[i].querySelector(".lab").getBoundingClientRect().right - maniRows[i].getBoundingClientRect().left;
+  const fade = Math.ceil(Math.max(reach(7), reach(6) - leg) + air);
+  const ticks = [0];
+  for (let i = 1; i <= 12; i++) ticks[i] = lead + (i - 1) * leg + (i >= 9 ? duskX : 0);
+  stripLay(ticks, fade, length, "to right");
+}
+/* the column: the same ground top to bottom, the dusk ending 4px
+   into automl's row rather than at its tick (the row's text begins 12px in,
+   and the clock's box top measured Lc 55 on the fade's last pixels when the
+   night arrived at the tick). A column taller than the screen opens on the
+   current stop, so the here-square and the focused row are in view: focus
+   lands with preventScroll, because the page behind must not scroll. Only on
+   OPEN: a refit for a stamp while the reader is scrolling the column must not
+   take the column out of their hands. */
+function stripFitColumn(opening) {
+  const ticks = [0];
+  maniRows.forEach((li, i) => { ticks[i + 1] = li.offsetTop + 21; });
+  const fade = maniRows[7].querySelector(".mrow").offsetHeight - 21 + 4;
+  ticks[9] = maniRows[8].offsetTop + 4;
+  stripLay(ticks, fade, stripTape.offsetHeight, "to bottom");
+  const here = opening && STRIP.querySelector(".line li.here");
+  if (here) {
+    const v = stripClip.clientHeight;
+    stripClip.scrollTop = clamp(here.offsetTop + here.offsetHeight / 2 - v / 2, 0, stripClip.scrollHeight - v);
+  }
+}
+/* reached and travelled: the ticks and clocks up to the FURTHEST stop the
+   reader has reached carry the ink, and the legs to it are the heavier line.
+   The six stamps are a high-water mark, so this is one too: a reader who has
+   been to the gate and come back to ¶04 sees the whole line travelled and
+   every metric earned, with the here-square (setStop's .here, the current
+   stop, both ways) back at 08:47. From setStop(). */
+let stripFar = 0;
+function stripMark(n) {
+  stripFar = Math.max(stripFar, n);
+  maniRows.forEach((li, i) => {
+    li.toggleAttribute("data-reached", i + 1 <= stripFar);
+    li.classList.toggle("gone", i + 1 < stripFar);
+  });
+}
+const stripOpen = () => STRIP.classList.contains("open");
+addEventListener("resize", () => { if (stripOpen()) stripFit(); }, { passive: true });
+let stripTopPending = 0;
+addEventListener("scroll", () => {
+  if (!RM || stripTopPending || !stripOpen()) return;
+  stripTopPending = requestAnimationFrame(() => {
+    stripTopPending = 0;
+    STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
+  });
+}, { passive: true });
+/* the dialog may already hold a press that came before this module ran */
+STRIP.dispatchEvent(new Event("stripready"));
 /* THE STAMPS ARE A HIGH-WATER MARK AND THE CHIP IS NOT, and the two facts
    used to be one function. "How much of the run have I reached this visit"
    cannot decrease — a cold critic watched the old cursor count DOWN on the
@@ -10423,6 +10716,8 @@ function setStamps(count) {
   const reached = Math.max(count, window.__world.stamped || 0);
   window.__world.stamped = reached;
   maniProj.forEach((li, i) => li.classList.toggle("stamped", i < reached));
+  /* an earned metric can change a stack's height, and a phone row's */
+  if (stripOpen()) stripFit();
 }
 /* the chip, and the square in the ledger's gutter: one cursor, two surfaces.
    `beat` is 0..12 (¶13 is the thirteenth and is not a stop of this run), so
@@ -10444,9 +10739,10 @@ function setStop(beat) {
     if (here) li.firstElementChild.setAttribute("aria-current", "location");
     else li.firstElementChild.removeAttribute("aria-current");
   });
+  stripMark(n);
 }
-/* the manifest's open/close now lives in one place · see #manifest-js,
-   which also owns Escape, the scrim and the return of focus. */
+/* the strip's open and close live in one place · see #manifest-js, which
+   owns the whole dialog contract: focus, keys, inert, Escape, the scrim. */
 
 /* ————— masthead clock + phase ————— */
 /* the datelines, minutes — station stops are the site's own. One entry per
@@ -18273,34 +18569,142 @@ boot();
 </script>
 
 <script id="manifest-js">
-/* The ledger is a disclosure: it opens because someone asked, and it closes
-   on the second press, on Escape, and on a tap outside. aria-expanded now
-   tracks the only class that decides the visible state. */
+/* THE STRIP IS A DIALOG, and this is its whole contract. It opens because
+   someone asked, from the chip, and it closes on the second press, on its
+   own close, on Escape, on a tap outside, and on choosing a stop, which also
+   navigates: the row's own href rides. On open, focus goes to the stop the
+   reader is standing in and the page behind goes inert; on close, focus
+   comes back to the chip. aria-expanded tracks the one class that decides
+   the visible state. The masthead is NOT inert, on purpose: the chip has to
+   stay pressable for the second press, which is why this is written by hand
+   and is not showModal().
+
+   CLOSED MEANS HIDDEN. `hidden` (display:none) goes on once the reel's own
+   animations have finished, raced with a timeout so a transition that never
+   starts (reduced motion) cannot hold it open. A class and a transform would
+   leave a translated tape under a live clip, which still has a rect for G4.
+
+   TAB IS MOVED BY HAND in both directions, every press, not only wrapped at
+   the ends: WebKit's own Tab skips links, and a default Tab from a row left
+   the dialog for the masthead's name link (measured in the v9 strip lab;
+   Chromium's order is the same either way). The arrows, Home and End walk
+   the line, Left and Right along the desktop tape, Up and Down the column
+   (below 1024). Every move is made with preventScroll, so the page behind
+   never scrolls, and the column brings the row into view itself. */
 (function () {
   var man = document.getElementById("manifest"),
       tog = document.getElementById("mtoggle"),
       scr = document.getElementById("mscrim"),
-      cls = document.getElementById("mclose");
-  if (!man || !tog) return;
-  function set(open) {
-    man.classList.toggle("open", open);
-    man.setAttribute("aria-hidden", String(!open));
-    tog.setAttribute("aria-expanded", String(open));
-    if (scr) scr.hidden = !open;
-    if (!open) tog.focus({ preventScroll: true });
+      main = document.querySelector("main");
+  if (!man || !tog || !scr) return;
+  var clip = man.querySelector(".clip");
+  var FOCUSABLE = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  /* the CSS's --t-pull, --t-reel and --t-choose: the timeout's floor only */
+  var MS = { open: 620, close: 360, choose: 260 };
+  var open = false, gen = 0, queued = false;
+  function all(sel) { return Array.prototype.slice.call(man.querySelectorAll(sel)); }
+  function rows() { return all(".mrow"); }
+  function focusables() {
+    return all(FOCUSABLE).filter(function (el) { return el.getClientRects().length > 0; });
   }
+  /* the column below 1024, as the CSS lays it */
+  function column() { return matchMedia("(max-width:1023px)").matches; }
+  function go(el) {
+    el.focus({ preventScroll: true });
+    if (!column() || !clip) return;
+    var li = el.closest("li");
+    if (!li) return;
+    var top = li.offsetTop, bot = top + li.offsetHeight;
+    if (top < clip.scrollTop) clip.scrollTop = top;
+    else if (bot > clip.scrollTop + clip.clientHeight) clip.scrollTop = bot - clip.clientHeight;
+  }
+  function settle(ms, then) {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var done = false;
+        function finish() { if (!done) { done = true; then(); } }
+        setTimeout(finish, ms + 160);
+        if (man.getAnimations)
+          Promise.all(man.getAnimations({ subtree: true }).map(function (a) {
+            return a.finished.catch(function () {});
+          })).then(finish);
+      });
+    });
+  }
+  function show() {
+    if (open) return;
+    /* a press before the engine has run: hold it (a second press lets it go) */
+    if (!window.__strip) { queued = !queued; return; }
+    open = true;
+    var g = ++gen;
+    man.hidden = false;
+    scr.hidden = false;
+    if (main) main.inert = true;
+    tog.setAttribute("aria-expanded", "true");
+    man.setAttribute("data-state", "opening");
+    man.classList.remove("closing", "chosen");
+    void man.offsetWidth; /* one read, so the pull starts from the closed frame */
+    man.classList.add("open");
+    scr.classList.add("open");
+    window.__strip.fit(true);
+    var cur = man.querySelector(".mrow[aria-current]") || rows()[0];
+    if (cur) cur.focus({ preventScroll: true });
+    settle(MS.open, function () { if (g === gen && open) man.setAttribute("data-state", "open"); });
+  }
+  function hide(why) {
+    if (!open) return;
+    open = false;
+    var g = ++gen;
+    man.setAttribute("data-state", "closing");
+    man.classList.remove("open");
+    scr.classList.remove("open");
+    man.classList.add("closing");
+    if (why === "choose") man.classList.add("chosen");
+    tog.setAttribute("aria-expanded", "false");
+    if (main) main.inert = false;
+    tog.focus({ preventScroll: true });
+    settle(why === "choose" ? MS.choose : MS.close, function () {
+      if (g !== gen) return;
+      man.classList.remove("closing", "chosen");
+      man.hidden = true;
+      scr.hidden = true;
+      man.setAttribute("data-state", "closed");
+    });
+  }
+  man.setAttribute("data-state", "closed");
+  man.addEventListener("stripready", function () { if (queued) { queued = false; show(); } });
   tog.addEventListener("click", function (e) {
     e.stopPropagation();
-    set(!man.classList.contains("open"));
+    if (open) hide("chip"); else show();
   });
-  if (cls) cls.addEventListener("click", function () { set(false); });
-  if (scr) scr.addEventListener("click", function () { set(false); });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && man.classList.contains("open")) set(false);
-  });
+  scr.addEventListener("click", function () { hide("scrim"); });
   man.addEventListener("click", function (e) {
-    if (e.target.closest("a")) set(false);       /* it is navigation now */
+    if (e.target.closest(".mclose")) hide("close");
+    else if (e.target.closest(".mrow")) hide("choose"); /* the link's own navigation rides */
   });
+  document.addEventListener("keydown", function (e) {
+    if (!open) return;
+    if (e.key === "Escape") { e.preventDefault(); hide("escape"); return; }
+    if (e.key === "Tab") {
+      var f = focusables(), n = f.length;
+      if (!n) return;
+      var i = f.indexOf(document.activeElement);
+      e.preventDefault();
+      go(f[e.shiftKey ? (i <= 0 ? n - 1 : i - 1) : (i < 0 || i === n - 1 ? 0 : i + 1)]);
+      return;
+    }
+    var r = rows(), at = r.indexOf(document.activeElement), across = !column(), to = -1;
+    if (e.key === (across ? "ArrowRight" : "ArrowDown")) to = at < 0 ? 0 : Math.min(r.length - 1, at + 1);
+    else if (e.key === (across ? "ArrowLeft" : "ArrowUp")) to = at < 0 ? r.length - 1 : Math.max(0, at - 1);
+    else if (e.key === "Home") to = 0;
+    else if (e.key === "End") to = r.length - 1;
+    if (to >= 0) { e.preventDefault(); go(r[to]); }
+  });
+})();
+
+/* the one-time peek, in its own closure: it returns early on the phone,
+   and the dialog above must not */
+(function () {
 
   /* ── the one-time peek ────────────────────────────────────────────────
      The chip says "stop · 01 / 12" from the first frame, and a reader who
