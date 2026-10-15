@@ -3313,7 +3313,24 @@ body{font-synthesis:none}
   padding:.3rem .6rem; min-height:32px; line-height:1}
 #mtoggle #mcount{font-family:var(--mono); font-size:var(--fs-micro);
   font-variant-numeric:tabular-nums; color:var(--clay); margin-left:.45em}
-#mtoggle[aria-expanded="true"]{background:var(--plate-solid)}
+/* PRESSED, THE CHIP IS THE HOUSING the tape runs out from, and it says so:
+   the ink fills it, as the page's own filled buttons do (--ink-inverse is
+   "what text becomes when the ink fills a button"), and the count takes the
+   other mode's clay so it still reads on the fill. By day that is the dark
+   of the tape's night end directly under it; at night the fill is the
+   tape's first light. The .86 plate it replaces was near-invisible at 1x
+   in both modes. Only colour changes: the rect is a keep-out the phone's
+   morning reads. The fill SNAPS on the press, no transition: a 200ms fade
+   left the pale count on a half-filled plate for its first 100ms (seen in
+   the mid-pull still), and a press is the one moment that should answer
+   at once.
+   measured: #fbf3e7 on #26231c — 14.24:1 / Lc 98.0
+   measured: #f4b090 on #26231c — 8.55:1 / Lc 65.7
+   measured: #26231c on #f6efe2 — 13.71:1 / Lc 93.5
+   measured: #a03f20 on #f6efe2 — 5.69:1 / Lc 72.4 */
+#mtoggle[aria-expanded="true"]{background:var(--ink); color:var(--ink-inverse); border-color:var(--ink)}
+#mtoggle[aria-expanded="true"] #mcount{color:#f4b090}
+:root[data-night] #mtoggle[aria-expanded="true"] #mcount{color:#a03f20}
 /* THE SCRIM. The strip is a disclosure the reader asked for, and at every
    width it hangs over the top of whatever station sits under the masthead,
    so the page behind visibly recedes rather than pretending there is no
@@ -3449,6 +3466,8 @@ body{font-synthesis:none}
      is opening: once open, a stop that changes under the strip (the page
      still scrolls behind it) moves its square at once */
   #manifest.open[data-state="opening"] .line li.here .you{transition-delay:calc(var(--t-pull) * .7)}
+  #manifest .line li:is(:first-child,:last-child)::before{transition:background-color var(--t-mark) cubic-bezier(.2,.8,.3,1)}
+  #manifest.open[data-state="opening"] .line li.here:is(:first-child,:last-child)::before{transition-delay:calc(var(--t-pull) * .7)}
 }
 /* the close: printed at the tape's night end, top right, under the chip. A
    32px target in the night print's ink and strong hairline in both modes,
@@ -3495,6 +3514,14 @@ body{font-synthesis:none}
 #manifest .line li .you{position:absolute; left:-4px; top:calc(var(--zone-a) + var(--line) / 2 - 4px);
   width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0)}
 #manifest.open .line li.here .you{transform:scale(1)}
+/* ON AN END STOP THE BAR IS THE MARK. The 9px square centred on a 3px
+   terminus bar read as a blob at 1x (stop 01 on the page's first frame,
+   and the gate); there the bar itself turns clay and no square is drawn.
+   It takes the square's timing, so here lands the same way at every stop.
+   Graphic, not text: #c4532e on first light #fbf3e7 is 4.13:1, #e08a5f on
+   the night end #2c2622 is 5.66:1, both over the 3:1 floor for a mark. */
+#manifest .line li.here:is(:first-child,:last-child) .you{display:none}
+#manifest.open .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
 /* THE LEG IS THE TARGET: the anchor is the grid (zone, line zone, zone)
    and fills the leg, so the whole leg is the hit area and G9 can see it */
 #manifest .line li .mrow{display:grid; grid-template-rows:var(--zone-a) var(--line) var(--zone-b);
