@@ -2483,10 +2483,10 @@ if (location.hash.length > 1) {
       thing drawn is Shree's sign, whose upper frame tops out at the row's
       top at the plate's right, clear of the name by the width of the desk,
       and the lamp's shade 34px under the name's box. 36 and not 20: the
-      letter the line carries rides on the thread in the gutter, 28px
+      letter the line carries hangs under the bead in the gutter, 28px
       across the line from the name's first letter, and at the centred park
-      it stood level with the name's lower half, which a cold reader took
-      for Shree's second letter (2026-10-15); it is now 5-6px below the
+      it once stood level with the name's lower half, which a cold reader
+      took for Shree's second letter (2026-10-15); it is now 25px below the
       name's box at 390 and 360. Row 0's lever foot ends 7px above the
       name's ink. */
   }
@@ -4559,11 +4559,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                one over the other on one pair of posts). A page is written
                standing on the desk, folded and put into an envelope beside
                the lamp; as the line's bead comes to the junction the letter
-               goes down to the lane and along it onto the line, and rides
-               the thread behind the bead with the letters taken after it,
-               so a reader resting on the plate sees the line carrying one
-               letter while the other waits, and both gathered as it
-               leaves. The stops' names
+               goes down to the lane and along it onto the line, where the
+               bead takes it and carries it, the first letter hung under
+               the bead and the second sitting on it, so a reader resting
+               on the plate sees the line carrying one letter while the
+               other waits, and both on the bead as it leaves. The stops'
+               names
                and clocks come from stations.ts; each branch joins the run's
                line through a set of points that closes as the line reaches
                it.
@@ -8029,22 +8030,21 @@ function drawGates(p) {
    TWO CLOCKS, ON PURPOSE (v8, kept). The place and the letter ride the
    driver's p; the collection rides the rail's bead. The letter leaves the
    desk, drops to the platform's edge, steps down the kerb, slides along
-   the lane and the stub onto the thread at the junction, and down the
-   thread into its place behind the bead: collected, and ON the line,
-   centred on the stroke, trailing the bead with every letter taken before
-   it (SIGN_RIDE) until the bead is past the plate's foot. Its window on the
-   bead is MEASURED, not chosen: it opens 10px past where the bead stands
-   when a reader parks the drawing on READ_LINE and closes 10px short of the
-   centred park or where the load's second slot clears the junction,
-   whichever is later, so a reader resting at either line sees the letter
-   on its desk or on the line, never in the air; at the centred park the
-   top row's letter is on the line at its junction with the bead under it,
+   the lane and the stub onto the thread at the junction, where the bead
+   takes it: collected, and ON the bead, Randall's hung under it and
+   Shree's sitting on it (SIGN_RIDE), one load with the bead between, until
+   the bead is past the plate's foot. Its window on the bead is MEASURED,
+   not chosen: it opens 10px past where the bead stands when a reader
+   parks the drawing on READ_LINE and closes where the letter's arrival at
+   the thread meets the bead (never later than 10px short of the centred
+   park), so a reader resting at either line sees the letter on its desk
+   or on the bead; at the centred park the top row's letter rides the bead
    while the bottom row's still waits, and the departed state shows both
-   gathered behind the bead. The route is the LESSER of the
+   on it. The route is the LESSER of the
    bead's window and p's last fifth, so a fast bead never takes an unsealed
    letter. Reduced motion shows each letter
    standing on its stub at the line: collected, and still there to see. */
-const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20] };
+const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20], tb: [] };
 /* THE SCENE AT S 1, in px; one S scales all of it. The platform: a kerb
    `kerb` tall, its top `deep` deep, square at both ends (a ramp at the far
    end was tried and at 1x its slope and far edge drew an arrowhead). The desk: a slab `w` wide and `d` deep standing `h` high, its front
@@ -8052,7 +8052,8 @@ const signs = { rows: [], svg: null, spx: 0, exit: 0, take: [-40, 20] };
    from its ends. The lamp stands `u` in from the slab's right end and `d`
    deep on it, on a disc `base` across and `foot` deep, its stem up from
    the disc's centre. The envelope is fig. 04's 10:7, standing `u` along the slab
-   and `d` deep, its flap's point `flap` of its height; 16.45 tall at S 1
+   and `d` deep, its flap's point `flap` of its height and its pocket's
+   apex `pocket` of its height up from the foot; 16.45 tall at S 1
    (19.7px at S 1.2), a letter's size beside a 40.5 lamp and inside the
    16-20 the cold reader named one at, and the folded page (21 by 15) goes
    in with 1.25 to spare each side. The page stands at
@@ -8062,7 +8063,7 @@ const SIGN_SCENE = {
   kerb: 12, deep: 32,
   desk: { w: 92, d: 28, h: 50, at: 2, lip: 3, apron: 8, leg: 3 },
   lamp: { u: 14, d: 18, base: 10, foot: 2.2, stem: 26, shade: 12, top: 11, bot: 22 },
-  env: { w: 23.5, h: 16.45, u: 35, d: 10, flap: 0.536 },
+  env: { w: 23.5, h: 16.45, u: 35, d: 10, flap: 0.536, pocket: 0.62 },
   page: { w: 21, h: 30, u: 36.25, ear: 5, fold: 15,
     rules: [[25, 7, 14], [21, 3, 18], [17, 3, 13], [13, 3, 17], [9, 3, 15], [5, 3, 10]] },
 };
@@ -8086,10 +8087,15 @@ const SIGN_SCENE = {
    floating). `right` is the air kept inside the plate's edge; the solver meets
    it exactly whenever S is width-bound, so it is 12 and not the 9 the
    brief floors at (a control on the floor flips on Linux). `from` is the
-   platform's start past the lane's node. */
+   platform's start past the lane's node. `past` is how far below the
+   plate's foot the bead carries the letters before they leave the story:
+   60 on the laptop, where the figure is leaving by then; 0 on the phone,
+   where the corridor's own cargo mark rides ahead of the bead (TRAV, prog
+   .1 + .78·tp, so it closes on the bead at .22px per px of scroll) and
+   would reach the hung letter about 10px past the foot. */
 const SIGN_ED = {
-  wide: { d: 24, right: 12, gap: 10, legs: 10, from: 10 },
-  tight: { d: 16, right: 12, gap: 16, legs: 18, from: 8 },
+  wide: { d: 24, right: 12, gap: 10, legs: 10, from: 10, past: 60 },
+  tight: { d: 16, right: 12, gap: 16, legs: 18, from: 8, past: 0 },
 };
 /* the words to their board's edge (the phone's frames keep a pixel less
    above and below); the legs at these shares of a board; the air from the
@@ -8127,20 +8133,22 @@ const SIGN_ROUTE = [0, 0.1, 0.16, 0.2, 0.86, 1];
    moves this has to follow), a reader parks the drawing's centre at .5 vh
    or reads it on READ_LINE, and the window keeps `margin` clear of both. */
 const SIGN_REST = { bead: 0.55, park: 0.5, margin: 10 };
-/* THE LINE CARRYING THE LETTERS: once taken, a letter rides ON the thread,
-   centred on it and trailing the bead the way a wagon trails an engine,
-   its foot `drop` over the bead's centre (the bead, r 4.5, overlaps that
-   foot: hooked); the next letter taken rides nearest the bead and the
-   earlier ones move one slot back, `gap` apart, so the bead gathers them
-   into one load. They ride until the bead is `past` below the plate's foot,
-   by which time the figure is leaving. BEHIND the bead, not under it: the
-   corridor's own cargo mark rides ahead of the bead on the phone (TRAV,
-   prog = .1 + .78·tp) and a load hung under the bead met it there; on the
-   laptop the mark is 80px and more behind. The fourth cold read called a
-   letter beside the thread "set down beside the track", and a pair under
-   the bead at the foot "a pile dropped at the end of the line".
+/* THE LINE CARRYING THE LETTERS: once taken, a letter rides ON the bead.
+   Randall's (an even row) hangs under it, the bead's centre `hang` inside
+   the letter's top rim; Shree's (an odd row) sits on it, the bead's centre
+   `hang` inside her letter's foot; so the two make one load with the bead
+   between them, each letter overlapped by the bead, and nothing ever
+   re-slots. Not centred on the bead: a disc at the flap's point is a wax
+   seal, and nobody signs. Not a chain under the bead: on the phone the
+   corridor's cargo mark rides ahead of the bead and a second letter hung
+   under the first met it at the departed still. The fifth cold read saw a
+   letter whose foot the bead touched from below as "the bead has already
+   gone past it: MISSED", and the pair at the foot as carried; this is the
+   pair's geometry from the first letter on.
+   `trip` is the least bead travel the trip from the desk to the thread may
+   take (the phone's parks leave 31px between them, which is not a trip).
    The open flap's lean back from vertical, 75 degrees. */
-const SIGN_RIDE = { drop: 2, gap: 2, past: 60 };
+const SIGN_RIDE = { hang: 1.5, trip: 26 };
 const SIGN_FLAP = 1.31;
 /* a stroked path's own geometry as segments, for the cut. Everything that
    can be covered is drawn with seg, box and quad, so M, L, h, v and z are
@@ -8298,16 +8306,24 @@ function buildSigns(js) {
   if (rows.length) {
     const c0 = H / 2 - rowY(rows[0]);
     const read = (SIGN_REST.bead - READ_LINE) * vh + c0, park = (SIGN_REST.bead - SIGN_REST.park) * vh + c0;
-    /* the window closes no sooner than the load needs: when a letter's last
-       leg ends, the slot behind the bead that a SECOND letter will move it
-       to must already be below the junction, or the first letter would ride
-       back up the line as the second joins (SIGN_RIDE: drop, two letters,
-       the gap). On the laptop that is later than the centred park, which
-       then shows the first letter on the thread at its junction with the
-       bead just under it. */
-    const far = SIGN_RIDE.drop + 2 * E.h * S + SIGN_RIDE.gap + 2;
-    signs.take = park - read > 4 * SIGN_REST.margin
-      ? [read + SIGN_REST.margin, Math.max(park - SIGN_REST.margin, far)] : [-40, Math.max(20, far)];
+    /* THE WINDOW CLOSES WHERE THE BEAD TAKES THE LETTER. A letter reaches
+       the thread standing on the lane at its junction (SIGN_ROUTE[4], its
+       top eh over the lane), and it is on the bead from that moment if the
+       bead's centre is then `hang` inside its top rim (an even row, hung
+       under the bead: the bead eh - hang above the junction) or inside its
+       foot (an odd row, sitting on the bead: the bead hang past it). Each
+       row's close is set so its arrival at the thread meets the bead there,
+       and the slide down the thread that follows is nothing. Where the
+       READ_LINE park leaves no room for that (the phone: 31px between the
+       two parks against a trip of SIGN_RIDE.trip at least), the letter
+       reaches the thread as the bead passes and catches it up over the
+       thread's next few px. Never later than 10px short of the centred
+       park, which then shows the first letter on the bead. */
+    const ta = park - read > 4 * SIGN_REST.margin ? read + SIGN_REST.margin : -40;
+    const hi = Math.max(ta + SIGN_RIDE.trip, park - SIGN_REST.margin);
+    const tbOf = (hook) => clamp(ta + (hook - ta) / SIGN_ROUTE[4], ta + SIGN_RIDE.trip, hi);
+    signs.tb = rows.map((_, i) => tbOf(i % 2 ? SIGN_RIDE.hang : SIGN_RIDE.hang - E.h * S));
+    signs.take = [ta, Math.max(...signs.tb)];
   }
   /* the figure's own spine, for the reader whose arc never arrives: under
      reduced motion the night beats carry opaque resting grounds and the rail
@@ -8476,7 +8492,12 @@ function buildSigns(js) {
     ride.appendChild(carry);
     const env = el("path", { class: "s-env", d: box(ex, etop, ew, eh), opacity: "0" });
     const flap = el("path", { class: "s-flap", d: "", opacity: "0" });
-    add(carry, env); add(carry, flap);
+    /* the pocket: the back's two edges, up from the bottom corners to an
+       apex under the flap's point; once the flap is down, what it covers is
+       cut away, so the closed flap visibly lies OVER the body (a rectangle
+       with a V read cold as "no sealing shown"): sealed, with no seal */
+    const pocket = el("path", { class: "s-flap", d: "", opacity: "0" });
+    add(carry, env); add(carry, pocket); add(carry, flap);
     /* the route, as the envelope's own offsets from where it stands on the
        desk: forward along the slab, the drop, the kerb, the lane and the
        stub to the rail, and into it */
@@ -8491,7 +8512,7 @@ function buildSigns(js) {
     rec.cuts = [edge, plat, front, rear].map((n) => cutOf(n));
     /* the boards stand in front of the platform's far edge */
     rec.boardPolys = boards.map((b) => polyOf([[b.x, b.y], [b.x + b.w, b.y], [b.x + b.w, b.y + b.h], [b.x, b.y + b.h]]));
-    Object.assign(rec, { carry, ride, env, flap, eh, ew, ex, etop, ty: Infinity, rideEnd: Infinity,
+    Object.assign(rec, { carry, ride, env, flap, pocket, eh, ew, ex, etop, ty: Infinity, rideEnd: Infinity,
       railOff: js?.[i] ? js[i].railX - js[i].jx : null, docOff: (js?.[i]?.y ?? y) - y,
       pTop, pEar, pBot, pTopR, pBotR, lt, lb, blade, knot, knob,
       knobBox: { x0: kx - kr, y0: ky - kr, x1: kx + kr, y1: ky + kr }, route,
@@ -8550,6 +8571,9 @@ function buildSigns(js) {
       a4put(rec.env, "opacity", shown ? "1" : "0");
       a4put(rec.flap, "opacity", shown ? "1" : "0");
       a4put(rec.flap, "d", seg(ex, etop, ...apex) + seg(...apex, ex + ew, etop));
+      const pk = [[ex, ey, ecx, ey - E.pocket * eh], [ecx, ey - E.pocket * eh, ex + ew, ey]];
+      a4put(rec.pocket, "d", cutAll(pk, segsBox(pk), apex[1] > etop + 0.5 ? [polyOf([[ex, etop], apex, [ex + ew, etop]])] : []));
+      a4put(rec.pocket, "opacity", shown ? "1" : "0");
       /* what stands on the desk in front of its far edge, for the cut */
       rec.standing = on ? [th === 0 ? polyOf(pageFull.map((p) => Q(...p))) : botPoly, th > 0 ? topPoly : null] : [];
       rec.envPoly = shown ? envPoly : null;
@@ -8560,13 +8584,11 @@ function buildSigns(js) {
        nothing. */
     rec.ink = () => {
       const D = Math.min(rec.cs, rec.P);
-      /* its place in the load: the newest letter rides nearest the bead,
-         and each letter taken after this one moves it a slot further back
-         over that letter's own last leg, so nothing ever jumps */
-      let slot = 0;
-      for (const o of signs.rows) if (o.i > rec.i) slot += smooth((Math.min(o.cs, o.P) - SIGN_ROUTE[4]) / (1 - SIGN_ROUTE[4]));
+      /* its place on the bead (SIGN_RIDE): an even row hangs under it, an
+         odd row sits on it; the route's last point follows the bead */
       if (Number.isFinite(rec.ty) && rec.railOff !== null) {
-        const top = rec.ty - rec.docOff - SIGN_RIDE.drop - (slot + 1) * eh - slot * SIGN_RIDE.gap;
+        const bead = rec.ty - rec.docOff;
+        const top = rec.i % 2 ? bead + SIGN_RIDE.hang - eh : bead - SIGN_RIDE.hang;
         rec.route[5] = [xAtY(rec.ty) - rec.railOff - ew / 2 - ex, top - etop];
       } else rec.route[5] = rec.route[4].slice();
       const [tx, ty] = along(rec.route, SIGN_ROUTE, D);
@@ -8593,18 +8615,18 @@ function buildSigns(js) {
     svg.appendChild(g);
     signs.rows.push(rec);
   });
-  /* the letters leave the plate's story together, SIGN_RIDE.past below its
-     foot: on the thread they are the line's own, and below the foot the
-     caption stands right of the rail on the laptop while the phone's thread
-     runs in the gutter */
-  for (const r of signs.rows) r.rideEnd = r.docOff + H + SIGN_RIDE.past;
+  /* the letters leave the plate's story together, Z.past below its foot:
+     on the bead they are the line's own, and below the foot the caption
+     stands right of the rail on the laptop while the phone's thread runs in
+     the gutter */
+  for (const r of signs.rows) r.rideEnd = r.docOff + H + Z.past;
   /* the hand is the shared one (THE ASSEMBLIES RIDE THE SCROLL): it hands
      this drawing a p and this drawing sets everything from it */
   signs.e = asmFigure("fig11", { box: () => layoutBox(svg), draw: drawSigns, span: signsSpan });
   const r1 = (v) => +(+v).toFixed(1);
   const bb = (o) => ({ x0: r1(o.x0), y0: r1(o.y0), x1: r1(o.x1), y1: r1(o.y1) });
   window.__world.fig11 = () => ({ S, T, R, W, lane, edition: ed, lamp: r1(SIGN_LAMP * S), take: signs.take.map(r1), route: SIGN_ROUTE, draw: drawSigns,
-    rows: signs.rows.map((r) => ({ i: r.i, y: r1(r.y), jy: r1(r.pageY), jx: r1(r.jx), a: +r.a.toFixed(3), P0: r1(r.geo.P0), P1: r1(r.geo.P1),
+    rows: signs.rows.map((r) => ({ i: r.i, y: r1(r.y), jy: r1(r.pageY), jx: r1(r.jx), take: [r1(signs.take[0]), r1(signs.tb[r.i])], a: +r.a.toFixed(3), P0: r1(r.geo.P0), P1: r1(r.geo.P1),
       laneEnd: r1(r.geo.laneEnd), platform: { x0: r1(r.geo.P0), x1: r1(r.geo.P1 + r.geo.deep[0]), y0: r1(r.geo.top - r.geo.deep[1]), y1: r1(r.y) },
       desk: bb(r.geo.desk), lamp: bb(r.geo.lamp), env: bb(r.geo.env), page: bb(r.geo.page),
       boards: r.geo.boards.map((b) => ({ x0: r1(b.x), y0: r1(b.y), x1: r1(b.x + b.w), y1: r1(b.y + b.h), legs: r1(b.legs[1] - b.legs[0]) })),
@@ -8689,8 +8711,7 @@ function scrubGates(tokenY) {
   }
 }
 function scrubSigns(tokenY, settled) {
-  const [ta, tb] = signs.take;
-  let changed = false;
+  const ta = signs.take[0];
   for (const r of signs.rows) {
     const u = beadU(tokenY, r.pageY);
     const close = smooth((u - 0.1) / 0.7);
@@ -8698,7 +8719,7 @@ function scrubSigns(tokenY, settled) {
     /* the take: the envelope's share of its route, on the bead's measured
        window — but never before it is sealed; ink() takes the lesser of
        this and p's own. A still reader is shown it at the line. */
-    const cs = settled ? SIGN_ROUTE[4] : clamp((tokenY - r.pageY - ta) / Math.max(1, tb - ta), 0, 1);
+    const cs = settled ? SIGN_ROUTE[4] : clamp((tokenY - r.pageY - ta) / Math.max(1, signs.tb[r.i] - ta), 0, 1);
     /* the bead's y is part of the key only once the letter is on the thread
        (the route's last leg and the load both follow the bead) */
     const key = close.toFixed(3) + "|" + gone + "|" + cs.toFixed(3) + (cs >= SIGN_ROUTE[4] ? "|" + tokenY.toFixed(1) : "");
@@ -8710,11 +8731,8 @@ function scrubSigns(tokenY, settled) {
        authored d. */
     a4put(r.blade, "d", `M${n1(r.jx + 4)} ${n1(r.y)}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - close))}`);
     r.cs = cs; r.vis = gone === "1"; r.ty = tokenY;
-    changed = true;
+    r.ink();
   }
-  /* every row is re-inked when any changed: a letter's place in the load
-     depends on the rows taken after it */
-  if (changed) for (const r of signs.rows) r.ink();
 }
 
 /* Cadence — the parse. Chips fly measured word → measured slot. */
