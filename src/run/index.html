@@ -1900,45 +1900,64 @@ if (location.hash.length > 1) {
   .engrows li:last-child{border-bottom:none}
   /* ····· the record, stood up (v10) ·····
      The plate is a stage with a camera. One card lies flat on the desk,
-     seen from above, hinged at its foot, and stands up toward the reader as
-     they scroll; the ink prints the instant it is face-on and the name
-     writes at the park. The posed thing is the BODY (paper, its rules, the
-     tab) and the shadow on the ground; the words are a flat layer over the
-     body's rest box and are never inside a posed element — hidden
-     (visibility and opacity) at any angle, so no word is ever foreshortened
-     under the floor. One rotateX child under the stage's `perspective`, no
-     preserve-3d anywhere (a WebKit screenshot flattens nothing it needs),
-     no opacity, filter or overflow on the stage or the body. The camera is
-     per edition: --f02-cam is its distance, --f02-eye its height above the
-     hinge (the origin's y is derived from the hinge at build), --f02-head
-     the headroom the tilted top edge rises into: under a camera this high a
-     card tilted 15-20 degrees projects its far edge HIGHER than the
-     standing card's top (21 px at 1440, computed and measured), so the
-     head is the tab plus that. --f02-sx is the contact shadow's reach past
-     the card's right edge: a line, not a slab (16 px read as a thick side). Faces, measured the way the gate reads them:
+     seen from above, WRITTEN, and stands up toward the reader as they
+     scroll; the name writes as it arrives. The posed thing is the BODY
+     (paper, its rules, the tab, and a picture of its own ink) and the shade
+     it leaves on the desk; the words a reader can select, focus and copy are
+     a flat layer over the body's rest box, never inside the posed element,
+     hidden (visibility) at any angle and shown at theta 0, where the picture
+     and the live ink coincide (measured per build; the lane note has the
+     numbers). The picture is a canvas drawn once per face and seat from the
+     live ink's own glyph boxes, so it is the same layout at the same pixels,
+     as a raster: G2 counts text nodes, Safari rasterises text in 3D, and a
+     raster is what a card at an angle is. One rotateX child under the
+     stage's `perspective`, no preserve-3d anywhere; no opacity, filter or
+     overflow on the stage or the body. Camera per edition: --f02-cam is its
+     distance, --f02-eye its height above the hinge (the origin's y is
+     derived from the hinge at build), --f02-head the headroom the tilted
+     top edge rises into (a card tilted 15-25 degrees projects its far edge
+     up to 21 px above the standing top under a camera this high).
+     --f02-inset keeps the body clear of the corridor's waybill: the rail
+     prints "the engineer's credentials -> manifest" 32 px (1440) / 57 px
+     (1280) into the plate column while the card's top edge rises through
+     its line (measured at every p); the stage stands that far in from the
+     column's left edge rather than the rail moving. The light is broad,
+     high, a little to the left and in front. Faces, measured the way the
+     gate reads them:
        card stock  measured: #fdf9f0 on #fbf3e7 — 1.05:1 / Lc 0.0 (a tone;
                    the card's edge is its hairline, never its fill)
        thickness   measured: #d8cbb2 on #fdf9f0 — 1.52:1 / Lc 23.7, and on the field
                    measured: #d8cbb2 on #fbf3e7 — 1.46:1 / Lc 20.5
-       shadow      the contact band, rgba(56,44,32,.32) composited on the
-                   field: measured: #bdb3a7 on #fbf3e7 — 1.88:1 / Lc 33.7;
-                   its far tone at .17: measured: #dad1c5 on #fbf3e7 — 1.37:1 / Lc 17.2
+       shade       the contact line, rgba(56,44,32,.34) on the field:
+                   measured: #b9afa3 on #fbf3e7 — 1.96:1 / Lc 35.8; the footprint's soft edge at .22:
+                   measured: #d0c7bb on #fbf3e7 — 1.52:1 / Lc 22.8
        the tab     --clay-g on the stock: measured: #c4532e on #fdf9f0 — 4.32:1 / Lc 67.4 */
-  .plate.record{--f02-head:36px; --f02-foot:12px; --f02-cam:800px; --f02-eye:720px; --f02-sx:6px; --f02-kx:.29}
+  .plate.record{--f02-head:36px; --f02-foot:12px; --f02-cam:800px; --f02-eye:720px; --f02-inset:0px; margin-left:var(--f02-inset)}
+  @media (min-width:1250px){ .plate.record{--f02-inset:72px} }
+  @media (min-width:1440px){ .plate.record{--f02-inset:44px} }
   .record .stage{position:relative; padding:var(--f02-head) 0 var(--f02-foot);
     perspective:var(--f02-cam); perspective-origin:50% -50%}
   .record .ground{position:absolute; left:-24px; right:-24px; bottom:calc(var(--f02-foot) - 4px); height:1px;
     background:var(--hair-strong)}
   .record .cardedge{position:absolute; left:0; right:0; bottom:calc(var(--f02-foot) - 3px); height:3px; background:#d8cbb2}
-  .record .cardshadow, .record .cardbody{position:absolute; left:0; right:0; top:var(--f02-head); bottom:var(--f02-foot);
+  /* the shade on the desk: the card's footprint, soft at its edges and a
+     little to the right, and a contact line under the foot; scaled with the
+     pose so nothing is ever beside a standing card */
+  .record .cardshade, .record .cardbody{position:absolute; left:0; right:0; top:var(--f02-head); bottom:var(--f02-foot);
     transform-origin:50% 100%; will-change:transform}
-  .record .cardshadow{transform:rotateX(90deg);
-    background:linear-gradient(to top, rgba(56,44,32,.32), rgba(56,44,32,.2) 40%, rgba(56,44,32,.17) 92%, rgba(56,44,32,0))}
+  .record .cardshade{transform:rotateX(90deg); border-radius:6px; background:rgba(56,44,32,.1);
+    box-shadow:10px 0 24px 8px rgba(56,44,32,.22)}
+  .record .cardfoot{position:absolute; left:4px; right:4px; bottom:calc(var(--f02-foot) - 7px); height:3px; opacity:0;
+    background:linear-gradient(to bottom, rgba(56,44,32,.34), rgba(56,44,32,0))}
   .record .cardbody{background:#fdf9f0; box-shadow:inset 0 0 0 1px var(--plate-line)}
   .record .cardbody .tab{position:absolute; top:-10px; left:24px; width:56px; height:10px;
     background:var(--clay-g); border:1px solid var(--clay); border-bottom:0}
   .record .cardbody .rule{position:absolute; height:1px; background:var(--hair)}
   .record .cardbody .rule.strong{background:var(--hair-strong)}
+  .record .cardbody canvas{position:absolute; display:block; pointer-events:none}
+  /* data-ink: 0 posed (the picture), 1 live (the words), 2 the handover
+     (both, crossfading over HANDOVER_MS on the stepper) */
+  .record .stage[data-ink="1"] .cardbody canvas{visibility:hidden}
   /* the ink: today's card, laid out exactly as the plate laid it (the
      plate's padding moves here); its row rules are the body's now, and the
      borders stay in the flow, transparent, so nothing else moves */
@@ -1947,7 +1966,7 @@ if (location.hash.length > 1) {
   .record .stage[data-ink="0"] .engcard{visibility:hidden}
   .settled .record .engcard{visibility:visible}
   @media (max-width:820px){
-    .plate.record{--f02-head:28px; --f02-cam:800px; --f02-eye:740px; --f02-sx:5px; --f02-kx:.12}
+    .plate.record{--f02-head:28px; --f02-cam:800px; --f02-eye:740px}
     .record .ground{left:-8px; right:-8px}
     .record .cardbody .tab{left:16px; width:48px}
     .record .engcard{padding:.7rem}
@@ -4292,9 +4311,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <figure class="plate bare record" data-fx="in .0 .09">
         <div class="stage" id="fig02">
           <div class="ground"></div>
-          <div class="cardshadow"></div>
+          <div class="cardshade"></div>
           <div class="cardbody"><i class="tab"></i></div>
           <div class="cardedge"></div>
+          <div class="cardfoot"></div>
           <div class="engcard">
             <header><span>who built this</span></header>
             <div class="sigwell">
@@ -7543,45 +7563,178 @@ function scrubWho(t) {
 
 /* ····· fig. 02 · the record, stood up (v10) ·····
    One object with a camera. The record card lies flat on the desk, seen
-   from above, and stands up toward the reader as they scroll, hinged at its
-   foot: theta runs 90 -> 0 over p 0 -> STAND on one smooth curve, the top
-   edge going AWAY from the lens (z <= 0 at every theta: nothing balloons,
-   and the body's projection stays inside the stage by construction, the
-   headroom covering what a tilted far edge gains). The shadow lies on the
-   ground plane from the hinge: the card's footprint plus what its standing
-   height casts back and to the right (light from the upper left, in front;
-   KZ and --f02-kx are that light), so a lying card sits in its own contact
-   shadow and a standing one leaves a wedge beside its foot. The words are
-   never posed: a flat layer over the body's rest box, hidden at any angle,
-   that PRINTS the instant the card is face-on — a pass down the rows on
-   the engine's stepper, not a fade — and then the name writes at writing
-   speed, the nib riding the edge, on the same stepper. Pure in p for the
-   pose and for whether the ink is on; the two clocks start on the crossing
-   and are skipped on a landing (cold load, a jump of > .3 vh, reduced
-   motion), where the card is simply there, printed and signed. Scrolling up
-   lays it back down and hides the ink at once; the name keeps its high-
-   water mark underneath (D-1). */
+   from above, WRITTEN, and stands up toward the reader as they scroll,
+   hinged at its foot: theta runs 90 -> 0 over p 0 -> STAND on one smooth
+   curve, the top edge going AWAY from the lens (z <= 0 at every theta:
+   nothing balloons, and the body's projection stays inside the stage by
+   construction, the headroom covering what a tilted far edge gains).
+   THE INK IS A PICTURE WHILE THE CARD IS POSED. The body carries a canvas
+   drawn from the live ink's own glyph boxes (a Range per character, the
+   parent's computed face and colour, a link's underline from its computed
+   decoration), so a lying card reads as a written record and never as a
+   loader; at theta 0 the live HTML takes over at the same pixels (the
+   picture hides, the words show) and the reader can select and tab. Text
+   nodes are never posed: G2 counts them, Safari rasterises text in 3D,
+   and a raster is what a card at an angle is. The picture is drawn on an
+   OffscreenCanvas and blitted once: its fillText is not the thread
+   canvas's (check-cargo-fixture hooks the DOM context's prototype to
+   record waybills, and the card's words are not freight). The name is the
+   one thing the picture does not carry finished: it writes at writing
+   speed on its own clock, the nib riding the edge, on a second small
+   canvas over the well while the card is still arriving and on the live
+   #sig from theta 0, both from the one progress t (scrubWho, D-1).
+   THE SHADE: a broad light, high, a little to the left and in front. The
+   card's footprint on the desk, soft at its edges and offset right, scaled
+   with sin(theta): long and soft under a lying card, gone under a standing
+   one; and a contact line under the foot that darkens as the card stands.
+   Nothing is ever beside a standing card (the first cut's wedge read as an
+   artifact to a cold reader; it was the one honest cast shadow a camera
+   above the card can see, and it was wrong to show). No landing overshoot:
+   a settle that is pure in p is a wobble under a slow scroll, and the
+   critically damped hand already lands without one. Pure in p for the pose
+   and for whether the ink is live; the name's clock starts on the crossing
+   and is skipped on a landing (cold load, a jump of > .3 vh, reduced
+   motion), where the card is simply there, written and signed. */
 const F02 = {
-  STAND: 0.86,   /* p · theta is 0 here: face-on, and the ink prints */
-  NAME: 0.9,     /* p · the name starts writing (after the print pass) */
-  PASS_MS: 280,  /* the print pass, header to handles */
-  ROW_MS: 90,    /* one row's print inside it */
+  STAND: 0.86,   /* p · theta is 0 here: face-on, the live ink shows */
+  NAME: 0.68,    /* p · the name starts writing (theta ~12 deg): it finishes as the card lands, or just after */
   WRITE_MS: 900, /* the name, at writing speed */
-  KZ: 0.55,      /* the light's reach back along the ground per unit of standing height */
-  FRINGE: 0.06,  /* the shadow's reach past a lying card's far edge: a card on a desk, not in a void */
+  HANDOVER_MS: 120, /* picture to words at theta 0: the two coincide to the glyph edge (measured), and a crossfade this short hides the edge */
+  START: 0.92,   /* phone window · p 0 with this much of the stage on screen: the lying card is whole by p .25 at 390x844 */
+  FLOOR: 0.22,   /* phone window · never shorter than this many vh */
+  MAST: 72,      /* phone window · the park never lifts the stage's top above this (the masthead's foot + 12) */
 };
-const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, print: -1, name: 0, writing: false, t: 0, rules: [], rT: 0,
-  cam: 800, eye: 720, sx: 6, kx: 0.29, head: 36, H: 0, hook: null };
+const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, name: 0, writing: false, fade: -1, t: 0, rules: [], rT: 0,
+  cam: 800, eye: 720, head: 36, H: 0, hook: null, pic: null, npic: null, noff: null, sig: null };
 f02.body = f02.stage.querySelector(".cardbody");
-f02.shadow = f02.stage.querySelector(".cardshadow");
+f02.shade = f02.stage.querySelector(".cardshade");
+f02.foot = f02.stage.querySelector(".cardfoot");
 f02.ink = f02.stage.querySelector(".engcard");
 f02.rows = [f02.ink.querySelector("header"), f02.ink.querySelector(".sigwell"), ...f02.ink.querySelectorAll(".engrows > li")];
+const f02dpr = () => Math.min(3, devicePixelRatio || 1);
+const f02off = (w, h) => {
+  if (typeof OffscreenCanvas === "function") return new OffscreenCanvas(w, h);
+  const c = document.createElement("canvas"); c.width = w; c.height = h; return c;
+};
+/* a canvas font from a computed style; and a text node's ascent MEASURED
+   IN THE DOM: a zero-size inline-block set after the node sits on its
+   line's baseline, and the node's last glyph box gives that line's top.
+   measureText's fontBoundingBoxAscent is the font's ascent rounded (10,
+   11, 29 here) while Blink lays text out with it unrounded (~9.6, ~10.3,
+   ~29.0): the half pixel between them flips whole rows at the handover,
+   measured row by row at DPR 1 and 2. */
+const f02font = (cs) => `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+function f02ascent(node, rg) {
+  const s = node.textContent;
+  let last = s.length - 1;
+  while (last > 0 && /\s/.test(s[last])) last--;
+  rg.setStart(node, last); rg.setEnd(node, last + 1);
+  const lr = rg.getClientRects()[0];
+  const probe = document.createElement("i");
+  probe.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline;padding:0;margin:0;border:0";
+  node.parentNode.insertBefore(probe, node.nextSibling);
+  const base = probe.getBoundingClientRect().top;
+  probe.remove();
+  return lr ? base - lr.top : parseFloat(getComputedStyle(node.parentElement).fontSize) * 0.7;
+}
+/* every character of a text node at its own box, relative to `origin`'s
+   rect with an ancestor scale undone; runs on one line keep their underline */
+function f02glyphs(g, node, origin, k, out) {
+  const s = node.textContent, el = node.parentElement, cs = getComputedStyle(el);
+  const rg = document.createRange();
+  const font = f02font(cs), color = cs.color, asc = f02ascent(node, rg);
+  const link = el.closest("a"), ls = link ? getComputedStyle(link) : null;
+  const under = ls ? { color: ls.textDecorationColor, off: parseFloat(ls.textUnderlineOffset) || 3, th: parseFloat(ls.textDecorationThickness) || 1 } : null;
+  let run = null;
+  const flush = () => { if (run && under) out.push({ rect: [run.x0, Math.round(run.y) + under.off, run.x1 - run.x0, under.th], color: under.color }); run = null; };
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === " " || ch === "\n" || ch === "\t") continue;
+    rg.setStart(node, i); rg.setEnd(node, i + 1);
+    const r = rg.getClientRects()[0];
+    if (!r || !r.width) continue;
+    /* the baseline is left fractional: canvas rounds it to a device row
+       itself, and from an integer origin (layWho) that is the row Blink
+       paints the live glyph on. A rounding rule of my own here matched one
+       seat and broke another, because the rule was really the stage's
+       fractional document top; measured row by row. */
+    const x = (r.left - origin.left) * k, y = (r.top - origin.top) * k + asc, x1 = x + r.width * k;
+    out.push({ ch, x, y, font, color });
+    if (run && Math.abs(run.y - y) < 0.5) { run.x1 = x1; } else { flush(); run = { x0: x, x1, y }; }
+  }
+  flush();
+}
+/* the picture of the ink: the live layer, everything but the name, as the
+   posed body carries it. Drawn offscreen, blitted once. */
+function inkPicture() {
+  const f = f02, dpr = f02dpr();
+  const W = f.ink.offsetWidth, H = f.ink.offsetHeight, ir = f.ink.getBoundingClientRect(), k = W / (ir.width || W);
+  if (!f.pic) { f.pic = document.createElement("canvas"); f.pic.className = "inkpic"; f.pic.setAttribute("aria-hidden", "true"); f.body.appendChild(f.pic); }
+  const c = f.pic, cw = Math.round(W * dpr), chh = Math.round(H * dpr);
+  c.width = cw; c.height = chh; c.style.cssText = `left:0;top:0;width:${W}px;height:${H}px`;
+  const off = f02off(cw, chh), g = off.getContext("2d");
+  g.scale(dpr, dpr); g.textBaseline = "alphabetic";
+  const items = [];
+  const walk = document.createTreeWalker(f.ink, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) => (!n.textContent.trim() || n.parentElement.closest("#sig, #signib") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT) });
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) f02glyphs(g, n, ir, k, items);
+  for (const it of items) {
+    g.fillStyle = it.color;
+    if (it.rect) g.fillRect(...it.rect);
+    else { g.font = it.font; g.fillText(it.ch, it.x, it.y); }
+  }
+  c.getContext("2d").drawImage(off, 0, 0);
+  f.glyphs = items.length; /* probe */
+}
+/* the name's picture: the well on its own small canvas, the glyphs at the
+   live #sig's boxes clipped at t of its width, the nib where .signib rides */
+function sigPicture() {
+  const f = f02, dpr = f02dpr(), well = f.ink.querySelector(".sigwell"), sig = who.sig, nib = who.nib;
+  const wr = well.getBoundingClientRect(), k = well.offsetWidth / (wr.width || well.offsetWidth);
+  if (!f.npic) { f.npic = document.createElement("canvas"); f.npic.className = "namepic"; f.npic.setAttribute("aria-hidden", "true"); f.body.appendChild(f.npic); }
+  const W = well.offsetWidth, H = well.offsetHeight;
+  f.npic.width = Math.round(W * dpr); f.npic.height = Math.round(H * dpr);
+  f.npic.style.cssText = `left:${well.offsetLeft}px;top:${well.offsetTop}px;width:${W}px;height:${H}px`;
+  f.noff = f02off(f.npic.width, f.npic.height);
+  const g = f.noff.getContext("2d"), items = [];
+  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.textBaseline = "alphabetic";
+  for (const n of sig.childNodes) if (n.nodeType === 3) f02glyphs(g, n, wr, k, items);
+  const ns = getComputedStyle(nib);
+  f.sig = { W, H, x: sig.offsetLeft, w: sig.offsetWidth, items, nib: { x: parseFloat(ns.width) / 2, y: nib.offsetTop + parseFloat(ns.height) / 2, r: parseFloat(ns.width) / 2, color: ns.backgroundColor } };
+}
+function namePicture(t) {
+  const f = f02, S = f.sig;
+  if (!S) return;
+  const dpr = f02dpr(), g = f.noff.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, S.W, S.H);
+  if (t > 0) {
+    g.save(); g.beginPath(); g.rect(0, 0, S.x + S.w * t, S.H); g.clip();
+    g.textBaseline = "alphabetic";
+    for (const it of S.items) { g.font = it.font; g.fillStyle = it.color; g.fillText(it.ch, it.x, it.y); }
+    g.restore();
+  }
+  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + S.w * t, S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
+  const c = f.npic.getContext("2d");
+  c.clearRect(0, 0, f.npic.width, f.npic.height); c.drawImage(f.noff, 0, 0);
+}
 /* the layout, once per face and seat: the body's rules sit where the ink's
-   row borders are, and the camera's origin is set from the hinge so
-   --f02-eye reads as a height above it whatever the card's height here */
+   row borders are, the camera's origin is set from the hinge so --f02-eye
+   reads as a height above it whatever the card's height here, and the two
+   pictures are drawn */
 function layWho() {
   const f = f02, cs = getComputedStyle(f.stage.parentElement), v = (k) => parseFloat(cs.getPropertyValue(k));
-  f.cam = v("--f02-cam"); f.eye = v("--f02-eye"); f.sx = v("--f02-sx"); f.kx = v("--f02-kx"); f.head = v("--f02-head");
+  f.cam = v("--f02-cam"); f.eye = v("--f02-eye"); f.head = v("--f02-head");
+  /* AN INTEGER ORIGIN. The body and the ink are two layers on one document
+     box; Blink paints a glyph at round(origin + y) and places a layer at
+     round(origin), and the two agree only when the origin is whole. The
+     stage's document top is whatever the prose above made it (191.5 at
+     1440, 99.9 at 390), so the stage is nudged up and left by that
+     fraction: invisible, and it makes the canvas's own baseline rounding
+     the live text's. Measured at the handover (lane note). */
+  f.stage.style.top = ""; f.stage.style.left = "";
+  const sr = f.stage.getBoundingClientRect(), fy = (sr.top + scrollY) % 1, fx = (sr.left + scrollX) % 1;
+  if (fy > 0.001 || fx > 0.001) { f.stage.style.top = `${(-fy).toFixed(3)}px`; f.stage.style.left = `${(-fx).toFixed(3)}px`; }
   f.H = f.ink.offsetHeight;
   f.stage.style.perspectiveOrigin = `50% ${(f.head + f.H - f.eye).toFixed(1)}px`;
   f.rows.forEach((row, i) => {
@@ -7590,70 +7743,86 @@ function layWho() {
     if (!r) { r = document.createElement("i"); r.className = i ? "rule" : "rule strong"; f.body.appendChild(r); f.rules[i] = r; }
     r.style.cssText = `top:${row.offsetTop + row.offsetHeight - 1}px; left:${row.offsetLeft}px; width:${row.offsetWidth}px`;
   });
+  inkPicture(); sigPicture(); namePicture(Math.max(f.name, who.t || 0));
   if (!Number.isNaN(f.th)) poseWho(f.th); /* the same pose under the new camera */
-  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, hinge: f.head + f.H, rules: f.rules.length }; /* probe hook */
+  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, W: f.ink.offsetWidth, hinge: f.head + f.H, rules: f.rules.length, glyphs: f.glyphs, inset: v("--f02-inset"), nudge: [+fx.toFixed(3), +fy.toFixed(3)] }; /* probe hook */
 }
 /* the pose at theta (degrees from face-on; 90 is lying): the body about its
-   foot, and the shadow's depth and skew on the ground */
+   foot; the shade's reach along the desk and its width; the contact line */
 function poseWho(th) {
   const f = f02, a = (th * Math.PI) / 180, s = Math.sin(a), c = Math.cos(a);
   f.body.style.transform = `rotateX(${th.toFixed(3)}deg)`;
-  const k = s + F02.KZ * c + F02.FRINGE, skew = (Math.atan2(f.kx * c, k) * 180) / Math.PI;
-  f.shadow.style.transform = `rotateX(90deg) translateX(${f.sx}px) skewX(${(-skew).toFixed(3)}deg) scaleY(${k.toFixed(4)})`;
-}
-/* the rows' print, t 0..1 of the pass: each row inks over ROW_MS, the next
-   starting a stagger later, header first and the handles last */
-function whoRows(t) {
-  const f = f02, stagger = (F02.PASS_MS - F02.ROW_MS) / Math.max(1, f.rows.length - 1);
-  f.rows.forEach((row, i) => {
-    const o = t >= 1 ? "" : clamp((t * F02.PASS_MS - i * stagger) / F02.ROW_MS, 0, 1).toFixed(3);
-    if (row._o !== o) { row._o = o; row.style.opacity = o; }
-  });
+  f.shade.style.transform = `rotateX(90deg) translateX(${(6 * s).toFixed(2)}px) scale(${(0.85 + 0.2 * s).toFixed(4)}, ${(s + 0.08).toFixed(4)})`;
+  f.foot.style.opacity = c.toFixed(3);
 }
 function drawWho(p) {
   const f = f02;
-  const landed = RM || Number.isNaN(f.p) || Math.abs(p - f.p) > 0.3; /* a landing, not a motion: no clocks */
+  const landed = RM || Number.isNaN(f.p) || Math.abs(p - f.p) > 0.3; /* a landing, not a motion: no clock */
   f.p = p;
   const th = 90 * (1 - smooth(p / F02.STAND));
   if (th !== f.th) { f.th = th; poseWho(th); }
   const on = th === 0;
   if (on !== f.on) {
     f.on = on;
-    f.stage.dataset.ink = on ? "1" : "0";
-    if (!on) { f.print = -1; whoRows(0); }           /* at any angle: hidden at once */
-    else if (landed) { f.print = 1; whoRows(1); }     /* arrived: printed */
-    else { f.print = 0; whoRows(0); stir(whoStep); }  /* face-on: the pass runs */
+    if (!on) { f.stage.dataset.ink = "0"; whoFade(-1); namePicture(f.name); } /* posed again: the picture carries the name where the live text has it */
+    else if (landed) { f.stage.dataset.ink = "1"; whoFade(-1); }
+    else { f.stage.dataset.ink = "2"; whoFade(0); stir(whoStep); }  /* face-on: the words take over from the picture */
   }
   if (p >= F02.NAME && f.name < 1 && !f.writing) {
-    if (landed) { f.name = 1; scrubWho(1); }
+    if (landed) { f.name = 1; scrubWho(1); namePicture(1); }
     else { f.writing = true; stir(whoStep); }
   }
-  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), ink: on ? 1 : 0, print: +f.print.toFixed(3), name: +f.name.toFixed(3), landed }; /* probe hook; the clocks below keep it current */
+  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
 }
-/* the hand: the print pass, then the name, one stepper on the engine's loop */
+/* the handover's crossfade: t 0..1 live over picture; -1 clears it */
+function whoFade(t) {
+  const f = f02;
+  f.fade = t;
+  const live = t < 0 ? "" : t.toFixed(3), pic = t < 0 ? "" : (1 - t).toFixed(3);
+  f.ink.style.opacity = live;
+  if (f.pic) f.pic.style.opacity = pic;
+  if (f.npic) f.npic.style.opacity = pic;
+}
+/* the hand: the name's stroke and the handover, one stepper on the
+   engine's loop; the name is drawn on the picture while the card is posed or
+   crossfading, and on the live text always */
 function whoStep(now) {
   const f = f02;
   const dt = f.t ? Math.min(0.05, (now - f.t) / 1000) : 1 / 60;
   f.t = now;
   let moving = false;
-  const printing = f.print >= 0 && f.print < 1;
-  if (printing) {
-    f.print = Math.min(1, f.print + (dt * 1000) / F02.PASS_MS);
-    whoRows(f.print);
-    moving = f.print < 1;
-  }
   if (f.writing) {
-    if (!printing) { f.name = Math.min(1, f.name + (dt * 1000) / F02.WRITE_MS); scrubWho(f.name); }
+    f.name = Math.min(1, f.name + (dt * 1000) / F02.WRITE_MS);
+    scrubWho(f.name);
+    if (f.hook) f.hook.name = +f.name.toFixed(3);
     if (f.name >= 1) f.writing = false; else moving = true;
   }
-  if (f.hook) { f.hook.print = +f.print.toFixed(3); f.hook.name = +f.name.toFixed(3); }
+  if (f.fade >= 0) {
+    const t = Math.min(1, f.fade + (dt * 1000) / F02.HANDOVER_MS);
+    if (t >= 1) { f.stage.dataset.ink = "1"; whoFade(-1); } else { whoFade(t); moving = true; }
+  }
+  if (!f.on || f.fade >= 0) namePicture(f.name);
   if (!moving) f.t = 0;
   return moving;
 }
-/* built on the real face (the rules are measured off the ink), registered
-   before boot's own continuation of the same promise measures the window;
-   re-laid on every seat change after the engine's own pass */
-function buildWho() { layWho(); asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho }); }
+/* the phone's window (the driver's own per-figure option): the lying card
+   lives at the stage's foot, so p 0 waits until START of the stage is on
+   screen (the whole lying card is in by p .25 at 390x844, measured); the
+   park never lifts the stage's top under the masthead; and the window is
+   never shorter than FLOOR of the screen (a 667-tall phone has no park that
+   fits a 639 px stage, so there the top wins and the handles row waits
+   under the fold) */
+function whoWindow(e) {
+  if (!mobile) return null;
+  const yB = Math.min(e.top + e.h / 2 - ASM_END * vh, e.top - F02.MAST);
+  const yA = Math.min(e.top + F02.START * e.h - vh, yB - F02.FLOOR * vh);
+  return { yA, yB };
+}
+/* built on the real face (the rules and the pictures are measured off the
+   ink), registered before boot's own continuation of the same promise
+   measures the window; re-laid on every seat change after the engine's own
+   pass */
+function buildWho() { layWho(); asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho, window: whoWindow }); }
 document.fonts.ready.then(buildWho, buildWho);
 addEventListener("resize", () => { if (seatChanged) { clearTimeout(f02.rT); f02.rT = setTimeout(layWho, 200); } });
 
