@@ -7821,8 +7821,9 @@ function figSvg(host, cls, w, h) {
    is a lane off the rail with ONE railway signal on it, the verdict board
    hung on the signal itself, and ONE goods wagon (the work that was checked).
    Same signal, same wagon at the same x on every row; only the state changes.
-     Applied    the lower lamp lit in pine, and the wagon through: past the
-                signal and on down the lane, an arrow on the lane behind it.
+     Applied    the lower lamp lit in pine, and the wagon through: just past
+                the signal, an arrow on the lane behind it; on a phone it is
+                leaving by the screen's edge.
      PolicyBot  the upper lamp lit in clay, and the wagon halted nose-in before
                 the signal. Nothing moves.
      Glyph      the upper lamp lit, the wagon struck through with an X and SENT
@@ -7868,8 +7869,9 @@ function figSvg(host, cls, w, h) {
    sends the retracted wagon back a shorter way.
 
    TWO CLOCKS ON ONE PLATE. The evidence inks on the driver's p (drawGates:
-   the three lanes, then each row's signal whole, then its wagon whole, top
-   row first). The dispositions ride the bead through scrubGates, and in every
+   the three lanes, then the three signals, then the three wagons, each
+   whole, top row first). The dispositions ride the bead through scrubGates,
+   and in every
    row the lamp leads: it lights, the board reads, and only then does
    anything move. A row's paint() is the one writer of both clocks, so the
    plate is a function of (p, u) whichever ran last, and a disposition never
@@ -7965,29 +7967,44 @@ function buildGates(js) {
   });
   const wdx = GS.wd * C30, tan = 0.5 / C30, span = GS.wag + wdx;
   const rayEnd = GS.rayX + GS.ray[1];   /* right of P: as far as a lit lamp's light reaches */
+  /* the screen's own right edge, in the host's px: the one frame a reader
+     can see on a phone (a bare plate's edge is not drawn), so it is where a
+     wagon that cannot stand whole on the lane leaves the picture */
+  const edge = (document.documentElement.clientWidth - hr.left) * k - 2;
   /* THE SENT-BACK WAGON stands 12px clear of the junction's square, which is
      as far back as the lane goes. The held one stands nose-in at the post
      (its roof's corner 8 clear of the head), so the distance between the two
      rows' wagons is the whole of the verdict's difference: D = P - T - 119.
-     THE PASSED WAGON stands past the lit lamp's light with 12px of air. So P
-     has a floor in the words, the board and a D of at least 30, and a ceiling
-     where the passed wagon still fits whole; between them it takes the D a
-     reader reads at a glance, 60, and on a laptop the words give it far more.
-     A plate too narrow for both (320) keeps the floor and lets the passed
-     wagon leave by the plate's edge. */
+     THE PASSED WAGON STANDS JUST PAST ITS OWN ARROW, 85 right of the post:
+     12 of air after the light, the arrow's 28, 10 more. On a laptop that
+     ends it inside the column the other rows occupy, where a reader
+     scanning the rows meets it (at W - 98 it ran out into the margin and a
+     cold reader missed it). Where the screen cannot hold it whole past its
+     arrow, the phones, it LEAVES BY THE SCREEN'S EDGE with 62 of its 84
+     showing (both wheels and the door) and the lane running off the screen
+     under it: "went through, travelling right" has to live in the geometry
+     at every width, because green against orange is the pair a
+     colour-blind reader loses (the cold reader, v9). So P has a floor in
+     the words, the board and a D of at least 30, and a ceiling where the
+     leaving wagon still shows its 62; between them it takes the D a reader
+     reads at a glance, 60, and on a laptop the words give it far more. */
   const xBack = T + 15;
   const floorP = Math.max(T + 149, clear);
-  const ceilP = W - 2 - span - rayEnd - 12;
+  const ceilP = edge - 62 - 85 - 4;
   const P = Math.max(floorP, Math.min(Math.max(T + 179, floorP), ceilP));
   const xHalt = P - 104;
-  const xGone = Math.max(P + rayEnd + 12, Math.min(W - 98, W - 2 - span));
-  const leaves = xGone + span > W - 1;
+  const leaves = P + 85 + span > edge - 8;
+  const xGone = leaves ? edge - 62 : P + 85;
   const laneEnd = Math.min(W, P + 40);   /* every lane stops just past the signal at the park */
+  /* the open way beyond the passed row's signal runs to the plate's edge, or
+     off the screen under a leaving wagon, and never stops short of the wagon
+     standing on it (at 1024 the wagon ends 7 past a 600px plate) */
+  const laneFar = leaves ? edge : Math.max(W, xGone + span + 24);
   /* THE ARROWS ARE DROPPED, NEVER SHRUNK (L8), where the lane cannot hold
      them with air: the passed one wants its tail 12px past the light, the
-     sent-back one its tail 4px short of the base. On a phone the passed
-     wagon stands 12px past the light, so that arrow goes, and the lane
-     running off the plate's edge says the same thing. */
+     sent-back one its tail 4px short of the base. At 320 P is at its floor
+     and the leaving wagon takes the stretch the passed arrow needs, so that
+     one width says "gone" by the wagon leaving alone. */
   const fwdTip = xGone - 10, backTip = xBack + span + 8;
   const fwdOK = fwdTip - AR.len >= P + rayEnd + 12;
   const backOK = backTip + AR.len <= P - 8 - 4;
@@ -7995,11 +8012,11 @@ function buildGates(js) {
   const hy = (y) => y - GS.base - GS.post - GS.head;
   /* row 0's wagon rolls past the signal, which stands on the near side of the
      line: the wagon is cut where the signal covers it (the head and its depth,
-     the post, the base), and, where it leaves by the plate's edge, at the
+     the post, the base), and, where it leaves by the screen's edge, at that
      edge. One clip per row 0, evenodd, holes that never overlap. */
   const passClip = (y) => {
     const t = hy(y), dx = GS.hd * C30, dy = GS.hd / 2;
-    const outer = `M-400 -40H${n1(leaves ? W : W + 400)}V${n1(H + 80)}H-400Z`;
+    const outer = `M-400 -40H${n1(leaves ? edge : W + 400)}V${n1(H + 80)}H-400Z`;
     const headS = `M${n1(hx - 1)} ${n1(t + GS.head + 1)}V${n1(t - 1)}L${n1(hx - 1 + dx)} ${n1(t - 1 - dy)}` +
       `H${n1(hx + GS.hw + 1 + dx)}V${n1(t + GS.head + 1 - dy)}L${n1(hx + GS.hw + 1)} ${n1(t + GS.head + 1)}Z`;
     const postS = box(P - 1.5, t + GS.head + 1, 3, GS.post - 2);
@@ -8022,7 +8039,7 @@ function buildGates(js) {
        just past its signal, and the open way beyond is the passed row's */
     const lane = dPath("g-lane", seg(T, y, laneEnd, y), { "data-o": "lane" });
     add(g, lane);
-    const laneOn = i === 0 && W - laneEnd > 1 ? dPath("g-lane", seg(laneEnd, y, W, y)) : null;
+    const laneOn = i === 0 && laneFar - laneEnd > 1 ? dPath("g-lane", seg(laneEnd, y, laneFar, y)) : null;
     add(g, laneOn);
     /* the arrows mark the way each load went, on the lane in the stretch it
        travelled: behind the passed wagon pointing on, ahead of the sent-back
@@ -8127,16 +8144,18 @@ function buildGates(js) {
      seat too short to park the bead past all three junctions */
   window.__world.fig10 = { nodes: svg.querySelectorAll("*").length, draw: drawGates,
     bead: scrubGates, at: { T, P, xHalt, xBack, xGone, D: +(xHalt - xBack).toFixed(1), leaves, W, clear: +clear.toFixed(1), boards: bws,
-      rayEnd: P + rayEnd, arrows: [fwdOK, backOK] } };
+      rayEnd: P + rayEnd, arrows: [fwdOK, backOK], edge: +edge.toFixed(1), shows: +(leaves ? edge - xGone : span).toFixed(1) } };
 }
 /* the evidence as a still of p, whole objects only, so a half-scrolled plate
-   never shows a post without its head or half a wagon: the three lanes first,
-   top to bottom, then each row in its own tenth-and-a-half of p, top row
-   first, its signal and then its wagon. Every switch is 0 or 1. */
+   never shows a post without its head or half a wagon: the three lanes
+   first, top to bottom, then the three signals, then the three wagons. The
+   checkpoints all stand before any load arrives, so a frame half way
+   through is a drawing in progress and never a finished row over an empty
+   track (the cold reader at p .5, v9: "a picture that failed to load").
+   Every switch is 0 or 1. */
 function drawGates(p) {
   for (const r of gates.rows) {
-    const a = 0.1 + 0.3 * r.i;
-    const on = { lane: p >= 0.02 + 0.03 * r.i, sig: p >= a + 0.03, wagon: p >= a + 0.15 };
+    const on = { lane: p >= 0.02 + 0.03 * r.i, sig: p >= 0.14 + 0.12 * r.i, wagon: p >= 0.5 + 0.15 * r.i };
     if (on.lane === r.on.lane && on.sig === r.on.sig && on.wagon === r.on.wagon) continue;
     r.on = on;
     r.paint();
