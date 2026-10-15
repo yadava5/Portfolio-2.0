@@ -6,6 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
  *
  *   G2  · no HTML text under 12px EFFECTIVE at 390 and 1440
  *   G2b · the same floor for the tight (phone) SVG figure editions
+ *   G2c · fig. 02's words are never shown under its pose
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
@@ -379,6 +380,155 @@ test.describe("G2 · the reading floor under a camera", () => {
       "the same line at translateZ(0) must read 16px: the projection is " +
         "shrinking text that is not pushed back"
     ).toBeGreaterThanOrEqual(15.5);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   G2c · fig. 02's words are never posed (v10)
+
+   Fig. 02 is a record card that lies on the desk and stands up toward the
+   reader as they scroll: one rotateX on the card's body, under the stage's
+   perspective. Its words are HTML, and a word under that pose is a word
+   scaled to fake depth, which the run never does. So while the card is
+   posed the reader sees a picture of the ink on the posed body, and the
+   live words take over only face-on (theta 0). At every frame of a scroll
+   through its window, down and back up, at a reader's pace, at 800 px/s
+   and at 1500 px/s, no text node under #fig02 may be visible while theta
+   is above 0. The probe is __world.fig02.theta and the effOpacity G2 uses.
+   A run that never saw the card posed, or never saw it stand, proves
+   nothing and fails.
+   ══════════════════════════════════════════════════════════════════════ */
+const POSE_MAX = 0.05;
+type PoseRun = {
+  posed: number;
+  face: number;
+  worst: number;
+  at: string;
+  theta: number;
+};
+/** drives the scroll from the page's own frames and reads each one */
+async function poseRun(page: Page): Promise<PoseRun> {
+  await page.waitForFunction(
+    () =>
+      !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
+        .__world.asm?.fig02,
+    null,
+    { timeout: 15000 }
+  );
+  return page.evaluate(
+    () =>
+      new Promise<PoseRun>((done) => {
+        const w = (
+          window as unknown as {
+            __world: {
+              asm: Record<string, { yA: number; yB: number }>;
+              fig02?: { theta: number };
+            };
+          }
+        ).__world;
+        const a = w.asm.fig02;
+        const nodes: Text[] = [];
+        const walk = document.createTreeWalker(
+          document.getElementById("fig02")!,
+          NodeFilter.SHOW_TEXT
+        );
+        for (let n = walk.nextNode(); n; n = walk.nextNode())
+          if (n.textContent!.trim()) nodes.push(n as Text);
+        /* px per frame: a reader, 800 px/s and 1500 px/s at 60 Hz; each
+           leg ends with 40 still frames so the hand lands where it goes */
+        const plan: number[] = [];
+        const y0 = Math.max(0, a.yA - 60);
+        const y1 = a.yB + 60;
+        for (const v of [3, 13, 25]) {
+          for (let y = y0; y < y1; y += v) plan.push(y);
+          for (let k = 0; k < 40; k++) plan.push(y1);
+          for (let y = y1; y > y0; y -= v) plan.push(y);
+          for (let k = 0; k < 40; k++) plan.push(y0);
+        }
+        const r: PoseRun = { posed: 0, face: 0, worst: 0, at: "", theta: 0 };
+        let i = 0;
+        const tick = () => {
+          const th = w.fig02?.theta ?? NaN;
+          if (th > 0) {
+            r.posed++;
+            for (const n of nodes) {
+              const o = window.__gate.effOpacity(n.parentElement!);
+              if (o > r.worst) {
+                r.worst = o;
+                r.theta = th;
+                r.at = `${window.__gate.sel(n.parentElement!)} · ${n.textContent!.trim().slice(0, 24)}`;
+              }
+            }
+          } else if (th === 0) r.face++;
+          if (i < plan.length) {
+            window.scrollTo({ top: plan[i++], behavior: "instant" });
+            requestAnimationFrame(tick);
+          } else done(r);
+        };
+        requestAnimationFrame(tick);
+      })
+  );
+}
+function expectNeverPosed(r: PoseRun): void {
+  expect(
+    r.posed,
+    "the run must see the card posed, or it proves nothing"
+  ).toBeGreaterThan(20);
+  expect(r.face, "and it must see the card stand face-on").toBeGreaterThan(0);
+  expect(
+    r.worst,
+    `live words on the posed card: ${r.at} at opacity ${r.worst} with theta ${r.theta}`
+  ).toBeLessThanOrEqual(POSE_MAX);
+}
+
+test.describe("G2c · fig. 02's words are never posed", () => {
+  test("at 1440", async ({ page }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await installProbes(page);
+    await arrive(page);
+    expectNeverPosed(await poseRun(page));
+  });
+
+  test("at 390", async ({ browser, baseURL }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      isMobile: true,
+      hasTouch: true,
+      deviceScaleFactor: 1,
+      baseURL,
+    });
+    try {
+      const p = await ctx.newPage();
+      await installProbes(p);
+      await arrive(p);
+      expectNeverPosed(await poseRun(p));
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  /* THE GATE CAN FAIL. The same run on a card whose words stay visible
+     under the pose (the posed state's own hiding rule defeated) must find
+     them, at full opacity, while theta is above 0 */
+  test("positive control: words left on the posed card are caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await installProbes(page);
+    await arrive(page);
+    await page.addStyleTag({
+      content:
+        '.record .stage[data-ink="0"] .engcard{visibility:visible !important}',
+    });
+    const r = await poseRun(page);
+    expect(r.posed).toBeGreaterThan(20);
+    expect(
+      r.worst,
+      "words on the posed card were left visible and the run did not see them"
+    ).toBeGreaterThan(POSE_MAX);
   });
 });
 

@@ -925,6 +925,8 @@ test.describe("the type answers the hand, and comes back to rest", () => {
    the fold is not a park, and nothing graces while the reader scrolls. */
 test.describe("the figures assemble with the scroll", () => {
   const FIGS = [
+    ["fig02", "fig02"],
+    ["fig03", "pathFig"],
     ["fig04", "appliedFig"],
     ["fig06", "net"],
     ["fig07", "jetFig"],
@@ -938,6 +940,13 @@ test.describe("the figures assemble with the scroll", () => {
      plate is a different picture by design; what the later-scroll equality
      guards for the driver is only that the assembly stays finished. */
   const BEAD = new Set<string>(["fig10", "fig11"]);
+  /* A HIGH-WATER MARK IS NOT A SCRUB. Fig. 02's name is written on with the
+     pen's pace as its floor and is never unwritten (a name that unsigns as
+     the reader scrolls back reads as an error), so the name and its nib are
+     a function of the furthest the reader has been, not of y: the pure law
+     is held on the rest of the card (its pose, its shadow, the handover),
+     and the name's own law is G2c's and the lane's */
+  const SKIP: Record<string, string> = { fig02: "#sig, #signib" };
   /* THE FLOOR IS THE ENVELOPE, NOT SLACK. A centred park (the drawing's
      middle at 0.5 vh) sits 0.05 vh short of the end line at ASM_END 0.45,
      so its pure p is 1 - 0.05 vh / window. Measured on this build at the
@@ -988,13 +997,18 @@ test.describe("the figures assemble with the scroll", () => {
   };
   const canon = (page: import("@playwright/test").Page, id: string) =>
     page.evaluate(
-      (i) =>
+      ([i, skip]) =>
         [...document.getElementById(i)!.querySelectorAll("*")]
+          .filter((e) => !skip || !e.closest(skip))
           .map(
             (e) =>
               e.tagName +
               "|" +
               [...e.attributes]
+                /* a style attribute with nothing in it declares nothing: a
+                   cleared inline property leaves style="" behind, and that is
+                   the same drawing as no attribute at all */
+                .filter((a) => a.name !== "style" || a.value.trim() !== "")
                 .map((a) => a.name + "=" + a.value)
                 .sort()
                 .join(",") +
@@ -1002,7 +1016,7 @@ test.describe("the figures assemble with the scroll", () => {
               (e.children.length ? "" : e.textContent)
           )
           .join("\n"),
-      id
+      [id, SKIP[id] ?? ""] as const
     );
   const open = async (page: import("@playwright/test").Page) => {
     await page.goto("/");
