@@ -7919,13 +7919,17 @@ function buildGates(js) {
       a4put(lane, "opacity", bin(on.lane));
       a4put(sig, "opacity", bin(on.sig));
       a4put(wag, "opacity", bin(on.wagon));
-      const lit = on.sig && u >= 0.3;
+      /* a verdict lands on a checked load: no lamp, board or open way until
+         the row's signal AND its wagon have inked, so a flick that runs the
+         bead ahead of p never shows "caught" over an empty lane */
+      const ready = on.sig && on.wagon;
+      const lit = ready && u >= 0.3;
       a4cls(lens, cls, lit);
       a4put(rays, "opacity", bin(lit));
       a4put(brackets, "opacity", bin(lit));
       if (rec.gw !== bin(lit)) { rec.gw = bin(lit); row.style.setProperty("--gw", rec.gw); }
-      if (laneOn) a4put(laneOn, "opacity", bin(on.lane && u >= 0.35));
-      if (arrow) a4put(arrow, "opacity", bin(on.lane && u >= 0.85));
+      if (laneOn) a4put(laneOn, "opacity", bin(on.lane && ready && u >= 0.35));
+      if (arrow) a4put(arrow, "opacity", bin(on.lane && ready && u >= 0.85));
       const dx = i === 0 ? (xGone - xHalt) * smooth((u - 0.4) / 0.45)
         : i === 2 ? (xBack - xHalt) * smooth((u - 0.5) / 0.35) : 0;
       a4put(wag, "transform", `translate(${n1(dx)} 0)`);
