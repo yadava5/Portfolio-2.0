@@ -2049,20 +2049,21 @@ if (location.hash.length > 1) {
   .gates .gwhy{position:absolute; left:var(--gtext, 44px); top:36px;
     font-family:var(--body); font-style:italic; font-size:var(--fs-small);
     line-height:1.45; letter-spacing:0; word-spacing:.12em; color:var(--ink-2)}
-  /* THE SLIP IS A SIGNBOARD (v9), planted just past the signal it speaks
-     for. v8 stood it at the docket's right edge, a column away from anything
-     it judged, and a verdict that far from its object is a verdict a reader
-     attributes by row rather than by sight. The box is the board, the word
-     is the ink on it, crooked because a hand put it there, and buildGates
-     draws the post it stands on. Where it stands is a measurement of the
-     drawing, so buildGates writes --slx and --sly on the row and this rule
-     only reads them. */
-  /* THE SLIP ARRIVES WITH ITS WORD, not before it, and its post with it.
-     An empty ruled box, or a bare post, reads as a mistake rather than as a
-     board waiting. One object, one switch, and the switch is 0 or 1 like
-     every other opacity here. */
+  /* THE SLIP IS THE SIGNAL'S BOARD (v9). v8 stood it at the docket's right
+     edge, a column away from anything it judged; phase 1 planted it on its
+     own post in the lane, where it read as a second decider wider than a
+     wagon. It hangs on the signal now, on two brackets off the head's
+     approach side, level with the head's face: the signal decides, the
+     board is its reading. As wide as its word and no wider, 20 tall, the
+     word the ink on it, crooked because a hand put it there. Where it hangs
+     is a measurement of the drawing, so buildGates writes --slx and --sly on
+     the row and this rule only reads them. */
+  /* THE SLIP ARRIVES WITH ITS WORD, not before it, and its brackets with it,
+     at the moment the lamp lights. An empty ruled box reads as a mistake
+     rather than as a board waiting. One object, one switch, and the switch
+     is 0 or 1 like every other opacity here. */
   .gates .gslip{position:absolute; left:var(--slx, 0px); top:var(--sly, 0px);
-    width:96px; height:24px; border:1px solid var(--ink-2);
+    height:20px; padding:0 6px; border:1px solid var(--ink-2);
     display:flex; align-items:center; justify-content:center;
     opacity:var(--gw, 0)}
   .gates .gword{display:block; font-family:var(--mono); letter-spacing:.04em;
@@ -2133,35 +2134,39 @@ if (location.hash.length > 1) {
   .gline .g-node{fill:var(--ink); stroke:none}
   /* THE SIGNAL IS THE SUBJECT, and it says so by weight: 2px against 1.2 on
      every other object (1.67 times), --ink for its face and post, --ink-2
-     for the head's depth. Its lenses are the plate's only colour.
-     THE LIT LENS IS THE HEAVY ONE. A dark lens is one thin --ink-2 ring; a
-     lit lens is its ring and a lamp ring inside it, both at the signal's
-     weight in the verdict's colour. They cannot be drawn alike, because the
-     neutral is the brighter ink: --ink-2 is 1.83 times clay-g's luminance,
-     and on the lightest night field the arc paints behind this plate it
-     reads measured: #d9d0c3 on #43372f — 7.54:1 / Lc 71.0 against the lit
-     clay's measured: #e08a5f on #43372f — 4.36:1 / Lc 43.1 and the lit
-     pine's measured: #aecfc0 on #43372f — 6.84:1 / Lc 65.3. So the lit lens
-     carries twice the ink, and position carries the rest: top is stop,
+     for the head's depth. Its lamps are the plate's only colour.
+     A LIT LAMP IS HEAVY AND SHINES. A dark lens is one thin --ink-2 ring; a
+     lit one is a 2.4px ring in the verdict's colour with three short rays
+     off the head's far side. They cannot be drawn alike, because the neutral
+     is the brighter ink: --ink-2 is 1.83 times clay-g's luminance, and on
+     the lightest night field the arc paints behind this plate it reads
+     measured: #d9d0c3 on #43372f — 7.54:1 / Lc 71.0 against the lit clay's
+     measured: #e08a5f on #43372f — 4.36:1 / Lc 43.1 and the lit pine's
+     measured: #aecfc0 on #43372f — 6.84:1 / Lc 65.3. So the lit lamp carries
+     the weight and the rays, and position carries the rest: top is stop,
      bottom is go, which no reader has to learn. */
   .gline .g-sig{stroke:var(--ink); stroke-width:2; fill:none}
   .gline .g-sigd{stroke:var(--ink-2); stroke-width:2; fill:none}
   .gline .g-lens{stroke:var(--ink-2); stroke-width:1.2; fill:none}
-  .gline .g-lens.go, .gline .g-lamp.go{stroke:var(--pine); stroke-width:2}
-  .gline .g-lens.stop, .gline .g-lamp.stop{stroke:var(--clay-g); stroke-width:2}
-  .gline .g-lamp{fill:none}
+  .gline .g-lens.go{stroke:var(--pine); stroke-width:2.4}
+  .gline .g-lens.stop{stroke:var(--clay-g); stroke-width:2.4}
+  .gline .g-ray{stroke-width:1.6; stroke-linecap:round; fill:none}
+  .gline .g-ray.go{stroke:var(--pine)}
+  .gline .g-ray.stop{stroke:var(--clay-g)}
+  /* the board's two brackets off the head: structure, in --ink-2 */
+  .gline .g-bracket{stroke:var(--ink-2); stroke-width:1.2}
   /* THE WAGON IS A SOLID: its front face and wheels in --ink, what recedes
      from the face in --ink-2, and the van's door and solebar in --ink-2 as
      the detail on the face. Nothing is filled. */
   .gline .g-front{stroke:var(--ink); stroke-width:1.2; fill:none}
   .gline .g-back{stroke:var(--ink-2); stroke-width:1.2; fill:none}
   .gline .g-rule{stroke:var(--ink-2); stroke-width:1.2; fill:none}
-  /* the strike through the load that was sent back, and the arrows that say
-     which way each load went; the board's post is structure, in --ink-2 */
-  .gline .g-strike{stroke:var(--clay-g); stroke-width:2}
-  .gline .g-arrow{stroke:var(--ink); stroke-width:1.2; fill:none;
+  /* the X through the load that was sent back, at twice the wagon's weight,
+     and the arrows that say which way each load went: a shaft and a head,
+     because a bare 10px head read as a cursor (the cold reader, phase 1) */
+  .gline .g-strike{stroke:var(--clay-g); stroke-width:2.4}
+  .gline .g-arrow{stroke:var(--ink); stroke-width:1.6; fill:none;
     stroke-linejoin:miter}
-  .gline .g-board{stroke:var(--ink-2); stroke-width:1.2}
   .gline .g-spine{stroke:var(--ink-2); stroke-width:1.2}
   /* fig. 11 · the lanes, the places on them, and the desks at their heads.
      --ink draws what is near or the subject (the lane, the desk's face and
@@ -2482,7 +2487,7 @@ if (location.hash.length > 1) {
   /* 320. Both dockets grow one more line of row, because at 222px of plate
      every reason wraps to two. Nothing is dropped and nothing shrinks: the
      signal, the wagon and the board keep their size, and buildGates stands
-     them closer, the passed wagon in front of the board's post. */
+     them closer and sends the retracted wagon back a shorter way. */
   @media (max-width:360px){
     .gates{--grh:210px; --gjy:166px}
   }
@@ -7659,31 +7664,38 @@ function figSvg(host, cls, w, h) {
 /* ————— fig. 10 · the signals: three checks, each a load at a signal (v9)
    THE PLATE IS ONE SCENE DRAWN THREE TIMES, the way small multiples are read:
    the first row teaches the grammar and the next two read at once. Each check
-   is a lane off the rail with ONE railway signal standing on it, ONE goods
-   wagon (the work that was checked) and a signboard just past the signal
-   with the verdict in words. Same signal, same wagon, same board at the same
-   x on every row; only the state changes.
-     Applied    the lower lens lit in pine and the wagon gone through, on down
-                the lane, which runs to the plate's edge with its arrow.
-     PolicyBot  the upper lens lit in clay and the wagon halted nose-in before
+   is a lane off the rail with ONE railway signal on it, the verdict board
+   hung on the signal itself, and ONE goods wagon (the work that was checked).
+   Same signal, same wagon at the same x on every row; only the state changes.
+     Applied    the lower lamp lit in pine, and the wagon through: past the
+                signal and on down the lane, an arrow on the lane behind it.
+     PolicyBot  the upper lamp lit in clay, and the wagon halted nose-in before
                 the signal. Nothing moves.
-     Glyph      the upper lens lit, and the wagon pushed back 16px, struck
-                corner to corner, with an arrow on the lane sending it back.
+     Glyph      the upper lamp lit, the wagon struck through with an X and SENT
+                BACK, rolled most of the way to the junction, an arrow on the
+                lane ahead of it pointing back.
    v8's tray of ninety six, the twenty cards, the trap siding and its trough,
    the boom and the bench's road are gone: a stranger named them "a bed of
    nails", "a keyboard" and "a ramp" (DIAGNOSIS v9).
 
-   THE VERDICT IS SAID FOUR WAYS, so no reader depends on one: which lens is
+   THE VERDICT IS SAID FOUR WAYS, so no reader depends on one: which lamp is
    lit (top is stop and bottom is go, a convention everybody holds), where the
-   wagon is (through, halted, pushed back), the strike and its arrow, and the
-   board's word. Colour is the last of them: pine against clay-g is 1.57:1, so
-   nothing rides on hue alone.
+   wagon is (through, held at the signal, sent back to the junction), the X
+   and the arrows, and the board's word. Colour is the last of them: pine
+   against clay-g is 1.57:1, so nothing rides on hue alone.
 
-   THE SIGNAL IS THE SUBJECT, and it says so by weight: its strokes are 2px
-   against 1.2 on everything else. The lit lens is a double ring in its colour
-   at that weight; the dark one is a single thin --ink-2 ring, because --ink-2
-   is 1.83 times clay-g's luminance (0.638 against 0.349, measured): drawn
-   alike, the unlit lens out-shines the lit red one.
+   THE BOARD IS THE SIGNAL'S READING, so it hangs on the signal (v9, phase 2):
+   on two brackets off the head's approach side, level with its top, sized to
+   its word. Planted on its own post in the lane it read as a second decider
+   wider than a wagon, and on a phone the passed wagon stood under it "parked
+   at the sign" (the cold reader, phase 1).
+
+   A LIT LAMP SHINES. The cold reader called phase 1's double ring "a target
+   or a selected radio button". A dark lens is one thin --ink-2 ring; a lit
+   one is a heavy ring in its colour with three short rays off the head's far
+   side, which is how a drawing says a light is on without filling it. Hoods
+   were tried first (an arc over each lens): inside a 24px head they read as
+   the head's own outline at 1x, not as visors.
 
    THE COUNTS ARE WORDS, NOT PICTURES: 96 and 20 live in the reasons, where a
    reader actually gets them. The drawing judges one load per check; the one
@@ -7694,16 +7706,16 @@ function figSvg(host, cls, w, h) {
    stroke drawing from 32px tall on a laptop and 24 on a phone (measured cold,
    2026-10-14), and every object here clears that in its own height. The phone
    does not shrink anything; buildGates only stands the objects closer, and
-   there the passed wagon stands in front of the board's post.
+   sends the retracted wagon back a shorter way.
 
    TWO CLOCKS ON ONE PLATE. The evidence inks on the driver's p (drawGates:
-   the rows in thirds, top first; in each, the lane, the signal's base and
-   post, its head with both lenses dark, then the wagon). The dispositions
-   ride the bead through scrubGates: the lens lit, the roll, the push, the
-   strike, the arrow and the board. A row's paint() is the one writer of
-   both, so the plate is a function of (p, u) whichever clock ran last, and a
-   disposition never lands on a part that has not inked: a lens cannot light
-   in a head that is not there. */
+   the three lanes, then each row's signal whole, then its wagon whole, top
+   row first). The dispositions ride the bead through scrubGates, and in every
+   row the lamp leads: it lights, the board reads, and only then does
+   anything move. A row's paint() is the one writer of both clocks, so the
+   plate is a function of (p, u) whichever ran last, and a disposition never
+   lands on a part that has not inked: a lamp cannot light in a head that is
+   not there. */
 const gates = { rows: [], svg: null, spx: 0, e: null };
 const C30 = Math.cos(Math.PI / 6);
 /* the receding edges of a solid whose front face is (x, y, w, h): three 30°
@@ -7719,21 +7731,23 @@ const recede = (x, y, w, h, d) => {
 const ringD = (cx, cy, r) =>
   `M${n1(cx - r)} ${n1(cy)}a${n1(r)} ${n1(r)} 0 1 0 ${n1(2 * r)} 0` +
   `a${n1(r)} ${n1(r)} 0 1 0 ${n1(-2 * r)} 0`;
-/* an arrowhead on a lane, its tip at x, pointing the way the load went (dir 1
-   on, -1 back): 8 long and 10 across, one polyline so the tip is mitred */
+/* an arrow on a lane: a 20px shaft with a head 8 long and 10 across at its
+   tip x, pointing the way the load went (dir 1 on, -1 back) */
 const arrowD = (x, y, dir) =>
-  `M${n1(x - 8 * dir)} ${n1(y - 5)}L${n1(x)} ${n1(y)}L${n1(x - 8 * dir)} ${n1(y + 5)}`;
+  `M${n1(x - 8 * dir)} ${n1(y - 5)}L${n1(x)} ${n1(y)}L${n1(x - 8 * dir)} ${n1(y + 5)}` +
+  seg(x, y, x - 20 * dir, y);
 /* THE SCENE AT ONE SCALE, in CSS px. Heights are up from the lane: the
    signal's base 3, its post 28, its head 48 x 24 with 8 of depth (83 to the
-   top), the lenses 16 across at 12 and 36 down the head, the lit lamp a ring
-   8 across inside its lens; the wagon a body 72 x 30 on wheels 9 across, 14
-   deep (39 tall, 46 with the roof); the board the slip itself, 24 x 96, its
-   top 80 over the lane on a post down to it. The wagon is a box van because
-   that is the one a cold reader named a train car from 16px: a sliding door,
-   a solebar, wheels under the body. */
+   top), the lenses 16 across at 12 and 36 down the head, a lit lamp's rays 5
+   long on a radius of 16 to 21 round a point 9 right of the post; the wagon
+   a body 72 x 30 on wheels 9 across, 14 deep (39 tall, 46 with the roof);
+   the board the slip itself, 20 tall and as wide as its word, its top level
+   with the head's face, its brackets 8. The wagon is a box van because that
+   is the one a cold reader named a train car from 16px: a sliding door, a
+   solebar, wheels under the body. */
 const GS = {
-  base: 3, post: 28, head: 48, hw: 24, hd: 8, lens: 8, lamp: 4,
-  wag: 72, body: 30, wheel: 4.5, wd: 14, board: 96, bh: 24, lift: 80,
+  base: 3, post: 28, head: 48, hw: 24, hd: 8, lens: 8, ray: [16, 21], rayX: 9,
+  wag: 72, body: 30, wheel: 4.5, wd: 14, bh: 20, bracket: 8,
 };
 function buildGates(js) {
   const host = $("gatesFig");
@@ -7760,101 +7774,114 @@ function buildGates(js) {
     const mark = row.querySelector(".gj");
     return row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
   });
-  /* WHERE THE SIGNAL STANDS IS SET BY THE WORDS. Its head rises 83px over the
-     lane, level with the reason's line on a two-column seat, so it stands 16px
-     right of the longest line of ink that shares its height (10 read as the
-     head glued to the sentence's last word at 1x), read off the
-     text's own line boxes (a box runs to the column's edge; its ink does
-     not). On the phone the words are all above it, and the floor is the room
-     the halted and pushed-back wagons need behind it: 148px from the node.
-     One x for every row. */
+  /* WHERE THE SIGNAL STANDS IS SET BY THE WORDS. Its head and its board rise
+     level with the reason's line on a two-column seat, so the board's left
+     edge stands 16px right of the longest line of ink that shares its height,
+     read off the text's own line boxes (a box runs to the column's edge; its
+     ink does not; 10 read as glued to the sentence at 1x). On the phone the
+     words are all above it. One x for every row, set by the widest board. */
   const rise = GS.base + GS.post + GS.head + GS.hd / 2;
   const hr = host.getBoundingClientRect();
   const k = host.offsetWidth / (hr.width || 1);
   let clear = 0;
-  const words = rows.map(() => 0);   /* each row's lowest line of ink */
   rows.forEach((row, i) => {
     for (const t of row.querySelectorAll(".gname, .gwhy")) {
       const rg = document.createRange();
       rg.selectNodeContents(t);
-      for (const q of rg.getClientRects()) {
-        if (q.width <= 0) continue;
-        words[i] = Math.max(words[i], (q.bottom - hr.top) * k);
-        if ((q.bottom - hr.top) * k > ys[i] - rise - 6)
+      for (const q of rg.getClientRects())
+        if (q.width > 0 && (q.bottom - hr.top) * k > ys[i] - rise - 6)
           clear = Math.max(clear, (q.right - hr.left) * k + 16);
-      }
     }
   });
-  const P = Math.max(T + 148, clear + GS.hw / 2);  /* the signal's post */
-  const xHalt = P - 104;   /* nose 32 short of the post: the roof's corner 8 clear of the head */
-  const xBack = xHalt - 16;                         /* pushed back */
-  const bx = P + 28;       /* the board's left edge: 9 clear of the head's depth */
-  const postX = bx + GS.board / 2;
-  const laneEnd = Math.min(W, bx + GS.board + 18);  /* where every lane stops at the park */
-  /* THE NARROWEST PHONE (a 246px plate at 320) has no room past the signal
-     for the board, nor for the passed wagon and the lane's arrow. There the
-     board drops its post and becomes the row's label, under the reason where
-     v8's phone set it, and the passed wagon stands just past the signal, cut
-     by the plate's edge on its way out of it: the edge is the arrow. Whole
-     objects dropped and nothing shrunk, which is the phone's licence. */
-  const roomy = bx + GS.board + 6 <= W;
-  const tan = 0.5 / C30, wdx = GS.wd * C30;
-  /* THROUGH: the passed wagon stands down the lane, its nose 30 short of the
-     lane's end so its far corner keeps 10px off the arrow. A laptop plate
-     has the length to stand it clear of the board's post; a phone does not,
-     and there it stands IN FRONT of the post with the post between its
-     wheels, so the post shows over the roof AND under the body and reads as
-     behind the wagon rather than planted on it. (Slid just past the post at
-     390 it came 5px into the arrow's box; with the post 10px in, its foot
-     stood against a wheel: both measured.) */
-  const xEnd = W - 102;
-  const covers = postX >= xEnd - 1 && postX <= xEnd + GS.wag + wdx + 1;
-  const xGone = !roomy ? P + 28 : Math.max(P + 28, covers ? Math.min(xEnd, postX - 36) : xEnd);
-  if (!roomy) {
-    const clip = el("clipPath", { id: "g10edge" });
-    clip.appendChild(el("rect", { x: -400, y: -40, width: W + 400, height: H + 80 }));
-    svg.appendChild(clip);
-  }
+  const bws = rows.map((row) => row.querySelector(".gslip")?.offsetWidth || 0);
+  const bwMax = Math.max(0, ...bws);
+  const wdx = GS.wd * C30, tan = 0.5 / C30, span = GS.wag + wdx;
+  /* THE SENT-BACK WAGON stands 12px clear of the junction's square, which is
+     as far back as the lane goes. The held one stands nose-in at the post
+     (its roof's corner 8 clear of the head), so the distance between the two
+     rows' wagons is the whole of the verdict's difference: D = P - T - 119.
+     THE PASSED WAGON stands past the lit lamp's rays with 16px of air. So P
+     has a floor in the words, the board and a D of at least 30, and a ceiling
+     where the passed wagon still fits whole; between them it takes the D a
+     reader reads at a glance, 60, and on a laptop the words give it far more.
+     A plate too narrow for both (320) keeps the floor and lets the passed
+     wagon leave by the plate's edge. */
+  const xBack = T + 15;
+  const floorP = Math.max(T + 149, clear + bwMax + GS.bracket + GS.hw / 2);
+  const ceilP = W - 2 - span - 46;
+  const P = Math.max(floorP, Math.min(Math.max(T + 179, floorP), ceilP));
+  const xHalt = P - 104;
+  const xGone = Math.max(P + 46, Math.min(W - 98, W - 2 - span));
+  const leaves = xGone + span > W - 1;
+  const laneEnd = Math.min(W, P + 40);   /* every lane stops just past the signal at the park */
+  const hx = P - GS.hw / 2;
+  const hy = (y) => y - GS.base - GS.post - GS.head;
+  /* row 0's wagon rolls past the signal, which stands on the near side of the
+     line: the wagon is cut where the signal covers it (the head and its depth,
+     the post, the base), and, where it leaves by the plate's edge, at the
+     edge. One clip per row 0, evenodd, holes that never overlap. */
+  const passClip = (y) => {
+    const t = hy(y), dx = GS.hd * C30, dy = GS.hd / 2;
+    const outer = `M-400 -40H${n1(leaves ? W : W + 400)}V${n1(H + 80)}H-400Z`;
+    const headS = `M${n1(hx - 1)} ${n1(t + GS.head + 1)}V${n1(t - 1)}L${n1(hx - 1 + dx)} ${n1(t - 1 - dy)}` +
+      `H${n1(hx + GS.hw + 1 + dx)}V${n1(t + GS.head + 1 - dy)}L${n1(hx + GS.hw + 1)} ${n1(t + GS.head + 1)}Z`;
+    const postS = box(P - 1.5, t + GS.head + 1, 3, GS.post - 2);
+    const baseS = box(P - 9, y - GS.base - 1, 18, GS.base + 2);
+    const clip = el("clipPath", { id: "g10pass", clipPathUnits: "userSpaceOnUse" });
+    clip.appendChild(el("path", { d: outer + headS + postS + baseS, "clip-rule": "evenodd" }));
+    return clip;
+  };
   rows.forEach((row, i) => {
     const y = ys[i];
     const g = el("g", { "data-row": i });
     const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y, u: NaN, gw: "",
-      on: { lane: false, stand: false, head: false, wagon: false } };
+      on: { lane: false, sig: false, wagon: false } };
     const stub = dPath("g-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
     /* the junction: where the rail takes this lane's answer */
     add(g, dPath("g-node", dot(T, y, 3), { "data-o": "node" }));
-    /* the lane, and on row 0 the rest of it: at the park every lane stops just
-       past the board, and the open way beyond is the passed row's disposition */
+    /* the lane, and on row 0 the rest of it: at the park every lane stops
+       just past its signal, and the open way beyond is the passed row's */
     const lane = dPath("g-lane", seg(T, y, laneEnd, y), { "data-o": "lane" });
     add(g, lane);
     const laneOn = i === 0 && W - laneEnd > 1 ? dPath("g-lane", seg(laneEnd, y, W, y)) : null;
     add(g, laneOn);
-    /* the arrow points the way the load went: on, at the lane's end, for what
-       went through; back, on the lane behind the wagon, for what was sent back */
-    const arrow = i === 0 ? (roomy ? dPath("g-arrow", arrowD(W, y, 1), { "data-o": "arrow" }) : null)
-      : i === 2 ? dPath("g-arrow", arrowD(xBack - 16, y, -1), { "data-o": "arrow" }) : null;
+    /* the arrows mark the way each load went, on the lane in the stretch it
+       travelled: behind the passed wagon pointing on, ahead of the sent-back
+       one's nose pointing back */
+    const arrow = i === 0 ? dPath("g-arrow", arrowD(xGone - 10, y, 1), { "data-o": "arrow" })
+      : i === 2 ? dPath("g-arrow", arrowD(xBack + span + 8, y, -1), { "data-o": "arrow" }) : null;
     add(g, arrow);
-    /* the signal, in two switches: the stand (base and post), then the head */
+    /* the signal, one object: base, post, head and both lenses; the rays a
+       lit lamp gives off stand beside it, switched with the lamp */
     const sig = el("g", { "data-o": "signal" });
-    const stand = el("g", {});
-    add(stand, dPath("g-sig", box(P - 8, y - GS.base, 16, GS.base) +
-      seg(P, y - GS.base, P, y - GS.base - GS.post)));
-    sig.appendChild(stand);
-    const head = el("g", {});
-    const hx = P - GS.hw / 2, hy = y - GS.base - GS.post - GS.head;
-    add(head, dPath("g-sigd", recede(hx, hy, GS.hw, GS.head, GS.hd)));
-    add(head, dPath("g-sig", box(hx, hy, GS.hw, GS.head)));
-    const up = dPath("g-lens", ringD(P, hy + 12, GS.lens));
-    const low = dPath("g-lens", ringD(P, hy + 36, GS.lens));
-    const upLamp = dPath("g-lamp stop", ringD(P, hy + 12, GS.lamp), { opacity: "0" });
-    const lowLamp = dPath("g-lamp go", ringD(P, hy + 36, GS.lamp), { opacity: "0" });
-    [up, low, upLamp, lowLamp].forEach((n) => head.appendChild(n));
-    sig.appendChild(head);
+    const t = hy(y);
+    add(sig, dPath("g-sig", box(P - 8, y - GS.base, 16, GS.base) +
+      seg(P, y - GS.base, P, y - GS.base - GS.post), { "data-o": "stand" }));
+    add(sig, dPath("g-sigd", recede(hx, t, GS.hw, GS.head, GS.hd)));
+    add(sig, dPath("g-sig", box(hx, t, GS.hw, GS.head)));
+    const up = dPath("g-lens", ringD(P, t + 12, GS.lens));
+    const low = dPath("g-lens", ringD(P, t + 36, GS.lens));
+    sig.appendChild(up); sig.appendChild(low);
+    const cls = i === 0 ? "go" : "stop", cy = i === 0 ? t + 36 : t + 12;
+    let rd = "";
+    for (const a of [-35, 0, 35]) {
+      const c = Math.cos((a * Math.PI) / 180), s = Math.sin((a * Math.PI) / 180);
+      rd += seg(P + GS.rayX + GS.ray[0] * c, cy + GS.ray[0] * s, P + GS.rayX + GS.ray[1] * c, cy + GS.ray[1] * s);
+    }
+    const rays = dPath(`g-ray ${cls}`, rd, { opacity: "0", "data-o": "rays" });
     g.appendChild(sig);
-    /* the wagon, drawn at the park (halted before the signal); the bead moves
-       it as a whole */
+    g.appendChild(rays);
+    /* the board's brackets, off the head's approach side; the board itself is
+       the HTML slip, seated here */
+    const brackets = dPath("g-bracket", seg(hx - GS.bracket, t + 4, hx, t + 4) +
+      seg(hx - GS.bracket, t + GS.bh - 4, hx, t + GS.bh - 4), { "data-o": "brackets", opacity: "0" });
+    add(g, brackets);
+    row.style.setProperty("--slx", n1(hx - GS.bracket - bws[i]) + "px");
+    row.style.setProperty("--sly", n1(t - row.offsetTop) + "px");
+    /* the wagon, drawn at the park (held before the signal); the bead moves it
+       as a whole */
     const wag = el("g", { "data-o": "wagon" });
     const wy = y - GS.wheel * 2 - GS.body;
     add(wag, dPath("g-back", recede(xHalt, wy, GS.wag, GS.body, GS.wd)));
@@ -7864,66 +7891,46 @@ function buildGates(js) {
       box(xHalt + 27, wy + 4, 18, 22)));
     let strike = null, len = 0;
     if (i === 2) {
-      /* the strike runs the body's face corner to corner, drawn on by the bead */
-      strike = dPath("g-strike", seg(xHalt, y - 9, xHalt + GS.wag, wy), { "data-o": "strike" });
-      len = Math.hypot(GS.wag, GS.body) * 1.02;
+      /* crossed out corner to corner both ways: one diagonal on a box van
+         reads as its own brace */
+      strike = dPath("g-strike", seg(xHalt, y - 9, xHalt + GS.wag, wy) +
+        seg(xHalt, wy, xHalt + GS.wag, y - 9), { "data-o": "strike" });
+      len = 2 * Math.hypot(GS.wag, GS.body) * 1.01;
       strike.setAttribute("stroke-dasharray", len.toFixed(2));
       wag.appendChild(strike);
     }
-    if (roomy) g.appendChild(wag);
-    else { const edge = el("g", { "clip-path": "url(#g10edge)" }); edge.appendChild(wag); g.appendChild(edge); }
-    /* the board's post. It stands beyond the line, so a wagon in front of it
-       hides what the wagon covers: from the roof's edge (rising along the
-       depth) down to the body's foot, the van's far end below that, and a
-       wheel; between the wheels the post's foot shows, which is what says
-       "behind" rather than "standing on the roof". Nothing is filled, so a
-       covered line is a line not drawn. */
-    const py0 = y - GS.lift + GS.bh;
-    const postD = (wx) => {
-      const t = postX - wx;
-      if (wx === null || t < 0 || t > GS.wag + wdx) return seg(postX, py0, postX, y);
-      const top = wy - Math.min(t, wdx) * tan;
-      let d = top - 1 > py0 ? seg(postX, py0, postX, top - 1) : "";
-      const bot = t > GS.wag ? y - 9 - (t - GS.wag) * tan : y - 2 * GS.wheel;
-      const wheel = t <= GS.wag && [16, 56].some((c) => Math.abs(t - c) <= GS.wheel + 3);
-      if (!wheel && bot + 1 < y) d += seg(postX, bot + 1, postX, y);
-      return d;
-    };
-    const post = roomy ? dPath("g-board", postD(null), { "data-o": "board", opacity: "0" }) : null;
-    add(g, post);
-    row.style.setProperty("--slx", n1(roomy ? bx : T) + "px");
-    row.style.setProperty("--sly", n1((roomy ? y - GS.lift : words[i] + 10) - row.offsetTop) + "px");
-    /* THE SCHEDULE, per row: p's third inks the evidence; u, the bead's
-       progress through this junction, decides. Passed: the lower lens at .45,
-       the lane on and the board at .5, the wagon rolling through over .5 to
-       .9. Caught: the upper lens and the board at .55, and nothing moves.
-       Retracted: the push back over .2 to .6, the upper lens at .55, the
-       strike over .5 to .8, the arrow and the board at .8. */
-    const LIT = [0.45, 0.55, 0.55][i], SHOW = [0.5, 0.55, 0.8][i];
-    const lens = i === 0 ? low : up, lamp = i === 0 ? lowLamp : upLamp;
-    const cls = i === 0 ? "go" : "stop";
+    if (i === 0) {
+      svg.appendChild(passClip(y));
+      const pass = el("g", { "clip-path": "url(#g10pass)" });
+      pass.appendChild(wag);
+      g.appendChild(pass);
+    } else g.appendChild(wag);
+    /* THE SCHEDULE, per row; u is the bead's progress through this junction.
+       The lamp leads everywhere: at .3 it lights and the board reads. Passed:
+       the way opens at .35, the wagon rolls through over .4 to .85, and the
+       arrow is drawn behind it at .85. Caught: nothing else. Retracted: the
+       X is drawn over .35 to .55, the wagon rolls back over .5 to .85, and
+       the arrow is drawn ahead of it at .85. */
+    const lens = i === 0 ? low : up;
     rec.paint = () => {
       const { on } = rec;
       const u = Number.isFinite(rec.u) ? rec.u : 0;
       const bin = (b) => (b ? "1" : "0");
       a4put(lane, "opacity", bin(on.lane));
-      a4put(stand, "opacity", bin(on.stand));
-      a4put(head, "opacity", bin(on.head));
+      a4put(sig, "opacity", bin(on.sig));
       a4put(wag, "opacity", bin(on.wagon));
-      const lit = on.head && u >= LIT;
+      const lit = on.sig && u >= 0.3;
       a4cls(lens, cls, lit);
-      a4put(lamp, "opacity", bin(lit));
-      const shown = on.head && u >= SHOW;
-      if (post) a4put(post, "opacity", bin(shown));
-      if (rec.gw !== bin(shown)) { rec.gw = bin(shown); row.style.setProperty("--gw", rec.gw); }
-      if (laneOn) a4put(laneOn, "opacity", bin(on.lane && u >= 0.5));
-      if (arrow) a4put(arrow, "opacity", bin(on.lane && u >= SHOW));
-      const dx = i === 0 ? (xGone - xHalt) * smooth((u - 0.5) / 0.4)
-        : i === 2 ? -16 * smooth((u - 0.2) / 0.4) : 0;
+      a4put(rays, "opacity", bin(lit));
+      a4put(brackets, "opacity", bin(lit));
+      if (rec.gw !== bin(lit)) { rec.gw = bin(lit); row.style.setProperty("--gw", rec.gw); }
+      if (laneOn) a4put(laneOn, "opacity", bin(on.lane && u >= 0.35));
+      if (arrow) a4put(arrow, "opacity", bin(on.lane && u >= 0.85));
+      const dx = i === 0 ? (xGone - xHalt) * smooth((u - 0.4) / 0.45)
+        : i === 2 ? (xBack - xHalt) * smooth((u - 0.5) / 0.35) : 0;
       a4put(wag, "transform", `translate(${n1(dx)} 0)`);
       if (strike)
-        a4put(strike, "stroke-dashoffset", (len * (1 - smooth((u - 0.5) / 0.3))).toFixed(2));
-      if (post) a4put(post, "d", postD(on.wagon ? xHalt + dx : null));
+        a4put(strike, "stroke-dashoffset", (len * (1 - smooth((u - 0.35) / 0.2))).toFixed(2));
     };
     rec.paint();
     svg.appendChild(g);
@@ -7937,18 +7944,17 @@ function buildGates(js) {
      with every verdict in (bead(Infinity)) or none (bead(-Infinity)) on a
      seat too short to park the bead past all three junctions */
   window.__world.fig10 = { nodes: svg.querySelectorAll("*").length, draw: drawGates,
-    bead: scrubGates, at: { T, P, xHalt, xBack, xGone, bx, postX, laneEnd, W, clear: +clear.toFixed(1) } };
+    bead: scrubGates, at: { T, P, xHalt, xBack, xGone, D: +(xHalt - xBack).toFixed(1), leaves, W, clear: +clear.toFixed(1), boards: bws } };
 }
-/* the evidence as a still of p: each row inks in its own third of p, top row
-   first, so nothing low on the plate moves before what is above it. In a row
-   the lane, then the signal's base and post, then its head with both lenses
-   dark, then the wagon. Every switch is 0 or 1. */
+/* the evidence as a still of p, whole objects only, so a half-scrolled plate
+   never shows a post without its head or half a wagon: the three lanes first,
+   top to bottom, then each row in its own tenth-and-a-half of p, top row
+   first, its signal and then its wagon. Every switch is 0 or 1. */
 function drawGates(p) {
   for (const r of gates.rows) {
-    const w = clamp(p * 3 - r.i, 0, 1);
-    const on = { lane: w >= 0.05, stand: w >= 0.3, head: w >= 0.55, wagon: w >= 0.8 };
-    if (on.lane === r.on.lane && on.stand === r.on.stand &&
-      on.head === r.on.head && on.wagon === r.on.wagon) continue;
+    const a = 0.1 + 0.3 * r.i;
+    const on = { lane: p >= 0.02 + 0.03 * r.i, sig: p >= a + 0.03, wagon: p >= a + 0.15 };
+    if (on.lane === r.on.lane && on.sig === r.on.sig && on.wagon === r.on.wagon) continue;
     r.on = on;
     r.paint();
   }
