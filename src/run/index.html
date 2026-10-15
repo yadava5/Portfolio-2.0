@@ -1885,7 +1885,10 @@ if (location.hash.length > 1) {
   .sig{
     font-family:var(--body); font-style:italic; font-size:clamp(1.9rem, 3vw, 2.5rem);
     letter-spacing:.01em; color:var(--ink); display:inline-block; line-height:1.1;
-    clip-path:inset(-10% 100% -14% 0); /* the engine writes the name on */
+    /* the engine writes the name on: a feathered wipe the nib leads (v10),
+       never a hard clip, so no frame shows a glyph cut by a vertical */
+    mask-image:linear-gradient(to right, transparent, transparent);
+    -webkit-mask-image:linear-gradient(to right, transparent, transparent);
   }
   .signib{ /* the pen nib riding the writing edge */
     position:absolute; top:50%; left:0; width:5px; height:5px; border-radius:50%;
@@ -2339,13 +2342,13 @@ if (location.hash.length > 1) {
   /* ————— fx: only the JS world hides pre-entrance ————— */
   .js body:not(.settled) [data-fx]{opacity:0}
   .settled [data-fx]{opacity:1 !important; transform:none !important}
-  .settled .sig{clip-path:none}
+  .settled .sig{mask-image:none; -webkit-mask-image:none}
 
   /* ————— reduced motion: the settled world ————— */
   @media (prefers-reduced-motion: reduce){
     [data-fx]{opacity:1 !important; transform:none !important}
     .cue .a{animation:none}
-    .sig{clip-path:none} /* the settled world: the name is written */
+    .sig{mask-image:none; -webkit-mask-image:none} /* the settled world: the name is written */
     /* dusk beats carry their own resting colors (the thread passes behind)
 
        .bsign IS IN BOTH LISTS, and round 14 is where it arrived. ¶11 is a
@@ -7544,7 +7547,7 @@ function polyAt(line, t) {
 /* Who — the engineer of record signs the line. The name is written on
    by a clip-path wipe with a nib dot riding the writing edge — no fake
    stroke data, just the type being revealed at writing speed. */
-const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0 };
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0, feather: 16 /* px of wet edge */ };
 /* D-1 · THE SIGNATURE DOES NOT UN-SIGN. This wipe is a pure function of
    beat progress, so scrolling back up ran the nib backwards and took the
    name off the card — a signature that withdraws when you look at it twice
@@ -7556,12 +7559,18 @@ const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0 };
 function scrubWho(t) {
   t = Math.max(clamp(t, 0, 1), who.t || 0);
   who.t = t;
-  const v = (100 - t * 100).toFixed(1);
+  const v = t.toFixed(4);
   if (v === who.last) return;
   who.last = v;
-  who.sig.style.clipPath = `inset(-10% ${v}% -14% 0)`;
+  /* the wet edge: the wipe's front runs the name's width plus the feather,
+     so the last glyph is whole at t 1 and nothing shows at t 0; the mask
+     is dropped at 1 (an italic's overhang past its box is then the live
+     glyph's, not the mask's); the nib rides mid-feather */
+  const e = (who.w + who.feather) * t;
+  const m = t >= 1 ? "none" : `linear-gradient(to right, #000 ${(e - who.feather).toFixed(1)}px, transparent ${e.toFixed(1)}px)`;
+  who.sig.style.maskImage = m; who.sig.style.webkitMaskImage = m;
   who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
-  who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
+  who.nib.style.transform = `translate(${clamp(e - who.feather / 2, 0, who.w).toFixed(1)}px, -50%)`;
 }
 
 /* ····· fig. 02 · the record, stood up (v10) ·····
@@ -7570,15 +7579,19 @@ function scrubWho(t) {
    then stands up toward the reader in one lift and signs itself: theta is
    90 for p <= pH (the first p at which the lying card is above the fold by
    16 px, computed from the driver's own window at every measure), runs
-   90 -> 0 over (pH, LIFT) on a curve that moves early and settles late,
-   and is 0 from LIFT. The top edge goes AWAY from the lens for the whole
-   lift (z <= 0). A 3-degree settle was tried and dropped: the name is
-   being written in those frames, and a card being signed holds still.
+   90 -> 0 over the lift on a curve with a soft start, its mass early
+   and a long tail (the first cut's smooth^.6 had an infinite slope at the
+   start: the card snapped off the desk, which a cold reader called
+   "stretched"), and is 0 from the lift's end, pH + LIFT_SPAN (a third of the window,
+   however late the hold). pH is never before HOLD_MIN, so the
+   lying card is seen whole for a beat before it moves. The top edge goes
+   AWAY from the lens for the whole lift (z <= 0). A 3-degree settle was
+   tried and dropped: a card being signed holds still.
    THE INK IS A PICTURE WHILE THE CARD IS POSED. The body carries a canvas
    drawn from the live ink's own glyph boxes (a Range per character, the
    parent's computed face and colour, a link's underline from its computed
    decoration, the line the name is written on), so a lying card reads as a
-   written record and never as a loader; from LIFT the live HTML takes over
+   written record and never as a loader; from the lift's end the live HTML takes over
    at the same pixels in a short crossfade (the picture hides, the words
    show) and the reader can select and tab. Text nodes are never posed: G2
    counts them, Safari rasterises text in 3D, and a raster is what a card at
@@ -7586,12 +7599,15 @@ function scrubWho(t) {
    its fillText is not the thread canvas's (check-cargo-fixture hooks the
    DOM context's prototype to record waybills, and the card's words are not
    freight). The name is the one thing the picture does not carry finished:
-   it writes at writing speed on its own clock from the p at which the lift
-   passes NAME_DEG (the last degrees: the card is signed as it finishes
-   standing, so the line is never seen empty on a legible card), the nib
-   riding the edge, on a second small canvas over the well while the card
-   is still posed and on the live #sig from LIFT, both from the one progress
-   t (scrubWho, D-1).
+   it is WRITTEN BY THE SCROLL over the lift's last NAME_DEG degrees (pure
+   in p: t runs 0 -> 1 over (pName, the lift's end), so a slow reader sees one beat,
+   the stroke ending as the card stands), floored at a pen's pace (the
+   stroke never runs faster than WRITE_MS end to end, so a flick or the
+   grace still shows it being written, finishing just after upright), with
+   its high-water mark kept (D-1). A feathered wipe the nib leads, on a
+   second small canvas over the well while the card is posed and on the
+   live #sig from the lift's end, both from the one progress t (scrubWho). The hand's
+   span is the lift, so a grace stands the card up in no less than 0.4 s.
    THE SHADOW is the light's: the page's top, behind and above the card, so
    the card's shadow falls on the near desk toward the reader: the body's
    contact pool under the foot, an ellipse narrower than the card and soft
@@ -7603,16 +7619,18 @@ function scrubWho(t) {
    there, written and signed. Scrolling up lays it back down; the name keeps
    its high-water mark on both the picture and the live text. */
 const F02 = {
-  LIFT: 0.66,    /* p · the lift ends face-on here, and the live ink shows */
-  NAME_DEG: 10,  /* the name starts writing on the picture in the last degrees, so the card is signed as it finishes standing */
-  WRITE_MS: 900, /* the name, at writing speed */
+  LIFT_SPAN: 0.35, /* p · the lift's length, pH to pH + this: a third of the window however late the hold (the phone's park moved its window up and a fixed end left a 24 px lift) */
+  LIFT_MAX: 0.9, /* p · the lift ends no later than this: the stroke's end and the handover need the rest */
+  HOLD_MIN: 0.25, /* pH never earlier than this: the lying card is seen whole before it moves */
+  NAME_DEG: 40,  /* the name is written over the lift's last degrees, ending as the card stands */
+  WRITE_MS: 600, /* the stroke's pace floor, end to end: one stroke, not letters */
   HANDOVER_MS: 120, /* picture to words: the two coincide to the glyph edge (measured), and a crossfade this short hides the edge */
   HOLD_MAX: 0.55, /* pH never later than this: past it the window would be shortened instead (lane note) */
   START: 0.92,   /* phone window · p 0 with this much of the stage on screen */
   FLOOR: 0.22,   /* phone window · never shorter than this many vh */
-  MAST: 72,      /* phone window · the park never lifts the stage's top above this (the masthead's foot + 12) */
+  MAST: 112,     /* phone window · the park never lifts the stage's top above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
 };
-const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, name: 0, writing: false, fade: -1, t: 0, rT: 0,
+const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, name: 0, tp: 0, rate: 0, fade: -1, t: 0, rT: 0, lift: 0.6,
   cam: 550, eye: 385, head: 16, H: 0, pH: 0, pName: 0, hold: null, e: null, hook: null, pic: null, npic: null, noff: null, sig: null };
 f02.body = f02.stage.querySelector(".cardbody");
 f02.shadow = f02.stage.querySelector(".cardshadow");
@@ -7729,13 +7747,18 @@ function namePicture(t) {
   const dpr = f02dpr(), g = f.noff.getContext("2d");
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
   g.clearRect(0, 0, S.W, S.H);
+  const e = S.x + (S.w + who.feather) * t; /* the wet edge, as the live wipe has it */
   if (t > 0) {
-    g.save(); g.beginPath(); g.rect(0, 0, S.x + S.w * t, S.H); g.clip();
     g.textBaseline = "alphabetic";
     for (const it of S.items) { g.font = it.font; g.fillStyle = it.color; g.fillText(it.ch, it.x, it.y); }
-    g.restore();
+    if (t < 1) {
+      const grad = g.createLinearGradient(e - who.feather, 0, e, 0);
+      grad.addColorStop(0, "rgba(0,0,0,1)"); grad.addColorStop(1, "rgba(0,0,0,0)");
+      g.globalCompositeOperation = "destination-in"; g.fillStyle = grad; g.fillRect(0, 0, S.W, S.H);
+      g.globalCompositeOperation = "source-over";
+    }
   }
-  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + S.w * t, S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
+  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + clamp(e - S.x - who.feather / 2, 0, S.w), S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
   const c = f.npic.getContext("2d");
   c.clearRect(0, 0, f.npic.width, f.npic.height); c.drawImage(f.noff, 0, 0);
 }
@@ -7765,29 +7788,31 @@ function layWho() {
 /* THE HOLD. pH is the first p at which the lying card (its far edge is
    above the foot, so its foot) sits 16 px above the fold, from the driver's
    window: the stage's top at p is e.top - (yA + p (yB - yA)). Re-derived
-   whenever the window moves; capped at HOLD_MAX. */
+   whenever the window moves; never before HOLD_MIN, never after HOLD_MAX. */
 function whoHold() {
   const f = f02, e = f.e;
-  if (!e || e.yB <= e.yA) return 0;
+  if (!e || e.yB <= e.yA) return F02.HOLD_MIN;
   const key = `${e.top}|${e.yA}|${e.yB}|${vh}`;
   if (f.hold && f.hold.key === key) return f.hold.pH;
   const foot = e.top + f.head + f.H + 3; /* document y of the foot's underside */
-  const pH = clamp((foot - (e.yA + vh - 16)) / (e.yB - e.yA), 0, F02.HOLD_MAX);
+  const pH = clamp((foot - (e.yA + vh - 16)) / (e.yB - e.yA), F02.HOLD_MIN, F02.HOLD_MAX);
+  f.lift = Math.min(F02.LIFT_MAX, pH + F02.LIFT_SPAN);
   /* and the p at which the lift passes NAME_DEG: the lift's curve inverted by bisection */
   const want = 1 - F02.NAME_DEG / 90;
   let lo = 0, hi = 1;
   for (let i = 0; i < 24; i++) { const mid = (lo + hi) / 2; if (whoLift(mid) < want) lo = mid; else hi = mid; }
-  f.pName = pH + ((lo + hi) / 2) * (F02.LIFT - pH);
+  f.pName = pH + ((lo + hi) / 2) * (f.lift - pH);
   f.hold = { key, pH };
   f.pH = pH;
   return pH;
 }
-/* the lift: moves early and settles late (smoothstep's start, a longer tail) */
-const whoLift = (u) => Math.pow(smooth(u), 0.6);
+/* the lift: a soft start, its mass early, a long tail (two thirds done at
+   the midpoint; zero slope at both ends) */
+const whoLift = (u) => 1 - Math.pow(1 - smooth(u), 1.6);
 function whoTheta(p) {
   const pH = whoHold();
   if (p <= pH) return 90;
-  if (p < F02.LIFT) return 90 * (1 - whoLift((p - pH) / (F02.LIFT - pH)));
+  if (p < f02.lift) return 90 * (1 - whoLift((p - pH) / (f02.lift - pH)));
   return 0;
 }
 /* the pose at theta (degrees from face-on; 90 is lying): the body about
@@ -7803,18 +7828,30 @@ function drawWho(p) {
   f.p = p;
   const th = whoTheta(p);
   if (th !== f.th) { f.th = th; poseWho(th); }
-  const on = p >= F02.LIFT;
+  const on = p >= f.lift;
   if (on !== f.on) {
     f.on = on;
     if (!on) { f.stage.dataset.ink = "0"; whoFade(-1); namePicture(f.name); } /* posed again: the picture carries the name where the live text has it */
     else if (landed) { f.stage.dataset.ink = "1"; whoFade(-1); }
     else { f.stage.dataset.ink = "2"; whoFade(0); stir(whoStep); }  /* landed by the hand: the words take over from the picture */
   }
-  if (p >= f.pName && f.name < 1 && !f.writing) {
-    if (landed) { f.name = 1; scrubWho(1); namePicture(1); }
-    else { f.writing = true; stir(whoStep); }
-  }
-  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
+  /* the name: the scroll's own progress over the lift's last stretch; a
+     landing takes it there at once, a motion no faster than the pen */
+  f.tp = p >= f.lift ? 1 : p <= f.pName ? 0 : (p - f.pName) / (f.lift - f.pName);
+  if (landed) f.rate = Math.max(f.rate, f.tp);
+  whoName(Math.min(f.tp, f.rate));
+  if (f.rate < Math.min(1, f.tp)) stir(whoStep);
+  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), lift: +f.lift.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
+}
+/* the name at t, high-water mark kept: on the live text always, and on
+   the picture while the card is posed or crossfading */
+function whoName(t) {
+  const f = f02;
+  if (t <= f.name) return;
+  f.name = t;
+  scrubWho(t);
+  if (!f.on || f.fade >= 0) namePicture(t);
+  if (f.hook) f.hook.name = +t.toFixed(3);
 }
 /* the handover's crossfade: t 0..1 live over picture; -1 clears it */
 function whoFade(t) {
@@ -7825,25 +7862,25 @@ function whoFade(t) {
   if (f.pic) f.pic.style.opacity = pic;
   if (f.npic) f.npic.style.opacity = pic;
 }
-/* the hand: the name's stroke and the handover, one stepper on the
-   engine's loop; the name is drawn on the picture while the card is posed or
-   crossfading, and on the live text always */
+/* the hand: the pen's pace and the handover, one stepper on the engine's
+   loop. rate is how far the pen has had time to get; it catches up to the
+   scroll's t and the stepper drops, so a reader parked mid-stroke holds a
+   still (no idle motion) and the stroke resumes with the scroll */
 function whoStep(now) {
   const f = f02;
   const dt = f.t ? Math.min(0.05, (now - f.t) / 1000) : 1 / 60;
   f.t = now;
   let moving = false;
-  if (f.writing) {
-    f.name = Math.min(1, f.name + (dt * 1000) / F02.WRITE_MS);
-    scrubWho(f.name);
-    if (f.hook) f.hook.name = +f.name.toFixed(3);
-    if (f.name >= 1) f.writing = false; else moving = true;
+  const want = Math.min(1, f.tp);
+  if (f.rate < want) {
+    f.rate = Math.min(want, f.rate + (dt * 1000) / F02.WRITE_MS);
+    whoName(f.rate);
+    moving = f.rate < want;
   }
   if (f.fade >= 0) {
     const t = Math.min(1, f.fade + (dt * 1000) / F02.HANDOVER_MS);
     if (t >= 1) { f.stage.dataset.ink = "1"; whoFade(-1); } else { whoFade(t); moving = true; }
   }
-  if (!f.on || f.fade >= 0) namePicture(f.name);
   if (!moving) f.t = 0;
   return moving;
 }
@@ -7863,7 +7900,11 @@ function whoWindow(e) {
    ink), registered before boot's own continuation of the same promise
    measures the window; re-laid on every seat change after the engine's own
    pass */
-function buildWho() { layWho(); f02.e = asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho, window: whoWindow }); }
+function buildWho() {
+  layWho();
+  f02.e = asmFigure("fig02", { box: () => layoutBox(f02.stage), draw: drawWho, window: whoWindow,
+    span: (e) => { f02.e = e; const pH = whoHold(); return [pH, f02.lift]; } });
+}
 document.fonts.ready.then(buildWho, buildWho);
 addEventListener("resize", () => { if (seatChanged) { clearTimeout(f02.rT); f02.rT = setTimeout(layWho, 200); } });
 
