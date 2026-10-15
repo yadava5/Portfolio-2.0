@@ -1022,6 +1022,27 @@ test.describe("G4 · the manifest never covers text", () => {
     expect(visible, "the panel did not open — the control never ran").toBe(
       true
     );
+    /* the id must sit on the band itself. A probe that reads #manifest off
+       some other element (the scrim, a full-viewport wrapper) reports hits
+       at any scroll and proves nothing about the band's footprint. */
+    const band = await page.evaluate(() => {
+      const e = document.getElementById("manifest");
+      const r = e?.getBoundingClientRect();
+      return {
+        role: e?.getAttribute("role") ?? null,
+        modal: e?.getAttribute("aria-modal") ?? null,
+        h: r ? r.height : 0,
+        vh: innerHeight,
+      };
+    });
+    expect(
+      [band.role, band.modal],
+      "#manifest is not the dialog: the probe would measure another element"
+    ).toEqual(["dialog", "true"]);
+    expect(
+      band.h,
+      "#manifest is as tall as the viewport: the probe would hit at any scroll"
+    ).toBeLessThan(band.vh * 0.5);
     expect(
       hits.length,
       "the open manifest sat over a station's prose and the overlap probe " +
