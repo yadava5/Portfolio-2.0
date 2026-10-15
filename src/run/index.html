@@ -1989,14 +1989,38 @@ if (location.hash.length > 1) {
   /* ····· ¶03 · the yard · the ITSM freight + the school record ····· */
   .bpath{min-height:158vh; flex-direction:column; justify-content:center}
   .bpath .beat-inner{width:100%}
-  .figsvg .feed{fill:none; stroke:var(--hair-strong); stroke-width:1}
-  /* the product frame is SUBJECT, not plumbing — 1.4 is the weight fig. 09
-     settled for subject ink against structure's 1. Its dash is written per
-     element (stroke-dasharray on the path) because it is a fact about that
-     one box, not a class of box: solid is checked in, dashed is not. */
-  .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.4}
-  .figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
-  .figsvg .rec.landed{stroke:var(--pine)}
+  /* fig. 03's line work (v10, the hump yard). Strokes in .figsvg rules so
+     check-palette measures them; the PAPER of every solid under #pathFig in
+     --ink-inverse, the opaque one (fig. 04's device), because that scan
+     reads every token in a .figsvg rule as a stroke and paper is not one,
+     and because --plate-solid lets 14% of a hidden line through. A wagon's
+     roof is pine from the moment it slides on; the body follows once the
+     roof has closed (.sealed). The plate's own margin is 16 px (the
+     strategy's cap for a boxed 3D plate; fig. 04, the next plate, is boxed). */
+  .bpath .plate{padding:16px}
+  .figsvg .yd-rail, .figsvg .yd-tie, .figsvg .yd-foot{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .yd-edge{fill:none; stroke:var(--ink); stroke-width:1.3; stroke-linejoin:round}
+  .figsvg .yd-edge2{fill:none; stroke:var(--ink-2); stroke-width:1; stroke-linejoin:round}
+  .figsvg .yd-face, .figsvg .yd-heap{fill:none; stroke:var(--ink); stroke-width:1.2; stroke-linejoin:round}
+  .figsvg .yd-wheel, .figsvg .yd-door{fill:none; stroke:var(--ink); stroke-width:1.1}
+  .figsvg .yd-sole{fill:none; stroke:var(--ink); stroke-width:1.6}
+  .figsvg .yd-roof{fill:none; stroke:var(--pine); stroke-width:1.3; stroke-linejoin:round}
+  .figsvg .yd-wag.sealed .yd-face, .figsvg .yd-wag.sealed .yd-wheel, .figsvg .yd-wag.sealed .yd-door, .figsvg .yd-wag.sealed .yd-sole{stroke:var(--pine)}
+  .figsvg .yd-wag.sealed .yd-heap{display:none}
+  .figsvg .yd-arrow{fill:var(--pine); stroke:none}
+  /* the buffer stop: two posts and a beam, the one road that ends at something */
+  .figsvg .yd-post{fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round}
+  .figsvg .yd-beam{fill:none; stroke:var(--ink); stroke-width:3.5; stroke-linecap:round}
+  /* the phone's track at the near road's weight: at 1 px on a 284 px seat
+     the hairline read as floating under the parked van (cold read, v10) */
+  .figsvg.tight .yd-rail, .figsvg.tight .yd-tie, .figsvg.tight .yd-foot{stroke:var(--ink-2)}
+  #pathFig .yd-paper{fill:var(--ink-inverse); stroke:none}
+  #pathFig .yd-face, #pathFig .yd-heap, #pathFig .yd-wheel, #pathFig .yd-roof{fill:var(--ink-inverse)}
+  /* the dispositions are the reviewer's words, so they get the text face;
+     every number and name stays in the plate's mono register */
+  .figsvg .yd-note{font-family:var(--body); font-style:italic; font-size:13.5px; letter-spacing:0; fill:var(--ink-2)}
+  .figsvg.tight .yd-note{font-size:12.5px}
+  .figsvg .yd-note.lit{fill:var(--ink)}
   /* the two products' dispositions. A check for what was filed, a strike for
      what was not, and clay for that pair because a disposition of record is
      the gate register — §4b's amended rule 5. (¶10 used to carry the same 1.5
@@ -4367,8 +4391,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              carries the same budget. -->
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="pathFig" class="figsvg" viewBox="0 0 560 278" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API. Both run through one Python and SQL works and park inside their products, where they stay; both products then merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid, checked with a tick, and checked in; the usage table of 57.8 million rows is drawn dashed, struck, and stays with IT Services."></svg>
+      <figure class="plate" data-fx="in .0 .09 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API, join one lead that climbs a hump, the Python and SQL works. Each wagon goes up open and heaped and holds at the summit: its load settles into the body, a lid slides shut over it, and it rolls down the far side a closed van; the switch sends it to its road. The usage table of 57.8 million rows rolls to a buffer stop on the near siding and stays with IT Services; the master inventory of 10,453 rows by 35 fields rolls on along the main line to its arrow, checked with a tick, and checked in."></svg>
         <figcaption>fig. 03 · two messy sources in, two products out.</figcaption>
       </figure>
     </div>
@@ -7910,288 +7934,431 @@ function buildWho() {
 document.fonts.ready.then(buildWho, buildWho);
 addEventListener("resize", () => { if (seatChanged) { clearTimeout(f02.rT); f02.rT = setTimeout(layWho, 200); } });
 
-/* ····· fig. 03 · the yard · the ITSM job as freight ·····
-   Two feeders (1.6M+ query logs, the Tableau/Workday silos) run through one
-   python·sql works and land in their products; both products merge onto the
-   main line. Records travel and LAND — unlike jet's blocks they stay put,
-   because the yard's whole point is what the freight became.
+/* ····· fig. 03 · the yard · the ITSM job as freight, over a hump ·····
+   Two feeder roads (the 1.6M+ OAS query logs; the Tableau + Workday records)
+   join one lead that climbs a HUMP, which is the works. Each wagon goes up
+   open and heaped, holds at the summit while its load settles and a lid
+   slides shut over it, turns pine as the lid closes, then tips and rolls
+   down a closed van; the switch sends it to its road: the usage van to a
+   buffer stop on the near siding, which swings off toward the reader (it
+   stays with IT Services), the inventory van straight on along the main
+   line to the arrow (checked in). The reader's scroll is the push.
 
-   ROUND 13 TOOK THE THIRD ROAD OUT. The owner ruled the compliance story
-   out of this figure: the legacy Laravel reporter, the ETL feed, the
-   37-month dashboard and the 97% meter are gone, and what is left is the
-   two sources and the two things they became. The plate was NOT left with
-   a hole where the third band was — it is re-laid: the columns are
-   re-measured off the labels that remain, the two stitches now curve to a
-   switch halfway between the roads instead of one running straight through,
-   and the height comes down from 388 to 278 (wide) and 550 to 392 (tight).
-   The disposition moved to its own row under each box, because "stays with
-   IT Services" is 176 units against a 186-unit box and would have eaten the
-   floor it was set into.
+   WHY A HILL, AND WHY THE SEAL IS ON IT (v10). The owner asked for the early
+   plates to be "3D which takes people by surprise", and this is the one
+   plate where the third dimension IS the subject: a hump yard sorts freight
+   by gravity, and gravity is height. Phase 1 drew the hill big and put the
+   transformation in a shed before it; a cold reader scored it 4 ("the cars
+   were clean before the climb, so the hill is travel, not an event") and
+   asked for one change: put the transformation at the crest. Phase 2 did
+   (the shed gone, the hill the works, "Python · SQL" at its near foot, one
+   wagon per source) and two cold readers passed it ("rubble cart becomes a
+   boxcar"), asking for a clean crest (no lid over a visible load), cars that
+   never touch, a buffer a stranger can name instead of a clay dash, feeders
+   that read as track when empty, and the phone's arrow on its track. So
+   phase 3: THE EVENT IS THE SEAL, HELD AT THE SUMMIT: the open wagon stops
+   level on the crest for a tenth of p; its heap settles into the body, THEN
+   a lid slides on from the tail over the empty tub (a hatch, not a fold: a
+   folding parallelogram is fig. 04's envelope flap), the body turns pine as
+   the lid closes, and only then does it tip and roll. A still anywhere in
+   the hold shows a wagon closing up on top of the hill, and never a lid
+   over a load.
 
-   fig. 09's three devices, inherited, and what each answers here:
+   THE PROJECTION is the drawing board's cabinet oblique, as figs. 04 and 08
+   draw it: X and height stay true, depth Z runs up-right at 30 degrees and
+   .6 scale (P below). Depth reads by edge (the hill's profile), occlusion
+   (the hill's near face hides the lead behind it; the lid hides the body's
+   open top), the near siding swinging TOWARD the reader (negative Z:
+   down-left on the sheet) while the main line runs on, and the tilt. No
+   translucent fill carries depth: the solids are the page's own paper under
+   #pathFig (fig. 04's device), opaque so a face hides what is behind it.
+   Text is never in the projection: every word is face-on at its real size,
+   moved by translate only, and no label sits within 8 units of any stroke
+   or of any wagon at any p (swept at .02 by the lane's harness; the numbers
+   are in the lane note).
 
-   1 A LABEL SEATS ON ITS RULE AND THE RULE BREAKS FOR IT. The plate is
-     four named columns on one header rule · freight · works · products
-     · main line · and the works' walls and every box's left edge break
-     for the road that crosses them. Nothing is set over a line.
-   2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, dash as the
-     sub-register. Dash carries the disposition the station's own handoff
-     line states out loud: only the inventory is checked in, so its box
-     is solid and the other is drawn dashed. No element-level opacity is
-     used anywhere on this plate — the only opacity written is 0/1, on a
-     record before it enters.
-   3 A GATE A THING PASSES THROUGH GETS A FORM THAT SWINGS — and this
-     plate is the one where that device does not apply, which was worth
-     finding out by drawing it. A boom was built here and removed. On a
-     HORIZONTAL road the bar is vertical when it blocks and horizontal
-     when it is out of the way, so an opened boom is a stick lying
-     parallel to the road it no longer crosses. fig. 09 can afford that
-     because six lifted booms are read against a seventh still down, and
-     because its lifted bars take pine. Here all three works gates truly
-     opened — there is no contrast to read against — and pine is barred,
-     because pine is THIS plate's landed register (records, stitches,
-     the filed mark) and pine sticks would say "these landed" about a
-     gate. The settled state is the design, and that settled state said
-     nothing. So the works keeps the form it has — two walls with a
-     doorway at each road, which IS a threshold you pass through — and
-     the clay register goes where this plate's real gate is: the two
-     products' DISPOSITIONS. One was filed and one was withheld, drawn in
-     the reviewer's own marks from ¶10, a check and a strike. §4b's
-     amended rule 5 permits exactly this: a disposition of record may
-     repeat in clay, because the cap binds emphasis a composition adds,
-     not facts it records.
+   TWO IN, TWO OUT, NOTHING CLIPPED, NOTHING TOUCHING: one wagon per source,
+   both whole and heaped on the plate by p .3 (the phone's second by .48,
+   after the first has climbed clear); the two wagons' boxes never
+   intersect at any p (swept at .01); at rest the logs van stands nose
+   against the buffer stop and the inventory van stands WHOLE with its nose
+   at the arrow, inside the plate, the two of them a wagon's length apart.
+   The siding swings far enough toward the reader that the second wagon's
+   whole descent passes above the parked first. The feeders are straight
+   lines to the junction (a V), so empty track still reads as track.
 
-   THE CONGESTION, and how the room was bought — the note that earned this
-   plate its shape when it carried three roads. §4b: three feeder label
-   pairs, three product boxes and the meter shared one 330-unit height
-   while the stitch curves crossed the label zone. Nothing was dropped
-   to fix it then. The feeder labels moved INTO their band, onto the same
-   two rows as the product they become, so the source name and the product
-   name read across; the road IS the siding the records park on; and the
-   rest was height. Every one of those devices is still here, carrying two
-   roads instead of three, which is why the plate did not have to be
-   re-invented when the third one went. The width is untouched:
-   12 × 515 ÷ 560 = 11.04px, exactly as it ships.
+   ROUND 13 TOOK THE THIRD ROAD OUT and v10 took the two product BOXES out
+   with the record squares, the dash, the stitches, then the shed, then the
+   clay strike. The dispositions the station states in prose are carried by
+   where the roads END (one against a buffer stop, two posts and a beam; one
+   going on to an arrow) and by the reviewer's tick beside "checked in", never
+   near a wagon (fig. 10 reads a halted wagon with a mark as "declined"). The
+   words of round 13 stay retired; check-figures reads this body for them.
 
-   THE METER IS GONE, with the story it measured. It had already been
-   corrected once — §4b stopped it filling from 0 to 97% under the reader's
-   scroll, because a gauge filling as you watch over a committed figure is
-   the class the bench ruling removed twice — and round 13 removed the
-   claim itself from the drawing. The correction is worth keeping in the
-   record even though the object is not: what answered the scroll was a
-   mark being DRAWN, never a magnitude being counted up.
-   Wide 560×278/12px; tight 240×392/11px.
+   THE GROUND IS EXEMPT from the viewer's 45%-of-the-lane rule, as grounds
+   are; the largest solid, a wagon, is 66 x 52 units. Every stroke and fill
+   is a stylesheet class (check-palette reads them), the paper under #pathFig
+   because that scan reads every token in a .figsvg rule as a stroke.
 
-   EVERY LABEL BELOW IS BUDGETED AT 8.01 UNITS/CHAR WIDE AND 7.13 TIGHT,
-   read off getComputedTextLength() in the browser rather than estimated.
-   The figure this file used to carry — "~7.25 units/char at 12" — is the
-   glyph advance WITHOUT `.figsvg text{letter-spacing:.05em}`, so it runs
-   every budget on this plate about 10% short: "sqlite · 57.8m rows" was
-   authored to end 4 units inside its box and ends 4 units outside it.
-   That is the arithmetic behind the congestion, not just its symptom. */
-/* the reviewer's own two marks, from the docket at ¶10, at their own
-   14×10 scale: a check for the gate a human signed, a strike for the
-   one that declined. The same hand files and withholds here. */
+   Wide 560 x 300 / 12 px (12.7 px at the 594 seat, 11.04 at the 515
+   minimum, floor 10); tight 240 x 356 / 11 px (13.0 at 284, G2b). Labels
+   are budgeted at 8.01 units/char wide and 7.13 tight, read off
+   getComputedTextLength(). The plate's data-fx is the asm plates' short
+   fade and its padding 16 px: the drawing owns the motion and the room. */
+/* the reviewer's own mark, from the docket at ¶10, at its own 14×10 scale:
+   a check for the gate a human signed. The same hand files here. */
 const D_FILED = "M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2";
-const D_HELD = "M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6";
-const yard = { svg: $("pathFig"), recs: [], marks: [], trunk: null, shapedT: 0.68 };
+const yard = { svg: $("pathFig"), e: null };
 function buildPath(tight) {
   const s = yard.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  yard.recs = []; yard.marks = [];
-  /* fresh elements: the diff cache must not skip them after a rebuild */
-  yard._mk = null;
-  const src = [
-    ["1.6M+ OAS query logs", "5 yrs · 1,153 users"],
-    ["Tableau + Workday", "hash dedup · REST API"],
-  ];
-  const prod = [
-    ["usage table", "57.8M rows"],
-    ["master inventory", "10,453 × 35 fields"],
-  ];
-  /* each product's disposition, in its own words rather than in a negation
-     of the other's: one leaves the site's boundary, one does not */
-  const disp = ["stays with IT Services", "checked in"];
-  const FILED = 1; /* the master inventory — the one product checked in */
-  /* a rule with a gap wherever a label seats on it or a road crosses it */
-  const hrule = (y, x0, x1, gaps) => {
-    let d = "", cur = x0;
-    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${cur} ${y} H ${a} `; cur = b; }
-    if (x1 > cur) d += `M ${cur} ${y} H ${x1}`;
-    el("path", { d: d.trim(), class: "lane" });
+  /* THE PLAN, in ground units: X along the roads, Z into the depth (0 the
+     near feeder's entry, ZL the lead and the main line, ZF the far feeder's
+     entry, ZS the siding, in front of everything), H up off the ground. A
+     feeder is a straight line from the plate's edge to the junction `join`
+     (the phone's far feeder runs straight in at ZF to `in` first, so its
+     wagon can wait whole above the other); the lead climbs the hump and
+     runs on past the switch `sw` as the main line to the arrow at the
+     plate's edge; the siding swings off over `fan` units of X down to ZS and
+     ends at the buffer stop. The tight edition is the same yard closer in,
+     with the labels stacked above and below (six and seven lines, nothing
+     sharing a line). Nothing is shrunk: its van is 44 x 34 units at
+     284/240, 52 x 44 px. */
+  const Y = tight ? {
+    vb: [240, 356], Y0: 230, ZL: 40, ZF: 180, ZS: -110,
+    near: { in: null, join: 24 }, far: { in: -42, join: 24 },
+    hump: { a: 30, b: 80, c: 94, d: 145, h: 64, bed: 10 },
+    sw: 153, fan: 26, buffer: 212, arrow: 228,
+    wag: { L: 44, D: 12, wh: 7, tub: 20, roof: 7, heap: 9 },
+    /* keyframes: p -> the wagon's centre X along its own path; the ease
+       into each keyframe is named (in: speeding up, out: braking); the
+       repeated X is the hold at the summit. On the phone the second wagon
+       enters only once the first has climbed clear: a wagon waiting at the
+       top-left and a wagon climbing a hill that starts 30 units in cannot
+       both be whole without their boxes crossing, at any depth */
+    A: { keys: [[0.14, "start"], [0.22, 30, "out"], [0.40, 30, "lin"], [0.46, 87, "smooth"], [0.56, 87, "lin"], [0.64, 145, "in"], [0.70, "park", "out"]], settle: [0.46, 0.49], lid: [0.49, 0.55] },
+    B: { keys: [[0.40, "start"], [0.48, -70, "out"], [0.52, -70, "lin"], [0.60, 30, "smooth"], [0.70, 87, "smooth"], [0.80, 87, "lin"], [0.86, 145, "in"], [0.92, "park", "out"]], settle: [0.70, 0.73], lid: [0.73, 0.79] },
+  } : {
+    vb: [560, 300], Y0: 198, ZL: 55, ZF: 152, ZS: -140,
+    near: { in: null, join: 42 }, far: { in: null, join: 42 },
+    hump: { a: 120, b: 260, c: 280, d: 380, h: 120, bed: 14 },
+    sw: 392, fan: 24, buffer: 478, arrow: 546,
+    wag: { L: 56, D: 20, wh: 9, tub: 26, roof: 9, heap: 11 },
+    /* A enters first and waits past the junction, so B's entry at the
+       top-left never shares a box with it */
+    A: { keys: [[0.14, "start"], [0.22, 76, "out"], [0.40, 120, "smooth"], [0.46, 270, "smooth"], [0.56, 270, "lin"], [0.64, 380, "in"], [0.70, "park", "out"]], settle: [0.46, 0.49], lid: [0.49, 0.55] },
+    B: { keys: [[0.20, "start"], [0.28, -26, "out"], [0.34, -26, "lin"], [0.60, 120, "smooth"], [0.70, 270, "smooth"], [0.80, 270, "lin"], [0.86, 380, "in"], [0.92, "park", "out"]], settle: [0.70, 0.73], lid: [0.73, 0.79] },
   };
-  const vrule = (x, y0, y1, gaps) => {
-    let d = "", cur = y0;
-    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${x} ${cur} V ${a} `; cur = b; }
-    if (y1 > cur) d += `M ${x} ${cur} V ${y1}`;
-    el("path", { d: d.trim(), class: "lane" });
+  /* THE SCHEDULE, in p: the yard lays itself in the first quarter (far to
+     near, the earthwork's edge with the lead, the labels snapping in
+     whole); wagon A (the logs, near feeder) is whole by .22, rolls to the
+     foot, climbs, holds at the summit .46-.56 (the load settles .46-.49,
+     the lid .49-.55, pine at .55), rolls down and parks at .70; wagon B
+     (the records, far feeder) is whole by .28 (the phone: .48), waits,
+     climbs .60-.70, holds .70-.80 and parks at .92, ticked .95-1. Pure in
+     p: the same p is the same drawing from above or below. */
+  const T = { far: [0, 0.14], lead: [0.06, 0.22], near: [0.1, 0.24], bank: [0.08, 0.22], fill: [0.16, 0.26], labels: 0.24, tick: [0.95, 1] };
+  const W = Y.wag, H = Y.hump;
+  s.setAttribute("viewBox", `0 0 ${Y.vb[0]} ${Y.vb[1]}`);
+  /* cabinet oblique at the board's 30°: X and H stay true, Z runs up-right
+     at .6 */
+  const CX = Math.cos(Math.PI / 6) * 0.6, CY = Math.sin(Math.PI / 6) * 0.6;
+  const P = (X, Z = 0, Hh = 0) => [X + Z * CX, Y.Y0 - Hh - Z * CY];
+  const r1 = (v) => (Math.round(v * 10) / 10).toString();
+  const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+  const EASE = { lin: (t) => t, smooth, in: (t) => t * t, out: (t) => 1 - (1 - t) * (1 - t) };
+  const poly = (pts, close) => pts.map((q, i) => `${i ? "L" : "M"} ${r1(q[0])} ${r1(q[1])}`).join(" ") + (close ? " Z" : "");
+  /* ground polylines are [X, Z, H] triples: a straight run sampled every 3
+     units with an optional height profile, and a join that drops the
+     duplicated seam point */
+  const run = (a, b, h) => {
+    const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 3)), out = [];
+    for (let i = 0; i <= n; i++) { const X = lerp(a[0], b[0], i / n), Z = lerp(a[1], b[1], i / n); out.push([X, Z, h ? h(X) : 0]); }
+    return out;
   };
+  const joinPts = (...parts) => {
+    const out = [];
+    for (const part of parts) for (const q of part) {
+      const last = out[out.length - 1];
+      if (last && Math.abs(last[0] - q[0]) < 1e-6 && Math.abs(last[1] - q[1]) < 1e-6) continue;
+      out.push(q);
+    }
+    return out;
+  };
+  /* cumulative ground length along a polyline; the point at a ground
+     distance, with its tangent; the first ground distance where `test`
+     holds */
+  const arc = (pts) => { const out = [0]; for (let i = 1; i < pts.length; i++) out.push(out[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return out; };
+  const at = (pts, Sx, d) => {
+    const target = clamp(d, 0, Sx[Sx.length - 1]);
+    let i = 1;
+    while (i < Sx.length - 1 && Sx[i] < target) i++;
+    const a = pts[i - 1], b = pts[i], u = Sx[i] === Sx[i - 1] ? 0 : (target - Sx[i - 1]) / (Sx[i] - Sx[i - 1]);
+    const dx = b[0] - a[0], dz = b[1] - a[1], g = Math.hypot(dx, dz) || 1;
+    return { X: lerp(a[0], b[0], u), Z: lerp(a[1], b[1], u), H: lerp(a[2], b[2], u), tx: dx / g, tz: dz / g };
+  };
+  const walk = (pts, Sx, test) => { let d = 0; while (d < Sx[Sx.length - 1] && !test(at(pts, Sx, d))) d += 1; return d; };
+  /* THE HUMP'S PROFILE: smooth on the climb and the descent, flat on the
+     crest, so a wagon's two axles always find the rail, the hold at the
+     summit is level, and the tip past it is a band of p rather than a point */
+  const humpAt = (X) => X <= H.a || X >= H.d ? 0
+    : X < H.b ? H.h * smooth((X - H.a) / (H.b - H.a)) : X <= H.c ? H.h : H.h * (1 - smooth((X - H.c) / (H.d - H.c)));
+  /* layers, back to front: a wagon moves between the three W layers as it
+     goes, so the siding's van stands in front of everything and the far
+     feeder's behind the hill until it joins the lead */
+  const L = {};
+  for (const k of ["far", "farW", "bank", "leadW", "near", "nearW", "labels"]) L[k] = el("g", { class: `yd-${k}` });
+  /* every stroke's sample points in user units, for the lane's label sweep */
+  const inkPoints = [];
+  /* ——— the roads ——— */
+  const edgeX = (Z) => -Z * CX - 4; /* where a road at depth Z meets the plate's left edge */
+  const feeder = (k) => {
+    const Z = k === "near" ? 0 : Y.ZF, f = Y[k];
+    return f.in === null ? run([edgeX(Z), Z], [f.join, Y.ZL])
+      : joinPts(run([edgeX(Z), Z], [f.in, Z]), run([f.in, Z], [f.join, Y.ZL]));
+  };
+  const feederNear = feeder("near"), feederFar = feeder("far");
+  /* the lead climbs the hump and runs on as the main line to the plate's
+     right edge; the siding swings off it at the switch, toward the reader */
+  const exitX = Y.vb[0] - Y.ZL * CX + 6;
+  const lead = run([Y.near.join, Y.ZL], [exitX, Y.ZL], humpAt);
+  const siding = joinPts(run([Y.sw, Y.ZL], [Y.sw + Y.fan, Y.ZS]), run([Y.sw + Y.fan, Y.ZS], [Y.buffer, Y.ZS]));
+  /* a road: two rails at ±gauge off the centre line and ties across it every
+     `pitch` units of ground. The rails ink by dash offset (per rail: a dash
+     array on a two-subpath path runs each rail from its own start); the
+     ties are one path whose d grows tie by tie, because a dash offset on a
+     many-subpath path draws every tie from its own start and they would all
+     arrive together at the end. */
+  const track = (parent, pts, o = {}) => {
+    const gauge = o.gauge ?? 4, tie = o.tie ?? 6, pitch = o.pitch ?? 14;
+    const left = [], right = [], Sx = arc(pts);
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)], q = pts[i];
+      const dx = b[0] - a[0], dz = b[1] - a[1], g = Math.hypot(dx, dz) || 1, nx = -dz / g, nz = dx / g;
+      left.push(P(q[0] + nx * gauge, q[1] + nz * gauge, q[2])); right.push(P(q[0] - nx * gauge, q[1] - nz * gauge, q[2]));
+    }
+    inkPoints.push(...left, ...right);
+    const ties = [];
+    for (let d = pitch / 2; d < Sx[Sx.length - 1]; d += pitch) {
+      const q = at(pts, Sx, d), nx = -q.tz, nz = q.tx;
+      const a = P(q.X + nx * tie, q.Z + nz * tie, q.H), b = P(q.X - nx * tie, q.Z - nz * tie, q.H);
+      ties.push(`M ${r1(a[0])} ${r1(a[1])} L ${r1(b[0])} ${r1(b[1])}`);
+    }
+    const tieEl = el("path", { d: ties.join(" "), class: "yd-tie" }, parent);
+    const railEl = el("path", { d: poly(left) + " " + poly(right), class: "yd-rail" }, parent);
+    const len = (ps) => ps.reduce((acc, q, i) => (i ? acc + Math.hypot(q[0] - ps[i - 1][0], q[1] - ps[i - 1][1]) : 0), 0);
+    const railLen = Math.max(len(left), len(right));
+    railEl.style.strokeDasharray = railLen; railEl.style.strokeDashoffset = railLen;
+    let last = -1, shown = ties.length;
+    return { ink(t) {
+      if (t === last) return;
+      last = t;
+      railEl.style.strokeDashoffset = r1(railLen * (1 - t));
+      const k = Math.round(t * ties.length);
+      if (k !== shown) { shown = k; tieEl.setAttribute("d", ties.slice(0, k).join(" ")); }
+    } };
+  };
+  /* dash draw-in for a single-subpath stroke, measured once at build; a
+     fade for a paper fill. Each writes only when its t changed. */
+  const inker = (paths) => {
+    const items = paths.map((q) => { const n = q.getTotalLength(); q.style.strokeDasharray = n; q.style.strokeDashoffset = n; return { q, n }; });
+    let last = -1;
+    return (t) => { if (t === last) return; last = t; for (const it of items) it.q.style.strokeDashoffset = r1(it.n * (1 - t)); };
+  };
+  const fader = (els) => { let last = -1; return (t) => { if (t === last) return; last = t; for (const q of els) q.style.fillOpacity = t; }; };
+  const tFar = track(L.far, feederFar);
+  /* ——— the earthwork: a built thing, not a hill. One paper fill with an ink
+     edge: the near face is the profile's silhouette down to its foot, the
+     trackbed a band `bed` either side of the lead with its far edge
+     lighter, because it is behind the rails. No grass, no trees. ——— */
+  const fwd = [], back = [], farE = [];
+  for (let X = H.a; X <= H.d + 1e-6; X += 2) {
+    const h = humpAt(X);
+    fwd.push(P(X, Y.ZL - H.bed, h)); back.push(P(X, Y.ZL - H.bed, 0)); farE.push(P(X, Y.ZL + H.bed, h));
+  }
+  const bankTop = el("path", { d: poly([...fwd, ...farE.slice().reverse()], true), class: "yd-paper", "data-o": "banktop" }, L.bank);
+  const bankFace = el("path", { d: poly([...fwd, ...back.slice().reverse()], true), class: "yd-paper", "data-o": "bankface" }, L.bank);
+  const bankFoot = el("path", { d: poly(back), class: "yd-foot" }, L.bank);
+  const bankFar = el("path", { d: poly(farE), class: "yd-edge2" }, L.bank);
+  const bankEdge = el("path", { d: poly(fwd), class: "yd-edge", "data-o": "bank" }, L.bank);
+  inkPoints.push(...fwd, ...farE, ...back);
+  const tLead = track(L.bank, lead);
+  /* the main line's arrow, on the road's end at the plate's edge: the road
+     that goes on. The inventory van parks whole with its nose at it. */
+  const ay = P(0, Y.ZL)[1], arrowPts = [[Y.arrow, ay - 5], [Y.arrow + 12, ay], [Y.arrow, ay + 5]];
+  const arrow = el("path", { d: poly(arrowPts, true), class: "yd-arrow", "data-o": "arrow" }, L.bank);
+  inkPoints.push(...arrowPts);
+  const tNear = track(L.near, feederNear), tSiding = track(L.near, siding);
+  /* THE BUFFER STOP: two posts and a beam across the siding's end, the one
+     road that ends at something; the logs van parks with its nose against
+     it, which is what "stays" looks like */
+  const BUF = { post: 20, beam: 13, half: 7 };
+  const bufG = el("g", { "data-o": "buffer" }, L.near);
+  const pL = [P(Y.buffer, Y.ZS - BUF.half, 0), P(Y.buffer, Y.ZS - BUF.half, BUF.post)], pR = [P(Y.buffer, Y.ZS + BUF.half, 0), P(Y.buffer, Y.ZS + BUF.half, BUF.post)];
+  const posts = el("path", { d: poly(pL) + " " + poly(pR), class: "yd-post" }, bufG);
+  const beam = el("path", { d: poly([P(Y.buffer, Y.ZS - BUF.half, BUF.beam), P(Y.buffer, Y.ZS + BUF.half, BUF.beam)]), class: "yd-beam" }, bufG);
+  inkPoints.push(...pL, ...pR);
+  /* ——— a goods wagon in the oblique, local origin on the rail under its
+     centre: wheels, an open body (front, end, and the rim's open top) with
+     a side door and a solebar, a heaped load standing proud of the rim,
+     and a LID that slides on from the tail. settle(k) lowers the heap into
+     the body; lid(k) lengthens the lid from the tail to the nose over the
+     empty tub (the schedule settles the load before the lid starts, so no
+     frame shows a lid over a load); at lid 1 the wagon is `sealed` and its
+     strokes turn pine. Both forms stand the same height to the roof line
+     (wh + tub + roof: 44 units, 47 px at 1440), the smallest nameable thing
+     here. ——— */
+  const wagon = (parent) => {
+    const wl = W.L, dx = W.D * CX, dy = -W.D * CY, wh = W.wh, top = wh + W.tub, rf = W.roof;
+    const g = el("g", { class: "yd-wag", "data-o": "wagon" }, parent);
+    for (const x of [-wl / 3, wl / 3]) el("circle", { cx: x, cy: -3.4, r: 3.4, class: "yd-wheel" }, g);
+    el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2 + dx, -top + dy], [-wl / 2 + dx, -top + dy]], true), class: "yd-face" }, g);
+    el("path", { d: poly([[wl / 2, -top], [wl / 2 + dx, -top + dy], [wl / 2 + dx, -wh + dy], [wl / 2, -wh]], true), class: "yd-face" }, g);
+    el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2, -wh], [-wl / 2, -wh]], true), class: "yd-face" }, g);
+    el("rect", { x: -6, y: -top + 4, width: 12, height: W.tub - 7, class: "yd-door" }, g);
+    el("path", { d: `M ${-wl / 2} ${-wh - 1} H ${wl / 2}`, class: "yd-sole" }, g);
+    /* the heap, as fractions of the length and of `heap`; it settles
+       straight down into the body, never past the rim */
+    const hx = [-0.44, -0.32, -0.16, 0, 0.16, 0.3, 0.44], hh = [0, 0.6, 0.45, 1, 0.55, 0.85, 0];
+    const heap = el("path", { class: "yd-heap", "data-o": "heap" }, g);
+    const lidF = el("path", { class: "yd-roof", "data-o": "roof" }, g), lidT = el("path", { class: "yd-roof" }, g), lidE = el("path", { class: "yd-roof" }, g);
+    const w = { g, tf: "", deg: 0, X: NaN, k: -1, kr: -1, sealed: null, layer: null, on: null,
+      settle(k) {
+        if (k === w.k) return;
+        w.k = k;
+        heap.style.display = k >= 1 ? "none" : "";
+        heap.setAttribute("d", poly([[-wl / 2 + 3, -top], ...hx.map((f, i) => [f * wl, -top - hh[i] * W.heap * (1 - k)]), [wl / 2 - 3, -top]], true));
+      },
+      lid(k) {
+        if (k === w.kr) return;
+        w.kr = k;
+        const x0 = -wl / 2, x1 = -wl / 2 + k * wl;
+        lidF.setAttribute("d", poly([[x0, -top], [x1, -top], [x1, -top - rf], [x0, -top - rf]], true));
+        lidT.setAttribute("d", poly([[x0, -top - rf], [x1, -top - rf], [x1 + dx, -top - rf + dy], [x0 + dx, -top - rf + dy]], true));
+        lidE.setAttribute("d", poly([[x1, -top - rf], [x1 + dx, -top - rf + dy], [x1 + dx, -top + dy], [x1, -top]], true));
+        for (const q of [lidF, lidT, lidE]) q.style.display = k > 0 ? "" : "none";
+        const sealed = k >= 1;
+        if (sealed !== w.sealed) { w.sealed = sealed; g.setAttribute("class", sealed ? "yd-wag sealed" : "yd-wag"); }
+      },
+      show(v) { if (w.on === v) return; w.on = v; g.setAttribute("opacity", v ? 1 : 0); },
+      into(k) { if (w.layer === k) return; w.layer = k; L[k].appendChild(g); } };
+    w.settle(0); w.lid(0);
+    return w;
+  };
+  /* ——— the two wagons, each on its own path from off the plate's edge to its
+     park, placed by KEYFRAMES in p: a keyframe is a centre X on the path and
+     the ease into it; a repeated X is a hold. The tilt is read off the two
+     axles' heights, not the grade at a point, so both wheels stay on the
+     rail over the crest. ——— */
+  const Sl = arc(lead);
+  const parkFar = Y.arrow - 2 - Y.ZL * CX - W.L / 2 - W.D * CX;
+  const parkNear = Y.buffer - 2 - W.L / 2;
+  const wagons = [["A", Y.A, feederNear, 0, siding, parkNear], ["B", Y.B, feederFar, Y.ZF, lead, parkFar]].map(([name, spec, feed, Z, road, parkX]) => {
+    const Sr = arc(road);
+    const parkD = walk(road, Sr, (q) => q.X >= parkX), pq = at(road, Sr, parkD);
+    /* the road up to the park: for A the lead to the switch then the
+       siding; for B the lead itself */
+    const roadTo = name === "A"
+      ? joinPts(lead.filter((q, i) => Sl[i] < Sl[Math.round((Y.sw - Y.near.join) / 3)]), [[Y.sw, Y.ZL, 0]], road.filter((q, i) => Sr[i] < parkD), [[pq.X, pq.Z, 0]])
+      : joinPts(road.filter((q, i) => Sr[i] < parkD), [[pq.X, pq.Z, 0]]);
+    /* the approach from off the plate: along the feeder's own line, far
+       enough back that the nose is off the edge at t 0 */
+    const f0 = feed[0], f1 = feed[1], dX = f1[0] - f0[0], dZ = f1[1] - f0[1], g = Math.hypot(dX, dZ) || 1;
+    const back = (W.L / 2 + W.D * CX + 2) / Math.max(0.2, (dX + dZ * CX) / g) + 4;
+    const pts = joinPts(run([f0[0] - (dX / g) * back, f0[1] - (dZ / g) * back], [f0[0], f0[1]]), feed, roadTo);
+    const Sg = arc(pts);
+    const sOf = (key) => key === "start" ? 0 : key === "park" ? Sg[Sg.length - 1] : walk(pts, Sg, (q) => q.X >= key);
+    const keys = spec.keys.map(([p, key, ease]) => ({ p, s: sOf(key), ease: EASE[ease || "lin"] }));
+    return { name, keys, settle: spec.settle, lid: spec.lid, pts, Sg, w: wagon(L.farW), total: Sg[Sg.length - 1] };
+  });
+  const sAt = (wg, p) => {
+    const k = wg.keys;
+    if (p <= k[0].p) return k[0].s;
+    for (let i = 1; i < k.length; i++) if (p <= k[i].p) return lerp(k[i - 1].s, k[i].s, k[i].ease(ramp(p, k[i - 1].p, k[i].p)));
+    return k[k.length - 1].s;
+  };
+  const place = (wg, sg) => {
+    const w = wg.w, q = at(wg.pts, wg.Sg, sg), wb = W.L / 3;
+    const h1 = at(wg.pts, wg.Sg, sg - wb).H, h2 = at(wg.pts, wg.Sg, sg + wb).H;
+    const deg = -Math.atan2(h2 - h1, 2 * wb) * 180 / Math.PI;
+    const [x, y] = P(q.X, q.Z, (h1 + h2) / 2);
+    const tf = `translate(${r1(x)} ${r1(y)}) rotate(${r1(deg)})`;
+    if (tf !== w.tf) { w.tf = tf; w.deg = deg; w.X = q.X; w.g.setAttribute("transform", tf); }
+    w.into(q.X < Y.near.join - 2 ? (wg.name === "A" ? "nearW" : "farW") : wg.name === "A" && q.X > Y.sw + 2 ? "nearW" : "leadW");
+  };
+  /* ——— the labels, face-on, each pair where its road is: the far source over
+     the far feeder, the far product top-right and "main line" over the main
+     line's exit, the works' name at the hill's near foot, the near source
+     under the near feeder, the near product under the siding; the
+     dispositions in the text face, the reviewer's tick beside "checked in".
+     The phone stacks the same words above and below, one per line. ——— */
+  const text = (x, y, str, cls, end) => {
+    const a = { x, y, "data-o": "label" }; if (cls) a.class = cls; if (end) a["text-anchor"] = "end";
+    const t = el("text", a, L.labels); t.textContent = str; return t;
+  };
+  const Y0 = Y.Y0, R = Y.vb[0] - 8;
+  let tick;
   if (!tight) {
-    /* THE COLUMNS ARE SIZED OFF THE LONGEST MEASURED LABEL IN EACH, and they
-       moved when the third road went: freight 8..178 ("hash dedup · REST API"
-       = 168.2 from x 8), works 182..284 (its own nameplate, 96.1 from 186),
-       products 300..486 — wide enough for "stays with IT Services" (176.2)
-       set back from the box's right edge, which is what sets this width —
-       and the merge corridor 494..552, which every stitch stays inside so no
-       label is ever set over a curve. Two names carry the header; the works
-       is the one column that is a machine rather than a state, so it wears
-       its nameplate inside itself, in the silence between the two roads. */
-    s.setAttribute("viewBox", "0 0 560 272");
-    /* the works exit as a fraction of the deepest record's whole polyline:
-       32 + 174 + 110 of 456 units, which is where a record stops being raw
-       freight and starts being a product */
-    yard.shapedT = 0.69;
-    const ROAD = [92, 196], WKS = 182, BX0 = 300, BX1 = 486, SW = 516, BUF = 452, TRUNK = 144;
-    el("text", { x: 8, y: 38 }).textContent = "";
-    el("text", { x: 552, y: 38, "text-anchor": "end" }).textContent = "main line";
-    hrule(34, 102, 552, [[472, 558]]);
-    /* ——— the works: two walls, with a doorway at every road ——— */
-    const doors = ROAD.map((y) => [y - 12, y + 12]);
-    vrule(WKS, 46, 240, doors);
-    vrule(292, 46, 240, doors);
-    el("text", { x: 188, y: 148 }).textContent = "Python · SQL";
-    ROAD.forEach((y, i) => {
-      /* the source's two rows and the product's two rows are THE SAME two
-         rows: the reader gets `1.6M+ OAS query logs ⟶ usage table`
-         across the plate without the plate having to draw the arrow. */
-      el("text", { x: 8, y: y - 26, class: "lit" }).textContent = src[i][0];
-      el("text", { x: 8, y: y - 12 }).textContent = src[i][1];
-      el("path", { d: `M 8 ${y} H ${BUF}`, class: "lane" });
-      el("path", { d: `M ${BUF} ${y - 6} V ${y + 6}`, class: "lane" }); /* the buffer stop */
-      /* the box is open toward the merge and open at the corner its own
-         road comes in by — a product is what leaves, not a container. Its
-         floor breaks for the reviewer's mark, which straddles it: the stamp
-         is on the box, not beside it. (The floor used to break for the whole
-         disposition, which worked while both of them were two words. "stays
-         with IT Services" is 176 units and a box is 186, so the words sit on
-         their own row under the floor now and the mark stands over the end
-         of them, at the corner the product leaves by: the floor runs to the
-         stamp and stops, and what is past it is open toward the merge.) */
-      const filed = i === FILED;
-      const box = { class: "prod",
-        d: `M ${BX1} ${y - 40} H ${BX0} V ${y - 10} M ${BX0} ${y + 12} H 436` };
-      if (!filed) box["stroke-dasharray"] = "5 6";
-      el("path", box);
-      el("text", { x: 308, y: y - 26, class: "lit" }).textContent = prod[i][0];
-      el("text", { x: 308, y: y - 12 }).textContent = prod[i][1];
-      /* the station's own words, not a coinage: the handoff line says only
-         the inventory is checked in, and the other product stays inside the
-         system it was read from. */
-      yard.marks.push(el("path", { d: filed ? D_FILED : D_HELD,
-        class: filed ? "tickp" : "tickp withheld",
-        transform: `translate(440 ${y + 3}) scale(1.5)` }));
-      el("text", { x: BX1, y: y + 28, "text-anchor": "end", class: filed ? "lit" : "" })
-        .textContent = disp[i];
-      /* both products merge, so both stitches curve to the same switch */
-      el("path", { class: "stitch",
-        d: `M ${BX1} ${y} C 504 ${y} 502 ${TRUNK} ${SW} ${TRUNK}` });
-    });
-    el("path", { d: `M ${SW} ${TRUNK - 14} V ${TRUNK + 14}`, class: "lane" }); /* the switch stand */
-    yard.trunk = el("path", { d: `M ${SW} ${TRUNK} H 540`, class: "stitch" });
-    el("path", { d: `M 540 ${TRUNK - 6} L 552 ${TRUNK} L 540 ${TRUNK + 6} Z`,
-      fill: "var(--pine)", stroke: "none" });
-    hrule(248, 376, 552, []);
-    const lanes = [0, 1, 0, 1, 0, 1], slot = [0, 0];
-    lanes.forEach((ln, i) => {
-      const y = ROAD[ln];
-      /* a siding fills from its far end, so the first arrival parks
-         deepest. It also fixes a defect: the shipping plate spaced docks
-         by `i % 3` over the GLOBAL index, which put ALL THREE of lane 1's
-         records on x 346 and two of lane 0's on x 300 — outlined rects at
-         one coordinate render as one, so the middle lane, which is the
-         checked-in inventory, appeared to deliver a single record. */
-      const dx = 432 - slot[ln]++ * 46;
-      const g = el("g", { class: "recg" });
-      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
-      yard.recs.push({ g, r, delay: i * 0.045,
-        line: [[-24, y], [8, y], [WKS, y], [BX0, y], [dx, y]] });
-    });
+    text(8, Y0 - 124, "Tableau + Workday", "lit"); text(8, Y0 - 110, "hash dedup · REST API");
+    text(R, Y0 - 149, "master inventory", "lit", true); text(R, Y0 - 135, "10,453 × 35 fields", null, true);
+    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: `translate(464 ${Y0 - 129}) scale(1.5)` }, L.labels);
+    text(R, Y0 - 119, "checked in", "yd-note lit", true);
+    text(R, Y0 - 79, "main line", null, true);
+    text(200, Y0 + 8, "Python · SQL");
+    text(8, Y0 + 23, "1.6M+ OAS query logs", "lit"); text(8, Y0 + 37, "5 yrs · 1,153 users");
+    text(R, Y0 + 62, "usage table", "lit", true); text(R, Y0 + 76, "57.8M rows", null, true);
+    text(R, Y0 + 94, "stays with IT Services", "yd-note", true);
   } else {
-    /* the tight yard: the same machine, stacked, with the road down the
-       left the way fig. 09's tight rail runs — so the boom is the same
-       bar on the same hinge, and every label has the full 240 to itself.
-       Measured at 11 + .03em: the longest feeder label is 21 chars =
-       149.7 units, the longest product label 18 = 128.3 from x 54, and the
-       longest disposition 22 = 156.9 from x 30, which the full width of
-       this plate carries without moving anything. */
-    s.setAttribute("viewBox", "0 0 240 392");
-    yard.shapedT = 0.48; /* the works' far wall, as a fraction of this polyline */
-    const BAND = [26, 168], RX = 34, BX1 = 212, CX = 224;
-    el("text", { x: 8, y: 14 }).textContent = "";
-    hrule(10, 94, 232, []);
-    BAND.forEach((Y, i) => {
-      el("text", { x: 8, y: Y + 12, class: "lit" }).textContent = src[i][0];
-      el("text", { x: 8, y: Y + 26 }).textContent = src[i][1];
-      el("path", { d: `M ${RX} ${Y + 34} V ${Y + 118}`, class: "lane" });
-      el("path", { d: `M 28 ${Y + 118} H 40`, class: "lane" }); /* the buffer stop */
-      /* the works, turned: two walls ACROSS the road with the doorway the
-         road runs through, which is the wide plate's corridor rotated */
-      el("path", { d: `M 12 ${Y + 44} H 26 M 42 ${Y + 44} H 56`, class: "lane" });
-      el("path", { d: `M 12 ${Y + 68} H 26 M 42 ${Y + 68} H 56`, class: "lane" });
-      if (i === 0) el("text", { x: 64, y: Y + 60 }).textContent = "Python · SQL";
-      const filed = i === FILED;
-      const box = { class: "prod",
-        /* the floor's break is sized to the words that sit in it, measured
-           at 7.13 units/char: "checked in" is 71.3 from x 30 and "stays
-           with IT Services" is 156.9, which is why the two breaks differ by
-           86 units rather than by the 28 the old pair of tags needed */
-        d: `M ${BX1} ${Y + 84} H 42 M 26 ${Y + 84} H 8 V ${Y + 128} M ${filed ? 110 : 195} ${Y + 128} H ${BX1}` };
-      if (!filed) box["stroke-dasharray"] = "5 6";
-      el("path", box);
-      el("text", { x: 54, y: Y + 100, class: "lit" }).textContent = prod[i][0];
-      el("text", { x: 54, y: Y + 114 }).textContent = prod[i][1];
-      /* seated at the left here: the box's right end is the dock */
-      yard.marks.push(el("path", { d: filed ? D_FILED : D_HELD,
-        class: filed ? "tickp" : "tickp withheld",
-        transform: `translate(12 ${Y + (filed ? 121 : 123)}) scale(1.05)` }));
-      el("text", { x: 30, y: Y + 132, class: filed ? "lit" : "" })
-        .textContent = disp[i];
-      el("path", { d: `M ${BX1} ${Y + 106} H ${CX}`, class: "stitch" });
-      const g = el("g", { class: "recg" });
-      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
-      yard.recs.push({ g, r, delay: i * 0.07,
-        line: [[RX, Y + 34], [RX, Y + 56], [RX, Y + 84], [RX, Y + 110]] });
-    });
-    /* the merge, drawn: the tight plate used to state it in a text arrow */
-    yard.trunk = el("path", { d: `M ${CX} ${BAND[0] + 106} V 340`, class: "stitch" });
-    el("path", { d: `M ${CX - 6} 340 L ${CX} 352 L ${CX + 6} 340 Z`, fill: "var(--pine)", stroke: "none" });
-    el("text", { x: 232, y: 374, "text-anchor": "end" }).textContent = "the main line";
+    text(8, 14, "Tableau + Workday", "lit"); text(8, 28, "hash dedup · REST API");
+    text(R, 44, "main line", null, true);
+    text(R, 58, "master inventory", "lit", true); text(R, 72, "10,453 × 35 fields", null, true);
+    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: "translate(148 78) scale(1.3)" }, L.labels);
+    text(R, 88, "checked in", "yd-note lit", true);
+    /* the works' name under the yard's near edge: at the hill's foot the
+       siding's van rolls over it, inside the near face nothing clears 8 */
+    text(7, Y0 + 22, "Python · SQL");
+    text(8, Y0 + 57, "1.6M+ OAS query logs", "lit"); text(8, Y0 + 71, "5 yrs · 1,153 users");
+    text(R, Y0 + 85, "usage table", "lit", true); text(R, Y0 + 99, "57.8M rows", null, true);
+    text(R, Y0 + 117, "stays with IT Services", "yd-note", true);
   }
-  /* everything that inks in, measured once at build. getTotalLength on a
-     transformed path returns USER-space length, which is what the dash
-     array wants — the scale rides along with it. */
-  for (const q of [yard.trunk, ...yard.marks]) {
-    const L = q.getTotalLength();
-    q.style.strokeDasharray = L; q.style.strokeDashoffset = L; q._len = L;
+  wagons.forEach((wg, k) => wg.w.g.setAttribute("data-i", k));
+  /* ——— the inkers, measured once at build ——— */
+  const inkBank = inker([bankEdge, bankFar, bankFoot]);
+  const fillBank = fader([bankTop, bankFace]);
+  const inkTick = inker([tick]);
+  const inkBuffer = inker([posts, beam]);
+  let labelsOn = null, arrowOn = null;
+  /* A FIGURE OWNS ITS DRAWING, THE DRIVER OWNS ITS p: everything below is set
+     from p alone and written only when it changed. */
+  function draw(p) {
+    tFar.ink(ramp(p, T.far[0], T.far[1]));
+    tLead.ink(ramp(p, T.lead[0], T.lead[1]));
+    inkBank(ramp(p, T.bank[0], T.bank[1])); fillBank(ramp(p, T.fill[0], T.fill[1]));
+    tNear.ink(ramp(p, T.near[0], T.near[1])); tSiding.ink(ramp(p, T.near[0] + 0.02, T.near[1] + 0.02));
+    inkBuffer(ramp(p, T.near[1] - 0.04, T.near[1] + 0.02));
+    const ar = p >= T.lead[1];
+    if (ar !== arrowOn) { arrowOn = ar; arrow.setAttribute("opacity", ar ? 1 : 0); }
+    const on = p >= T.labels;
+    if (on !== labelsOn) { labelsOn = on; L.labels.setAttribute("opacity", on ? 1 : 0); }
+    for (const wg of wagons) {
+      place(wg, sAt(wg, p));
+      wg.w.settle(ramp(p, wg.settle[0], wg.settle[1]));
+      wg.w.lid(ramp(p, wg.lid[0], wg.lid[1]));
+      wg.w.show(p > wg.keys[0].p);
+    }
+    inkTick(ramp(p, T.tick[0], T.tick[1]));
   }
-}
-function scrubPath(p) {
-  for (const rc of yard.recs) {
-    const t = smooth((p - 0.16 - rc.delay) / 0.36);
-    const [x, y] = polyAt(rc.line, t);
-    rc.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-    rc.g.setAttribute("opacity", t <= 0 ? 0 : 1);
-    const landed = t > yard.shapedT; /* out of the works: the record is shaped */
-    if (rc._landed !== landed) { rc._landed = landed; rc.r.setAttribute("class", landed ? "rec landed" : "rec"); }
-  }
-  if (yard.trunk) { /* the merge inks early enough that a mid-beat still shows it */
-    const t = smooth((p - 0.34) / 0.24);
-    yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
-  }
-  /* the dispositions are signed in band order, as the last records
-     arrive — mark 0 completes at .76 and the sixth record lands at .79,
-     so the docket is written across the end of the run rather than after
-     it. A mark being signed is the one motion the bench ruling allows
-     over a record, and both stand complete at scrub 1. */
-  const mk = yard.marks.map((m, i) => {
-    const t = smooth((p - 0.64 - i * 0.05) / 0.12);
-    return (m._len * (1 - t)).toFixed(1);
-  }).join(" ");
-  if (yard._mk !== mk) {
-    yard._mk = mk;
-    const offs = mk.split(" ");
-    yard.marks.forEach((m, i) => { m.style.strokeDashoffset = offs[i]; });
-  }
+  draw(0);
+  /* probe hooks: the edition, each wagon's tilt, X and seal state, the
+     keyframes, and every stroke's sample points in user units, for the
+     lane's census and label sweep */
+  window.__world.fig03 = { edition: tight ? "tight" : "wide", draw, nodes: s.querySelectorAll("*").length,
+    keys: wagons.map((wg) => ({ name: wg.name, keys: wg.keys.map((k) => [k.p, +k.s.toFixed(1)]), settle: wg.settle, lid: wg.lid, total: +wg.total.toFixed(1) })),
+    wagons: () => wagons.map((wg) => ({ name: wg.name, deg: +wg.w.deg.toFixed(1), X: +wg.w.X.toFixed(1), k: +wg.w.k.toFixed(2), kr: +wg.w.kr.toFixed(2), sealed: wg.w.sealed, on: wg.w.on })),
+    ink: () => inkPoints.map((q) => [+q[0].toFixed(1), +q[1].toFixed(1)]) };
+  /* registered on every build: an edition change rebuilds the drawing and
+     the driver must see the new one (buildNet's pattern) */
+  yard.e = asmFigure("fig03", { box: () => layoutBox(s), draw });
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -12095,7 +12262,7 @@ function work(y) {
 
   /* stations scrub only near their own beat */
   /* beat 1's card rides the assembly driver (v10): fig. 02 clocks the name itself */
-  if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
+  /* beat 2's plate (fig. 03) rides the assembly driver too (v10): one clock, no scrub */
   if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
      its bench is a settled record. Beat 6's drawing is assembled by the
@@ -18978,7 +19145,7 @@ if (!RM && !FLAGS.has("notype")) {
 /* if the module ever dies, the story must still read: settle everything */
 addEventListener("error", () => document.body.classList.add("settled"));
 function settleAll() {
-  scrubWho(1); scrubPath(1); scrubCadence(1);
+  scrubWho(1); scrubCadence(1); /* fig. 03 is the driver's (v10): asmSettle() below draws it parked */
   /* scrubBench(1) and scrubJetBench(1) stood here, and settling them for
      reduced-motion readers was the page already conceding the argument: the
      truthful form of a record is the settled one. Every reader gets it now,
