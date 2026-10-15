@@ -1097,7 +1097,12 @@ test.describe("the figures assemble with the scroll", () => {
          centred park and the grace can never fire (ASM_SEEN .9). Such a
          figure declares a window that closes with its fact on screen, and
          the honest park is that close, reached by the scroll alone. */
-      const park = tall ? w.yB : centre;
+      /* the probe rounds yB to a whole px, so the close itself can be up to
+         half a px further on (fig. 02's phone close is top + 0.9 h - vh,
+         fractional): a park at the rounded value read t .9989 on an iPhone
+         14 and never finished. One px past the probe's yB is at or past the
+         true close, and p is 1 from there by the scroll alone */
+      const park = tall ? w.yB + 1 : centre;
       /* a park is ARRIVED at: from off the screen, where no window is closed
          (a slow read above could have paused long enough for a grace) */
       await jump(page, Math.round(w.yA - 1500));
