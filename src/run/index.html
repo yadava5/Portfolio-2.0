@@ -1890,7 +1890,9 @@ if (location.hash.length > 1) {
     mask-image:linear-gradient(to right, transparent, transparent);
     -webkit-mask-image:linear-gradient(to right, transparent, transparent);
   }
-  .signib{ /* the pen nib riding the writing edge */
+  .signib{ /* the pen's point, leading the wet edge at the stroke's height:
+       sigPicture sets its top to the italic's mid x-height (measured), so it
+       never sits on the baseline after a letter, where a full stop would */
     position:absolute; top:50%; left:0; width:5px; height:5px; border-radius:50%;
     background:var(--clay-g); opacity:0; transform:translate(0,-50%);
   }
@@ -1913,7 +1915,16 @@ if (location.hash.length > 1) {
      has the numbers). The picture is a canvas drawn once per face and seat
      from the live ink's own glyph boxes, so it is the same layout at the
      same pixels, as a raster: G2 counts text nodes, Safari rasterises text
-     in 3D, and a raster is what a card at an angle is. One rotateX child
+     in 3D, and a raster is what a card at an angle is. LYING, IT IS THE
+     SAME PICTURE AT HALF RESOLUTION: the compositor samples a texture under
+     rotateX with no mipmaps, and at 90 degrees this camera squeezes the
+     picture to .385 of its height, so every third row of the writing fell
+     out as speckle ("a blurry, aliased smear of tiny text"); a second
+     canvas, the picture downsampled by two with the canvas's own filter and
+     the paper filled in, fades in over it as the squeeze passes 1.3 and is
+     whole by 1.7 (45 to 68 degrees), gone before the name is written. The
+     NIB rides at the italic's mid x-height just behind the wet edge's front,
+     never on the baseline after a letter (a full stop). One rotateX child
      under the stage's `perspective`, no preserve-3d anywhere; no opacity,
      filter or overflow on the stage or the body. Camera per edition:
      --f02-cam is its distance (the far edge of the lying card is .55 of the
@@ -7547,7 +7558,10 @@ function polyAt(line, t) {
 /* Who — the engineer of record signs the line. The name is written on
    by a clip-path wipe with a nib dot riding the writing edge — no fake
    stroke data, just the type being revealed at writing speed. */
-const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0, feather: 16 /* px of wet edge */ };
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0, feather: 16 /* px of wet edge */, lead: 8 /* px the nib's centre sits behind the wet edge's front: half the feather, where the ink under it is half developed (nearer the front the ink is too faint to be seen, and a dot on unseen ink is a dot alone) */, half: 2.5 /* the nib's radius; sigPicture reads the real one */ };
+/* where the nib rides (nibX, below the name's glyph boxes it needs):
+   mid-feather, on the glyph being written. The picture's nib uses the same
+   rule. */
 /* D-1 · THE SIGNATURE DOES NOT UN-SIGN. This wipe is a pure function of
    beat progress, so scrolling back up ran the nib backwards and took the
    name off the card — a signature that withdraws when you look at it twice
@@ -7565,26 +7579,29 @@ function scrubWho(t) {
   /* the wet edge: the wipe's front runs the name's width plus the feather,
      so the last glyph is whole at t 1 and nothing shows at t 0; the mask
      is dropped at 1 (an italic's overhang past its box is then the live
-     glyph's, not the mask's); the nib rides mid-feather */
+     glyph's, not the mask's); the nib rides mid-feather (nibX) */
   const e = (who.w + who.feather) * t;
   const m = t >= 1 ? "none" : `linear-gradient(to right, #000 ${(e - who.feather).toFixed(1)}px, transparent ${e.toFixed(1)}px)`;
   who.sig.style.maskImage = m; who.sig.style.webkitMaskImage = m;
   who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
-  who.nib.style.transform = `translate(${clamp(e - who.feather / 2, 0, who.w).toFixed(1)}px, -50%)`;
+  who.nib.style.transform = `translate(${nibX(e, who.w).toFixed(1)}px, -50%)`;
 }
 
 /* ····· fig. 02 · the record, stood up (v10) ·····
    One object with a camera. The record card lies flat on the desk, seen
    from above, WRITTEN, holds there until the whole of it is on the screen,
    then stands up toward the reader in one lift and signs itself: theta is
-   90 for p <= pH (the first p at which the lying card is above the fold by
-   16 px, computed from the driver's own window at every measure), runs
+   90 for p <= pH (the first p at which HOLD_SEEN of the lying card is on
+   screen, computed from the driver's own window at every measure), runs
    90 -> 0 over the lift on a curve with a soft start, its mass early
    and a long tail (the first cut's smooth^.6 had an infinite slope at the
    start: the card snapped off the desk, which a cold reader called
-   "stretched"), and is 0 from the lift's end, pH + LIFT_SPAN (a third of the window,
-   however late the hold). pH is never before HOLD_MIN, so the
-   lying card is seen whole for a beat before it moves. The top edge goes
+   "stretched"), and is 0 from the lift's end: pH + LIFT_SPAN of the window
+   or LIFT_PX of scroll, whichever is longer, so no seat stands the card up
+   faster per px of scroll than the laptop does (a phone's window is a fifth
+   of its screen, and a third of that was "a snap, not a lift"). pH is never
+   before HOLD_MIN, so the lying card is seen for a beat before it moves, and
+   never so late that the lift loses its length. The top edge goes
    AWAY from the lens for the whole lift (z <= 0). A 3-degree settle was
    tried and dropped: a card being signed holds still.
    THE INK IS A PICTURE WHILE THE CARD IS POSED. The body carries a canvas
@@ -7595,7 +7612,11 @@ function scrubWho(t) {
    at the same pixels in a short crossfade (the picture hides, the words
    show) and the reader can select and tab. Text nodes are never posed: G2
    counts them, Safari rasterises text in 3D, and a raster is what a card at
-   an angle is. The picture is drawn on an OffscreenCanvas and blitted once:
+   an angle is. Lying, it is a second canvas at half the backing (the
+   compositor has no mipmaps for a texture under rotateX, and at 90 degrees
+   this camera squeezes the picture to .385: every third row of the writing
+   dropped out as speckle), faded in by the squeeze (FAR_FROM .. FAR_TO) and
+   gone before the name is written. The picture is drawn on an OffscreenCanvas and blitted once:
    its fillText is not the thread canvas's (check-cargo-fixture hooks the
    DOM context's prototype to record waybills, and the card's words are not
    freight). The name is the one thing the picture does not carry finished:
@@ -7619,19 +7640,22 @@ function scrubWho(t) {
    there, written and signed. Scrolling up lays it back down; the name keeps
    its high-water mark on both the picture and the live text. */
 const F02 = {
-  LIFT_SPAN: 0.35, /* p · the lift's length, pH to pH + this: a third of the window however late the hold (the phone's park moved its window up and a fixed end left a 24 px lift) */
+  LIFT_SPAN: 0.35, /* p · the lift's length as a share of the window, pH to pH + this: a third of the window however late the hold */
+  LIFT_PX: 114,  /* px of scroll · and never shorter than this, whatever the window: the laptop's own lift (LIFT_SPAN of its 328 px window at 1440x900), so no seat stands the card up faster per px of scroll than the laptop. The phone's window is a fifth of its screen, and a third of that stood the card up in 65 px: 2.5 degrees per px of scroll against the laptop's 1.4, "a snap, not a lift" */
   LIFT_MAX: 0.9, /* p · the lift ends no later than this: the stroke's end and the handover need the rest */
-  HOLD_MIN: 0.25, /* pH never earlier than this: the lying card is seen whole before it moves */
+  HOLD_MIN: 0.25, /* pH never earlier than this: the lying card is seen before it moves */
+  HOLD_SEEN: 0.9, /* of the lying card on screen · the lift waits for this much of it (ASM_SEEN, the driver's own "in view"); on a phone too short to show that much before the park, the lift's length wins and the card rises into view */
   NAME_DEG: 40,  /* the name is written over the lift's last degrees, ending as the card stands */
   WRITE_MS: 600, /* the stroke's pace floor, end to end: one stroke, not letters */
   HANDOVER_MS: 120, /* picture to words: the two coincide to the glyph edge (measured), and a crossfade this short hides the edge */
-  HOLD_MAX: 0.55, /* pH never later than this: past it the window would be shortened instead (lane note) */
+  FAR_FROM: 1.3, /* the picture's vertical squeeze (its height over its projected height) at which the lying picture starts to show, 45 degrees under this camera: the name (NAME_DEG) is written on the picture alone */
+  FAR_TO: 1.7,   /* and at which it is whole, 68 degrees; lying flat the squeeze is 2.6 */
   START: 0.92,   /* phone window · p 0 with this much of the stage on screen */
-  FLOOR: 0.22,   /* phone window · never shorter than this many vh */
-  MAST: 112,     /* phone window · the park never lifts the stage's top above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
+  FLOOR: 0.22,   /* phone window · never shorter than this many vh, nor than LIFT_PX over the lift's share of the window */
+  MAST: 112,     /* phone window · the park never lifts the stage's top above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e. Unless the stage is too tall to be ASM_SEEN on screen under it (390x664): then the park is where that much first is, and the tab goes under the scrim */
 };
 const f02 = { stage: $("fig02"), p: NaN, th: NaN, on: null, name: 0, tp: 0, rate: 0, fade: -1, t: 0, rT: 0, lift: 0.6,
-  cam: 550, eye: 385, head: 16, H: 0, pH: 0, pName: 0, hold: null, e: null, hook: null, pic: null, npic: null, noff: null, sig: null };
+  cam: 550, eye: 385, head: 16, H: 0, pH: 0, pName: 0, hold: null, e: null, hook: null, pic: null, lpic: null, far: -1, npic: null, noff: null, sig: null };
 f02.body = f02.stage.querySelector(".cardbody");
 f02.shadow = f02.stage.querySelector(".cardshadow");
 f02.ink = f02.stage.querySelector(".engcard");
@@ -7678,7 +7702,7 @@ function f02glyphs(g, node, origin, k, out) {
     const r = rg.getClientRects()[0];
     if (!r || !r.width) continue;
     const x = (r.left - origin.left) * k, y = (r.top - origin.top) * k + asc, x1 = x + r.width * k;
-    out.push({ ch, x, y, font, color, asc });
+    out.push({ ch, x, y, w: r.width * k, font, color, asc });
     if (run && Math.abs(run.y - y) < 0.5) { run.x1 = x1; } else { flush(); run = { x0: x, x1, y }; }
   }
   flush();
@@ -7716,7 +7740,40 @@ function inkPicture() {
   }
   if (f.sig) { const S = f.sig; g.fillStyle = S.line.color; g.fillRect(S.x0, S.y0 + S.line.top, S.line.len, 1); }
   c.getContext("2d").drawImage(off, 0, 0);
+  /* THE LYING PICTURE: the same picture at half the backing, the paper
+     filled in. The compositor samples a texture under rotateX with no
+     mipmaps, and lying flat this camera squeezes the picture to .385 of its
+     height, so every third row of the writing simply dropped out ("a
+     blurry, aliased smear of tiny text"). Downsampled here by the canvas's
+     own filter it is sampled at 1.3 at most and reads as small writing.
+     poseWho fades it in over the picture by the squeeze (FAR_FROM ..
+     FAR_TO); opaque, so the picture never shows through it at two
+     resolutions at once. The name's picture stays over both. */
+  if (!f.lpic) { f.lpic = document.createElement("canvas"); f.lpic.className = "lyingpic"; f.lpic.setAttribute("aria-hidden", "true"); c.insertAdjacentElement("afterend", f.lpic); }
+  const l = f.lpic, lg = l.getContext("2d");
+  l.width = Math.round(cw / 2); l.height = Math.round(chh / 2); l.style.cssText = `left:0;top:0;width:${W}px;height:${H}px;opacity:0`;
+  lg.fillStyle = getComputedStyle(f.body).backgroundColor; lg.fillRect(0, 0, l.width, l.height);
+  lg.imageSmoothingEnabled = true; lg.imageSmoothingQuality = "high"; lg.drawImage(off, 0, 0, l.width, l.height);
+  if (f.npic) f.body.appendChild(f.npic);
+  f.far = -1; /* poseWho writes its weight for the current pose */
   f.glyphs = items.length; /* probe */
+}
+/* THE NIB'S X (its left edge; the centre is who.half further). The centre
+   rides who.lead behind the wet edge's front, mid-feather, on ink that is
+   half developed, and always ON A GLYPH: while the edge crosses a word
+   space the centre waits on the last glyph's end and lands on the next
+   glyph with it (a pen lifts between words), because a dot alone in a
+   space is punctuation whatever its height (a reader's "the orange dot
+   after 'Ayush'": the name's midpoint is its word space, so a p .5 still
+   lands there every time, and two px behind the front it sat on a Y the
+   mask had not yet shown). It never sits past the last glyph's box either:
+   hidden at t 1, until then it is on the last letter, not after it. e is
+   from the sig's left; the glyph boxes are the picture's, from the well's. */
+function nibX(e, w) {
+  const S = f02.sig, half = who.half;
+  let x = e - who.lead;
+  if (S) { let g = null; for (const it of S.items) { if (it.x - S.x > x) break; g = it; } if (g && x > g.x - S.x + g.w) x = g.x - S.x + g.w; }
+  return clamp(x - half, 0, w - 2 * half);
 }
 /* the name's picture: the well on its own small canvas, the glyphs at the
    live #sig's boxes clipped at t of its width, the nib where .signib rides;
@@ -7738,8 +7795,16 @@ function sigPicture() {
   const base = items.length ? Math.round(items[0].y) : sig.offsetTop + asc;
   const line = { top: base + 4, len: Math.round(W * 0.64), color: getComputedStyle(document.documentElement).getPropertyValue("--hair-strong").trim() || "rgba(38,35,28,.34)" };
   well.style.setProperty("--f02-sigline", `${line.top}px`); well.style.setProperty("--f02-siglen", `${line.len}px`);
+  /* THE PEN'S POINT RIDES AT THE STROKE'S HEIGHT. On the baseline after the
+     last letter the dot read as a full stop, or as a caret; at the italic's
+     mid x-height (measured from its own x), inside the wet edge, it is the
+     point the ink follows. The live nib's top is set here (its translate
+     centres it there) and the picture's nib reads it back, one pixel for
+     both. */
+  if (items.length) { g.font = items[0].font; const xh = g.measureText("x").actualBoundingBoxAscent || parseFloat(getComputedStyle(sig).fontSize) * 0.5; nib.style.top = `${(base - xh / 2).toFixed(1)}px`; }
+  who.half = parseFloat(ns.width) / 2;
   f.sig = { W, H, x0: well.offsetLeft, y0: well.offsetTop, x: sig.offsetLeft, w: sig.offsetWidth, items, line,
-    nib: { x: parseFloat(ns.width) / 2, y: nib.offsetTop + parseFloat(ns.height) / 2, r: parseFloat(ns.width) / 2, color: ns.backgroundColor } };
+    nib: { x: parseFloat(ns.width) / 2, y: nib.offsetTop, r: parseFloat(ns.width) / 2, color: ns.backgroundColor } };
 }
 function namePicture(t) {
   const f = f02, S = f.sig;
@@ -7758,7 +7823,7 @@ function namePicture(t) {
       g.globalCompositeOperation = "source-over";
     }
   }
-  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + clamp(e - S.x - who.feather / 2, 0, S.w), S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
+  if (t > 0 && t < 1) { g.fillStyle = S.nib.color; g.beginPath(); g.arc(S.nib.x + nibX(e - S.x, S.w), S.nib.y, S.nib.r, 0, Math.PI * 2); g.fill(); }
   const c = f.npic.getContext("2d");
   c.clearRect(0, 0, f.npic.width, f.npic.height); c.drawImage(f.noff, 0, 0);
 }
@@ -7783,20 +7848,26 @@ function layWho() {
   sigPicture(); inkPicture(); namePicture(Math.max(f.name, who.t || 0));
   f.hold = null; /* pH is re-derived from the window on the next draw */
   if (!Number.isNaN(f.th)) poseWho(f.th); /* the same pose under the new camera */
-  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, W: f.ink.offsetWidth, hinge: f.head + f.H, glyphs: f.glyphs, inset: v("--f02-inset"), nudge: [+fx.toFixed(3), +fy.toFixed(3)], sigline: f.sig && f.sig.line.top }; /* probe hook */
+  window.__world.fig02geo = { cam: f.cam, eye: f.eye, head: f.head, H: f.H, W: f.ink.offsetWidth, hinge: f.head + f.H, lying: +((f.eye * f.H) / (f.cam + f.H)).toFixed(1), glyphs: f.glyphs, inset: v("--f02-inset"), nudge: [+fx.toFixed(3), +fy.toFixed(3)], sigline: f.sig && f.sig.line.top, nib: f.sig && f.sig.nib.y }; /* probe hook */
 }
-/* THE HOLD. pH is the first p at which the lying card (its far edge is
-   above the foot, so its foot) sits 16 px above the fold, from the driver's
-   window: the stage's top at p is e.top - (yA + p (yB - yA)). Re-derived
-   whenever the window moves; never before HOLD_MIN, never after HOLD_MAX. */
+/* THE HOLD. pH is the first p at which HOLD_SEEN of the lying card is on
+   screen (its projected height under the camera: the far edge at depth H
+   stands eye H / (cam + H) above the foot), from the driver's window: the
+   stage's top at p is e.top - (yA + p (yB - yA)). Never before HOLD_MIN;
+   never so late that the lift (LIFT_SPAN of the window or LIFT_PX of
+   scroll, whichever is longer) would not fit before LIFT_MAX: a phone's
+   window is short, and the lift's length is what keeps it from snapping.
+   Re-derived whenever the window moves. */
 function whoHold() {
   const f = f02, e = f.e;
   if (!e || e.yB <= e.yA) return F02.HOLD_MIN;
   const key = `${e.top}|${e.yA}|${e.yB}|${vh}`;
   if (f.hold && f.hold.key === key) return f.hold.pH;
-  const foot = e.top + f.head + f.H + 3; /* document y of the foot's underside */
-  const pH = clamp((foot - (e.yA + vh - 16)) / (e.yB - e.yA), F02.HOLD_MIN, F02.HOLD_MAX);
-  f.lift = Math.min(F02.LIFT_MAX, pH + F02.LIFT_SPAN);
+  const W = e.yB - e.yA, span = Math.max(F02.LIFT_SPAN, F02.LIFT_PX / W);
+  const foot = e.top + f.head + f.H, lying = (f.eye * f.H) / (f.cam + f.H); /* document y of the hinge; the lying card's height on screen */
+  const seen = (foot - (1 - F02.HOLD_SEEN) * lying - vh - e.yA) / W;
+  const pH = Math.max(F02.HOLD_MIN, Math.min(seen, F02.LIFT_MAX - span));
+  f.lift = Math.min(F02.LIFT_MAX, pH + span);
   /* and the p at which the lift passes NAME_DEG: the lift's curve inverted by bisection */
   const want = 1 - F02.NAME_DEG / 90;
   let lo = 0, hi = 1;
@@ -7818,9 +7889,17 @@ function whoTheta(p) {
 /* the pose at theta (degrees from face-on; 90 is lying): the body about
    its foot, the shadow's length */
 function poseWho(th) {
-  const f = f02, c = Math.cos((th * Math.PI) / 180);
+  const f = f02, c = Math.cos((th * Math.PI) / 180), s = Math.sin((th * Math.PI) / 180);
   f.body.style.transform = `rotateX(${th.toFixed(3)}deg)`;
   f.shadow.style.transform = `scaleY(${c.toFixed(4)})`;
+  /* the lying picture's weight, from the picture's vertical squeeze: the
+     body's own height over its projected one under the camera (the top
+     edge at height H cos and depth H sin, the eye --f02-eye above the hinge) */
+  if (f.lpic) {
+    const r = (f.eye - ((f.eye - f.H * c) * f.cam) / (f.cam + f.H * s)) / f.H;
+    const far = +clamp((1 / r - F02.FAR_FROM) / (F02.FAR_TO - F02.FAR_FROM), 0, 1).toFixed(2);
+    if (far !== f.far) { f.far = far; f.lpic.style.opacity = far; }
+  }
 }
 function drawWho(p) {
   const f = f02;
@@ -7841,7 +7920,7 @@ function drawWho(p) {
   if (landed) f.rate = Math.max(f.rate, f.tp);
   whoName(Math.min(f.tp, f.rate));
   if (f.rate < Math.min(1, f.tp)) stir(whoStep);
-  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), lift: +f.lift.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), landed }; /* probe hook; the clock below keeps it current */
+  f.hook = window.__world.fig02 = { p: +p.toFixed(4), theta: +th.toFixed(2), pH: +f.pH.toFixed(3), lift: +f.lift.toFixed(3), pName: +f.pName.toFixed(3), ink: on ? 1 : 0, name: +f.name.toFixed(3), far: f.far, landed }; /* probe hook; the clock below keeps it current */
 }
 /* the name at t, high-water mark kept, on the live text and the picture
    both (the picture is hidden while the card is live, but it must carry
@@ -7888,14 +7967,18 @@ function whoStep(now) {
 }
 /* the phone's window (the driver's own per-figure option): the lying card
    lives at the stage's foot, so p 0 waits until START of the stage is on
-   screen; the park never lifts the stage's top under the masthead; and the
-   window is never shorter than FLOOR of the screen (a 667-tall phone has
-   no park that fits this stage, so there the top wins and the handles row
-   waits under the fold) */
+   screen; the park is the masthead's foot (MAST) or, for a stage too tall
+   to be ASM_SEEN on screen under it (390x664: 678 px of stage), where that
+   much of it first is: the window law says a stop with less on screen is
+   not a park, so the figure may not be finished there (the stop it tests
+   is .02 vh short of ASM_SEEN); and the window is never shorter than FLOOR
+   of the screen, nor than the lift's LIFT_PX over its share of the window.
+   The handles row waits under the fold at any park on a 667-tall phone. */
 function whoWindow(e) {
   if (!mobile) return null;
-  const yB = Math.min(e.top + e.h / 2 - ASM_END * vh, e.top - F02.MAST);
-  const yA = Math.min(e.top + F02.START * e.h - vh, yB - F02.FLOOR * vh);
+  const W = Math.max(F02.FLOOR * vh, F02.LIFT_PX / (F02.LIFT_MAX - F02.HOLD_MIN));
+  const yB = Math.max(Math.min(e.top + e.h / 2 - ASM_END * vh, e.top - F02.MAST), e.top + ASM_SEEN * e.h - vh);
+  const yA = Math.min(e.top + F02.START * e.h - vh, yB - W);
   return { yA, yB };
 }
 /* built on the real face (the rules and the pictures are measured off the
