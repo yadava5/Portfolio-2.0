@@ -7890,12 +7890,23 @@ function figSvg(host, cls, w, h) {
    TWO CLOCKS ON ONE PLATE. The evidence inks on the driver's p (drawGates:
    the three lanes, then the three signals, then the three wagons, each
    whole, top row first). The dispositions ride the bead through scrubGates,
-   and in every
-   row the lamp leads: it lights, the board reads, and only then does
-   anything move. A row's paint() is the one writer of both clocks, so the
-   plate is a function of (p, u) whichever ran last, and a disposition never
-   lands on a part that has not inked: a lamp cannot light in a head that is
-   not there. */
+   and in every row the lamp leads: it lights, the board reads, and only
+   then does anything move. A row's paint() is the one writer of both
+   clocks, so the plate is a function of (p, u) whichever ran last, and a
+   disposition never lands on a part that has not inked: a lamp cannot
+   light in a head that is not there.
+   EXCEPT THE PASSED WAGON'S RUN, WHICH RIDES THE HAND'S p. The bead reaches
+   the top row before the plate has assembled: it crosses row 0's junction
+   with the driver at p .37 at 1440x900 and p .03 at 390x844 (measured,
+   v10), and row 0's wagon inks at .5. A run laid on the bead there was over
+   before the wagon existed, and the wagon popped in at the end of it with
+   the lamp, the way and the arrow in the same frame ("it looks like it's
+   instant", the owner). So once it is inked and lit the wagon runs on p,
+   ROLL.p0 to ROLL.p1, and the plate declares that span to the driver, whose
+   speed limit then makes the run take at least 0.4 s under a flick and
+   follow the scroll at a reading pace. The sent-back wagon's junction is
+   crossed after the park, with p at 1, so it runs on the bead, over a window
+   scaled to its own distance: it never outruns the page that moves it. */
 const gates = { rows: [], svg: null, spx: 0, e: null };
 const C30 = Math.cos(Math.PI / 6);
 /* the receding edges of a solid whose front face is (x, y, w, h): three 30°
@@ -7932,6 +7943,24 @@ const GS = {
   base: 3, post: 28, head: 48, hw: 24, hd: 8, lens: 8, ray: [16, 26], rayX: 9,
   wag: 72, body: 30, wheel: 4.5, wd: 14, bh: 20, mast: 11,
 };
+/* A WAGON'S RUN: it pulls away, rolls at one speed and brakes to a stand, a
+   quarter of the run each for the pull and the brake. The velocity is a
+   trapezoid and the position its integral, so the peak pace is 1/(1-COAST)
+   of the mean and is held, where smoothstep's 1.5 spikes for one instant. */
+const COAST = 0.25;
+const coast = (t) => {
+  t = clamp(t, 0, 1);
+  const k = 1 / (1 - COAST);
+  return t < COAST ? (k * t * t) / (2 * COAST)
+    : t <= 1 - COAST ? k * (t - COAST / 2)
+    : 1 - (k * (1 - t) * (1 - t)) / (2 * COAST);
+};
+/* the passed wagon's run on the hand's p: inked at .5 and lit, it stands a
+   beat, runs, and the arrow is drawn behind it as it stops */
+const ROLL = { p0: 0.56, p1: 0.98 };
+/* the sent-back wagon's peak pace over the page's own: it never outruns the
+   scroll that moves it, so its bead window is its distance over this pace */
+const BACK_PACE = 0.5;
 function buildGates(js) {
   const host = $("gatesFig");
   const plate = host?.closest("figure");
@@ -8032,6 +8061,9 @@ function buildGates(js) {
   const backOK = backTip + AR.len <= P - 8 - 4;
   const hx = P - GS.hw / 2;
   const hy = (y) => y - GS.base - GS.post - GS.head;
+  /* the run back's bead window, from 10 past the junction: its distance at
+     BACK_PACE with the coast's peak (300 at 1440, 160 at 390, 80 at 320) */
+  const backL = (xHalt - xBack) / (BACK_PACE * (1 - COAST));
   /* row 0's wagon rolls past the signal, which stands on the near side of the
      line: the wagon is cut where the signal covers it (the head and its depth,
      the post, the base), and, where it leaves by the screen's edge, at that
@@ -8050,8 +8082,8 @@ function buildGates(js) {
   rows.forEach((row, i) => {
     const y = ys[i];
     const g = el("g", { "data-row": i });
-    const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y, u: NaN, gw: "",
-      on: { lane: false, sig: false, wagon: false } };
+    const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y, u: NaN, w: 0, rp: 0, gw: "",
+      back: i === 2 ? backL : 0, on: { lane: false, sig: false, wagon: false } };
     const stub = dPath("g-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
@@ -8123,12 +8155,14 @@ function buildGates(js) {
     /* the light stands in front of a wagon rolling through behind the
        signal, so the rays are drawn after it */
     g.appendChild(rays);
-    /* THE SCHEDULE, per row; u is the bead's progress through this junction.
-       The lamp leads everywhere: at .3 it lights and the board reads. Passed:
-       the way opens at .35, the wagon rolls through over .4 to .85, and the
-       arrow is drawn behind it at .85. Caught: nothing else. Retracted: the
-       X is drawn over .35 to .55, the wagon rolls back over .5 to .85, and
-       the arrow is drawn ahead of it at .85. */
+    /* THE SCHEDULE, per row; u is the bead's progress through this junction,
+       rp the hand's through the passed wagon's run (ROLL), w the bead's
+       through the sent-back wagon's run (rec.back px from 10 past the
+       junction). The lamp leads everywhere: at u .3 it lights and the board
+       reads. Passed: the way opens at u .35, the wagon runs on rp, and the
+       arrow is drawn behind it as it stops. Caught: nothing else. Retracted:
+       the X is drawn over u .35 to .65, the wagon runs back on w, and the
+       arrow is drawn ahead of it as it stops. */
     const lens = i === 0 ? low : up;
     rec.paint = () => {
       const { on } = rec;
@@ -8147,12 +8181,12 @@ function buildGates(js) {
       a4put(mast, "opacity", bin(lit));
       if (rec.gw !== bin(lit)) { rec.gw = bin(lit); row.style.setProperty("--gw", rec.gw); }
       if (laneOn) a4put(laneOn, "opacity", bin(on.lane && ready && u >= 0.35));
-      if (arrow) a4put(arrow, "opacity", bin(on.lane && ready && u >= 0.85));
-      const dx = i === 0 ? (xGone - xHalt) * smooth((u - 0.4) / 0.45)
-        : i === 2 ? (xBack - xHalt) * smooth((u - 0.5) / 0.35) : 0;
+      if (arrow) a4put(arrow, "opacity", bin(on.lane && ready && (i === 0 ? u >= 0.85 && rec.rp >= 1 : rec.w >= 1)));
+      const dx = i === 0 ? (xGone - xHalt) * coast(rec.rp)
+        : i === 2 ? (xBack - xHalt) * coast(rec.w) : 0;
       a4put(wag, "transform", `translate(${n1(dx)} 0)`);
       if (strike)
-        a4put(strike, "stroke-dashoffset", (len * (1 - smooth((u - 0.35) / 0.2))).toFixed(2));
+        a4put(strike, "stroke-dashoffset", (len * (1 - smooth((u - 0.35) / 0.3))).toFixed(2));
     };
     rec.paint();
     svg.appendChild(g);
@@ -8161,7 +8195,7 @@ function buildGates(js) {
   /* the evidence rides the scroll like the other figures' (THE ASSEMBLIES
      RIDE THE SCROLL): registered again on every build, because a new
      drawing has never been drawn */
-  gates.e = asmFigure("fig10", { box: () => layoutBox(gates.svg), draw: drawGates });
+  gates.e = asmFigure("fig10", { box: () => layoutBox(gates.svg), draw: drawGates, span: gatesSpan });
   /* probe hooks: `bead` is the dispositions' clock, so a still can be shot
      with every verdict in (bead(Infinity)) or none (bead(-Infinity)) on a
      seat too short to park the bead past all three junctions */
@@ -8175,15 +8209,22 @@ function buildGates(js) {
    checkpoints all stand before any load arrives, so a frame half way
    through is a drawing in progress and never a finished row over an empty
    track (the cold reader at p .5, v9: "a picture that failed to load").
-   Every switch is 0 or 1. */
+   Every switch is 0 or 1, and the one thing that moves on p is the passed
+   wagon's run (ROLL), the plate's only continuous motion. */
 function drawGates(p) {
   for (const r of gates.rows) {
     const on = { lane: p >= 0.02 + 0.03 * r.i, sig: p >= 0.14 + 0.12 * r.i, wagon: p >= 0.5 + 0.15 * r.i };
-    if (on.lane === r.on.lane && on.sig === r.on.sig && on.wagon === r.on.wagon) continue;
-    r.on = on;
+    const rp = r.i === 0 ? clamp((p - ROLL.p0) / (ROLL.p1 - ROLL.p0), 0, 1) : 0;
+    if (on.lane === r.on.lane && on.sig === r.on.sig && on.wagon === r.on.wagon && rp === r.rp) continue;
+    r.on = on; r.rp = rp;
     r.paint();
   }
 }
+/* the part of p the motion fills, declared so the driver's speed limit is
+   the run's: a flick plays the wagon through in no less than 0.4 s. The
+   switches before it ride the same hand, which is the point: nothing on
+   this plate arrives faster than its wagon can roll. */
+const gatesSpan = () => [ROLL.p0, ROLL.p1];
 /* ————— fig. 11 · the references: the letter, written at the halt (v9) —————
    v8'S PLACES ARE GONE, on the owner's reading of them from the viewer's
    side: "the individual shape and object of those things is like too big or
@@ -8875,14 +8916,16 @@ function drawSigns(p) {
    when the beat says so. One transform per moving part per frame, and every
    opacity is 0 or 1: a partial one is a stroke the palette gate cannot see. */
 const beadU = (tokenY, j) => clamp((tokenY - (j - 90)) / 150, 0, 1);
-/* fig. 10's dispositions: the bead sets each row's u, and the row's paint()
-   draws what p and u say together (the schedule is buildGates'). A row whose
-   u has not moved is not touched. */
+/* fig. 10's dispositions: the bead sets each row's u, and the sent-back
+   row's w (its run back, over its own longer window past the junction), and
+   the row's paint() draws what p and the bead say together (the schedule is
+   buildGates'). A row whose clocks have not moved is not touched. */
 function scrubGates(tokenY) {
   for (const r of gates.rows) {
     const u = beadU(tokenY, r.pageY);
-    if (u === r.u) continue;
-    r.u = u;
+    const w = r.back ? clamp((tokenY - r.pageY - 10) / r.back, 0, 1) : 0;
+    if (u === r.u && w === r.w) continue;
+    r.u = u; r.w = w;
     r.paint();
   }
 }
