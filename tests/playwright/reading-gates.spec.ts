@@ -625,6 +625,127 @@ test.describe("G3 · mono only on machine values", () => {
   });
 });
 
+/* G3 · THE OPEN STRIP. The sweep above never opens the line diagram, so
+   every face inside it went unchecked: the allowlist names `#manifest .mt`
+   and `#manifest .foot i`, but an unused entry is only logged. This opens the
+   strip at the gate, where every stop's metric is printed, and walks its
+   text alone: the clocks, the serial and the metric values may be mono, the
+   names, the nouns and the metric words may not. The control forces the
+   metric words into mono and expects the walk to say so. */
+const STRIP_MONO = () => {
+  const root = document.getElementById("manifest");
+  if (!root || root.hidden)
+    return { open: false, mono: 0, bad: [] as string[] };
+  const allow = (window as unknown as { __allow: string }).__allow;
+  const bad: string[] = [];
+  let mono = 0;
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node: Node | null;
+  while ((node = tw.nextNode())) {
+    const text = (node.nodeValue ?? "").replace(/\s+/g, " ").trim();
+    if (!text) continue;
+    const el = node.parentElement;
+    if (!el) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    if (![...range.getClientRects()].some((q) => q.width > 0 && q.height > 0))
+      continue;
+    if (window.__gate.effOpacity(el) <= 0.05) continue;
+    const ff = getComputedStyle(el).fontFamily.toLowerCase();
+    if (
+      !(
+        ff.includes("fragment mono") ||
+        ff.includes("ui-monospace") ||
+        ff.startsWith("monospace")
+      )
+    )
+      continue;
+    mono++;
+    if (el.closest(allow)) continue;
+    bad.push(`${window.__gate.sel(el)}  "${text.slice(0, 50)}"`);
+  }
+  return { open: true, mono, bad };
+};
+
+async function openStripAtGate(page: Page): Promise<void> {
+  await installProbes(page);
+  await arrive(page);
+  await page.evaluate(() => {
+    document
+      .querySelector("#gate")
+      ?.scrollIntoView({ block: "center", behavior: "instant" });
+  });
+  await page.waitForTimeout(1800);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1000);
+  await page.evaluate(
+    (a) => {
+      (window as unknown as { __allow: string }).__allow = a;
+    },
+    MONO_ALLOW.map((a) => a.sel).join(",")
+  );
+}
+
+test.describe("G3 · mono only on machine values, the strip open", () => {
+  for (const [w, h] of [
+    [1440, 900],
+    [390, 844],
+  ] as const) {
+    test(`at ${w}, at the gate`, async ({ browser, baseURL }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      const mobile = w <= 430;
+      const ctx = await browser.newContext({
+        viewport: { width: w, height: h },
+        isMobile: mobile,
+        hasTouch: mobile,
+        deviceScaleFactor: 1,
+        baseURL,
+      });
+      try {
+        const page = await ctx.newPage();
+        await openStripAtGate(page);
+        const stamped = await page.locator("#manifest li.stamped").count();
+        const { open, mono, bad } = await page.evaluate(STRIP_MONO);
+        expect(open, "the strip did not open: the walk never ran").toBe(true);
+        expect(stamped, "every project's metric is printed at the gate").toBe(
+          6
+        );
+        /* twelve clocks, the serial, the closing time and six values */
+        expect(mono, "the strip's machine values were found").toBeGreaterThan(
+          18
+        );
+        expect(
+          bad,
+          "Fragment Mono inside the open strip outside the machine-value " +
+            "allowlist: names, nouns and metric words get the text face"
+        ).toEqual([]);
+      } finally {
+        await ctx.close();
+      }
+    });
+  }
+
+  test("positive control: the metric words forced into mono are caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openStripAtGate(page);
+    await page.addStyleTag({
+      content:
+        '#manifest .line li .lab .m{font-family:"Fragment Mono",monospace !important}',
+    });
+    await page.waitForTimeout(100);
+    const { open, bad } = await page.evaluate(STRIP_MONO);
+    expect(open, "the strip did not open: the control never ran").toBe(true);
+    expect(
+      bad.length,
+      "the metric words were forced into mono and the walk saw nothing: " +
+        "the probe is broken, not the page"
+    ).toBeGreaterThan(0);
+  });
+});
+
 /* ══════════════════════════════════════════════════════════════════════
    G4 · the manifest never covers text involuntarily
 
@@ -906,6 +1027,11 @@ test.describe("G4 · the manifest never covers text", () => {
       "the open manifest sat over a station's prose and the overlap probe " +
         "reported nothing — the probe is broken, not the page"
     ).toBeGreaterThan(0);
+    /* the hit must be the band's own: a probe that measured some other
+       rect (a full-viewport wrapper, the scrim) would also report hits */
+    expect(hits.join(" "), "the hit was not attributed to #manifest").toContain(
+      "#manifest over"
+    );
   });
 });
 
