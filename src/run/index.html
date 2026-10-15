@@ -3529,7 +3529,9 @@ body{font-synthesis:none}
    the ground. For the ink pair that is the masthead's MAST_CROSS; for the
    ahead pair it is lighter, and switching it there too left the hairline at
    1.7:1 before a light dash appeared. */
-#manifest .line li::after{content:""; position:absolute; left:0; right:0;
+/* the line and its ticks are drawn on the li, over the row's anchor: they
+   take no pointer, so a click on a stop's mark reaches its link */
+#manifest .line li::after{content:""; position:absolute; left:0; right:0; pointer-events:none;
   top:calc(var(--zone-a) + var(--line) / 2); height:1px; background:var(--ink-2)}
 #manifest .line li.gone::after{top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; background:var(--ink)}
 #manifest .line li:nth-child(8)::after{--seg-a:var(--ink-2); --seg-b:#d9d0c3; --sw:var(--switch-ahead, 50%);
@@ -3538,7 +3540,7 @@ body{font-synthesis:none}
 #manifest .line li:last-child::after{display:none} /* the line ends at the terminus; the tape goes on */
 /* the tick, through the line at the leg's left edge; the two termini are
    one bar each, so the line reads as running from here to there */
-#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + 5px);
+#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + 5px); pointer-events:none;
   width:1px; height:calc(var(--line) - 10px); background:var(--ink-2); z-index:1}
 #manifest .line li[data-reached]::before{background:var(--ink)}
 #manifest .line li:first-child::before, #manifest .line li:last-child::before{
