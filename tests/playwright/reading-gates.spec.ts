@@ -145,6 +145,35 @@ async function installProbes(page: Page): Promise<void> {
           }
         } else {
           px *= scaleOf(el);
+          /* UNDER A CAMERA. scaleOf reads 2D matrices only, and a perspective
+             shrink is in no element's matrix at all: a pure rotateX has unit
+             basis vectors, and the parent's `perspective` is a property, not
+             a transform. Where any ancestor is 3D, measure the projection
+             itself: the rendered box against the layout box. Limited to 3D
+             ancestors so every 2D reading the gate has always taken (a
+             rotated stamp's box grows, it does not shrink) is unchanged. */
+          let n3: Element | null = el;
+          let threeD = false;
+          while (n3 && n3.nodeType === 1) {
+            const c3 = getComputedStyle(n3);
+            if (
+              c3.transform.startsWith("matrix3d") ||
+              c3.perspective !== "none"
+            ) {
+              threeD = true;
+              break;
+            }
+            n3 = n3.parentElement;
+          }
+          const he = el as HTMLElement;
+          if (threeD && he.offsetWidth > 0 && he.offsetHeight > 0) {
+            const b = he.getBoundingClientRect();
+            px = Math.min(
+              px,
+              parseFloat(cs.fontSize) *
+                Math.min(b.width / he.offsetWidth, b.height / he.offsetHeight)
+            );
+          }
         }
         const ff = cs.fontFamily.toLowerCase();
         out.push({
@@ -304,6 +333,52 @@ test.describe("G2 · no HTML text under 12px effective", () => {
       small.length,
       "the reading-floor probe did not see a 9px line — the probe is broken, not the page"
     ).toBeGreaterThan(0);
+  });
+});
+
+/* THE CAMERA CONTROL. A 16px line pushed 600px back under a 1000px
+   perspective renders at 10px with an identity 2x2 in its matrix, so a probe
+   that reads matrices passes it. The flat twin must still read 16, or the
+   projection is shrinking everything and proves nothing. */
+test.describe("G2 · the reading floor under a camera", () => {
+  test("positive control: a line pushed back under perspective is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(90_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await installProbes(page);
+    await arrive(page);
+    await page.evaluate(() => {
+      const mk = (id: string, z: number, top: number) => {
+        const cam = document.createElement("div");
+        cam.style.cssText = `position:fixed; left:40px; top:${top}px; perspective:1000px; z-index:99`;
+        const p = document.createElement("p");
+        p.id = id;
+        p.textContent = `camera probe ${id}`;
+        p.style.cssText = `font-size:16px; line-height:1.4; margin:0; transform:translateZ(${z}px)`;
+        cam.appendChild(p);
+        document.body.appendChild(cam);
+      };
+      mk("camback", -600, 300);
+      mk("camflat", 0, 380);
+    });
+    await page.waitForTimeout(200);
+    const px = await page.evaluate(() => {
+      const runs = window.__gate.texts();
+      const find = (id: string) =>
+        runs.find((r) => r.text === `camera probe ${id}`)?.px ?? -1;
+      return { back: find("camback"), flat: find("camflat") };
+    });
+    expect(
+      px.back,
+      "a 16px line at translateZ(-600px) under perspective:1000px renders at " +
+        "10px and the probe did not see it: the probe is blind to the camera"
+    ).toBeLessThan(FLOOR_PX);
+    expect(
+      px.flat,
+      "the same line at translateZ(0) must read 16px: the projection is " +
+        "shrinking text that is not pushed back"
+    ).toBeGreaterThanOrEqual(15.5);
   });
 });
 
