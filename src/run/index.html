@@ -1912,19 +1912,24 @@ if (location.hash.length > 1) {
      check-palette measures them; the PAPER of every solid under #pathFig in
      --ink-inverse, the opaque one (fig. 04's device), because that scan
      reads every token in a .figsvg rule as a stroke and paper is not one,
-     and because --plate-solid lets 14% of a hidden line through. */
+     and because --plate-solid lets 14% of a hidden line through. A wagon's
+     roof is pine from the moment it slides on; the body follows once the
+     roof has closed (.sealed). The plate's own margin is 16 px (the
+     strategy's cap for a boxed 3D plate; fig. 04, the next plate, is boxed). */
+  .bpath .plate{padding:16px}
   .figsvg .yd-rail, .figsvg .yd-tie, .figsvg .yd-foot{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .figsvg .yd-edge{fill:none; stroke:var(--ink); stroke-width:1.3; stroke-linejoin:round}
   .figsvg .yd-edge2{fill:none; stroke:var(--ink-2); stroke-width:1; stroke-linejoin:round}
   .figsvg .yd-face, .figsvg .yd-heap{fill:none; stroke:var(--ink); stroke-width:1.2; stroke-linejoin:round}
   .figsvg .yd-wheel, .figsvg .yd-door{fill:none; stroke:var(--ink); stroke-width:1.1}
   .figsvg .yd-sole{fill:none; stroke:var(--ink); stroke-width:1.6}
-  .figsvg .yd-wag.raw .yd-form.van, .figsvg .yd-wag.van .yd-form.raw{display:none}
-  .figsvg .yd-wag.van .yd-face, .figsvg .yd-wag.van .yd-wheel, .figsvg .yd-wag.van .yd-door, .figsvg .yd-wag.van .yd-sole{stroke:var(--pine)}
+  .figsvg .yd-roof{fill:none; stroke:var(--pine); stroke-width:1.3; stroke-linejoin:round}
+  .figsvg .yd-wag.sealed .yd-face, .figsvg .yd-wag.sealed .yd-wheel, .figsvg .yd-wag.sealed .yd-door, .figsvg .yd-wag.sealed .yd-sole{stroke:var(--pine)}
+  .figsvg .yd-wag.sealed .yd-heap{display:none}
   .figsvg .yd-arrow{fill:var(--pine); stroke:none}
   .figsvg .yd-stop{fill:var(--ink-2); stroke:var(--ink); stroke-width:1.2; stroke-linejoin:round}
   #pathFig .yd-paper{fill:var(--ink-inverse); stroke:none}
-  #pathFig .yd-face, #pathFig .yd-heap, #pathFig .yd-wheel{fill:var(--ink-inverse)}
+  #pathFig .yd-face, #pathFig .yd-heap, #pathFig .yd-wheel, #pathFig .yd-roof{fill:var(--ink-inverse)}
   /* the dispositions are the reviewer's words, so they get the text face;
      every number and name stays in the plate's mono register */
   .figsvg .yd-note{font-family:var(--body); font-style:italic; font-size:13.5px; letter-spacing:0; fill:var(--ink-2)}
@@ -4296,7 +4301,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .0 .09 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="pathFig" class="figsvg" viewBox="0 0 560 228" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API, join one lead that runs through one Python and SQL works and up over a hump. Each wagon goes in open and heaped and comes out of the works a closed van; it is pushed up the hump, tips over the crest, rolls down, and the switch sends it to its road. The usage table of 57.8 million rows rolls to a buffer stop on the near siding, struck, and stays with IT Services; the master inventory of 10,453 rows by 35 fields rolls onto the far road, the main line, checked with a tick, and checked in."></svg>
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 276" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API, join one lead that climbs a hump, the Python and SQL works. Each wagon goes up open and heaped; at the crest it tips nose-down, its load settles into the body, a roof slides shut over it, and it rolls down a closed van; the switch sends it to its road. The usage table of 57.8 million rows rolls to a buffer stop on the near siding, struck, and stays with IT Services; the master inventory of 10,453 rows by 35 fields rolls on along the far road, the main line, checked with a tick, and checked in."></svg>
         <figcaption>fig. 03 · two messy sources in, two products out.</figcaption>
       </figure>
     </div>
@@ -7494,56 +7499,67 @@ function scrubWho(p) {
 
 /* ····· fig. 03 · the yard · the ITSM job as freight, over a hump ·····
    Two feeder roads (the 1.6M+ OAS query logs; the Tableau + Workday records)
-   join one lead that runs through the Python · SQL works and up over a HUMP.
-   Each wagon goes in open and heaped, comes out of the works a closed van,
-   is pushed up the climb, tips over the crest, rolls down, and the switch
-   sends it to its road: the usage cut to a buffer stop on the near siding
-   (it stays with IT Services), the inventory van onto the far road, the main
-   line, which leaves by the plate's edge (checked in). The reader's scroll
-   is the push.
+   join one lead that climbs a HUMP, which is the works. Each wagon goes up
+   open and heaped; at the crest it tips nose-down, the load settles into
+   the body, a roof slides shut over it from the back and it rolls down a
+   closed van; the switch sends it to its road: the usage van to a buffer
+   stop on the near siding, which peels off toward the reader (it stays with
+   IT Services), the inventory van straight on along the main line to the
+   arrow (checked in). The reader's scroll is the push.
 
-   WHY A HILL (v10). The owner asked for the early plates to be "3D which
-   takes people by surprise", and this is the one plate where the third
-   dimension IS the subject: a hump yard sorts freight by gravity, and
-   gravity is height. So the earthwork is drawn big enough to be the subject
-   (200 x 76 units, ~217 x 85 px at the 573 seat), the drop is the LONG
-   phase of each wagon's run (the climb is weighted slow, the descent eases
-   in and speeds up), and the crest tilt is a band of p, not a point. The
-   v10 gallery (five concepts) and its critique are the record; c1 "the
-   hump" won and was re-proportioned around the hill.
+   WHY A HILL, AND WHY THE SEAL IS ON IT (v10). The owner asked for the early
+   plates to be "3D which takes people by surprise", and this is the one
+   plate where the third dimension IS the subject: a hump yard sorts freight
+   by gravity, and gravity is height. Phase 1 drew the hill big and put the
+   transformation in a shed before it; a cold reader scored it 4 ("the cars
+   were clean before the climb, so the hill is travel, not an event") and
+   asked for one change: put the transformation at the crest. So the shed
+   is gone (the hill is the works, "Python · SQL" at its near foot), the
+   second logs wagon is gone, the hill is 300 x 120 units (~320 x 128 px at
+   the 594 px seat), and THE EVENT IS THE SEAL: over a band of a tenth of p
+   the open wagon tips, its heap slides forward and flattens to the rim, a
+   roof slides on from the tail (a hatch, not a fold: a folding parallelogram
+   is fig. 04's envelope flap) and the body turns pine as it closes. A still
+   anywhere in the band shows a wagon closing up on top of the hill.
 
    THE PROJECTION is the drawing board's cabinet oblique, as figs. 04 and 08
    draw it: X and height stay true, depth Z runs up-right at 30 degrees and
-   .6 scale (P below). Depth reads by edge (the hill's profile, the roof's
-   far edge), occlusion (the shed hides the swap; the hill's near face hides
-   the lead behind it), relative size (the near cut stands in front of the
-   far cut) and the one tilt. No translucent fill carries depth: the solids
-   are the page's own paper under #pathFig (fig. 04's device), opaque so a
-   face hides what is behind it. Text is never in the projection: every word
-   is face-on at its real size, moved by translate only, and no label sits
-   within 8 units of any stroke at rest or of any wagon at any p (swept at
-   .02 by the lane's harness; the numbers are in the lane note).
+   .6 scale (P below). Depth reads by edge (the hill's profile), occlusion
+   (the hill's near face hides the lead behind it; the roof hides the load),
+   the near siding coming TOWARD the reader (negative Z: down-left on the
+   sheet) while the main line runs on, and the tilt. No translucent fill
+   carries depth: the solids are the page's own paper under #pathFig
+   (fig. 04's device), opaque so a face hides what is behind it. Text is
+   never in the projection: every word is face-on at its real size, moved by
+   translate only, and no label sits within 8 units of any stroke at rest or
+   of any wagon at any p (swept at .02 by the lane's harness; the numbers are
+   in the lane note).
+
+   TWO IN, TWO OUT, NOTHING CLIPPED: one wagon per source, both whole and
+   heaped on the plate by p .3; at rest the logs van stands nose at the
+   buffer and the inventory van stands WHOLE with its nose at the arrow,
+   inside the plate. The siding peels toward the reader so the two parked
+   vans never overlap on the sheet. (Phase 1 parked the inventory van half
+   off the edge; the cold reader read it as cropped, not as departing.)
 
    ROUND 13 TOOK THE THIRD ROAD OUT and v10 took the two product BOXES out
-   with the record squares, the dash and the stitches. The dispositions the
-   station states in prose (only the inventory is checked in; the usage data
-   stays with IT Services) are carried by where the two roads END, one at a
-   wall and one off the picture, and by the reviewer's two marks beside the
-   disposition words, never near a wagon (fig. 10 reads a halted wagon with
-   a mark as "declined"). The words of round 13 stay retired; check-figures
-   reads this body for them.
+   with the record squares, the dash, the stitches and then the shed. The
+   dispositions the station states in prose are carried by where the roads
+   END, one at a wall and one going on, and by the reviewer's two marks
+   beside the disposition words, never near a wagon (fig. 10 reads a halted
+   wagon with a mark as "declined"). The words of round 13 stay retired;
+   check-figures reads this body for them.
 
    THE GROUND IS EXEMPT from the viewer's 45%-of-the-lane rule, as grounds
-   are; the largest solid, the shed, is 81 x 60 on screen. Every stroke and
-   fill is a stylesheet class (check-palette reads them), the paper under
-   #pathFig because that scan reads every token in a .figsvg rule as a
-   stroke.
+   are; the largest solid, a wagon, is 66 x 52 units. Every stroke and fill
+   is a stylesheet class (check-palette reads them), the paper under #pathFig
+   because that scan reads every token in a .figsvg rule as a stroke.
 
-   Wide 560 x 226 / 12 px (12.3 px at the 573 seat, 11.04 at the 515
-   minimum, floor 10); tight 240 x 280 / 11 px (12.9 at 282, G2b). Labels
+   Wide 560 x 276 / 12 px (12.7 px at the 594 seat, 11.04 at the 515
+   minimum, floor 10); tight 240 x 344 / 11 px (13.0 at 284, G2b). Labels
    are budgeted at 8.01 units/char wide and 7.13 tight, read off
    getComputedTextLength(). The plate's data-fx is the asm plates' short
-   fade: the drawing owns the motion. */
+   fade and its padding 16 px: the drawing owns the motion and the room. */
 /* the reviewer's own two marks, from the docket at ¶10, at their own
    14×10 scale: a check for the gate a human signed, a strike for the
    one that declined. The same hand files and withholds here. */
@@ -7554,42 +7570,44 @@ function buildPath(tight) {
   const s = yard.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
   /* THE PLAN, in ground units: X along the roads, Z into the depth (0 the
-     near road, ZL the lead, ZF the far road), H up off the ground. Feeders
+     near feeder, ZL the lead and the main line, ZF the far feeder's entry,
+     ZS the siding, in front of everything), H up off the ground. Feeders
      run straight in from the plate's edge to `in` and curve to the lead at
-     `join`; past the switch `sw` each road fans over `fan` units of X to its
-     own depth; `nose` is how far short of the arrow's tip the inventory van
-     stops (negative: that far past it, off the edge). The tight edition is
-     the same yard with the far road closer, one van per cut, the labels
-     stacked above and below and the works named under its shed (over it,
-     the crest van runs into the words). Nothing is shrunk: its van is 44
-     units at 282/240, 52 px long. */
+     `join`; the lead climbs the hump and runs on past the switch `sw` as
+     the main line; the siding fans off over `fan` units of X down to ZS and
+     ends at `buffer`. The tight edition is the same yard closer in, with
+     the labels stacked above and below (six and seven lines, nothing
+     sharing a line) and no arrow on its road (there is no room for one inside the
+     plate past the switch; the arrow follows "main line" in the stack).
+     Nothing is shrunk: its van is 44 x 34 units at 284/240, 52 x 44 px. */
   const Y = tight ? {
-    vb: [240, 282], Y0: 180, ZL: 40, ZF: 110,
-    near: { in: -4, join: 20 }, far: { in: -16, join: 20 },
-    shed: { x0: 36, x1: 76, z0: 26, z1: 54, h: 40, door: [29, 51], dh: 36 },
-    hump: { a: 82, b: 120, c: 126, d: 164, h: 46, bed: 10 },
-    sw: 172, fan: 22, buffer: 234, nose: -20,
-    wag: { L: 44, D: 12, wh: 7, van: 23, raw: 19, heap: 8, pitch: 48 },
-    cuts: [{ from: "near", to: "near", n: 1, p0: 0.36, dur: 0.30 },
-           { from: "far", to: "far", n: 1, p0: 0.58, dur: 0.30 }],
+    vb: [240, 344], Y0: 230, ZL: 40, ZF: 110, ZS: -56,
+    near: { in: 0, join: 24 }, far: { in: -20, join: 24 },
+    hump: { a: 30, b: 86, c: 100, d: 156, h: 64, bed: 10 },
+    sw: 164, fan: 10, buffer: 214, arrow: null,
+    wag: { L: 44, D: 12, wh: 7, tub: 20, roof: 7, heap: 9 },
+    /* keyframes: p -> the wagon's centre X along its own path; the ease
+       into each keyframe is named (in: speeding up, out: braking) */
+    A: { keys: [[0.22, "start"], [0.30, 24, "out"], [0.40, 30, "smooth"], [0.46, 80, "smooth"], [0.56, 108, "smooth"], [0.64, 156, "in"], [0.70, "park", "out"]], seal: [0.46, 0.56], roof: [0.48, 0.54] },
+    B: { keys: [[0.20, "start"], [0.28, -30, "out"], [0.34, -30, "lin"], [0.60, 30, "smooth"], [0.70, 80, "smooth"], [0.80, 108, "smooth"], [0.86, 156, "in"], [0.92, "park", "out"]], seal: [0.70, 0.80], roof: [0.72, 0.78] },
   } : {
-    vb: [560, 228], Y0: 162, ZL: 55, ZF: 152,
-    near: { in: 8, join: 56 }, far: { in: -36, join: 56 },
-    shed: { x0: 80, x1: 140, z0: 40, z1: 80, h: 46, door: [44, 76], dh: 40 },
-    hump: { a: 162, b: 257, c: 277, d: 362, h: 76, bed: 12 },
-    sw: 374, fan: 32, buffer: 545, nose: -20,
-    wag: { L: 48, D: 18, wh: 8, van: 24, raw: 20, heap: 9, pitch: 52 },
-    cuts: [{ from: "near", to: "near", n: 2, p0: 0.24, dur: 0.44 },
-           { from: "far", to: "far", n: 1, p0: 0.48, dur: 0.44 }],
+    vb: [560, 276], Y0: 198, ZL: 55, ZF: 152, ZS: -48,
+    near: { in: 0, join: 42 }, far: { in: -40, join: 42 },
+    hump: { a: 120, b: 260, c: 280, d: 380, h: 120, bed: 14 },
+    sw: 392, fan: 24, buffer: 478, arrow: 546,
+    wag: { L: 56, D: 20, wh: 9, tub: 26, roof: 9, heap: 11 },
+    A: { keys: [[0.22, "start"], [0.30, 70, "out"], [0.40, 120, "smooth"], [0.46, 250, "smooth"], [0.56, 310, "smooth"], [0.64, 380, "in"], [0.70, "park", "out"]], seal: [0.46, 0.56], roof: [0.48, 0.54] },
+    B: { keys: [[0.20, "start"], [0.28, -50, "out"], [0.34, -50, "lin"], [0.60, 120, "smooth"], [0.70, 250, "smooth"], [0.80, 310, "smooth"], [0.86, 380, "in"], [0.92, "park", "out"]], seal: [0.70, 0.80], roof: [0.72, 0.78] },
   };
   /* THE SCHEDULE, in p: the yard lays itself in the first quarter (far to
-     near, the earthwork's edge with the lead, the shed last, the labels
-     snapping in whole), the cuts run after the figure is first whole, the
-     marks are signed as each cut parks. Pure in p: the same p is the same
-     drawing from above or below. */
-  const T = { far: [0, 0.14], lead: [0.06, 0.2], near: [0.1, 0.24], bank: [0.08, 0.22], fill: [0.18, 0.28],
-    shed: [0.14, 0.28], faces: [0.24, 0.3], labels: 0.24, strike: [0.72, 0.8], tick: [0.94, 1] };
-  const W = Y.wag, H = Y.hump, S = Y.shed;
+     near, the earthwork's edge with the lead, the labels snapping in
+     whole); wagon A (the logs, near feeder) is whole by .30 and climbs,
+     seals over the crest .46-.56 and parks at .70, struck .72-.78; wagon B
+     (the records, far feeder) is whole by .28, waits behind, climbs
+     .60-.70, seals .70-.80 and parks at .92, ticked .95-1. Pure in p: the
+     same p is the same drawing from above or below. */
+  const T = { far: [0, 0.14], lead: [0.06, 0.22], near: [0.1, 0.24], bank: [0.08, 0.22], fill: [0.16, 0.26], labels: 0.24, strike: [0.72, 0.78], tick: [0.95, 1] };
+  const W = Y.wag, H = Y.hump;
   s.setAttribute("viewBox", `0 0 ${Y.vb[0]} ${Y.vb[1]}`);
   /* cabinet oblique at the board's 30°: X and H stay true, Z runs up-right
      at .6 */
@@ -7597,6 +7615,7 @@ function buildPath(tight) {
   const P = (X, Z = 0, Hh = 0) => [X + Z * CX, Y.Y0 - Hh - Z * CY];
   const r1 = (v) => (Math.round(v * 10) / 10).toString();
   const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+  const EASE = { lin: (t) => t, smooth, in: (t) => t * t, out: (t) => 1 - (1 - t) * (1 - t) };
   const poly = (pts, close) => pts.map((q, i) => `${i ? "L" : "M"} ${r1(q[0])} ${r1(q[1])}`).join(" ") + (close ? " Z" : "");
   /* ground polylines are [X, Z, H] triples: a cubic in the ground plane at
      H 0, a straight run sampled every 3 units with an optional height
@@ -7623,17 +7642,10 @@ function buildPath(tight) {
     }
     return out;
   };
-  /* cumulative ground length along a polyline, optionally weighted per
-     segment (weight gets the segment's index); and the point at a ground
-     distance, with its tangent */
-  const arc = (pts, weight) => {
-    const out = [0];
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1], b = pts[i];
-      out.push(out[i - 1] + Math.hypot(b[0] - a[0], b[1] - a[1]) * (weight ? weight(a, b, i) : 1));
-    }
-    return out;
-  };
+  /* cumulative ground length along a polyline; the point at a ground
+     distance, with its tangent; the first ground distance where `test`
+     holds */
+  const arc = (pts) => { const out = [0]; for (let i = 1; i < pts.length; i++) out.push(out[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return out; };
   const at = (pts, Sx, d) => {
     const target = clamp(d, 0, Sx[Sx.length - 1]);
     let i = 1;
@@ -7642,7 +7654,6 @@ function buildPath(tight) {
     const dx = b[0] - a[0], dz = b[1] - a[1], g = Math.hypot(dx, dz) || 1;
     return { X: lerp(a[0], b[0], u), Z: lerp(a[1], b[1], u), H: lerp(a[2], b[2], u), tx: dx / g, tz: dz / g };
   };
-  /* the first ground distance along a road at which `test` holds */
   const walk = (pts, Sx, test) => { let d = 0; while (d < Sx[Sx.length - 1] && !test(at(pts, Sx, d))) d += 1; return d; };
   /* THE HUMP'S PROFILE: smooth on the climb and the descent, flat on the
      crest, so a wagon's two axles always find the rail and the tip over the
@@ -7650,13 +7661,12 @@ function buildPath(tight) {
   const humpAt = (X) => X <= H.a || X >= H.d ? 0
     : X < H.b ? H.h * smooth((X - H.a) / (H.b - H.a)) : X <= H.c ? H.h : H.h * (1 - smooth((X - H.c) / (H.d - H.c)));
   /* layers, back to front: a wagon moves between the three W layers as it
-     goes, so the near cut stands in front of the hill and the far cut
-     behind it, and the shed hides whatever is inside it */
+     goes, so the siding's van stands in front of everything and the far
+     feeder's behind the hill until it joins the lead */
   const L = {};
-  for (const k of ["far", "farW", "bank", "leadW", "shed", "near", "nearW", "labels"]) L[k] = el("g", { class: `yd-${k}` });
+  for (const k of ["far", "farW", "bank", "leadW", "near", "nearW", "labels"]) L[k] = el("g", { class: `yd-${k}` });
   /* every stroke's sample points in user units, for the lane's label sweep */
   const inkPoints = [];
-  const edge = (a, b) => { const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 3)); for (let i = 0; i <= n; i++) inkPoints.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); };
   /* ——— the roads ——— */
   const edgeX = (Z) => -Z * CX - 4; /* where a road at depth Z meets the plate's left edge */
   const feeder = (k) => {
@@ -7665,13 +7675,11 @@ function buildPath(tight) {
       curve([x1, Z], [x1 + (j - x1) * 0.55, Z], [j - (j - x1) * 0.55, Y.ZL], [j, Y.ZL]));
   };
   const feederNear = feeder("near"), feederFar = feeder("far");
-  const lead = run([Y.near.join, Y.ZL], [Y.sw, Y.ZL], humpAt);
-  const fanTo = (Z) => curve([Y.sw, Y.ZL], [Y.sw + Y.fan * 0.55, Y.ZL], [Y.sw + Y.fan * 0.45, Z], [Y.sw + Y.fan, Z]);
-  const roadNear = joinPts(fanTo(0), run([Y.sw + Y.fan, 0], [Y.buffer, 0]));
-  /* the far road runs to the plate's right edge (on the phone it leaves
-     the edge while still fanning out) */
-  const exitX = Y.vb[0] - Y.ZF * CX + 6;
-  const roadFar = exitX > Y.sw + Y.fan ? joinPts(fanTo(Y.ZF), run([Y.sw + Y.fan, Y.ZF], [exitX, Y.ZF])) : fanTo(Y.ZF);
+  /* the lead climbs the hump and runs on as the main line to the plate's
+     right edge; the siding fans off it at the switch, toward the reader */
+  const exitX = Y.vb[0] - Y.ZL * CX + 6;
+  const lead = run([Y.near.join, Y.ZL], [exitX, Y.ZL], humpAt);
+  const siding = joinPts(curve([Y.sw, Y.ZL], [Y.sw + Y.fan * 0.55, Y.ZL], [Y.sw + Y.fan * 0.45, Y.ZS], [Y.sw + Y.fan, Y.ZS]), run([Y.sw + Y.fan, Y.ZS], [Y.buffer, Y.ZS]));
   /* a road: two rails at ±gauge off the centre line and ties across it every
      `pitch` units of ground. The rails ink by dash offset (per rail: a dash
      array on a two-subpath path runs each rail from its own start); the
@@ -7715,12 +7723,11 @@ function buildPath(tight) {
     return (t) => { if (t === last) return; last = t; for (const it of items) it.q.style.strokeDashoffset = r1(it.n * (1 - t)); };
   };
   const fader = (els) => { let last = -1; return (t) => { if (t === last) return; last = t; for (const q of els) q.style.fillOpacity = t; }; };
-  const tFar = track(L.far, feederFar), tRoadFar = track(L.far, roadFar);
+  const tFar = track(L.far, feederFar);
   /* ——— the earthwork: a built thing, not a hill. One paper fill with an ink
      edge: the near face is the profile's silhouette down to its foot, the
      trackbed a band `bed` either side of the lead with its far edge
-     lighter, because it is behind the rails. No grass, no trees. The ground
-     is exempt from the 45% rule; the hill is ~38% of the lane's width. ——— */
+     lighter, because it is behind the rails. No grass, no trees. ——— */
   const fwd = [], back = [], farE = [];
   for (let X = H.a; X <= H.d + 1e-6; X += 2) {
     const h = humpAt(X);
@@ -7733,185 +7740,173 @@ function buildPath(tight) {
   const bankEdge = el("path", { d: poly(fwd), class: "yd-edge", "data-o": "bank" }, L.bank);
   inkPoints.push(...fwd, ...farE, ...back);
   const tLead = track(L.bank, lead);
-  const tNear = track(L.near, feederNear), tRoadNear = track(L.near, roadNear);
+  /* the main line's arrow, on the road at the plate's edge: the road that
+     goes on. The inventory van parks whole with its nose at it. */
+  let arrow = null;
+  if (Y.arrow !== null) {
+    const ay = P(0, Y.ZL)[1], pts = [[Y.arrow, ay - 5], [Y.arrow + 12, ay], [Y.arrow, ay + 5]];
+    arrow = el("path", { d: poly(pts, true), class: "yd-arrow", "data-o": "arrow" }, L.bank);
+    inkPoints.push(...pts);
+  }
+  const tNear = track(L.near, feederNear), tSiding = track(L.near, siding);
   /* the buffer stop: a short solid wall across the siding's end, the one
      road that ends at something */
-  const bx = Y.buffer;
-  const bufPts = [P(bx, -8, 0), P(bx, 8, 0), P(bx, 8, 12), P(bx, -8, 12)];
+  const bufPts = [P(Y.buffer, Y.ZS - 8, 0), P(Y.buffer, Y.ZS + 8, 0), P(Y.buffer, Y.ZS + 8, 13), P(Y.buffer, Y.ZS - 8, 13)];
   const buffer = el("path", { d: poly(bufPts, true), class: "yd-stop", "data-o": "buffer" }, L.near);
   inkPoints.push(...bufPts);
-  /* the far road leaves by the drawing's right edge, and so does the van
-     that takes it: the one road that leaves the picture */
-  const aTip = Y.vb[0] - 2;
-  /* ——— the works: a shed astride the lead with a doorway at each end; the
-     entry door is on the hidden end wall, the exit door is cut out of the
-     visible one (evenodd), and the open->van swap happens behind the near
-     wall. "Python · SQL" is face-on over its roof (under it on the phone). ——— */
-  const shedG = el("g", { "data-o": "shed" }, L.shed);
-  const c = (X, Z, Hh) => P(X, Z, Hh);
-  const roof = el("path", { d: poly([c(S.x0, S.z0, S.h), c(S.x1, S.z0, S.h), c(S.x1, S.z1, S.h), c(S.x0, S.z1, S.h)], true), class: "yd-face" }, shedG);
-  const endWall = el("path", { class: "yd-face", "fill-rule": "evenodd",
-    d: poly([c(S.x1, S.z0, 0), c(S.x1, S.z1, 0), c(S.x1, S.z1, S.h), c(S.x1, S.z0, S.h)], true) + " " +
-       poly([c(S.x1, S.door[0], 0), c(S.x1, S.door[1], 0), c(S.x1, S.door[1], S.dh), c(S.x1, S.door[0], S.dh)], true) }, shedG);
-  const nearWall = el("path", { d: poly([c(S.x0, S.z0, 0), c(S.x1, S.z0, 0), c(S.x1, S.z0, S.h), c(S.x0, S.z0, S.h)], true), class: "yd-face" }, shedG);
-  for (const [a, b] of [[[S.x0, S.z0, 0], [S.x1, S.z0, 0]], [[S.x0, S.z0, 0], [S.x0, S.z0, S.h]], [[S.x1, S.z0, 0], [S.x1, S.z0, S.h]],
-    [[S.x0, S.z0, S.h], [S.x1, S.z0, S.h]], [[S.x0, S.z0, S.h], [S.x0, S.z1, S.h]], [[S.x1, S.z0, S.h], [S.x1, S.z1, S.h]],
-    [[S.x0, S.z1, S.h], [S.x1, S.z1, S.h]], [[S.x1, S.z0, 0], [S.x1, S.z1, 0]], [[S.x1, S.z1, 0], [S.x1, S.z1, S.h]]]) edge(c(...a), c(...b));
   /* ——— a goods wagon in the oblique, local origin on the rail under its
-     centre: wheels, then the three faces of a box (front, top, end) receding
-     the way the yard does. `raw` is the open wagon with its heaped load, in
-     ink; `van` the closed one with a sliding door and a solebar, in pine
-     once it is out of the works. Both forms stand the same height
-     (wh + body + the top face's depth: 37.4 units, 38 px at 1440), the
-     smallest nameable thing on the plate. ——— */
+     centre: wheels, an open body (front, end, and the rim's open top) with
+     a side door and a solebar, a heaped load standing proud of the rim,
+     and a ROOF that slides on from the tail. seal(k) slides the heap toward
+     the nose and flattens it to the rim; roof(k) lengthens the roof from
+     the tail to the nose; at roof 1 the wagon is `sealed` and its strokes
+     turn pine. Both forms stand the same height to the roof line (wh + tub
+     + roof: 44 units, 47 px at 1440), the smallest nameable thing here. ——— */
   const wagon = (parent) => {
-    const wl = W.L, dx = W.D * CX, dy = -W.D * CY, wh = W.wh;
-    const g = el("g", { class: "yd-wag raw", "data-o": "wagon" }, parent);
+    const wl = W.L, dx = W.D * CX, dy = -W.D * CY, wh = W.wh, top = wh + W.tub, rf = W.roof;
+    const g = el("g", { class: "yd-wag", "data-o": "wagon" }, parent);
     for (const x of [-wl / 3, wl / 3]) el("circle", { cx: x, cy: -3.4, r: 3.4, class: "yd-wheel" }, g);
-    const faces = (into, top) => {
-      el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2 + dx, -top + dy], [-wl / 2 + dx, -top + dy]], true), class: "yd-face" }, into);
-      el("path", { d: poly([[wl / 2, -top], [wl / 2 + dx, -top + dy], [wl / 2 + dx, -wh + dy], [wl / 2, -wh]], true), class: "yd-face" }, into);
-      el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2, -wh], [-wl / 2, -wh]], true), class: "yd-face" }, into);
-    };
-    const gRaw = el("g", { class: "yd-form raw" }, g), gVan = el("g", { class: "yd-form van" }, g);
-    faces(gRaw, wh + W.raw);
-    /* the heap: a lumpy load standing proud of the open body, to `heap` */
-    const rim = -(wh + W.raw), hx = [-0.46, -0.34, -0.18, -0.02, 0.14, 0.3, 0.44], hh = [0, 0.62, 0.42, 1, 0.55, 0.85, 0];
-    const heap = [[-wl / 2 + 2, rim], ...hx.map((f, i) => [f * wl, rim - hh[i] * W.heap]), [wl / 2 - 2, rim]];
-    el("path", { d: poly(heap, true), class: "yd-heap" }, gRaw);
-    faces(gVan, wh + W.van);
-    el("rect", { x: -6, y: -(wh + W.van) + 4, width: 12, height: W.van - 7, class: "yd-door" }, gVan);
-    el("path", { d: `M ${-wl / 2} ${-wh - 1} H ${wl / 2}`, class: "yd-sole" }, gVan);
-    const w = { g, raw: true, tf: "", deg: 0, X: NaN, layer: null, on: null,
-      form(v) { if (w.raw === v) return; w.raw = v; g.setAttribute("class", v ? "yd-wag raw" : "yd-wag van"); },
+    el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2 + dx, -top + dy], [-wl / 2 + dx, -top + dy]], true), class: "yd-face" }, g);
+    el("path", { d: poly([[wl / 2, -top], [wl / 2 + dx, -top + dy], [wl / 2 + dx, -wh + dy], [wl / 2, -wh]], true), class: "yd-face" }, g);
+    el("path", { d: poly([[-wl / 2, -top], [wl / 2, -top], [wl / 2, -wh], [-wl / 2, -wh]], true), class: "yd-face" }, g);
+    el("rect", { x: -6, y: -top + 4, width: 12, height: W.tub - 7, class: "yd-door" }, g);
+    el("path", { d: `M ${-wl / 2} ${-wh - 1} H ${wl / 2}`, class: "yd-sole" }, g);
+    /* the heap, as fractions of the length and of `heap`: it slides toward
+       the nose and narrows as it flattens, never past the rim */
+    const hx = [-0.44, -0.32, -0.16, 0, 0.16, 0.3, 0.44], hh = [0, 0.6, 0.45, 1, 0.55, 0.85, 0];
+    const heap = el("path", { class: "yd-heap", "data-o": "heap" }, g);
+    const roofF = el("path", { class: "yd-roof", "data-o": "roof" }, g), roofT = el("path", { class: "yd-roof" }, g), roofE = el("path", { class: "yd-roof" }, g);
+    const w = { g, tf: "", deg: 0, X: NaN, k: -1, kr: -1, sealed: null, layer: null, on: null,
+      seal(k) {
+        if (k === w.k) return;
+        w.k = k;
+        heap.setAttribute("d", poly([[-wl / 2 + 3, -top], ...hx.map((f, i) => [(f * (1 - 0.35 * k) + 0.12 * k) * wl, -top - hh[i] * W.heap * (1 - k)]), [wl / 2 - 3, -top]], true));
+      },
+      roof(k) {
+        if (k === w.kr) return;
+        w.kr = k;
+        const x0 = -wl / 2, x1 = -wl / 2 + k * wl;
+        roofF.setAttribute("d", poly([[x0, -top], [x1, -top], [x1, -top - rf], [x0, -top - rf]], true));
+        roofT.setAttribute("d", poly([[x0, -top - rf], [x1, -top - rf], [x1 + dx, -top - rf + dy], [x0 + dx, -top - rf + dy]], true));
+        roofE.setAttribute("d", poly([[x1, -top - rf], [x1 + dx, -top - rf + dy], [x1 + dx, -top + dy], [x1, -top]], true));
+        for (const q of [roofF, roofT, roofE]) q.style.display = k > 0 ? "" : "none";
+        const sealed = k >= 1;
+        if (sealed !== w.sealed) { w.sealed = sealed; g.setAttribute("class", sealed ? "yd-wag sealed" : "yd-wag"); }
+      },
       show(v) { if (w.on === v) return; w.on = v; g.setAttribute("opacity", v ? 1 : 0); },
       into(k) { if (w.layer === k) return; w.layer = k; L[k].appendChild(g); } };
+    w.seal(0); w.roof(0);
     return w;
   };
-  /* ——— the cuts: one coupled consist per source on one path, the lead wagon
-     placed by a WEIGHTED arc (the climb 2.0x slow, the descent 1.6x with an
-     ease-in so the wagon hangs at the crest and speeds up, the last forty
-     units braking into the stop) and each follower a fixed pitch of ground
-     behind it, so the cut stays coupled whatever the lead is doing. The tilt
-     is read off the two axles' heights, not the grade at a point, so both
-     wheels stay on the rail over the crest. ——— */
-  const UP = 1.8, DOWN = 1.6, BRAKE = 2.2, BRAKE_AT = 40;
-  const cuts = Y.cuts.map((cut) => {
-    const feed = cut.from === "near" ? feederNear : feederFar, road = cut.to === "near" ? roadNear : roadFar;
-    const Z = cut.from === "near" ? 0 : Y.ZF, Sr = arc(road);
-    /* the park, as a ground distance along the road: the near cut's lead
-       wagon 2 short of the buffer; the far cut's with its nose `nose`
-       short of the arrow's tip */
-    const parkD = cut.to === "near"
-      ? walk(road, Sr, (q) => q.X >= Y.buffer - 2 - W.L / 2)
-      : walk(road, Sr, (q) => P(q.X, q.Z)[0] + W.L / 2 + W.D * CX >= aTip - Y.nose);
-    const pq = at(road, Sr, parkD);
-    const roadTo = [...road.filter((q, i) => Sr[i] < parkD), [pq.X, pq.Z, 0]];
-    /* the lead wagon's centre at t 0 has its nose just off the plate; the
-       followers' ground runs a pitch each further back */
-    const x0 = edgeX(Z) - W.L / 2 - W.D * CX - 2, s0 = (cut.n - 1) * W.pitch;
-    const pts = joinPts(run([x0 - s0, Z], [feed[0][0], Z]), feed, lead, roadTo);
-    const Sg = arc(pts), total = Sg[Sg.length - 1];
-    const Sw = arc(pts, (a, b, i) => (b[2] > a[2] + 1e-6 ? UP : b[2] < a[2] - 1e-6 ? DOWN : 1) * (Sg[i - 1] > total - BRAKE_AT ? BRAKE : 1));
-    /* the descent as a band of ground, for the ease-in */
-    let d0 = -1, d1 = -1;
-    for (let i = 1; i < pts.length; i++) if (pts[i][2] < pts[i - 1][2] - 1e-6) { if (d0 < 0) d0 = Sg[i - 1]; d1 = Sg[i]; }
-    const wagons = [];
-    for (let i = 0; i < cut.n; i++) wagons.push(wagon(L.farW));
-    return { ...cut, pts, Sg, Sw, d0, d1, wagons, s0, total };
+  /* ——— the two wagons, each on its own path from off the plate's edge to its
+     park, placed by KEYFRAMES in p (the strategy's schedule): a keyframe is
+     a centre X on the path and the ease into it. The tilt is read off the
+     two axles' heights, not the grade at a point, so both wheels stay on
+     the rail over the crest. ——— */
+  const Sl = arc(lead);
+  const parkFar = Y.arrow !== null ? Y.arrow - 2 - Y.ZL * CX - W.L / 2 - W.D * CX : Y.vb[0] - 4 - Y.ZL * CX - W.L / 2 - W.D * CX;
+  const parkNear = Y.buffer - 2 - W.L / 2;
+  const wagons = [["A", Y.A, feederNear, 0, siding, parkNear], ["B", Y.B, feederFar, Y.ZF, lead, parkFar]].map(([name, spec, feed, Z, road, parkX]) => {
+    const Sr = arc(road);
+    const parkD = walk(road, Sr, (q) => q.X >= parkX), pq = at(road, Sr, parkD);
+    /* the road up to the park: for A the lead to the switch then the
+       siding; for B the lead itself */
+    const roadTo = name === "A"
+      ? joinPts(lead.filter((q, i) => Sl[i] < Sl[Math.round((Y.sw - Y.near.join) / 3)]), [[Y.sw, Y.ZL, 0]], road.filter((q, i) => Sr[i] < parkD), [[pq.X, pq.Z, 0]])
+      : joinPts(road.filter((q, i) => Sr[i] < parkD), [[pq.X, pq.Z, 0]]);
+    const x0 = edgeX(Z) - W.L / 2 - W.D * CX - 2;
+    const pts = joinPts(run([x0, Z], [feed[0][0], Z]), feed, roadTo);
+    const Sg = arc(pts);
+    const sOf = (key) => key === "start" ? 0 : key === "park" ? Sg[Sg.length - 1] : walk(pts, Sg, (q) => q.X >= key);
+    const keys = spec.keys.map(([p, key, ease]) => ({ p, s: sOf(key), ease: EASE[ease || "lin"] }));
+    return { name, keys, seal: spec.seal, roof: spec.roof, pts, Sg, w: wagon(L.farW), total: Sg[Sg.length - 1] };
   });
-  /* the ground distance of a cut's lead wagon at the cut's own t: its run
-     is the weighted arc from s0 (where it starts, the followers behind it)
-     to the park */
-  const leadAt = (cut, t) => {
-    const Sw = cut.Sw, w0 = Sw[Math.round(cut.s0 / 3)] ?? 0;
-    const target = w0 + clamp(t, 0, 1) * (Sw[Sw.length - 1] - w0);
-    let i = 1;
-    while (i < Sw.length - 1 && Sw[i] < target) i++;
-    const u = Sw[i] === Sw[i - 1] ? 0 : (target - Sw[i - 1]) / (Sw[i] - Sw[i - 1]);
-    let sg = lerp(cut.Sg[i - 1], cut.Sg[i], u);
-    if (cut.d0 >= 0 && sg > cut.d0 && sg < cut.d1) { const v = (sg - cut.d0) / (cut.d1 - cut.d0); sg = cut.d0 + (cut.d1 - cut.d0) * (0.5 * v + 0.5 * v * v); }
-    return sg;
+  const sAt = (wg, p) => {
+    const k = wg.keys;
+    if (p <= k[0].p) return k[0].s;
+    for (let i = 1; i < k.length; i++) if (p <= k[i].p) return lerp(k[i - 1].s, k[i].s, k[i].ease(ramp(p, k[i - 1].p, k[i].p)));
+    return k[k.length - 1].s;
   };
-  const place = (cut, w, sg) => {
-    const q = at(cut.pts, cut.Sg, sg), wb = W.L / 3;
-    const h1 = at(cut.pts, cut.Sg, sg - wb).H, h2 = at(cut.pts, cut.Sg, sg + wb).H;
+  const place = (wg, sg) => {
+    const w = wg.w, q = at(wg.pts, wg.Sg, sg), wb = W.L / 3;
+    const h1 = at(wg.pts, wg.Sg, sg - wb).H, h2 = at(wg.pts, wg.Sg, sg + wb).H;
     const deg = -Math.atan2(h2 - h1, 2 * wb) * 180 / Math.PI;
     const [x, y] = P(q.X, q.Z, (h1 + h2) / 2);
     const tf = `translate(${r1(x)} ${r1(y)}) rotate(${r1(deg)})`;
     if (tf !== w.tf) { w.tf = tf; w.deg = deg; w.X = q.X; w.g.setAttribute("transform", tf); }
-    w.form(q.X < (S.x0 + S.x1) / 2);
-    w.into(q.X < Y.near.join - 2 ? (cut.from === "near" ? "nearW" : "farW") : q.X > Y.sw + 2 ? (cut.to === "near" ? "nearW" : "farW") : "leadW");
+    w.into(q.X < Y.near.join - 2 ? (wg.name === "A" ? "nearW" : "farW") : wg.name === "A" && q.X > Y.sw + 2 ? "nearW" : "leadW");
   };
   /* ——— the labels, face-on, each pair where its road is: the far source over
-     the far feeder, the far product and "main line" over the far road's
-     exit, the near source under the near feeder, the near product under the
-     siding; the dispositions in the text face with the reviewer's mark
-     beside the word. The phone stacks the same pairs above and below. ——— */
+     the far feeder, the far product top-right and "main line" over the main
+     line's exit, the works' name at the hill's near foot, the near source
+     under the near feeder, the near product under the siding; the
+     dispositions in the text face with the reviewer's mark beside the word.
+     The phone stacks the same words above and below, one per line. ——— */
   const text = (x, y, str, cls, end) => {
     const a = { x, y, "data-o": "label" }; if (cls) a.class = cls; if (end) a["text-anchor"] = "end";
     const t = el("text", a, L.labels); t.textContent = str; return t;
   };
-  /* the main line's arrow, after its name, pointing where the road goes */
-  const arrowAt = (x, b) => el("path", { d: poly([[x, b - 8], [x + 11, b - 4], [x, b]], true), class: "yd-arrow", "data-o": "arrow" }, L.labels);
   const Y0 = Y.Y0, R = Y.vb[0] - 8;
   let tick, strike;
   if (!tight) {
-    text(8, Y0 - 120, "Tableau + Workday", "lit"); text(8, Y0 - 106, "hash dedup · REST API");
-    text(P(S.x1, S.z1)[0], Y0 - 85, "Python · SQL", null, true);
-    text(R, Y0 - 140, "master inventory", "lit", true); text(R, Y0 - 126, "10,453 × 35 fields", null, true);
-    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: `translate(464 ${Y0 - 120}) scale(1.5)` }, L.labels);
-    text(R, Y0 - 110, "checked in", "yd-note lit", true);
-    text(R - 14, Y0 - 94, "main line", null, true); arrowAt(R - 10, Y0 - 94);
+    text(8, Y0 - 124, "Tableau + Workday", "lit"); text(8, Y0 - 110, "hash dedup · REST API");
+    text(R, Y0 - 149, "master inventory", "lit", true); text(R, Y0 - 135, "10,453 × 35 fields", null, true);
+    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: `translate(464 ${Y0 - 129}) scale(1.5)` }, L.labels);
+    text(R, Y0 - 119, "checked in", "yd-note lit", true);
+    text(R, Y0 - 79, "main line", null, true);
+    text(230, Y0 + 8, "Python · SQL");
     text(8, Y0 + 23, "1.6M+ OAS query logs", "lit"); text(8, Y0 + 37, "5 yrs · 1,153 users");
-    text(R, Y0 + 23, "usage table", "lit", true); text(R, Y0 + 37, "57.8M rows", null, true);
-    strike = el("path", { d: D_HELD, class: "tickp withheld", "data-o": "mark", transform: `translate(388 ${Y0 + 45}) scale(1.5)` }, L.labels);
-    text(R, Y0 + 55, "stays with IT Services", "yd-note", true);
+    text(R, Y0 + 37, "usage table", "lit", true); text(R, Y0 + 51, "57.8M rows", null, true);
+    strike = el("path", { d: D_HELD, class: "tickp withheld", "data-o": "mark", transform: `translate(388 ${Y0 + 59}) scale(1.5)` }, L.labels);
+    text(R, Y0 + 69, "stays with IT Services", "yd-note", true);
   } else {
-    text(8, 14, "Tableau + Workday", "lit"); text(R - 14, 14, "main line", null, true); arrowAt(R - 10, 14);
-    text(8, 28, "hash dedup · REST API");
-    text(R, 44, "master inventory", "lit", true); text(R, 58, "10,453 × 35 fields", null, true);
-    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: "translate(148 64) scale(1.3)" }, L.labels);
-    text(R, 74, "checked in", "yd-note lit", true);
-    text(P(S.x0, S.z0)[0] + 2, Y0 + 12, "Python · SQL");
-    text(8, Y0 + 32, "1.6M+ OAS query logs", "lit"); text(8, Y0 + 46, "5 yrs · 1,153 users");
-    text(R, Y0 + 60, "usage table", "lit", true); text(R, Y0 + 74, "57.8M rows", null, true);
-    strike = el("path", { d: D_HELD, class: "tickp withheld", "data-o": "mark", transform: `translate(80 ${Y0 + 82}) scale(1.3)` }, L.labels);
-    text(R, Y0 + 92, "stays with IT Services", "yd-note", true);
+    text(8, 14, "Tableau + Workday", "lit"); text(8, 28, "hash dedup · REST API");
+    text(R - 14, 44, "main line", null, true);
+    el("path", { d: poly([[R - 10, 36], [R + 1, 40], [R - 10, 44]], true), class: "yd-arrow", "data-o": "arrow" }, L.labels);
+    text(R, 58, "master inventory", "lit", true); text(R, 72, "10,453 × 35 fields", null, true);
+    tick = el("path", { d: D_FILED, class: "tickp", "data-o": "mark", transform: "translate(148 78) scale(1.3)" }, L.labels);
+    text(R, 88, "checked in", "yd-note lit", true);
+    /* the works' name under the yard's near edge: at the hill's foot the
+       siding's van rolls over it, inside the near face nothing clears 8 */
+    text(8, Y0 + 22, "Python · SQL");
+    text(8, Y0 + 44, "1.6M+ OAS query logs", "lit"); text(8, Y0 + 58, "5 yrs · 1,153 users");
+    text(R, Y0 + 72, "usage table", "lit", true); text(R, Y0 + 86, "57.8M rows", null, true);
+    strike = el("path", { d: D_HELD, class: "tickp withheld", "data-o": "mark", transform: `translate(80 ${Y0 + 94}) scale(1.3)` }, L.labels);
+    text(R, Y0 + 104, "stays with IT Services", "yd-note", true);
   }
-  cuts.flatMap((cut) => cut.wagons).forEach((w, k) => w.g.setAttribute("data-i", k));
+  wagons.forEach((wg, k) => wg.w.g.setAttribute("data-i", k));
   /* ——— the inkers, measured once at build ——— */
   const inkBank = inker([bankEdge, bankFar, bankFoot]);
   const fillBank = fader([bankTop, bankFace]);
-  const inkShed = inker([roof, endWall, nearWall]);
-  const fillShed = fader([roof, endWall, nearWall]);
   const inkStrike = inker([strike]), inkTick = inker([tick]);
   const inkBuffer = inker([buffer]);
-  let labelsOn = null;
+  let labelsOn = null, arrowOn = null;
   /* A FIGURE OWNS ITS DRAWING, THE DRIVER OWNS ITS p: everything below is set
      from p alone and written only when it changed. */
   function draw(p) {
-    tFar.ink(ramp(p, T.far[0], T.far[1])); tRoadFar.ink(ramp(p, T.far[0] + 0.02, T.far[1] + 0.02));
+    tFar.ink(ramp(p, T.far[0], T.far[1]));
     tLead.ink(ramp(p, T.lead[0], T.lead[1]));
     inkBank(ramp(p, T.bank[0], T.bank[1])); fillBank(ramp(p, T.fill[0], T.fill[1]));
-    tNear.ink(ramp(p, T.near[0], T.near[1])); tRoadNear.ink(ramp(p, T.near[0] + 0.02, T.near[1] + 0.02));
+    tNear.ink(ramp(p, T.near[0], T.near[1])); tSiding.ink(ramp(p, T.near[0] + 0.02, T.near[1] + 0.02));
     inkBuffer(ramp(p, T.near[1] - 0.04, T.near[1] + 0.02));
-    inkShed(ramp(p, T.shed[0], T.shed[1])); fillShed(ramp(p, T.faces[0], T.faces[1]));
+    if (arrow) { const ar = p >= T.lead[1]; if (ar !== arrowOn) { arrowOn = ar; arrow.setAttribute("opacity", ar ? 1 : 0); } }
     const on = p >= T.labels;
     if (on !== labelsOn) { labelsOn = on; L.labels.setAttribute("opacity", on ? 1 : 0); }
-    for (const cut of cuts) {
-      const sl = leadAt(cut, (p - cut.p0) / cut.dur);
-      cut.wagons.forEach((w, i) => { place(cut, w, sl - i * W.pitch); w.show(p > cut.p0); });
+    for (const wg of wagons) {
+      place(wg, sAt(wg, p));
+      wg.w.seal(ramp(p, wg.seal[0], wg.seal[1]));
+      wg.w.roof(ramp(p, wg.roof[0], wg.roof[1]));
+      wg.w.show(p > wg.keys[0].p);
     }
     inkStrike(ramp(p, T.strike[0], T.strike[1])); inkTick(ramp(p, T.tick[0], T.tick[1]));
   }
   draw(0);
-  /* probe hooks: the edition, each wagon's tilt and X, the cuts' bands and
-     every stroke's sample points in user units, for the lane's census and
-     label sweep */
+  /* probe hooks: the edition, each wagon's tilt, X and seal state, the
+     keyframes, and every stroke's sample points in user units, for the
+     lane's census and label sweep */
   window.__world.fig03 = { edition: tight ? "tight" : "wide", draw, nodes: s.querySelectorAll("*").length,
-    cuts: cuts.map((cut) => ({ from: cut.from, p0: cut.p0, dur: cut.dur, d0: +cut.d0.toFixed(1), d1: +cut.d1.toFixed(1), total: +cut.total.toFixed(1) })),
-    wagons: () => cuts.flatMap((cut) => cut.wagons.map((w) => ({ deg: +w.deg.toFixed(1), X: +w.X.toFixed(1), raw: w.raw, on: w.on }))),
+    keys: wagons.map((wg) => ({ name: wg.name, keys: wg.keys.map((k) => [k.p, +k.s.toFixed(1)]), seal: wg.seal, roof: wg.roof, total: +wg.total.toFixed(1) })),
+    wagons: () => wagons.map((wg) => ({ name: wg.name, deg: +wg.w.deg.toFixed(1), X: +wg.w.X.toFixed(1), k: +wg.w.k.toFixed(2), kr: +wg.w.kr.toFixed(2), sealed: wg.w.sealed, on: wg.w.on })),
     ink: () => inkPoints.map((q) => [+q[0].toFixed(1), +q[1].toFixed(1)]) };
   /* registered on every build: an edition change rebuilds the drawing and
      the driver must see the new one (buildNet's pattern) */
