@@ -2135,6 +2135,12 @@ if (location.hash.length > 1) {
      the run. No --hair anywhere below: it is 1.66:1 on the night field and
      every stroke here is a drawn object held to the graphics floor. */
   .gline .g-lane{stroke:var(--ink); stroke-width:1.1}
+  /* THE OPEN WAY IS DRAWN AT THE ARROW'S WEIGHT. The lane past the passed
+     row's signal is the verdict's mark, like the arrow on it, and at 1.1px
+     under a leaving wagon it did not survive a scaled still: a cold reader
+     saw the rail end at the arrow and the wagon float past its track (v9).
+     Measured at 1x it was there; 1.6 is what reads. */
+  .gline .g-open{stroke:var(--ink); stroke-width:1.6}
   .gline .g-stub{stroke:var(--ink); stroke-width:1.4}
   .gline .g-node{fill:var(--ink); stroke:none}
   /* THE SIGNAL IS THE SUBJECT, and it says so by weight: 2px against 1.2 on
@@ -7829,40 +7835,43 @@ function buildGates(js) {
   const edge = (document.documentElement.clientWidth - hr.left) * k - 2;
   /* THE SENT-BACK WAGON stands 12px clear of the junction's square, which is
      as far back as the lane goes. The held one stands nose-in at the post
-     (its roof's corner 8 clear of the head), so the distance between the two
-     rows' wagons is the whole of the verdict's difference: D = P - T - 119.
-     THE PASSED WAGON STANDS JUST PAST ITS OWN ARROW, 85 right of the post:
-     12 of air after the light, the arrow's 28, 10 more. On a laptop that
-     ends it inside the column the other rows occupy, where a reader
-     scanning the rows meets it (at W - 98 it ran out into the margin and a
-     cold reader missed it). Where the screen cannot hold it whole past its
-     arrow, the phones, it LEAVES BY THE SCREEN'S EDGE with 62 of its 84
-     showing (both wheels and the door) and the lane running off the screen
-     under it: "went through, travelling right" has to live in the geometry
-     at every width, because green against orange is the pair a
-     colour-blind reader loses (the cold reader, v9). So P has a floor in
-     the words, the board and a D of at least 30, and a ceiling where the
-     leaving wagon still shows its 62; between them it takes the D a reader
-     reads at a glance, 60, and on a laptop the words give it far more. */
+     (its roof's far corner 13 clear of the head; at 8 a cold reader called
+     it touching), so the distance between the two rows' wagons is the whole
+     of the verdict's difference: D = P - T - 124.
+     THE PASSED ROW'S ARROW LEAVES FROM THE SIGNAL'S FOOT, its tail 8 past
+     the base, and THE PASSED WAGON STANDS 10 PAST THE ARROW, 54 right of
+     the post. The light is 28px and more above the lane, so the arrow under
+     it is clear of it by height, not by distance: a 12px rule past the
+     light's END cost the phones their arrow, and without it a wagon past
+     its signal read as arriving from the right (the cold reader, v9). On a
+     laptop the wagon ends inside the column the other rows occupy, where a
+     reader scanning the rows meets it (at W - 98 it ran out into the margin
+     and was missed). Where the screen cannot hold it whole it LEAVES BY THE
+     SCREEN'S EDGE with 62 of its 84 showing (54 at 320: a wheel, the door,
+     most of the second wheel), the open way running off the screen under
+     it: "went through, travelling right" has to live in the geometry at
+     every width, because green against orange is the pair a colour-blind
+     reader loses. So P has a floor in the words, the board and a D of at
+     least 30, and a ceiling where the leaving wagon still shows its 62;
+     between them it takes the D a reader reads at a glance, 60, and on a
+     laptop the words give it far more. */
   const xBack = T + 15;
-  const floorP = Math.max(T + 149, clear);
-  const ceilP = edge - 62 - 85 - 4;
-  const P = Math.max(floorP, Math.min(Math.max(T + 179, floorP), ceilP));
-  const xHalt = P - 104;
-  const leaves = P + 85 + span > edge - 8;
-  const xGone = leaves ? edge - 62 : P + 85;
+  const floorP = Math.max(T + 154, clear);
+  const ceilP = edge - 62 - 54 - 4;
+  const P = Math.max(floorP, Math.min(Math.max(T + 184, floorP), ceilP));
+  const xHalt = P - 109;
+  const fwdTip = P + 16 + AR.len;
+  const leaves = P + 54 + span > edge - 8;
+  const xGone = leaves ? Math.max(P + 54, edge - 62) : P + 54;
   const laneEnd = Math.min(W, P + 40);   /* every lane stops just past the signal at the park */
   /* the open way beyond the passed row's signal runs to the plate's edge, or
      off the screen under a leaving wagon, and never stops short of the wagon
-     standing on it (at 1024 the wagon ends 7 past a 600px plate) */
-  const laneFar = leaves ? edge : Math.max(W, xGone + span + 24);
-  /* THE ARROWS ARE DROPPED, NEVER SHRUNK (L8), where the lane cannot hold
-     them with air: the passed one wants its tail 12px past the light, the
-     sent-back one its tail 4px short of the base. At 320 P is at its floor
-     and the leaving wagon takes the stretch the passed arrow needs, so that
-     one width says "gone" by the wagon leaving alone. */
-  const fwdTip = xGone - 10, backTip = xBack + span + 8;
-  const fwdOK = fwdTip - AR.len >= P + rayEnd + 12;
+     standing on it, nor past the screen */
+  const laneFar = leaves ? edge : Math.min(edge, Math.max(W, xGone + span + 24));
+  /* THE SENT-BACK ARROW IS DROPPED, NEVER SHRUNK (L8), where the lane cannot
+     hold it with air: its tail 4px short of the base. Its tip stands 14 past
+     the wagon's far corner (at 8 it read as kissing the rear wheel). */
+  const backTip = xBack + span + 14;
   const backOK = backTip + AR.len <= P - 8 - 4;
   const hx = P - GS.hw / 2;
   const hy = (y) => y - GS.base - GS.post - GS.head;
@@ -7892,15 +7901,16 @@ function buildGates(js) {
     /* the junction: where the rail takes this lane's answer */
     add(g, dPath("g-node", dot(T, y, 3), { "data-o": "node" }));
     /* the lane, and on row 0 the rest of it: at the park every lane stops
-       just past its signal, and the open way beyond is the passed row's */
+       just past its signal, and the open way beyond is the passed row's,
+       drawn at the arrow's weight */
     const lane = dPath("g-lane", seg(T, y, laneEnd, y), { "data-o": "lane" });
     add(g, lane);
-    const laneOn = i === 0 && laneFar - laneEnd > 1 ? dPath("g-lane", seg(laneEnd, y, laneFar, y)) : null;
+    const laneOn = i === 0 && laneFar - laneEnd > 1 ? dPath("g-open", seg(laneEnd, y, laneFar, y)) : null;
     add(g, laneOn);
     /* the arrows mark the way each load went, on the lane in the stretch it
        travelled: behind the passed wagon pointing on, ahead of the sent-back
        one's nose pointing back; where the stretch is too short, no arrow */
-    const arrow = i === 0 && fwdOK ? dPath("g-arrow", arrowD(fwdTip, y, 1), { "data-o": "arrow" })
+    const arrow = i === 0 ? dPath("g-arrow", arrowD(fwdTip, y, 1), { "data-o": "arrow" })
       : i === 2 && backOK ? dPath("g-arrow", arrowD(backTip, y, -1), { "data-o": "arrow" }) : null;
     add(g, arrow);
     /* the signal, one object: base, post, head and both lenses; the rays a
@@ -8000,7 +8010,7 @@ function buildGates(js) {
      seat too short to park the bead past all three junctions */
   window.__world.fig10 = { nodes: svg.querySelectorAll("*").length, draw: drawGates,
     bead: scrubGates, at: { T, P, xHalt, xBack, xGone, D: +(xHalt - xBack).toFixed(1), leaves, W, clear: +clear.toFixed(1), boards: bws,
-      rayEnd: P + rayEnd, arrows: [fwdOK, backOK], edge: +edge.toFixed(1), shows: +(leaves ? edge - xGone : span).toFixed(1) } };
+      rayEnd: P + rayEnd, arrows: [true, backOK], edge: +edge.toFixed(1), shows: +(leaves ? edge - xGone : span).toFixed(1) } };
 }
 /* the evidence as a still of p, whole objects only, so a half-scrolled plate
    never shows a post without its head or half a wagon: the three lanes
