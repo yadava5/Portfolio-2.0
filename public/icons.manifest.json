@@ -1,8 +1,8 @@
 {
-  "note": "Written by scripts/asset-truth/render-favicons.mjs. `npm run assets:check-favicons` fails when public/favicon.svg has moved since these were drawn, or when either raster was touched by something else.",
-  "svg": "f0eb9a915bb3db9b7d33e32d99b95165dfcbede5d74894ba045b2b0cd4ab7ae0",
+  "note": "Written by scripts/asset-truth/render-favicons.mjs. `npm run assets:check-favicons` fails when public/favicon.svg is not what site-mark.mjs draws, when it has moved since these were drawn, or when either raster was touched by something else.",
+  "svg": "818e89ca3baedeb519103a74afd8f342e9a58fd81750229954707700778b9479",
   "outputs": {
-    "apple-touch-icon.png": "5eeef17d49bd5b42b67e4fd54b75079cd5649d39153d14169d0675a12780b669",
-    "favicon.ico": "d5bd3dc1de8a10ebd41f3cc9ee2e401961443152bf9fe5f800c736b0a5076a95"
+    "apple-touch-icon.png": "1167e9b605a710e73d4f4a3afc29548d3036faa8cdbeca8f94b9cc70dbf71253",
+    "favicon.ico": "f8080f30fb0f14e0e6c2575581aedfe17696cd40d7c61318245650b1a8ecf2b7"
   }
 }

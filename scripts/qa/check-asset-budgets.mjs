@@ -34,22 +34,20 @@ if (!fs.existsSync(path.join(ogDir, "home.png"))) {
 }
 
 // The site mark. An icon is requested on every page view, before anything
-// else in the head resolves, so it must stay a trivial fetch: measured at
-// 545 / 2,001 / 3,250 bytes, budgeted with room for a re-cut of the mark
-// but not for a resurrected 256px ICO frame (the retired one was 25,931
-// bytes). The budgets have not moved through two re-cuts on 2026-10-07: the
-// mark stopped being a drawn glyph and became a field, a stitched arc and a
-// disc; then the disc grew into the mark itself, one silhouette a search row
-// can be recognised by, and the seam began sewing on its own clock. Drawn by
-// `markSvg` in src/run/index.html — 545 bytes on disk against the pilcrow's
-// 1,268 (424 of drawing and a line of provenance; 425 is the largest the
-// function emits anywhere on the arc, at the phases whose dashoffset needs a
-// fourth digit). The ICO fell to 2,001 from 2,032 and the touch icon rose to
-// 3,250 from 3,187: a solid disc costs PNG less to encode than the stitches
-// it covers, and more the larger the tile gets. All three are still half
-// their budget. `npm run assets:render-favicons` writes them; the SVG is
-// derived from the page, so the mark cannot be edited here.
-budgets.push(["public/favicon.svg", 4_000]);
+// else in the head resolves, so it must stay a trivial fetch, and no budget
+// here has room for a resurrected 256px ICO frame (the retired one was 25,931
+// bytes). On 2026-10-16 the mark became the owner's name, "Ayush" over
+// "Yadav", outlined from Fraunces with the clay rail between the words
+// (scripts/asset-truth/site-mark.mjs). Ten outlined letters cost what a disc
+// did not: measured 4,275 / 3,118 / 5,290 bytes, against the disc's 545 /
+// 2,001 / 3,250. The SVG budget moves from 4,000 to 5,000 for that, and the
+// cut was already made as small as it can be without losing shape: integers
+// in a 640 box with relative commands and repeated command letters elided,
+// which is a quarter of a pixel at 16 px. The ICO and the touch icon stay
+// inside their old budgets, the touch icon at 88% of it: letters cost PNG
+// more than a solid shape does, and the larger the tile, the more.
+// `npm run assets:render-favicons` writes all three.
+budgets.push(["public/favicon.svg", 5_000]);
 budgets.push(["public/favicon.ico", 4_000]);
 budgets.push(["public/apple-touch-icon.png", 6_000]);
 

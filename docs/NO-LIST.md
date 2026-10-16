@@ -202,25 +202,17 @@ already law at `--waypoint-06 #43372f` and `--waypoint-07 #2c2622`, ink flipping
 cream at 12.8:1. A static dark default is not permitted: it would delete the
 differentiator and trade a live canvas for a dead one.
 
-### F6 · The tab mark ticks — narrows F3 for one timer (owner decision, 2026-10-07)
+### F6 · Retired (owner decision, 2026-10-16): no idle timer, the tab mark stands still
 
-F3's acceptance test stands: no rAF runs on an idle frame, and the count of
-idle rAF callbacks must not rise. What is added is one sanctioned idle
-**timer**, and only one: the favicon. The owner, shown a mark that moved only
-with the scroll, ruled "alive means, it should constantly doing something! not
-just move when scrolled!" So the tab mark's seam is sewn on the wall clock —
-one 4-unit pull every 500 ms, halved to one a second after three minutes
-without a scroll, a key or a pointer, never stopped — through `markTick()` in
-`src/run/index.html`, which builds a ~400-byte SVG string and writes one
-`<link rel=icon>` href. Measured page-side cost is at the timer's resolution
-floor; the decode and the tab-strip repaint are the browser's, off the main
-thread. It is off under `prefers-reduced-motion`, off in WebKit (which takes
-no SVG icon), off with `?nomark`, and a hidden tab runs it at whatever the
-browser clamps timers to. Nothing on the **page** moves for it.
-
-**Still banned, unchanged:** any second rAF loop, any idle animation of page
-content, and any favicon motion that is decoration rather than the mark doing
-what it is (the seam is a seam; it is sewn).
+F6 once sanctioned one idle timer, the tab mark's seam sewn on the wall clock
+(`markTick()`, 2026-10-07). The owner retired the live mark on 2026-10-16:
+"remove all this live bullshit and everything and just have my name". The mark
+is now his name, "Ayush" over "Yadav", outlined from Fraunces with the clay
+rail between the words (`scripts/asset-truth/site-mark.mjs`), and nothing on
+the page writes the icon's href after load. F3 is whole again: no idle rAF and
+no idle timer. Still banned: any favicon motion at all, any `<link rel=icon>`
+swap while the page is open, and a second drawing of the mark anywhere but
+`site-mark.mjs`.
 
 ### F7 · The type answers the hand; the figures assemble in depth — narrows §A "3D-tilt cards" and §E "the only blur" (owner decision, 2026-10-08)
 

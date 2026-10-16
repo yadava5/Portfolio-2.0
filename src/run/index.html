@@ -5242,150 +5242,6 @@ function arcColor(beat, p) {
   return dawnArc(dawnProgress(p));
 }
 
-/* ————— the tab mark: the page in a 16px window —————
-   Not a letter, and no longer a scene. Two glyph marks died here first — an
-   "AY" that never rendered in the face it named, and a pilcrow the owner read
-   as a reversed P — and the scene that replaced them died of a quieter fault.
-   The tab strip is not the only place this drawing lands: the 48px entry of
-   the ICO rendered from it is what Google sets beside the owner's name in a
-   result row, where nothing is read and everything is recognised. Counted off
-   the raster, the stitched arch with its travelling bead put 10.8% of the tile
-   in ink, spread over seven thin marks and a 3.5px dot. Reddit and GitHub are
-   the bar and both are one filled disc you can find mid-scroll. So the mark is
-   a SILHOUETTE now: one disc, one thread behind it, 29.5% of the tile in one
-   pigment, the same shape at every hour. A scene does not brand; a shape does.
-   ONE drawing, two callers. The still that ships as public/favicon.svg is
-   rendered out of this very function by scripts/asset-truth/render-favicons.mjs,
-   and the live layer redraws it from the same arc as the day moves, so nothing
-   jumps when the live icon takes over from the file.
-
-   THE SUN IS THE MARK, AND IT HAS STOPPED TRAVELLING. The field already says
-   the hour; the disc says the name — Ayush is life, and the sun is the page's
-   own — so it holds still at the top of the arch and the day happens around
-   it. r 18 in the 64 box is 24.9% of the tile on its own, 9px across a 16px
-   icon. r 20 is stronger alone and weaker in company: the thread it is
-   threaded on shrinks to two stubs, which was rasterised at 16, 32, 48 and
-   180. It sits at cy 24, which leaves 6 units of paper over it (1.5px at 16px,
-   enough that the silhouette reads round rather than cut) and puts its centre
-   on a whole pixel at all three ICO sizes: 6, 12 and 18.
-
-   THE ARCH IS THE SAME CURVE, SCALED 1.2 ABOUT ITS OWN APEX. Its proportions
-   are the page's and not the tile's — the sun's seat is viewport-normalised,
-   and on the seat the page is actually read at that path is 1013 × 737, H/W
-   0.727 — so the arch is 55.2 × 40.08 here, which is 0.7261, the ratio the 46
-   × 33.4 it replaces had to four places. The scale buys thread, not shape:
-   pathLength normalises the seam to 84 units however long the curve is, so a
-   bead of fixed radius eats fewer of them the longer it gets. Unscaled, this
-   disc leaves 12.94 units clear on each side: one stitch and a quarter of a
-   unit of the next. At 1.2 it leaves 18.13. At 1.25 it leaves 19.18 and was rejected
-   on the raster: it throws the seam's ends out to (3.25, 56.35), and ten
-   pixels' worth of ink then falls outside the superellipse iOS clips a
-   home-screen icon to. At 1.2 none does.
-
-   SEVEN STITCHES, NOT THIRTEEN, and the law outlives the bead. pathLength 84
-   with 7 dashes of 8 and 6 gaps of 4.67 fills the seam exactly, and the two
-   denser laws were drawn again at this scale rather than inherited from the
-   old one. Thirteen dashes of 6 — the stroke's own width, the thinnest mark
-   that survives 16px at all — leave 0.6 user units of gap, 0.15px at 16px, and
-   rasterise as one unbroken leg at 16, 32 and 48. Nine dashes of 7 leave 3.15
-   units, 0.79px, which still closes at 16 and only opens from 32 up. Seven
-   leaves 5.6 units, 1.4px, and holds at every size. What changed is which
-   stitches a reader gets: the bead covers the three middle stitches, the apex
-   one among them, and bites into the two beside them; the 18.13 units clear on
-   each side carry one whole stitch and 68% of a second going in under the ring. Scaled 1.2 a stitch is 9.6 units
-   long against a 6-wide stroke; at the old size it was 8 and nearly square,
-   which is a bead rather than a stitch. Butt caps, because round ones add half
-   the stroke width at each end and close every gap.
-
-   THE DISC IS THREADED ON THE SEAM, not painted over it. One pigment for the
-   whole drawing is what makes the mark read as one thing, and it costs the sun
-   its edge: drawn flat on the stitches the two fuse. So the disc carries a ring
-   of the field's own colour 3.5 units wide, and the thread visibly enters and
-   leaves behind it. Rasterised at three sizes: at 2.4 the inner stitch touches
-   the bead at 32 and the drawing reads as a cancelled sun; at 4.5 the moat is
-   wide enough to detach it, and it reads as a wedge beside the disc rather than
-   a thread under it. The ring is the field's colour, so it costs nothing at
-   night and needs no second decision.
-
-   THE SEAM IS SEWN, AND NOT ONLY WHEN YOU SCROLL. The owner's ruling is that
-   the icon is alive on its own; `phase` is the fraction of one dash period the
-   thread has been pulled, and it reaches the drawing as stroke-dashoffset. One
-   period is 12.67 dash units, 15.2 user units at this scale, 3.8px at 16px, so
-   a whole loop walks every stitch into the place of the one ahead of it. The
-   offset DECREASES as phase rises, written (2 - phase) mod 1 so that phase 0 is
-   a literal 0 and the still is the frame at rest: a decreasing offset carries
-   the pattern toward the far end of the path, and the path is drawn from the
-   dawn end, so the thread is sewn into the day rather than pulled back out of
-   it. One decimal, so one phase is always one set of bytes.
-
-   THE PIGMENT IS CHOSEN BY THE FIELD IT LANDS ON, not by `night`. That flag
-   turns true only once the field is all the way across the terminator, and the
-   crossing is exactly where the clay dies: at beat 7 p .72 the field is #a8927d
-   and the clay reads 2.19:1 / Lc 23.3, and a tenth of a beat later on #746151
-   it is 1.11:1 / Lc 0.0, which is not dim, it is gone. So the mark runs the
-   site's own law one step earlier than the prose does: clay while clay clears
-   4.5:1 on the field (a field luminance of 0.676 by day and 0.0773 by night),
-   and the ink of the moment through the band, crossing between the two inks at
-   0.198 where they are equal. The law decides on the floats the arc hands it,
-   so the day clay's worst field rounds a hundredth under its own floor; the
-   worst the whole arc holds, sampled 401 times a beat, is 3.71:1, over the 3.0
-   a graphic this size is held to.
-     measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
-     measured: #a03f20 on #e7d4b6 — 4.49:1 / Lc 57.8
-     measured: #f4b090 on #5c4b3e — 4.53:1 / Lc 53.7
-     measured: #f4b090 on #2c2622 — 8.14:1 / Lc 65.1
-     measured: #f6efe2 on #8c7766 — 3.71:1 / Lc 64.7
-   Those are the TEXT clays and not the graphic ones, which is the opposite of
-   the rule everywhere else on this site, for two reasons that hold only here.
-   The thinnest mark is still a 1.5px stitch, and the graphic clay —
-     measured: #c4532e on #fbf3e7 — 4.13:1 / Lc 64.2
-   rasterised visibly paler beside it at that size. And a disc this big can be
-   mistaken for somebody else's: against Reddit's #ff4500 the text clay is dE00
-   20.1 where the graphic clay is 11.0, and the distance survives colour
-   blindness — deuteranopia 21.0 against 10.5, protanopia 14.0 against 7.1,
-   which is the text clay's own worst case. The earthier clay is the one that cannot be confused for an upvote. No
-   rim either: the field is full bleed and the mark carries on both tab strips
-   without one.
-     measured: #a03f20 on #ffffff — 6.51:1 / Lc 81.5
-     measured: #f4b090 on #202124 — 8.79:1 / Lc 66.1
-   In a result row the paper is set on white and all but disappears —
-     measured: #fbf3e7 on #ffffff — 1.10:1 / Lc 0.0
-   which leaves the silhouette carrying the row alone. That is the drawing's
-   whole job now, so it is drawn to be read that way and not rescued by its
-   ground.
-
-   THE DISC NEVER LEAVES. The drawing before this one faded its sun out at dusk
-   the way the page's own sun goes, and a brand anchor absent for a third of the
-   day is not an anchor. At night the disc is the night clay on the night field;
-   through the band it goes to ink together with the seam, which draws the whole
-   mark in silhouette rather than a sun that has changed colour. `night` and
-   `sun` stay in the signature because the engine hands the arc over whole and
-   the live layer quantises on both of them; this drawing reads neither. ————— */
-const MARK_SEAM = "M4.4 54.68C13.28 34.52 21.92 14.6 32 14.6C42.08 14.6 50.72 34.52 59.6 54.68";
-const markLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-function markSvg({ rgb, night, sun, phase = 0 }) {
-  const y = 0.2126 * markLin(rgb[0]) + 0.7152 * markLin(rgb[1]) + 0.0722 * markLin(rgb[2]);
-  const pig = y >= 0.676 ? "#a03f20" : y <= 0.0773 ? "#f4b090" : y >= 0.198 ? "#26231c" : "#f6efe2";
-  const field = rgbCss(rgb);
-  /* the thread, pulled: one dash period is 8 + 4.67, and the offset runs
-     backwards so the stitches travel toward the dusk end of the path */
-  const pull = (((2 - (phase % 1)) % 1) * 12.67).toFixed(1);
-  return (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
-    `<rect width="64" height="64" fill="${field}"/>` +
-    `<path d="${MARK_SEAM}" pathLength="84" fill="none" stroke="${pig}"` +
-    ` stroke-width="6" stroke-dasharray="8 4.67" stroke-dashoffset="${pull}"/>` +
-    `<circle cx="32" cy="24" r="21.5" fill="${field}"/>` +
-    `<circle cx="32" cy="24" r="18" fill="${pig}"/>` +
-    "</svg>"
-  );
-}
-/* the one handle both callers come through. `still` is the mark at the top of
-   the page with the thread at rest, which is where a reader who has not
-   scrolled yet actually is — the file on disk, Google's ICO, the reduced-motion
-   icon and the first live frame are all one drawing. */
-window.__mark = { svg: markSvg, still: () => markSvg({ ...arcColor(0, 0), phase: 0 }) };
-
 /* ————— the wash: raw WebGL, warm fbm on the arc's own color.
    Draws ONLY when the scroll position (or size) has changed. ————— */
 const washCanvas = $("wash");
@@ -11609,8 +11465,6 @@ function applyArc(arc, scrollFrac) {
     }
   }
   if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0, washSeat(arc));
-  markArc = arc;
-  if (!document.hidden) tabMark(arc);
 }
 
 /* THE MASTHEAD KEEPS ITS WORDS THROUGH THE DUSK. Its inks are the root's,
@@ -11628,8 +11482,7 @@ function applyArc(arc, scrollFrac) {
      >= .760  the day: nothing written; WAY[4], the darkest day waypoint, is
               .786, so this is crossed inside the darkening and nowhere else
      >= .198  the day's primary ink for all three words; .198 is where #26231c
-              and #f6efe2 hold the same ratio against the field (3.70:1),
-              markSvg's own constant for the same reason
+              and #f6efe2 hold the same ratio against the field (3.70:1)
      >= .147  the night's primary ink for all three
      <  .147  the night's ink and secondary (#d9d0c3 is back to 3.50:1 there),
               the clay word still in the primary until the root flips; from
@@ -11637,7 +11490,8 @@ function applyArc(arc, scrollFrac) {
    Both sides are read once off their own declarations, so no hex is written
    twice. Colour only: no box moves. */
 const MAST_DUSK = 0.76, MAST_CROSS = 0.198, MAST_NIGHT = 0.147;
-const fieldLum = (rgb) => 0.2126 * markLin(rgb[0]) + 0.7152 * markLin(rgb[1]) + 0.0722 * markLin(rgb[2]);
+const srgbLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const fieldLum = (rgb) => 0.2126 * srgbLin(rgb[0]) + 0.7152 * srgbLin(rgb[1]) + 0.0722 * srgbLin(rgb[2]);
 let mastSides = null, mastStop = 0;
 function mastSide(n) {
   if (!mastSides) {
@@ -11665,121 +11519,6 @@ function mastInk(arc) {
   m.setProperty("--ink", p.ink);
   m.setProperty("--ink-2", st === 3 ? p.ink2 : p.ink);
   m.setProperty("--clay", p.ink);
-}
-
-/* ————— the tab mark, live —————
-   THE TAB IS A WINDOW ONTO THE PAGE. markSvg (with the arc, above) draws the
-   run in 64 units: the field in the arc's colour, the seam the sun travels,
-   the sun where the reader is. The static favicon.svg IS that drawing at
-   dawn, written by scripts/asset-truth/render-favicons.mjs from the same
-   function, so the first swap changes nothing a reader can see, and at the
-   top of the page there is no swap at all (the still already shows it).
-
-   THE SEAM IS SEWN, ALL THE TIME. The owner's ruling (2026-10-07): "alive
-   means, it should constantly doing something! not just move when
-   scrolled!" So the mark has the site's one idle clock: every 500 ms the
-   thread is pulled 4 units along the arc, one device pixel at 16 px, two at
-   32, and the icon is swapped. Two visible changes a second, no colour
-   change per tick. The phase is a pure function of the wall clock, not of a
-   frame count, so every tab of this site sews in step, and a browser that
-   throttles the timer (Chrome and Firefox clamp a hidden tab to one tick a
-   second, Chrome to one a minute after five minutes) changes the cadence
-   and never the correctness: each tick lands on a coherent frame. After
-   three minutes without a scroll, a key or a pointer the tick halves to one
-   a second, slower and never stopped, because perpetual motion in a tab
-   strip is what people dislike about animated icons and a halved pace keeps
-   the ruling without the irritation.
-
-   THE FIELD STILL SAYS THE HOUR. While the page is visible the field colour
-   is the page's own arc at the reader's position, handed over by applyArc
-   on the frames where it moved; while the tab is hidden the same tick reads
-   the wall clock instead, mapped onto the station clocks (06:12 to 22:41;
-   the gate holds the night until the next 06:12) through the same
-   arcColor, so from another tab the icon shows the hour in the paper's own
-   light. The disc no longer travels: it is the name, the field is the time.
-
-   What a swap costs. One image decode and one tab-strip repaint, both the
-   browser's and off this thread; the page side was measured at 0.2 ms for
-   a 64 px PNG in Chromium and at the timer's floor for this SVG string,
-   which needs no raster at all. The swap is also keyed: the quantised
-   state (phase, the colour by 32 levels a channel, the night flag) must
-   have moved, and swaps are at least 250 ms apart with a trailing swap so
-   the last state always lands. NO-LIST F3's acceptance test, that no rAF
-   runs on an idle frame, still holds: this is a timer, not a frame, and
-   the one sanctioned idle timer on the page (NO-LIST F6).
-
-   Off under prefers-reduced-motion (the still stands), off in WebKit
-   (Safari takes no SVG icon and keeps the ICO; the swap would address
-   nothing), and off with ?nomark for the harness. */
-const markLink = (() => {
-  let l = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
-  if (!l) { /* the raw page, served without build-home's head */
-    l = document.createElement("link"); l.rel = "icon"; l.type = "image/svg+xml";
-    document.head.appendChild(l);
-  }
-  return l;
-})();
-const MARK_LIVE = !RM && !FLAGS.has("nomark") && navigator.vendor !== "Apple Computer, Inc.";
-const MARK_GAP = 250;
-const MARK_TICK = 500, MARK_TICK_IDLE = 1000, MARK_IDLE_AFTER = 180000;
-/* 4 units a tick on a 12.67-unit dash period: the fraction below */
-const MARK_STEP = 4 / 12.67;
-let markPhase = 0;
-const markQuant = (arc) => {
-  const q = (x) => Math.round(x * 31);
-  return `${arc.night ? "n" : "d"}${markPhase.toFixed(3)}:${q(arc.rgb[0])},${q(arc.rgb[1])},${q(arc.rgb[2])}`;
-};
-let markKey = markQuant(arcColor(0, 0)), markAt = -1e9, markTimer = 0, markNext = null, markArc = null;
-let markTouched = performance.now(), markClock = 0;
-window.__world.mark = { live: MARK_LIVE, swaps: 0, key: markKey, svg: "", wall: false, phase: 0, rate: 0 };
-function markFlush() {
-  markTimer = 0;
-  if (!markNext) return;
-  const arc = markNext; markNext = null;
-  markAt = performance.now();
-  const svg = markSvg({ rgb: arc.rgb, night: arc.night, sun: arc.sun, phase: markPhase });
-  markLink.href = "data:image/svg+xml," + encodeURIComponent(svg);
-  const m = window.__world.mark; m.swaps++; m.key = markKey; m.svg = svg; m.phase = markPhase;
-}
-function tabMark(arc) {
-  if (!MARK_LIVE) return;
-  const key = markQuant(arc);
-  if (key === markKey) return;
-  markKey = key; markNext = arc;
-  if (markTimer) return;
-  const wait = MARK_GAP - (performance.now() - markAt);
-  if (wait <= 0) markFlush(); else markTimer = setTimeout(markFlush, wait);
-}
-/* the one idle clock on the page. Each tick reads the wall clock for its
-   phase and its rate, so a throttled or a slowed tick lands on the frame
-   the clock says, and ticks are aligned to the rate's boundary so two tabs
-   of this site sew in step. */
-function markTick() {
-  markClock = 0;
-  const hidden = document.hidden;
-  const rate = hidden || performance.now() - markTouched > MARK_IDLE_AFTER ? MARK_TICK_IDLE : MARK_TICK;
-  const now = Date.now();
-  markPhase = ((Math.floor(now / rate) * MARK_STEP) % 1 + 1) % 1;
-  window.__world.mark.rate = rate; window.__world.mark.wall = hidden;
-  const arc = hidden ? wallArc() : markArc;
-  if (arc) tabMark(arc);
-  markClock = setTimeout(markTick, rate - (now % rate) + 2);
-}
-/* the wall clock, read in station time: the page's own day, nothing else */
-function wallArc() {
-  const d = new Date(), m = d.getHours() * 60 + d.getMinutes();
-  if (m < CLOCKS[0] || m >= CLOCKS[GATE_BEAT]) return arcColor(GATE_BEAT, 0);
-  let i = 0;
-  while (i < GATE_BEAT - 1 && m >= CLOCKS[i + 1]) i++;
-  return arcColor(i, (m - CLOCKS[i]) / (CLOCKS[i + 1] - CLOCKS[i]));
-}
-if (MARK_LIVE) {
-  /* a change of visibility re-aligns at once: hidden takes the wall clock,
-     visible takes the page back, without waiting for the next tick */
-  addEventListener("visibilitychange", () => { clearTimeout(markClock); markTick(); });
-  for (const ev of ["scroll", "wheel", "pointerdown", "keydown", "touchstart"])
-    addEventListener(ev, () => { markTouched = performance.now(); }, { passive: true });
-  markTick();
 }
 
 /* ————— the engine ————— */
