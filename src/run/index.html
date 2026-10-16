@@ -3585,11 +3585,11 @@ body{font-synthesis:none}
   #manifest.closing.chosen .tape, #manifest.closing.chosen .clip{transition-duration:var(--t-choose)}
   #mscrim{transition:opacity var(--t-scrim) cubic-bezier(.2,.8,.3,1)}
   #mscrim:not(.open){transition:opacity var(--t-reel) cubic-bezier(.45,0,.55,1)}
-  #manifest .line li .you{transition:transform var(--t-mark) cubic-bezier(.2,.8,.3,1)}
-  /* after 0.7 of the pull, when the tape is about 96% out, and ONLY while it
-     is opening: once open, a stop that changes under the strip (the page
-     still scrolls behind it) moves its square at once */
-  #manifest.open[data-state="opening"] .line li.here .you{transition-delay:calc(var(--t-pull) * .7)}
+  /* the square SCALES in, after 0.7 of the pull, when the tape is about 96%
+     out; where it stands is the CSS translate property, written by the
+     engine, and that is never transitioned: it is a position, not a motion */
+  #manifest .you{transition:transform var(--t-mark) cubic-bezier(.2,.8,.3,1)}
+  #manifest.open[data-state="opening"] .you{transition-delay:calc(var(--t-pull) * .7)}
   #manifest .line li:is(:first-child,:last-child)::before{transition:background-color var(--t-mark) cubic-bezier(.2,.8,.3,1)}
   #manifest.open[data-state="opening"] .line li.here:is(:first-child,:last-child)::before{transition-delay:calc(var(--t-pull) * .7)}
 }
@@ -3624,10 +3624,8 @@ body{font-synthesis:none}
    take no pointer, so a click on a stop's mark reaches its link */
 #manifest .line li::after{content:""; position:absolute; left:0; right:0; pointer-events:none;
   top:calc(var(--zone-a) + var(--line) / 2); height:1px; background:var(--ink-2)}
-#manifest .line li.gone::after{top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; background:var(--ink)}
 #manifest .line li:nth-child(8)::after{--seg-a:var(--ink-2); --seg-b:#d9d0c3; --sw:var(--switch-ahead, 50%);
   background:linear-gradient(to right, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
-#manifest .line li.gone:nth-child(8)::after{--seg-a:var(--ink); --seg-b:#f6efe2; --sw:var(--switch-gone, 50%)}
 #manifest .line li:last-child::after{display:none} /* the line ends at the terminus; the tape goes on */
 /* the tick, through the line at the leg's left edge; the two termini are
    one bar each, so the line reads as running from here to there */
@@ -3636,18 +3634,29 @@ body{font-synthesis:none}
 #manifest .line li[data-reached]::before{background:var(--ink)}
 #manifest .line li:first-child::before, #manifest .line li:last-child::before{
   left:-1px; width:3px; top:var(--zone-a); height:var(--line); background:var(--ink)}
-/* here: the clay square, grown to sit on the line, centred on its tick */
-#manifest .line li .you{position:absolute; left:-4px; top:calc(var(--zone-a) + var(--line) / 2 - 4px);
-  width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0)}
-#manifest.open .line li.here .you{transform:scale(1)}
+/* HERE TRAVELS WITH THE PAGE (v12). One clay square for the whole tape,
+   placed every frame by stripPlace() at the masthead clock's own reading:
+   the fraction of the way from the stop the reader is in to the next, on the
+   strip's tick axis, so the square and the clock never disagree. It takes the
+   night print's clay once it is past the dusk's ink switch. The travelled
+   line is one element too, the heavier line in the ink, clipped to the
+   furthest point the reader has reached this visit (a high-water mark, as
+   the stamps are): at the front of a visit it ends exactly at the square. */
+#manifest .you{position:absolute; left:0; top:calc(var(--zone-a) + var(--line) / 2 - 4px); margin-left:-4px;
+  width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0); pointer-events:none}
+#manifest .you.night{background:#e08a5f}
+#manifest.open .you{transform:scale(1)}
+#manifest.atbar .you{visibility:hidden}
+#manifest .run{position:absolute; left:0; width:0; top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; z-index:1;
+  background:linear-gradient(to right, #26231c var(--run-sw, 100%), #f6efe2 var(--run-sw, 100%));
+  clip-path:inset(0 100% 0 0); pointer-events:none}
 /* ON AN END STOP THE BAR IS THE MARK. The 9px square centred on a 3px
    terminus bar read as a blob at 1x (stop 01 on the page's first frame,
    and the gate); there the bar itself turns clay and no square is drawn.
    It takes the square's timing, so here lands the same way at every stop.
    Graphic, not text: #c4532e on first light #fbf3e7 is 4.13:1, #e08a5f on
    the night end #2c2622 is 5.66:1, both over the 3:1 floor for a mark. */
-#manifest .line li.here:is(:first-child,:last-child) .you{display:none}
-#manifest.open .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
+#manifest.open.atbar .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
 /* THE LEG IS THE TARGET: the anchor is the grid (zone, line zone, zone)
    and fills the leg, so the whole leg is the hit area and G9 can see it */
 #manifest .line li .mrow{display:grid; grid-template-rows:var(--zone-a) var(--line) var(--zone-b);
@@ -3746,7 +3755,6 @@ body{font-synthesis:none}
   #manifest .line li:nth-child(8){flex-basis:auto; padding-bottom:var(--dusk-y)}
   #manifest .line li:last-child{flex:0 0 auto}
   #manifest .line li::after{left:14px; right:auto; top:0; bottom:0; width:1px; height:auto}
-  #manifest .line li.gone::after{left:13px; top:0; width:2px; height:auto}
   /* the line runs terminus to terminus, not from the bar's edge */
   #manifest .line li:first-child::after{top:21px}
   #manifest .line li:last-child::after{display:block; bottom:auto; height:21px}
@@ -3754,7 +3762,9 @@ body{font-synthesis:none}
     background:linear-gradient(to bottom, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
   #manifest .line li::before{left:9px; top:21px; width:10px; height:1px}
   #manifest .line li:first-child::before, #manifest .line li:last-child::before{left:7px; top:20px; width:15px; height:3px}
-  #manifest .line li .you{left:10px; top:17px}
+  #manifest .you{left:10px; top:0; margin:-4px 0 0 0}
+  #manifest .run{left:13px; top:0; width:2px; height:0;
+    background:linear-gradient(to bottom, #26231c var(--run-sw, 100%), #f6efe2 var(--run-sw, 100%))}
   #manifest .line li .title{display:none}
   #manifest .line li .mrow{position:relative; display:flex; flex-wrap:wrap; align-items:baseline;
     column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto; padding:12px 10px 11px 32px}
@@ -4243,20 +4253,21 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <button class="mclose tclose" type="button" aria-label="close the line diagram">×</button>
       <nav aria-label="the twelve stops">
         <ol class="line">
-          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="you" aria-hidden="true"></span><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span></li>
-          <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><span class="lab"><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><span class="lab"><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><span class="lab"><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><span class="lab"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="you" aria-hidden="true"></span><span class="foot">ends <i>22:41</i> &middot; then one page more</span></li>
+          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span></li>
+          <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a></li>
+          <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a></li>
+          <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a></li>
+          <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><span class="lab"><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></span></a></li>
+          <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><span class="lab"><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></span></a></li>
+          <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><span class="lab"><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></span></a></li>
+          <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><span class="lab"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></span></a></li>
+          <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a></li>
+          <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a></li>
+          <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a></li>
+          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="foot">ends <i>22:41</i> &middot; then one page more</span></li>
         </ol>
       </nav>
+      <span class="run" aria-hidden="true"></span><span class="you" aria-hidden="true"></span>
     </div>
   </div>
 </div>
@@ -11199,6 +11210,7 @@ function stripLay(ticks, fade, length, dir) {
   const ahead = at(stripCross(ink(day, "--ink-2"), ink(night, "--ink-2")));
   day.style.setProperty("--switch-gone", `${gone}px`);
   day.style.setProperty("--switch-ahead", `${ahead}px`);
+  stripRun.style.setProperty("--run-sw", `${ticks[8] + gone - ticks[1]}px`);
   Object.assign(window.__strip, { switchAt: ticks[8] + gone, switchAheadAt: ticks[8] + ahead });
 }
 /* the band hangs from the masthead's lower edge. The legs share the tape
@@ -11231,6 +11243,7 @@ function stripFit(opening) {
   const ticks = [0];
   for (let i = 1; i <= 12; i++) ticks[i] = lead + (i - 1) * leg + (i >= 9 ? duskX : 0);
   stripLay(ticks, fade, length, "to right");
+  stripAxis(ticks, false);
 }
 /* the column: the same ground top to bottom, the dusk ending 4px
    into automl's row rather than at its tick (the row's text begins 12px in,
@@ -11246,6 +11259,7 @@ function stripFitColumn(opening) {
   const fade = maniRows[7].querySelector(".mrow").offsetHeight - 21 + 4;
   ticks[9] = maniRows[8].offsetTop + 4;
   stripLay(ticks, fade, stripTape.offsetHeight, "to bottom");
+  stripAxis(ticks, true);
   const here = opening && STRIP.querySelector(".line li.here");
   if (here) {
     const v = stripClip.clientHeight;
@@ -11253,18 +11267,66 @@ function stripFitColumn(opening) {
   }
 }
 /* reached and travelled: the ticks and clocks up to the FURTHEST stop the
-   reader has reached carry the ink, and the legs to it are the heavier line.
-   The six stamps are a high-water mark, so this is one too: a reader who has
-   been to the gate and come back to ¶04 sees the whole line travelled and
-   every metric earned, with the here-square (setStop's .here, the current
-   stop, both ways) back at 08:47. From setStop(). */
-let stripFar = 0;
-function stripMark(n) {
-  stripFar = Math.max(stripFar, n);
-  maniRows.forEach((li, i) => {
-    li.toggleAttribute("data-reached", i + 1 <= stripFar);
-    li.classList.toggle("gone", i + 1 < stripFar);
-  });
+   reader has reached carry the ink, and the travelled line runs to the
+   furthest POINT. Both are a high-water mark, as the six stamps are: a reader
+   who has been to the gate and come back to ¶04 sees the whole line travelled
+   and every metric earned, with the square (the current point, both ways)
+   back in 08:47's leg.
+
+   THE SQUARE TRAVELS WITH THE PAGE (v12). The owner: "if we are at the
+   middle of one section, that pointer is still stuck at the start of that
+   section". It stood at its stop's tick, a class on the li. Now one square
+   is placed at the masthead clock's own reading, clockSegment()'s seg and t,
+   which work() hands to stripPoint() in the same frame it sets the hour: the
+   square is t of the way from the stop's tick to the next one's, on the
+   strip's own axis (the ticks stripFit laid, so the dusk's longer leg and a
+   phone row that wraps are measured, not assumed). The chip and .here change
+   at the same kicker crossing (setStop reads the same seg), so the square
+   reaches a tick in the frame the number turns over. Ends: the bar is the
+   mark. At 06:12 until the square has cleared the bar, and from the gate on
+   (¶13 opening gives the gate's segment a t, toward a stop this run does not
+   have), the square is put away and the bar turns clay. Only the transform
+   and the clip are written per frame, and only while the strip is open; a
+   closed strip keeps the numbers and is placed when it opens. */
+let stripFar = 0, stripReached = 0, stripSeg = 0, stripT = 0, stripTicks = null, stripDown = false;
+const stripYou = STRIP.querySelector(".you");
+const stripRun = STRIP.querySelector(".run");
+function stripAxis(ticks, down) {
+  stripTicks = ticks; stripDown = down;
+  const len = ticks[12] - ticks[1];
+  if (down) Object.assign(stripRun.style, { top: `${ticks[1]}px`, height: `${len}px`, left: "", width: "" });
+  else Object.assign(stripRun.style, { left: `${ticks[1]}px`, width: `${len}px`, top: "", height: "" });
+  stripPlace();
+}
+/* where a position on the line (0 = 06:12, 11 = 22:41) is on the axis, px */
+const stripAt = (pos) => {
+  const i = Math.min(10, Math.floor(pos)) + 1;
+  return lerp(stripTicks[i], stripTicks[i + 1], clamp(pos - (i - 1), 0, 1));
+};
+function stripPoint(seg, t) {
+  stripSeg = Math.min(seg, RUN_BEATS - 1);
+  stripT = stripSeg >= RUN_BEATS - 1 ? 0 : clamp(t, 0, 1);
+  stripFar = Math.max(stripFar, stripSeg + stripT);
+  const reached = Math.floor(stripFar) + 1;
+  if (reached !== stripReached) {
+    stripReached = reached;
+    maniRows.forEach((li, i) => li.toggleAttribute("data-reached", i < reached));
+  }
+  stripPlace();
+}
+function stripPlace() {
+  if (!stripTicks || !stripOpen()) return;
+  const x = stripAt(stripSeg + stripT), far = stripAt(stripFar);
+  const len = stripTicks[12] - stripTicks[1];
+  /* 7px: the 06:12 bar is 3px wide at the tick, and the 9px square has
+     cleared it once its centre is 7px on */
+  const atBar = stripSeg >= RUN_BEATS - 1 || x - stripTicks[1] < 7;
+  STRIP.classList.toggle("atbar", atBar);
+  stripYou.classList.toggle("night", window.__strip.switchAt !== undefined && x >= window.__strip.switchAt);
+  stripYou.style.translate = stripDown ? `0 ${x.toFixed(1)}px` : `${x.toFixed(1)}px 0`;
+  const cut = `${Math.max(0, len - (far - stripTicks[1])).toFixed(1)}px`;
+  stripRun.style.clipPath = stripDown ? `inset(0 0 ${cut} 0)` : `inset(0 ${cut} 0 0)`;
+  Object.assign(window.__strip, { at: +x.toFixed(2), far: +far.toFixed(2), seg: stripSeg, t: +stripT.toFixed(4) });
 }
 const stripOpen = () => STRIP.classList.contains("open");
 addEventListener("resize", () => { if (stripOpen()) stripFit(); }, { passive: true });
@@ -11314,7 +11376,6 @@ function setStop(beat) {
     if (here) li.firstElementChild.setAttribute("aria-current", "location");
     else li.firstElementChild.removeAttribute("aria-current");
   });
-  stripMark(n);
 }
 /* the strip's open and close live in one place · see #manifest-js, which
    owns the whole dialog contract: focus, keys, inert, Escape, the scrim. */
@@ -11909,7 +11970,6 @@ function work(y) {
   let stamped = 0;
   for (let i = 3; i <= 8; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
   if (stamped !== window.__world.stamped) setStamps(stamped);
-  setStop(beat); /* the cursor, both ways — its own writer, not the ratchet's */
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
   $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
@@ -11939,7 +11999,12 @@ function work(y) {
      at clockSegment(). The phase name rides the same index as the hour, so the
      masthead is one instrument rather than two that disagree in the
      corridors. */
-  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
+  /* and the strip's cursor reads the same instrument (v12): the chip's
+     number, .here and the travelling square all turn over at the kicker
+     crossing that turns the hour, so nothing in the masthead or the strip
+     disagrees with anything else in it. It was the beat box, whose top
+     a reader crosses before the kicker that names the stop. */
+  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); setStop(c.seg); stripPoint(c.seg, c.t); }
 
   /* fx: arrive → drift → depart, a pure function of position */
   if (FLAGS.has("nofx")) return;
@@ -18788,7 +18853,7 @@ function settleAll() {
      22:32: one instrument reading two stops, which is the defect this day was
      spent removing everywhere else. setMast(11, 0) is the same minute, named by
      the stop that owns it. */
-  setStamps(6); setStop(11); setMast(11, 0);
+  setStamps(6); setStop(11); setMast(11, 0); stripPoint(11, 0);
   asmSettle();
 }
 async function boot() {
