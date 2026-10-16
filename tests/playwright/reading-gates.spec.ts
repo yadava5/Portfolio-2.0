@@ -11,7 +11,7 @@ import { expect, test, type Page } from "@playwright/test";
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
- *   S1–S5 · the stops: the square travels, a choice is carried, reduced
+ *   S1–S5 · the stops: the square travels (and lands on its tick), a choice is carried, reduced
  *           motion jumps, a hand takes the scroll back, the dialog contract
  *
  * EFFECTIVE is the whole point of G2 and G2b. The run scales type in two ways
@@ -2450,9 +2450,9 @@ test.describe("G10c / G10d · positive controls", () => {
    Each gate has a control built from the defect it exists to catch, made
    by `inject` on the page's own source, and the control must go red.
 
-   Every expected value is computed HERE from layout (offsetTop chains, the
-   kicker centres the clock is anchored on, 0.62 of the viewport), never read
-   back from the probe that drives the square, so the gate cannot agree with
+   Every expected value is computed HERE from layout (offsetTop chains for
+   the stops' parks, the ticks' rects), never read back from the probe that
+   drives the square, so the gate cannot agree with
    the engine by construction. The scroll during a carry is sampled by the
    test's own rAF loop, not the engine's, which goes quiet when the page is
    still and would report its own silence as the page's.
@@ -2462,8 +2462,10 @@ type StripProbe = {
   carrying?: boolean;
 };
 
-/** the square's centre against the clock's own fraction, in tape px */
-const SQUARE_VS_CLOCK = () => {
+/** the square's centre against the stops' own park fraction, in tape px:
+ *  a stop's park is its section's top as the anchor jump parks it, clamped
+ *  to the scroll's reach, recomputed here from offsetTop chains */
+const SQUARE_VS_PARKS = () => {
   const abs = (el: HTMLElement | null) => {
     let y = 0;
     while (el) {
@@ -2472,73 +2474,97 @@ const SQUARE_VS_CLOCK = () => {
     }
     return y;
   };
-  const vh = innerHeight;
-  const line = scrollY + 0.62 * vh;
-  const beats = [...document.querySelectorAll<HTMLElement>(".beat")];
-  const anchor = (i: number) => {
-    if (i === 0) return 0.62 * vh;
-    const k = beats[i].querySelector<HTMLElement>(".kicker");
-    return k ? abs(k) + k.offsetHeight / 2 : abs(beats[i]);
-  };
-  let seg = 0;
-  for (let i = 0; i < 12; i++) if (line >= anchor(i)) seg = i;
-  const t =
-    seg >= 11
-      ? 0
-      : Math.min(
-          1,
-          Math.max(0, (line - anchor(seg)) / (anchor(seg + 1) - anchor(seg)))
-        );
   const S = document.getElementById("manifest")!;
-  const tape = S.querySelector(".tape")!.getBoundingClientRect();
   const lis = [...S.querySelectorAll(".line li")];
-  /* a tick is a stop's li's left edge on the tape */
-  const tick = (i: number) => lis[i].getBoundingClientRect().left - tape.left;
-  const want = tick(seg) + t * (tick(seg + 1) - tick(seg));
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const parks = lis.map((li) =>
+    Math.min(
+      max,
+      Math.max(
+        0,
+        Math.round(
+          abs(
+            document.querySelector<HTMLElement>(
+              li.firstElementChild!.getAttribute("href")!
+            )
+          )
+        )
+      )
+    )
+  );
+  let n = 0;
+  for (let i = 1; i < 12; i++) if (scrollY >= parks[i]) n = i;
+  /* the stop the masthead names: the last kicker centre the reading line
+     (0.62 of the viewport) has crossed; segment 0 starts at the line's rest */
+  const beats = [...document.querySelectorAll<HTMLElement>(".beat")];
+  const line = scrollY + 0.62 * innerHeight;
+  let named = 0;
+  for (let i = 1; i < 12; i++) {
+    const k = beats[i].querySelector<HTMLElement>(".kicker");
+    if (k && line >= abs(k) + k.offsetHeight / 2) named = i;
+  }
+  const t = n >= 11 ? 0 : (scrollY - parks[n]) / (parks[n + 1] - parks[n]);
+  const tape = S.querySelector(".tape")!.getBoundingClientRect();
+  /* the column below 1280 runs down the left; its tick is 21px into the row */
+  const down = matchMedia("(max-width:1279px)").matches;
+  const tick = (i: number) => {
+    const r = lis[i].getBoundingClientRect();
+    return down ? r.top - tape.top + 21 : r.left - tape.left;
+  };
+  const want = n >= 11 ? tick(11) : tick(n) + t * (tick(n + 1) - tick(n));
   const you = S.querySelector(".you")!.getBoundingClientRect();
-  const got = you.left + you.width / 2 - tape.left;
+  const got = down
+    ? you.top + you.height / 2 - tape.top
+    : you.left + you.width / 2 - tape.left;
   const here = lis.findIndex((l) => l.classList.contains("here")) + 1;
   return {
-    seg,
+    n: n + 1,
+    named: named + 1,
     t,
     d: got - want,
+    fromTick: got - tick(n),
+    parks,
     here,
     chip: document.getElementById("mcount")!.textContent,
   };
 };
 
-const kickerCentre = (page: Page, id: string) =>
-  page.evaluate((id) => {
-    let el = document
-      .getElementById(id)!
-      .querySelector<HTMLElement>(".kicker") as HTMLElement | null;
-    const h = el!.offsetHeight;
-    let y = 0;
-    while (el) {
-      y += el.offsetTop;
-      el = el.offsetParent as HTMLElement | null;
-    }
-    return y + h / 2;
-  }, id);
-
 /** three parks inside glyph's leg, with the strip open while the page scrolls */
 async function squareThroughGlyph(page: Page) {
   await page.setViewportSize({ width: 1440, height: 900 });
   await arrive(page);
-  const a = await kickerCentre(page, "glyph");
-  const b = await kickerCentre(page, "jetpack-compress");
-  const park = (f: number) => Math.round(a + f * (b - a) - 0.62 * 900);
-  await page.evaluate((y) => window.scrollTo(0, y), park(0.2));
-  await page.waitForTimeout(600);
   await page.locator("#mtoggle").click();
   await page.waitForTimeout(1200);
+  const { parks } = await page.evaluate(SQUARE_VS_PARKS);
+  const park = (f: number) => Math.round(parks[5] + f * (parks[6] - parks[5]));
   const out = [];
   for (const f of [0.2, 0.5, 0.8]) {
     await page.evaluate((y) => window.scrollTo(0, y), park(f));
     await page.waitForTimeout(400);
-    out.push(await page.evaluate(SQUARE_VS_CLOCK));
+    out.push(await page.evaluate(SQUARE_VS_PARKS));
   }
   return out;
+}
+
+/** carry to glyph from the top, then open the strip and read the square */
+async function squareAfterCarry(page: Page, w: number, h: number) {
+  await page.setViewportSize({ width: w, height: h });
+  await arrive(page);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1100);
+  await page.evaluate(() => {
+    (window as unknown as { __strip: StripProbe }).__strip.landed = null;
+  });
+  await page.locator('#manifest .mrow[href="#glyph"]').click();
+  await page.waitForFunction(
+    () => (window as unknown as { __strip: StripProbe }).__strip.landed,
+    null,
+    { timeout: 10_000 }
+  );
+  await page.waitForTimeout(300);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1200);
+  return page.evaluate(SQUARE_VS_PARKS);
 }
 
 /** choose a stop from the strip and sample scrollY on the test's own rAF */
@@ -2593,27 +2619,55 @@ async function chooseAndWatch(page: Page, from: number, href: string) {
 }
 
 test.describe("S1 · the square travels with the page", () => {
-  test("it stands where the clock reads, inside the stop's leg", async ({
+  test("it stands at the page's place among the stops' parks", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
     const parks = await squareThroughGlyph(page);
     for (const p of parks) {
-      expect(p.seg, "the three parks are inside glyph's leg").toBe(5);
+      expect(p.n, "the three parks are inside glyph's leg").toBe(6);
       expect(
         Math.abs(p.d),
-        `the square is ${p.d.toFixed(2)}px from the clock's fraction ${p.t.toFixed(3)}`
+        `the square is ${p.d.toFixed(2)}px from the park fraction ${p.t.toFixed(3)}`
       ).toBeLessThanOrEqual(1);
-      expect(p.here, "the strip's here is the stop the clock names").toBe(6);
-      expect(p.chip, "the chip counts the same stop").toBe("06 / 12");
+      /* the chip and here turn over with the masthead's phase, at the
+         kicker crossing, which reaches the next stop before its park */
+      expect(p.here, "the strip's here is the stop the masthead names").toBe(
+        p.named
+      );
+      expect(p.chip, "the chip counts the same stop").toBe(
+        `${String(p.named).padStart(2, "0")} / 12`
+      );
     }
     expect(
       parks[2].t - parks[0].t,
       "the parks span the leg, so a square that stood still would show"
     ).toBeGreaterThan(0.5);
+    expect(
+      parks.map((p) => p.named),
+      "the three parks see the chip before and after the kicker crossing"
+    ).toEqual([6, 6, 7]);
   });
 
-  test("control: a square pinned at its stop's tick is caught", async ({
+  for (const [w, h] of [
+    [1440, 900],
+    [390, 844],
+  ] as const) {
+    test(`a stop carried to arrives with the square on its tick, ${w}`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      const r = await squareAfterCarry(page, w, h);
+      expect(r.n, "the carry landed in glyph").toBe(6);
+      expect(
+        Math.abs(r.fromTick),
+        `the square is ${r.fromTick.toFixed(2)}px from glyph's tick`
+      ).toBeLessThanOrEqual(1);
+      expect(r.chip).toBe("06 / 12");
+    });
+  }
+
+  test("control: a square pinned at its stop's tick is caught mid-leg", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
@@ -2625,7 +2679,26 @@ test.describe("S1 · the square travels with the page", () => {
     expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
     expect(
       Math.max(...parks.map((p) => Math.abs(p.d))),
-      "a square on the tick is most of a leg from the clock's fraction"
+      "a square on the tick is most of a leg from the park fraction"
+    ).toBeGreaterThan(1);
+  });
+
+  test("control: a square on the clock's fraction is caught after a carry", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const TARGET = "{ const s = stripStopAt(y); stripPoint(s.n, s.t); }";
+    const [mark] = await inject(page, [
+      [
+        TARGET,
+        "{ const s = clockSegment(y + vh * READ_LINE); stripPoint(s.seg, s.t); }",
+      ],
+    ]);
+    const r = await squareAfterCarry(page, 1440, 900);
+    expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
+    expect(
+      Math.abs(r.fromTick),
+      "the clock has run 17:11 into glyph at its park: off the tick"
     ).toBeGreaterThan(1);
   });
 });
