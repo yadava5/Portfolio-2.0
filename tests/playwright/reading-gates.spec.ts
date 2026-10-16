@@ -6,7 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
  *
  *   G2  · no HTML text under 12px EFFECTIVE at 390 and 1440
  *   G2b · the same floor for the tight (phone) SVG figure editions
- *   G2c · fig. 02's words are never transformed
+ *   G2c · fig. 02's words only ever translate
  *   G2d · a swipe across fig. 02 scrolls it, it does not land it
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
@@ -385,26 +385,31 @@ test.describe("G2 · the reading floor under a camera", () => {
 });
 
 /* ══════════════════════════════════════════════════════════════════════
-   G2c · fig. 02's words are never transformed (v11)
+   G2c · fig. 02's words only ever translate (v11, the board)
 
-   Fig. 02 is a record card printed by a press as the reader scrolls: a
-   roller rides two rails left to right and the blank stock slides off the
-   words behind it. The words themselves never move, so no word is ever
-   scaled or bent to fake depth. At every frame of a scroll through its
+   Fig. 02 is a record set on a board as the reader scrolls: each plate
+   (the name plate, then one a row) waits just in front of the board and is
+   pressed back into its place, a pure translation of its words. So no word
+   is ever scaled, skewed or rotated to fake depth, and none is moved at
+   all once the board is set. At every frame of a scroll through its
    window, down and back up, at a reader's pace, at 800 px/s and at 1500
    px/s, every ancestor of every text node under #fig02, up to and including
-   #fig02, has no transform. A run that never saw the record part-printed
-   (__world.fig02Covered() reports a covered word), or never saw it whole,
-   proves nothing and fails.
+   #fig02, carries either no transform or matrix(1, 0, 0, 1, tx, ty); and
+   wherever the drawing is at p 1, none at all. A run that never saw a
+   plate in motion (__world.fig02.offset > 0, a holder translated), or
+   never saw the board at rest, proves nothing and fails.
    ══════════════════════════════════════════════════════════════════════ */
-type PressRun = {
-  part: number;
-  whole: number;
-  moved: number;
+type BoardRun = {
+  posed: number;
+  rest: number;
+  restMoved: number;
+  bad: number;
   at: string;
+  restAt: string;
+  maxOffset: number;
 };
 /** drives the scroll from the page's own frames and reads each one */
-async function pressRun(page: Page): Promise<PressRun> {
+async function boardRun(page: Page): Promise<BoardRun> {
   await page.waitForFunction(
     () =>
       !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
@@ -414,12 +419,12 @@ async function pressRun(page: Page): Promise<PressRun> {
   );
   return page.evaluate(
     () =>
-      new Promise<PressRun>((done) => {
+      new Promise<BoardRun>((done) => {
         const w = (
           window as unknown as {
             __world: {
-              asm: Record<string, { yA: number; yB: number }>;
-              fig02Covered: () => { text: string; covered: boolean }[];
+              asm: Record<string, { yA: number; yB: number; d: number }>;
+              fig02: { offset: number };
             };
           }
         ).__world;
@@ -433,6 +438,8 @@ async function pressRun(page: Page): Promise<PressRun> {
               holders.add(e);
               if (e === stage) break;
             }
+        /* a translation and nothing else: the identity's four terms */
+        const PURE = /^matrix\(1, 0, 0, 1, -?[\d.e-]+, -?[\d.e-]+\)$/;
         /* px per frame: a reader, 800 px/s and 1500 px/s at 60 Hz; each
            leg ends with 40 still frames so the hand lands where it goes */
         const plan: number[] = [];
@@ -444,19 +451,37 @@ async function pressRun(page: Page): Promise<PressRun> {
           for (let y = y1; y > y0; y -= v) plan.push(y);
           for (let k = 0; k < 40; k++) plan.push(y0);
         }
-        const r: PressRun = { part: 0, whole: 0, moved: 0, at: "" };
+        const r: BoardRun = {
+          posed: 0,
+          rest: 0,
+          restMoved: 0,
+          bad: 0,
+          at: "",
+          restAt: "",
+          maxOffset: 0,
+        };
         let i = 0;
         const tick = () => {
-          const cov = w.fig02Covered();
-          if (cov.some((c) => c.covered)) r.part++;
-          else r.whole++;
+          const atRest = w.asm.fig02.d >= 1;
+          let moved = "";
           for (const e of holders) {
             const t = getComputedStyle(e).transform;
-            if (t && t !== "none") {
-              r.moved++;
+            if (!t || t === "none") continue;
+            moved ||= `${window.__gate.sel(e)} · ${t}`;
+            if (!PURE.test(t)) {
+              r.bad++;
               if (!r.at) r.at = `${window.__gate.sel(e)} · ${t}`;
             }
           }
+          if (moved) r.posed++;
+          if (atRest) {
+            r.rest++;
+            if (moved) {
+              r.restMoved++;
+              if (!r.restAt) r.restAt = moved;
+            }
+          }
+          r.maxOffset = Math.max(r.maxOffset, w.fig02.offset || 0);
           if (i < plan.length) {
             window.scrollTo({ top: plan[i++], behavior: "instant" });
             requestAnimationFrame(tick);
@@ -466,22 +491,32 @@ async function pressRun(page: Page): Promise<PressRun> {
       })
   );
 }
-function expectNeverMoved(r: PressRun): void {
+function expectOnlyTranslated(r: BoardRun): void {
   expect(
-    r.part,
-    "the run must see the record part-printed, or it proves nothing"
+    r.posed,
+    "the run must see a plate in motion, or it proves nothing"
   ).toBeGreaterThan(20);
-  expect(r.whole, "and it must see the record whole").toBeGreaterThan(0);
-  expect(r.moved, `a word on fig. 02 was transformed: ${r.at}`).toBe(0);
+  expect(
+    r.maxOffset,
+    "and __world.fig02.offset must have seen the move"
+  ).toBeGreaterThan(0);
+  expect(r.rest, "and it must see the board at rest").toBeGreaterThan(0);
+  expect(
+    r.bad,
+    `a word on fig. 02 was scaled, skewed or rotated: ${r.at}`
+  ).toBe(0);
+  expect(r.restMoved, `fig. 02 at rest still moves a word: ${r.restAt}`).toBe(
+    0
+  );
 }
 
-test.describe("G2c · fig. 02's words are never transformed", () => {
+test.describe("G2c · fig. 02's words only ever translate", () => {
   test("at 1440", async ({ page }, testInfo) => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     await installProbes(page);
     await arrive(page);
-    expectNeverMoved(await pressRun(page));
+    expectOnlyTranslated(await boardRun(page));
   });
 
   test("at 390", async ({ browser, baseURL }, testInfo) => {
@@ -497,15 +532,16 @@ test.describe("G2c · fig. 02's words are never transformed", () => {
       const p = await ctx.newPage();
       await installProbes(p);
       await arrive(p);
-      expectNeverMoved(await pressRun(p));
+      expectOnlyTranslated(await boardRun(p));
     } finally {
       await ctx.close();
     }
   });
 
-  /* THE GATE CAN FAIL. The same run on a card whose words carry a
-     transform (one sub-pixel shift on the card's body) must find it */
-  test("positive control: a transformed word is caught", async ({
+  /* THE GATE CAN FAIL. The same run on a board where one row's words are
+     scaled by 1% (invisible to a reader, and exactly the depth fake this
+     gate exists to refuse) must be caught at its own message */
+  test("positive control: a scaled word is caught", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
@@ -513,14 +549,18 @@ test.describe("G2c · fig. 02's words are never transformed", () => {
     await installProbes(page);
     await arrive(page);
     await page.addStyleTag({
-      content: "#fig02 .engcard{transform:translateX(0.5px) !important}",
+      content:
+        "#fig02 .engrows li:nth-child(3){transform:scale(1.01) !important}",
     });
-    const r = await pressRun(page);
-    expect(r.part).toBeGreaterThan(20);
+    const r = await boardRun(page);
+    expect(r.posed).toBeGreaterThan(20);
     expect(
-      r.moved,
-      "the card's words were transformed and the run did not see it"
+      r.bad,
+      "one row's words were scaled and the run did not see it"
     ).toBeGreaterThan(0);
+    expect(r.at, "and it is caught as that row, at that scale").toMatch(
+      /li.*matrix\(1\.01, 0, 0, 1\.01/
+    );
   });
 });
 
