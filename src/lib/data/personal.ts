@@ -53,6 +53,9 @@ export const personalInfo = {
   name: "Ayush Yadav",
   /** First name for casual display */
   firstName: "Ayush",
+  /** Family name — the JSON-LD Person's `familyName`, read from here
+      rather than split out of `name` */
+  lastName: "Yadav",
   /** Professional title/tagline */
   title: "New-grad software engineer",
   /** Short tagline for hero section */
@@ -90,6 +93,27 @@ export const personalInfo = {
 
   /** Resume file path */
   resumeUrl: withBasePath("/resume.pdf"),
+
+  /**
+   * What the JSON-LD Person `knowsAbout`. A RESTATEMENT, not a new claim:
+   * the first five are fig. 02's `languages` row and the last four its
+   * `builds` row (src/run/index.html, the engraved card), in the order the
+   * card prints them. The card writes the last one as "ML"; it is spelled
+   * out here because a machine reader cannot expand it, and `bio[0]` already
+   * prints "applied machine learning". When either row on the card changes,
+   * this list changes in the same commit.
+   */
+  knowsAbout: [
+    "TypeScript",
+    "Python",
+    "Java",
+    "C++",
+    "SQL",
+    "web apps",
+    "APIs",
+    "data pipelines",
+    "machine learning",
+  ],
 };
 
 /** Social media links */
@@ -196,6 +220,23 @@ export const siteMetadata = {
     "Ayush Yadav, software engineer. Six projects in TypeScript, Python, Java and C++, each claim linked to the artifact that proves it.",
   /** Site URL */
   url: "https://ayush-yadav.com",
+  /**
+   * The day the HOME page last changed on the live site, YYYY-MM-DD.
+   *
+   * Read by two places that must agree: the home `<lastmod>` in
+   * sitemap.xml (scripts/archive/sitemap.mjs) and the ProfilePage
+   * `dateModified` in the home JSON-LD (src/lib/seo.ts). Until 2026-10-16
+   * the sitemap gave the home page the newest case file's `verified` month
+   * (2026-09-01) while the page itself had changed that very day.
+   *
+   * DECLARED, NOT DERIVED. Never `Date.now()` or a git date: out/index.html
+   * is pinned by the golden hash and must rebuild byte-for-byte, and a
+   * commit date is not the day a page went live. HOW TO UPDATE: when a
+   * change to the home page is deployed, set this to that deploy's date
+   * (America/New_York) in the same change, then re-record the golden hash.
+   * 2026-10-16 is the v12 deploy (main 1495ea0).
+   */
+  homeUpdated: "2026-10-16",
   /**
    * Default Open Graph image — the home card (CRITIC-LEDGER F25). Real
    * raster, rendered from the data layer by
