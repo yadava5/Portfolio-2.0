@@ -7617,8 +7617,10 @@ function scrubWho(t) {
    blank and ruled; over RUN the nip runs the card's own width, 0 to W, on a
    trapezoid of speed (accelerate, cruise, brake: its peak is 1 / (1 - EASE)
    of the mean, smoothstep's is 1.5, so a full-width travel moves no faster
-   than it must: measured 1486 px/s at a 500 px/s read at 1440, level with
-   v10's lift at 1383, and 766 at a 250 px/s read against the lift's 1292),
+   than it must: measured 1378 px/s at a 500 px/s read at 1440, 23 px a
+   60 Hz frame, under v10's lift at 1383, and 743 at a 250 px/s read against
+   the lift's 1292; the run is 0.9 of the window because at 0.86 it stepped
+   25.6 px at 1440 and 26.8 at 1280),
    and every word left of the nip is printed; over OFF the press lifts off;
    from pName the pen writes the name (the scroll's progress to p 1, floored
    at WRITE_MS end to end, high-water mark kept: D-1), so the name is written
@@ -7629,9 +7631,8 @@ function scrubWho(t) {
    seams at the true rate stepped 72 degrees a 60 Hz frame at a 500 px/s read,
    past the 60 at which three marks alias backwards, and a 2 px mark at twice
    the axle's speed was a small object jumping 50 px a frame (measured, the
-   lab's pace harness). Geared, two bands step at most 61 degrees at 1440 at
-   any reading speed (82 at a 2000 px/s flick at 1280), under the 90 at
-   which two alias.
+   lab's pace harness). Geared, two bands step at most 57 degrees a frame
+   at 1440, 1280 and 390, 250 to 2000 px/s, under the 90 at which two alias.
    PURE IN p: the same p is the same print, from above or below; the name is
    the one thing that is a high-water mark. The figure's span is the run, so
    the hand's speed limit is the press's own. A reader who reaches into the
@@ -7646,9 +7647,9 @@ function scrubWho(t) {
    covers any of it (its glyph boxes against the nip, by geometry: a covered
    word is opacity 1 and under paper, so an opacity gate would call it seen). */
 const F02 = {
-  RUN: [0, 0.86],  /* p · the nip's run across the card */
-  OFF: [0.86, 0.93], /* p · the press lifts off (opacity, then visibility): gone at rest */
-  EASE: 0.2,       /* of the run · accelerating and braking; the peak speed is 1 / (1 - EASE) of the mean */
+  RUN: [0, 0.9],   /* p · the nip's run across the card */
+  OFF: [0.9, 0.96], /* p · the press lifts off (opacity, then visibility): gone at rest */
+  EASE: 0.16,      /* of the run · accelerating and braking; the peak speed is 1 / (1 - EASE) of the mean */
   GEAR: 0.5,       /* the bands turn at this share of the physical rate (see THE ROLLER ROLLS) */
   WRITE_MS: 600,   /* the stroke's pace floor, end to end: one stroke, not letters */
   START: 0.92,     /* phone window · p 0 with this much of the stage on screen */
