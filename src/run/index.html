@@ -23,9 +23,12 @@ document.documentElement.classList.add("js");
    reflows both fire that one. Intent events don't lie. The engine toggles
    classes only and never reads this attribute, so the two states compose.
    Accepted cost, stated rather than discovered: a reader who arrives by
-   citation and never scrolls, taps or types never sees the manifest. */
-if (location.hash.length > 1) {
+   citation and never scrolls, taps or types never sees the manifest.
+   A stop chosen from the strip is an arrival too (v12): the carry calls
+   window.__arrive as it starts, and the same first act ends it. */
+window.__arrive = () => {
   const de = document.documentElement;
+  if (de.hasAttribute("data-arrive")) return;
   /* touchstart is kept alongside pointerdown because WebKit has been
      unreliable firing pointerdown for scroll-intent touches; removal
      matching ignores the `passive` option, so this teardown is sound. */
@@ -36,7 +39,8 @@ if (location.hash.length > 1) {
   };
   de.setAttribute("data-arrive", "");
   for (const a of acts) addEventListener(a, free, { passive: true });
-}
+};
+if (location.hash.length > 1) window.__arrive();
 </script>
 <style>
   /* ————————————————————————————————————————————————————————————————
@@ -3517,26 +3521,42 @@ body{font-synthesis:none}
    otherwise merge with the page: dark along the cream end by day, cream
    along the dark end by night. The close and the title are printed on it.
 
-   THE TERMINATOR CARRIES NO WORDS. The 21:07 leg holds W4 until the last
-   label that reaches into it has cleared, plus --air, and only then falls.
+   THE TERMINATOR CARRIES NO WORDS. The ground holds W4 until lifequest's
+   label has cleared, plus --air, falls to W5 across --dusk (48px), and is
+   W5 again --air before automl's label begins: a terminator, not a field.
+   v9's fall ran 150 to 200px of wordless leg at 1440 and read as a muddy
+   brown block with a gap in the line diagram (v12 review); at 48px the same
+   colours read as the edge of the light.
 
-   ONE READING ORDER. Every label is a stack read top-down, name, noun,
-   metric: above the line it hangs from the tape's top edge, below it from
-   the line, so every name on a side sits on one baseline, and an earned
-   metric prints into a row already held for it (a 3-row floor): nothing
-   moves when it arrives. Labels alternate above (odd) and below (even) and
-   hang right from their tick, capped at two legs less --air; clocks sit in
-   the line zone on the side the label is not. A metric's words are the text
-   face and only its value (.mv) is mono, which is also what puts "9,701 of
-   10,000 right" on one line at 1280 (128.5px; all mono it was 171.5).
-   Every label is one line at 1280 and 1440; a narrower desktop wraps a noun
-   or a metric downward and fit() grows the zone to hold it (1024: three
-   wrap, nothing overflows).
+   ONE SIDE, ONE GRID (v12). v9 alternated the labels above and below the
+   line, and the clocks on the side the label was not, so the tape read as
+   two zigzags. Now it reads as a timetable: a header (the title at the left,
+   the close at the right), every clock on one row above the line, every
+   stop's name on one baseline below it, and under the name one more line
+   that says what the project is until the reader has passed it, then what
+   it proved (the noun holds the metric's place, as the phone's column
+   always did). Each stop is centred on its tick; the two termini are set
+   flush to their bars, the start's left edge and the gate's right edge,
+   which are also the title's and the close's, so the tape has one left and
+   one right. The legs are FITTED, not equal: stripFit() measures every
+   stop's widest line and gives each leg what its two stops need plus --air,
+   lets the rest fall evenly (the dusk's leg also holds the terminator), and
+   only if that cannot fit lets the second lines wrap to a narrower measure.
 
-   THE MARKS ARE THREE AND NONE IS A BOX ROUND ANOTHER. Here: a 9px clay
-   square on the line at the stop's tick, its clock in clay, landing as the
-   tape comes to rest. Keyboard focus: a 2px clay ring round the whole stack,
-   offset 4px, so it crosses no word. Hover: the name underlined.
+   ONE HIERARCHY. Name: the text face at 15px in the ink. What it is: the
+   italic at 13px in the second ink. What it proved: the roman at 13px, its
+   value in mono in the ink. When: the clock, mono at 12.8px, in the second
+   ink ahead, the ink once reached. Mono stays on exactly two things, both
+   machine values on purpose: the clocks are readings of the run's clock,
+   the same face as the masthead's, so the strip and the masthead are
+   visibly one instrument; the metric values are figures read out of the
+   repositories. Every word a person reads is the text face.
+
+   THE MARKS. Clay means here, and only here: the stop the reader is in has
+   its clock and its name in clay, and the square travels the line with the
+   page. Hover underlines the name; keyboard focus rings the stack, offset
+   so it crosses no word. Earned metrics carry no colour: being printed is
+   the mark.
 
    Motion: one translate of the tape under a static clip (the pull and the
    reel), one fade of the scrim, one scale of the here-mark. Transforms and
@@ -3544,11 +3564,14 @@ body{font-synthesis:none}
    no transition.
 
    The inks against the grounds they actually sit on, the floor per kind over
-   every state the lab measured (open at 4, at 9, at 12; 1440, 1280, 1024,
-   390, 360; Chromium and WebKit identical). #f2e4c9 is W4, the 19:36 to
-   21:07 field; #3e342c is the ground under automl's clock and name, 7px past
-   the 22:05 tick on the W5 to W6 deepening; #2c2622 is W6, the night end;
-   #fbf3e7 is first light, under the title and the phone's housing:
+   every state the lab measured (v9: open at 4, at 9, at 12; 1440, 1280, 1024,
+   390, 360; Chromium and WebKit identical; v12 re-measured every text run of
+   the one-sided tape and the column against window.__strip.ground under its
+   own box, at the start, at glyph and at the references, 1440 and 390, lab
+   inks.mjs). #f2e4c9 is W4, the 19:36 to 21:07 field; #3e342c is W5, the
+   ground where the terminator ends and automl's label begins; #2c2622 is W6,
+   the night end; #fbf3e7 is first light, under the title and the phone's
+   housing:
    measured: #26231c on #f2e4c9 — 12.48:1 / Lc 87.5
    measured: #5c564a on #f2e4c9 — 5.79:1 / Lc 70.1
    measured: #a03f20 on #f2e4c9 — 5.18:1 / Lc 66.4
@@ -3557,6 +3580,15 @@ body{font-synthesis:none}
    measured: #d9d0c3 on #2c2622 — 9.78:1 / Lc 75.4
    measured: #f6efe2 on #2c2622 — 13.05:1 / Lc 94.5
    measured: #26231c on #fbf3e7 — 14.24:1 / Lc 96.0
+   v12, the new pairs: here in clay (the clock and now the name too) by day
+   at glyph and by night at the references; automl's noun on the darkest
+   W5 sample under it; the phone housing's title in the second ink; the
+   serial and the start's here-name on first light:
+   measured: #a03f20 on #f5eddc — 5.59:1 / Lc 71.2
+   measured: #f4b090 on #2c2622 — 8.14:1 / Lc 65.1
+   measured: #d9d0c3 on #3d332c — 8.06:1 / Lc 72.3
+   measured: #5c564a on #fbf3e7 — 6.61:1 / Lc 78.7
+   measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
    The names' floor, Lc 87.5, is under the Lc 90 body target: it is the
    page's darkest ink on the page's own 19:36 to 21:07 field, and no darker
    token exists, so it is stated rather than "fixed". The noun's pair is the
@@ -3564,17 +3596,21 @@ body{font-synthesis:none}
 #mscrim, #manifest{--t-pull:620ms; --t-reel:360ms; --t-choose:260ms; --t-mark:220ms; --t-scrim:320ms}
 #manifest{
   /* written on open by stripFit(); these are the pre-open values */
-  --band-top:60px; --zone-a:66px; --zone-b:66px; --line:34px; --leg:80px;
-  --lead:10px; --dusk-x:187px; --last:80px; --air:10px;
+  --band-top:60px; --zone-a:66px; --zone-b:70px; --line:12px; --head:44px;
+  --lead:20px; --trail:20px; --dusk:48px; --gap:10px;
   --p0:#fbf3e7; --in:0px;
   /* declared here and not on :root: a custom property resolves where it is
      declared, and stripFit() writes the zones on this element */
   --band:calc(var(--zone-a) + var(--line) + var(--zone-b));
   --ink:#26231c; --ink-2:#5c564a; --clay:#a03f20; --clay-g:#c4532e;
   /* right is the chip's right edge: the tape comes from under it */
-  position:fixed; left:var(--pad-x); right:var(--pad-x); top:var(--band-top);
+  /* it hangs --gap under the masthead: a printed strip that SITS, not one
+     butted against the band it came out of */
+  position:fixed; left:var(--pad-x); right:var(--pad-x); top:calc(var(--band-top) + var(--gap));
   height:var(--band); z-index:7; pointer-events:none}
 #manifest[hidden]{display:none}
+/* a station the strip carried the reader to holds the focus, unringed */
+[data-carried]:focus{outline:none}
 #manifest .housing{display:none} /* the phone's; see the phone block */
 /* the clip: a static window the tape moves under. Its right edge is the
    housing's mouth, drawn: a 2px rule the tape slides out from behind, so a
@@ -3609,22 +3645,25 @@ body{font-synthesis:none}
   #manifest.closing.chosen .tape, #manifest.closing.chosen .clip{transition-duration:var(--t-choose)}
   #mscrim{transition:opacity var(--t-scrim) cubic-bezier(.2,.8,.3,1)}
   #mscrim:not(.open){transition:opacity var(--t-reel) cubic-bezier(.45,0,.55,1)}
-  #manifest .line li .you{transition:transform var(--t-mark) cubic-bezier(.2,.8,.3,1)}
-  /* after 0.7 of the pull, when the tape is about 96% out, and ONLY while it
-     is opening: once open, a stop that changes under the strip (the page
-     still scrolls behind it) moves its square at once */
-  #manifest.open[data-state="opening"] .line li.here .you{transition-delay:calc(var(--t-pull) * .7)}
+  /* the square SCALES in, after 0.7 of the pull, when the tape is about 96%
+     out; where it stands is the CSS translate property, written by the
+     engine, and that is never transitioned: it is a position, not a motion */
+  #manifest .you{transition:transform var(--t-mark) cubic-bezier(.2,.8,.3,1)}
+  #manifest.open[data-state="opening"] .you{transition-delay:calc(var(--t-pull) * .7)}
   #manifest .line li:is(:first-child,:last-child)::before{transition:background-color var(--t-mark) cubic-bezier(.2,.8,.3,1)}
   #manifest.open[data-state="opening"] .line li.here:is(:first-child,:last-child)::before{transition-delay:calc(var(--t-pull) * .7)}
 }
-/* the close: printed at the tape's night end, top right, under the chip. A
-   32px target in the night print's ink and strong hairline in both modes,
-   because the terminus is always night. */
-#manifest .tclose{position:absolute; top:8px; right:8px; z-index:4; display:grid; place-items:center;
-  width:32px; height:32px; margin:0; padding:0 0 2px; font-family:var(--body); font-size:1.25rem;
-  line-height:1; color:#f6efe2; background:none; border:1px solid rgba(246,239,226,.45);
-  border-radius:2px; pointer-events:auto; cursor:pointer}
-#manifest .tclose:hover{border-color:#f6efe2}
+/* the clip and the frame take a 2px radius, the chip's own */
+#manifest .clip, #manifest .tape::before{border-radius:2px}
+/* the close: printed in the header at the tape's night end, its right edge
+   (the cross's, not the box's) on the gate bar's. A 32px target with a 14px cross in the night print's
+   ink; its box is drawn on hover and focus only, so at rest the header is
+   two words and a mark. Night inks in both modes: the terminus is night. */
+#manifest .tclose{position:absolute; top:calc((var(--head) - 32px) / 2 + 2px); right:calc(var(--trail) - 13px); z-index:4;
+  display:grid; place-items:center; width:32px; height:32px; margin:0; padding:0 0 2px;
+  font-family:var(--body); font-size:1.25rem; line-height:1; color:#f6efe2; background:none;
+  border:1px solid transparent; border-radius:2px; pointer-events:auto; cursor:pointer}
+#manifest .tclose:hover{border-color:rgba(246,239,226,.45)}
 #manifest .tclose:focus-visible{outline:2px solid #e08a5f; outline-offset:2px}
 #manifest nav{display:contents}
 /* width explicit: WebKit sizes a shrink-to-fit flex line from its labels,
@@ -3632,102 +3671,115 @@ body{font-synthesis:none}
    only the scrim closes. */
 #manifest .line{pointer-events:auto; display:flex; width:100%; min-width:0; height:100%;
   padding-left:var(--lead); list-style:none; font-family:var(--body); letter-spacing:0}
-/* ── one leg: the label overflows it on purpose ── */
-#manifest .line li{position:relative; flex:0 0 var(--leg); min-width:0; height:100%}
+/* ── one leg, tick to tick: stripFit() writes each leg's basis ── */
+#manifest .line li{position:relative; flex:0 0 auto; min-width:0; height:100%}
 #manifest .line li[data-print="night"]{--ink:#f6efe2; --ink-2:#d9d0c3; --clay:#f4b090; --clay-g:#e08a5f}
-#manifest .line li:nth-child(8){flex-basis:calc(var(--leg) + var(--dusk-x))}
-#manifest .line li:last-child{flex:1 1 var(--last)} /* the rounding slack, at the housing end */
-/* the line, a segment per leg: travelled legs heavier and in the ink, the
-   legs ahead a hairline in the second ink. Across the dusk it changes ink
-   where the field does, and each pair at its own point (written by
-   stripLay): where the day ink and the night ink stand at equal contrast on
-   the ground. For the ink pair that is the masthead's MAST_CROSS; for the
-   ahead pair it is lighter, and switching it there too left the hairline at
-   1.7:1 before a light dash appeared. */
-/* the line and its ticks are drawn on the li, over the row's anchor: they
-   take no pointer, so a click on a stop's mark reaches its link */
+#manifest .line li:last-child{flex:1 1 auto} /* the gate bar, and the tape's end past it */
+/* the line, a segment per leg, a hairline in the second ink; the travelled
+   part is the heavier .run above it. Across the dusk it changes ink where
+   the field does, at the point (written by stripLay) where the day ink and
+   the night ink stand at equal contrast on the ground: for the ink pair the
+   masthead's MAST_CROSS; for the ahead pair it is lighter, and switching it
+   there too left the hairline at 1.7:1 before a light dash appeared. The
+   line and its ticks take no pointer, so a press on a mark reaches its link. */
 #manifest .line li::after{content:""; position:absolute; left:0; right:0; pointer-events:none;
   top:calc(var(--zone-a) + var(--line) / 2); height:1px; background:var(--ink-2)}
-#manifest .line li.gone::after{top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; background:var(--ink)}
 #manifest .line li:nth-child(8)::after{--seg-a:var(--ink-2); --seg-b:#d9d0c3; --sw:var(--switch-ahead, 50%);
   background:linear-gradient(to right, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
-#manifest .line li.gone:nth-child(8)::after{--seg-a:var(--ink); --seg-b:#f6efe2; --sw:var(--switch-gone, 50%)}
 #manifest .line li:last-child::after{display:none} /* the line ends at the terminus; the tape goes on */
-/* the tick, through the line at the leg's left edge; the two termini are
-   one bar each, so the line reads as running from here to there */
-#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + 5px); pointer-events:none;
-  width:1px; height:calc(var(--line) - 10px); background:var(--ink-2); z-index:1}
+/* the tick hangs from the line toward its name, so the clock above stands
+   clear of it; the two termini are one bar each, through the line */
+#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + var(--line) / 2); pointer-events:none;
+  width:1px; height:6px; background:var(--ink-2); z-index:1}
 #manifest .line li[data-reached]::before{background:var(--ink)}
 #manifest .line li:first-child::before, #manifest .line li:last-child::before{
   left:-1px; width:3px; top:var(--zone-a); height:var(--line); background:var(--ink)}
-/* here: the clay square, grown to sit on the line, centred on its tick */
-#manifest .line li .you{position:absolute; left:-4px; top:calc(var(--zone-a) + var(--line) / 2 - 4px);
-  width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0)}
-#manifest.open .line li.here .you{transform:scale(1)}
+/* HERE TRAVELS WITH THE PAGE (v12). One clay square for the whole tape,
+   placed every frame by stripPlace() at the masthead clock's own reading:
+   the fraction of the way from the stop the reader is in to the next, on the
+   strip's tick axis, so the square and the clock never disagree. It takes the
+   night print's clay once it is past the dusk's ink switch. The travelled
+   line is one element too, the heavier line in the ink, clipped to the
+   furthest point the reader has reached this visit (a high-water mark, as
+   the stamps are): at the front of a visit it ends exactly at the square. */
+#manifest .you{position:absolute; left:0; top:calc(var(--zone-a) + var(--line) / 2 - 4px); margin-left:-4px;
+  width:9px; height:9px; background:var(--clay-g); z-index:2; transform:scale(0); pointer-events:none}
+#manifest .you.night{background:#e08a5f}
+#manifest.open .you{transform:scale(1)}
+#manifest.atbar .you{visibility:hidden}
+#manifest .run{position:absolute; left:0; width:0; top:calc(var(--zone-a) + var(--line) / 2 - 1px); height:2px; z-index:1;
+  background:linear-gradient(to right, #26231c var(--run-sw, 100%), #f6efe2 var(--run-sw, 100%));
+  clip-path:inset(0 100% 0 0); pointer-events:none}
 /* ON AN END STOP THE BAR IS THE MARK. The 9px square centred on a 3px
    terminus bar read as a blob at 1x (stop 01 on the page's first frame,
    and the gate); there the bar itself turns clay and no square is drawn.
    It takes the square's timing, so here lands the same way at every stop.
    Graphic, not text: #c4532e on first light #fbf3e7 is 4.13:1, #e08a5f on
    the night end #2c2622 is 5.66:1, both over the 3:1 floor for a mark. */
-#manifest .line li.here:is(:first-child,:last-child) .you{display:none}
-#manifest.open .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
-/* THE LEG IS THE TARGET: the anchor is the grid (zone, line zone, zone)
-   and fills the leg, so the whole leg is the hit area and G9 can see it */
-#manifest .line li .mrow{display:grid; grid-template-rows:var(--zone-a) var(--line) var(--zone-b);
-  grid-template-columns:100%; height:100%; width:100%; padding:0; text-decoration:none; color:inherit}
-#manifest .line li .mt{grid-row:2; align-self:end; justify-self:start; padding:0 0 2px 7px;
+#manifest.open.atbar .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
+/* THE STOP IS THE TARGET: its anchor is the cell centred on its tick, from
+   halfway back to the stop before to halfway on to the next (--hp, --hn,
+   written by stripFit; the termini run to the tape's ends), from the clock
+   row down, so the whole of a stop's column is its hit area and G9 can see
+   it. The clock and the stack are placed on the tick inside it. */
+#manifest .line li .mrow{position:absolute; top:calc(var(--zone-a) - 26px); bottom:0;
+  left:calc(-1 * var(--hp, 0px)); width:calc(var(--hp, 0px) + var(--hn, 40px));
+  padding:0; text-decoration:none; color:inherit}
+#manifest .line li .mt{position:absolute; left:var(--hp, 0px); top:9px; transform:translateX(-50%);
   font-family:var(--mono); font-style:normal; font-size:var(--fs-micro); font-variant-numeric:tabular-nums;
   letter-spacing:.02em; line-height:1; color:var(--ink-2); white-space:nowrap}
-#manifest .line li:nth-child(even) .mt{align-self:start; padding:2px 0 0 7px}
 #manifest .line li[data-reached] .mt{color:var(--ink)}
-#manifest .line li.stamped .mt, #manifest .line li.here .mt{color:var(--clay)}
-/* the stack: its box is its ink (the tick's 7px lead-in is a margin), so
-   the focus ring drawn on it hugs the words; its cap resolves here, where
-   the dialog's --leg is in scope */
-#manifest .line li .lab{grid-row:1; align-self:start; justify-self:start; display:flex;
-  flex-direction:column; align-items:flex-start; width:max-content;
-  max-width:calc(2 * var(--leg) - var(--air) - 7px); min-width:0; margin:8px 0 0 7px;
-  position:relative; z-index:1}
-#manifest .line li:nth-child(even) .lab{grid-row:3; margin-top:4px}
+#manifest .line li.here .mt, #manifest .line li.here .lab > b{color:var(--clay)}
+/* the stack: its box is its ink, so the focus ring drawn on it hugs the
+   words; --cap is stripFit's measure for a second line that has to wrap */
+#manifest .line li .lab{position:absolute; left:var(--hp, 0px); top:calc(26px + var(--line) + 9px);
+  transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; text-align:center;
+  width:max-content; max-width:var(--cap, none); min-width:0; z-index:1}
+#manifest .line li:first-child :is(.mt, .lab){transform:translateX(-1px); align-items:flex-start; text-align:left}
+#manifest .line li:last-child :is(.mt, .lab){transform:translateX(calc(-100% + 2px)); align-items:flex-end; text-align:right}
 #manifest .line li .lab > b{font-family:var(--body); font-weight:400; font-size:var(--fs-note);
   line-height:20px; color:var(--ink); white-space:nowrap}
 #manifest .line li .lab .mnoun{font-family:var(--body); font-style:italic; font-size:var(--fs-small);
-  line-height:16px; color:var(--ink-2)}
+  line-height:17px; color:var(--ink-2); text-wrap:balance}
 #manifest .line li .lab .m{margin:0; font-family:var(--body); font-size:var(--fs-small); letter-spacing:0;
-  word-spacing:normal; font-variant-numeric:normal; line-height:18px; color:var(--ink-2)}
+  word-spacing:normal; font-variant-numeric:normal; line-height:17px; color:var(--ink-2); text-wrap:balance}
 /* WITHHELD MEANS ABSENT: display:none, so an unearned metric is out of the
-   accessibility tree and find-in-page, and the 3-row floor holds its row */
-#manifest .line li:not(.stamped) .m{display:none}
+   accessibility tree and find-in-page; once earned it takes the noun's line */
+#manifest .line li:not(.stamped) .m, #manifest .line li.stamped .mnoun{display:none}
 /* the value, mono, inside the serif's line box (line-height 1), so the row
-   stays 18px; this out-specifies the page's own .mv size */
+   stays 17px; this out-specifies the page's own .mv size */
 #manifest .line li .lab .m .mv{font-family:var(--mono); font-weight:400; font-size:var(--fs-micro);
   letter-spacing:.02em; line-height:1; color:var(--ink); white-space:nowrap}
-/* ONE UNDERLINE, and it means hover. Keyboard focus is the ring and the
-   here-mark is the square: three marks, none standing in for another. An
-   underline on :focus-within also caught the here-name that focus lands on
-   at open, so hovering another stop drew two. */
+/* ONE UNDERLINE, and it means hover. Keyboard focus is the ring and here is
+   the clay: three marks, none standing in for another. An underline on
+   :focus-within also caught the here-name that focus lands on at open, so
+   hovering another stop drew two. */
 #manifest .line li:hover .lab > b{
   text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
 #manifest .line li .mrow:focus-visible{outline:none}
 #manifest .line li .mrow:focus-visible .lab{outline:2px solid var(--clay-g); outline-offset:4px; border-radius:1px}
-/* the dialog's name, printed on the lead below the line in the metric row,
-   and the foot, which hangs back from the tape's end on the same baseline */
-#manifest .line li .title{position:absolute; left:7px; bottom:8px; z-index:2; font-family:var(--body);
-  font-size:var(--fs-label); line-height:18px; color:var(--ink); white-space:nowrap}
+/* the header: the dialog's name at the left, flush with the start's bar,
+   and the foot at the right, short of the close; one baseline */
+#manifest .line li .title{position:absolute; left:-1px; top:calc(var(--head) / 2 - 7px); z-index:2;
+  font-family:var(--body); font-size:var(--fs-label); line-height:18px; color:var(--ink); white-space:nowrap}
 #manifest .title i, #manifest .htitle i{font-family:var(--mono); font-style:normal;
   font-size:var(--fs-micro); color:var(--clay); letter-spacing:.04em}
-#manifest .line li .foot{position:absolute; right:12px; bottom:8px; z-index:2; font-family:var(--body);
-  font-style:italic; font-size:var(--fs-small); line-height:18px; letter-spacing:0; word-spacing:normal;
-  color:var(--ink-2); white-space:nowrap}
-#manifest .line li .foot i{font-family:var(--mono); font-style:normal; line-height:1; font-size:var(--fs-micro);
-  font-variant-numeric:tabular-nums; letter-spacing:.02em}
+#manifest .line li .foot{position:absolute; right:calc(var(--trail) + 27px); top:calc(var(--head) / 2 - 7px); z-index:2;
+  font-family:var(--body); font-style:italic; font-size:var(--fs-small); line-height:18px; letter-spacing:0;
+  word-spacing:normal; color:var(--ink-2); white-space:nowrap}
 
 /* ── the column: the phone, and every seat narrower than 1024 ─────────────
-   THE TAPE NEEDS 1024px. Measured with all six earned: at 1000 "the
-   references" stands 4px from the close; at 900 nine labels wrap and the
-   band is 234px tall; at 866 it runs into the close and at 821 automl runs
-   into "the references" too. So below 1024 the strip hangs as a column from
+   THE TAPE NEEDS 1280px (v12, the one-sided timetable; v9's alternating
+   tape needed 1024). Measured with all six earned, the widest state, at
+   14px of air: the twelve stops need 1192px of tape with every line on one
+   line, 1154 with the second lines wrapped at 100px and 1050 at 76px; the
+   names, which never wrap, are most of it. 14px held at 1200 and read as
+   one run-on line of names across the night ("agentic automl the review
+   the references the gate", lab still after2), so the air is 20 (18 at the
+   least), which needs 1122 at 76px: a 1280 seat (1152 of tape) holds it,
+   1200 (1080) does not. Wrapping harder than 76px would set a second line
+   in three, which is a column's job, not a tape's. So below 1280 the strip
+   hangs as a column from
    the chip, at most 26rem wide and right-aligned under it (the tape comes
    from under the chip at every width; a 768 seat had 732px rows with the
    metric 500px from its name), and on a phone it is the full measure.
@@ -3747,18 +3799,27 @@ body{font-synthesis:none}
    scrolled to the current stop. A transform on the tape would collapse the
    column's scroll extent at the start of the pull (a transformed box counts
    where it is drawn), and that scroll would not hold. */
-@media (max-width:1023px){
-  #manifest{--housing:44px; --row:44px; --dusk-y:64px; height:auto; max-width:26rem; margin-left:auto;
-    max-height:calc(100vh - var(--band-top) - 8px); max-height:calc(100dvh - var(--band-top) - 8px);
-    display:flex; flex-direction:column; overflow:clip}
+@media (max-width:1279px){
+  /* the dusk between lifequest's row and automl's: 28px, a terminator, as
+     on the tape (it was 64px of wordless brown) */
+  #manifest{--housing:44px; --row:44px; --dusk-y:28px; --gap:8px; height:auto; max-width:26rem; margin-left:auto;
+    max-height:calc(100vh - var(--band-top) - var(--gap) - 10px); max-height:calc(100dvh - var(--band-top) - var(--gap) - 10px);
+    display:flex; flex-direction:column; overflow:clip; border-radius:2px}
+  /* THE HOUSING IS A HEADER, NOT A TOOLBAR (v12). It was a bordered bar with a
+     divided "close ×" cell, the heaviest thing in the column. Now it is the
+     column's own first light with one quiet rule under it: the title on the
+     rows' text edge (32px, where every clock starts) and "close" as a word,
+     a 44px target, underlined on hover. */
   #manifest .housing{position:relative; z-index:2; flex:0 0 var(--housing); display:flex; align-items:center;
-    justify-content:space-between; gap:.5rem; padding:0 0 0 .7rem; background:var(--p0);
-    border:1px solid var(--hair-strong); border-bottom:1px solid rgba(38,35,28,.16); pointer-events:auto}
-  #manifest .htitle{font-family:var(--body); font-size:var(--fs-label); color:var(--ink); white-space:nowrap}
-  #manifest .housing .mclose{display:inline-flex; align-items:center; gap:.35em; height:100%; min-height:44px;
-    margin:0; padding:0 .8rem; font-family:var(--body); font-size:var(--fs-label); line-height:1;
-    color:var(--ink); background:none; border:none; border-left:1px solid rgba(38,35,28,.16); cursor:pointer}
-  #manifest .housing .mclose:focus-visible{outline-offset:-4px}
+    justify-content:space-between; gap:.5rem; padding:0 0 0 32px; background:var(--p0);
+    border:1px solid var(--hair-strong); border-bottom:1px solid rgba(38,35,28,.12); border-radius:2px 2px 0 0;
+    pointer-events:auto}
+  #manifest .htitle{font-family:var(--body); font-size:var(--fs-label); color:var(--ink-2); white-space:nowrap}
+  #manifest .housing .mclose{display:inline-flex; align-items:center; height:100%; min-height:44px;
+    margin:0; padding:0 14px; font-family:var(--body); font-size:var(--fs-label); line-height:1;
+    color:var(--ink); background:none; border:none; cursor:pointer}
+  #manifest .housing .mclose:hover{text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
+  #manifest .housing .mclose:focus-visible{outline-offset:-6px}
   #manifest .tclose, #manifest .clip::after{display:none}
   #manifest .clip{position:relative; inset:auto; z-index:1; flex:1 1 auto; min-height:0; overflow-y:auto;
     overflow-x:clip; overscroll-behavior:contain; transform:translateY(var(--in)); will-change:transform}
@@ -3770,7 +3831,6 @@ body{font-synthesis:none}
   #manifest .line li:nth-child(8){flex-basis:auto; padding-bottom:var(--dusk-y)}
   #manifest .line li:last-child{flex:0 0 auto}
   #manifest .line li::after{left:14px; right:auto; top:0; bottom:0; width:1px; height:auto}
-  #manifest .line li.gone::after{left:13px; top:0; width:2px; height:auto}
   /* the line runs terminus to terminus, not from the bar's edge */
   #manifest .line li:first-child::after{top:21px}
   #manifest .line li:last-child::after{display:block; bottom:auto; height:21px}
@@ -3778,17 +3838,21 @@ body{font-synthesis:none}
     background:linear-gradient(to bottom, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
   #manifest .line li::before{left:9px; top:21px; width:10px; height:1px}
   #manifest .line li:first-child::before, #manifest .line li:last-child::before{left:7px; top:20px; width:15px; height:3px}
-  #manifest .line li .you{left:10px; top:17px}
+  #manifest .you{left:10px; top:0; margin:-4px 0 0 0}
+  #manifest .run{left:13px; top:0; width:2px; height:0;
+    background:linear-gradient(to bottom, #26231c var(--run-sw, 100%), #f6efe2 var(--run-sw, 100%))}
   #manifest .line li .title{display:none}
-  #manifest .line li .mrow{position:relative; display:flex; flex-wrap:wrap; align-items:baseline;
-    column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto; padding:12px 10px 11px 32px}
-  #manifest .line li .mt, #manifest .line li:nth-child(even) .mt{padding:0; align-self:baseline}
-  #manifest .line li .lab, #manifest .line li:nth-child(even) .lab{display:contents}
+  #manifest .line li .mrow{position:relative; top:auto; bottom:auto; left:auto; width:auto; display:flex;
+    flex-wrap:wrap; align-items:baseline; column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto;
+    padding:12px 12px 11px 32px}
+  #manifest .line li .mt{position:static; transform:none; align-self:baseline}
+  #manifest .line li:is(:first-child, :last-child) :is(.mt, .lab){transform:none}
+  #manifest .line li .lab{display:contents}
   #manifest .line li .lab .mnoun{display:none}
   #manifest .line li:not(.stamped) .lab .mnoun{display:inline; margin-left:auto; line-height:20px}
   #manifest .line li .lab > b{line-height:20px}
   #manifest .line li .lab .m{margin-left:auto; line-height:20px}
-  #manifest .line li .foot{position:static; display:block; padding:0 10px 12px 32px; white-space:normal}
+  #manifest .line li .foot{position:static; display:block; padding:0 12px 12px 32px; white-space:normal}
   /* the row's ring starts right of the line, so it crosses nothing */
   #manifest .line li .mrow:focus-visible .lab{outline:none}
   #manifest .line li .mrow:focus-visible::after{content:""; position:absolute; inset:3px 3px 3px 24px;
@@ -3914,6 +3978,12 @@ body{font-synthesis:none}
 }
 @media (max-width:560px){
   .padbar{justify-content:flex-start}
+  /* ON A PHONE THE COLUMN IS A SHEET, 8px from both edges. Hung on the
+     masthead's 18px margins its left edge stood on the rail's lane, and the
+     page's own thread, under the scrim, showed as a dotted mark poking out
+     of the column's frame (v12 review, x 15-18 at 390: #thread, found by
+     hiding each layer in turn). Over the lane, the thread is behind it. */
+  #manifest{left:8px; right:8px; max-width:none}
 }
 /* ── the masthead sheds the phase, not the count ─────────────────────────
    Three items want this band and below about 430px they do not fit. What
@@ -4259,28 +4329,29 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
      still names the dialog through aria-labelledby. -->
 <div id="manifest" role="dialog" aria-modal="true" aria-labelledby="mtitle" hidden>
   <div class="housing">
-    <span class="htitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span>
-    <button class="mclose" type="button" aria-label="close the line diagram">close <span aria-hidden="true">×</span></button>
+    <span class="htitle" aria-hidden="true">run <i data-machine>042</i>, all twelve stops</span>
+    <button class="mclose" type="button">close</button>
   </div>
   <div class="clip">
     <div class="tape">
-      <button class="mclose tclose" type="button" aria-label="close the line diagram">×</button>
+      <button class="mclose tclose" type="button" aria-label="close">×</button>
       <nav aria-label="the twelve stops">
         <ol class="line">
-          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="you" aria-hidden="true"></span><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span></li>
-          <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><span class="lab"><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><span class="lab"><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><span class="lab"><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><span class="lab"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a><span class="you" aria-hidden="true"></span></li>
-          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="you" aria-hidden="true"></span><span class="foot">ends <i>22:41</i> &middot; then one page more</span></li>
+          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i>, all twelve stops</span></li>
+          <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a></li>
+          <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a></li>
+          <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a></li>
+          <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><span class="lab"><b>cadence</b><span class="mnoun">calendar in plain English</span><span class="m"><b class="mv">1,430</b> tests pass</span></span></a></li>
+          <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><span class="lab"><b>glyph</b><span class="mnoun">digit reader in C++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></span></a></li>
+          <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><span class="lab"><b>jetpack-compress</b><span class="mnoun">parallel Java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></span></a></li>
+          <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><span class="lab"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></span></a></li>
+          <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a></li>
+          <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a></li>
+          <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a></li>
+          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="foot">after the gate, one more page</span></li>
         </ol>
       </nav>
+      <span class="run" aria-hidden="true"></span><span class="you" aria-hidden="true"></span>
     </div>
   </div>
 </div>
@@ -11234,8 +11305,8 @@ const maniProj = maniRows.filter((li) => li.dataset.proj);
 const STRIP = $("manifest");
 const stripClip = STRIP.querySelector(".clip");
 const stripTape = STRIP.querySelector(".tape");
-/* the column below 1024 (see the CSS: the tape needs that width) */
-const stripColumn = () => matchMedia("(max-width:1023px)").matches;
+/* the column below 1280 (see the CSS: the tape needs that width) */
+const stripColumn = () => matchMedia("(max-width:1279px)").matches;
 const stripMix = (a, b, t) => oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t));
 const stripWay = (u) => { const i = Math.min(3, Math.floor(u)); return stripMix(WAY[i], WAY[i + 1], u - i); };
 /* the dusk path by lightness: DUSK's stops (its rows are [side, l, c, h,
@@ -11254,7 +11325,7 @@ const stripHermite = (s, m0, m1) => {
   const s2 = s * s, s3 = s2 * s;
   return 3 * s2 - 2 * s3 + m0 * (s3 - 2 * s2 + s) + m1 * (s3 - s2);
 };
-function stripGround(x, ticks, fade) {
+function stripGround(x, ticks, dusk) {
   if (x <= ticks[1]) return stripWay(0);
   for (let i = 1; i <= 7; i++) {
     if (x < ticks[i + 1]) {
@@ -11262,7 +11333,9 @@ function stripGround(x, ticks, fade) {
       return stripWay(clamp(lerp(DAY_ANCHOR[i - 1], DAY_ANCHOR[i], t), 0, 4));
     }
   }
-  const xa = ticks[8] + fade, x9 = ticks[9], xb = x9 + 0.75 * (ticks[10] - ticks[9]);
+  /* dusk.a: W4 ends (the last day label cleared); dusk.b: W5 reached (the
+     first night label's air begins); W6 three quarters into automl's leg */
+  const xa = dusk.a, x9 = dusk.b, xb = Math.max(x9 + 40, ticks[9] + 0.75 * (ticks[10] - ticks[9]));
   const L4 = WAY[4][0], L5 = WAY[5][0], L6 = WAY[6][0];
   /* automl's leg eases out from slope 2 (a quadratic); the dusk's end slope
      is chosen to meet it */
@@ -11285,33 +11358,40 @@ const stripCross = (a, b) => Math.sqrt((fieldLum(stripHex(a)) + 0.05) * (fieldLu
    switches on the dusk leg, each where the field's luminance crosses its
    pair's point. A second open with nothing changed lays nothing. */
 let stripLaid = "";
-function stripLay(ticks, fade, length, dir) {
-  Object.assign(window.__strip, { ticks, fade, length, ground: (x) => stripGround(x, ticks, fade) });
-  const key = JSON.stringify([ticks, fade, length, dir]);
+function stripLay(ticks, dusk, length, dir) {
+  Object.assign(window.__strip, { ticks, dusk, length, ground: (x) => stripGround(x, ticks, dusk) });
+  const key = JSON.stringify([ticks, dusk, length, dir]);
   if (key === stripLaid) return;
   stripLaid = key;
   const stops = [];
-  for (let x = 0; x <= length; x += 4) stops.push(`${rgbCss(stripGround(x, ticks, fade))} ${x}px`);
+  for (let x = 0; x <= length; x += 4) stops.push(`${rgbCss(stripGround(x, ticks, dusk))} ${x}px`);
   stripTape.style.backgroundImage = `linear-gradient(${dir}, ${stops.join(",")})`;
-  STRIP.style.setProperty("--p0", rgbCss(stripGround(0, ticks, fade)));
+  STRIP.style.setProperty("--p0", rgbCss(stripGround(0, ticks, dusk)));
   const ink = (li, t) => getComputedStyle(li).getPropertyValue(t).trim();
   const day = maniRows[7], night = maniRows[8];
   const at = (y) => {
-    for (let x = ticks[8] + fade; x < ticks[9]; x++) if (fieldLum(stripGround(x, ticks, fade)) < y) return x - ticks[8];
+    for (let x = Math.ceil(dusk.a); x < ticks[9]; x++) if (fieldLum(stripGround(x, ticks, dusk)) < y) return x - ticks[8];
     return ticks[9] - ticks[8];
   };
   const gone = at(stripCross(ink(day, "--ink"), ink(night, "--ink")));
   const ahead = at(stripCross(ink(day, "--ink-2"), ink(night, "--ink-2")));
   day.style.setProperty("--switch-gone", `${gone}px`);
   day.style.setProperty("--switch-ahead", `${ahead}px`);
+  stripRun.style.setProperty("--run-sw", `${ticks[8] + gone - ticks[1]}px`);
   Object.assign(window.__strip, { switchAt: ticks[8] + gone, switchAheadAt: ticks[8] + ahead });
 }
-/* the band hangs from the masthead's lower edge. The legs share the tape
-   between the lead and the terminus, the 21:07 leg longer by --dusk-x (13%
-   of the width, 150 to 200: at 1280 it is what is left once eleven legs can
-   hold "calendar in plain English" on one line), and the two label zones
-   are as tall as their tallest stack, three rows at the least, so a row is
-   held for every metric. */
+/* THE LEGS ARE FITTED (v12). Each stop is centred on its tick (the termini
+   flush to their bars), so two neighbours need half of each one's widest
+   line (its name, its second line, its clock) plus --air between them, and
+   the dusk's leg holds the terminator too. Every leg gets at least that, and
+   what is left of the tape is shared so that as many legs as possible are
+   the same length (filled from the bottom like water: the short needs rise
+   to one level and the long ones keep theirs). If the needs alone do not
+   fit, the second lines are given a narrower measure (--cap) and wrap,
+   balanced, until they do, and only then does the air close from 20 to 18.
+   The band is as tall as its tallest stack. */
+const STRIP_CAPS = [0, 150, 132, 116, 100, 88, 76];
+const STRIP_AIRS = [20, 18];
 function stripFit(opening) {
   STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
   if (STRIP.hidden) return;
@@ -11319,23 +11399,41 @@ function stripFit(opening) {
   const cs = getComputedStyle(STRIP);
   const px = (p) => parseFloat(cs.getPropertyValue(p));
   const length = stripClip.getBoundingClientRect().width;
-  const lead = px("--lead"), last = px("--last"), air = px("--air");
-  const duskX = Math.round(clamp(0.13 * innerWidth, 150, 200));
-  const leg = Math.floor((length - lead - duskX - last) / 11);
-  STRIP.style.setProperty("--dusk-x", `${duskX}px`);
-  STRIP.style.setProperty("--leg", `${leg}px`);
-  const tall = (odd) => Math.max(54, ...maniRows.filter((li, i) => i % 2 === (odd ? 0 : 1))
-    .map((li) => li.querySelector(".lab").offsetHeight));
-  STRIP.style.setProperty("--zone-a", `${tall(true) + 12}px`);
-  STRIP.style.setProperty("--zone-b", `${tall(false) + 12}px`);
-  /* the dusk begins once both stacks that reach into its leg have cleared
-     it, lifequest's below the line and jetpack's above; the reach is the
-     ink's right edge from the leg's own tick */
-  const reach = (i) => maniRows[i].querySelector(".lab").getBoundingClientRect().right - maniRows[i].getBoundingClientRect().left;
-  const fade = Math.ceil(Math.max(reach(7), reach(6) - leg) + air);
-  const ticks = [0];
-  for (let i = 1; i <= 12; i++) ticks[i] = lead + (i - 1) * leg + (i >= 9 ? duskX : 0);
-  stripLay(ticks, fade, length, "to right");
+  const lead = px("--lead"), trail = px("--trail"), dusk = px("--dusk");
+  const room = length - lead - trail, last = maniRows.length - 1;
+  /* each stop's reach left and right of its tick */
+  const reach = () => maniRows.map((li, i) => {
+    const w = Math.max(li.querySelector(".lab").offsetWidth, li.querySelector(".mt").offsetWidth);
+    return i === 0 ? [0, w] : i === last ? [w, 0] : [w / 2, w / 2];
+  });
+  let r = null, need = null, air = 0;
+  fit: for (const a of STRIP_AIRS) {
+    for (const cap of STRIP_CAPS) {
+      STRIP.style.setProperty("--cap", cap ? `${cap}px` : "none");
+      r = reach(); air = a;
+      need = r.slice(0, last).map((e, i) => e[1] + r[i + 1][0] + air + (i === 7 ? dusk + air : 0));
+      if (need.reduce((s, n) => s + n, 0) <= room) break fit;
+    }
+  }
+  let level = room / last;
+  for (let k = 0; k < last; k++) {
+    const long = need.filter((n) => n > level);
+    const next = (room - long.reduce((s, n) => s + n, 0)) / (last - long.length);
+    if (Math.abs(next - level) < 0.01) break;
+    level = next;
+  }
+  const legs = need.map((n) => Math.floor(Math.max(n, level)));
+  const ticks = [0, lead];
+  legs.forEach((g, i) => { ticks[i + 2] = ticks[i + 1] + g; });
+  maniRows.forEach((li, i) => {
+    if (i < last) li.style.flexBasis = `${legs[i]}px`;
+    li.style.setProperty("--hp", `${i === 0 ? lead : legs[i - 1] / 2}px`);
+    li.style.setProperty("--hn", `${i === last ? length - ticks[12] : legs[i] / 2}px`);
+  });
+  STRIP.style.setProperty("--zone-b", `${Math.max(...maniRows.map((li) => li.querySelector(".lab").offsetHeight)) + 26}px`);
+  stripLay(ticks, { a: ticks[8] + r[7][1] + air, b: ticks[9] - r[8][0] - air }, length, "to right");
+  stripAxis(ticks, false);
+  Object.assign(window.__strip, { legs, need, air, cap: parseFloat(STRIP.style.getPropertyValue("--cap")) || 0 });
 }
 /* the column: the same ground top to bottom, the dusk ending 4px
    into automl's row rather than at its tick (the row's text begins 12px in,
@@ -11346,11 +11444,13 @@ function stripFit(opening) {
    OPEN: a refit for a stamp while the reader is scrolling the column must not
    take the column out of their hands. */
 function stripFitColumn(opening) {
+  maniRows.forEach((li) => { li.style.flexBasis = ""; }); /* the tape's legs, if the seat was a tape */
   const ticks = [0];
   maniRows.forEach((li, i) => { ticks[i + 1] = li.offsetTop + 21; });
-  const fade = maniRows[7].querySelector(".mrow").offsetHeight - 21 + 4;
-  ticks[9] = maniRows[8].offsetTop + 4;
-  stripLay(ticks, fade, stripTape.offsetHeight, "to bottom");
+  /* the fall runs from 4px under lifequest's row to 4px into automl's */
+  const dusk = { a: ticks[8] - 21 + maniRows[7].querySelector(".mrow").offsetHeight + 4, b: maniRows[8].offsetTop + 4 };
+  stripLay(ticks, dusk, stripTape.offsetHeight, "to bottom");
+  stripAxis(ticks, true);
   const here = opening && STRIP.querySelector(".line li.here");
   if (here) {
     const v = stripClip.clientHeight;
@@ -11358,18 +11458,66 @@ function stripFitColumn(opening) {
   }
 }
 /* reached and travelled: the ticks and clocks up to the FURTHEST stop the
-   reader has reached carry the ink, and the legs to it are the heavier line.
-   The six stamps are a high-water mark, so this is one too: a reader who has
-   been to the gate and come back to ¶04 sees the whole line travelled and
-   every metric earned, with the here-square (setStop's .here, the current
-   stop, both ways) back at 08:47. From setStop(). */
-let stripFar = 0;
-function stripMark(n) {
-  stripFar = Math.max(stripFar, n);
-  maniRows.forEach((li, i) => {
-    li.toggleAttribute("data-reached", i + 1 <= stripFar);
-    li.classList.toggle("gone", i + 1 < stripFar);
-  });
+   reader has reached carry the ink, and the travelled line runs to the
+   furthest POINT. Both are a high-water mark, as the six stamps are: a reader
+   who has been to the gate and come back to ¶04 sees the whole line travelled
+   and every metric earned, with the square (the current point, both ways)
+   back in 08:47's leg.
+
+   THE SQUARE TRAVELS WITH THE PAGE (v12). The owner: "if we are at the
+   middle of one section, that pointer is still stuck at the start of that
+   section". It stood at its stop's tick, a class on the li. Now one square
+   is placed at the masthead clock's own reading, clockSegment()'s seg and t,
+   which work() hands to stripPoint() in the same frame it sets the hour: the
+   square is t of the way from the stop's tick to the next one's, on the
+   strip's own axis (the ticks stripFit laid, so the dusk's longer leg and a
+   phone row that wraps are measured, not assumed). The chip and .here change
+   at the same kicker crossing (setStop reads the same seg), so the square
+   reaches a tick in the frame the number turns over. Ends: the bar is the
+   mark. At 06:12 until the square has cleared the bar, and from the gate on
+   (¶13 opening gives the gate's segment a t, toward a stop this run does not
+   have), the square is put away and the bar turns clay. Only the transform
+   and the clip are written per frame, and only while the strip is open; a
+   closed strip keeps the numbers and is placed when it opens. */
+let stripFar = 0, stripReached = 0, stripSeg = 0, stripT = 0, stripTicks = null, stripDown = false;
+const stripYou = STRIP.querySelector(".you");
+const stripRun = STRIP.querySelector(".run");
+function stripAxis(ticks, down) {
+  stripTicks = ticks; stripDown = down;
+  const len = ticks[12] - ticks[1];
+  if (down) Object.assign(stripRun.style, { top: `${ticks[1]}px`, height: `${len}px`, left: "", width: "" });
+  else Object.assign(stripRun.style, { left: `${ticks[1]}px`, width: `${len}px`, top: "", height: "" });
+  stripPlace();
+}
+/* where a position on the line (0 = 06:12, 11 = 22:41) is on the axis, px */
+const stripAt = (pos) => {
+  const i = Math.min(10, Math.floor(pos)) + 1;
+  return lerp(stripTicks[i], stripTicks[i + 1], clamp(pos - (i - 1), 0, 1));
+};
+function stripPoint(seg, t) {
+  stripSeg = Math.min(seg, RUN_BEATS - 1);
+  stripT = stripSeg >= RUN_BEATS - 1 ? 0 : clamp(t, 0, 1);
+  stripFar = Math.max(stripFar, stripSeg + stripT);
+  const reached = Math.floor(stripFar) + 1;
+  if (reached !== stripReached) {
+    stripReached = reached;
+    maniRows.forEach((li, i) => li.toggleAttribute("data-reached", i < reached));
+  }
+  stripPlace();
+}
+function stripPlace() {
+  if (!stripTicks || !stripOpen()) return;
+  const x = stripAt(stripSeg + stripT), far = stripAt(stripFar);
+  const len = stripTicks[12] - stripTicks[1];
+  /* 7px: the 06:12 bar is 3px wide at the tick, and the 9px square has
+     cleared it once its centre is 7px on */
+  const atBar = stripSeg >= RUN_BEATS - 1 || x - stripTicks[1] < 7;
+  STRIP.classList.toggle("atbar", atBar);
+  stripYou.classList.toggle("night", window.__strip.switchAt !== undefined && x >= window.__strip.switchAt);
+  stripYou.style.translate = stripDown ? `0 ${x.toFixed(1)}px` : `${x.toFixed(1)}px 0`;
+  const cut = `${Math.max(0, len - (far - stripTicks[1])).toFixed(1)}px`;
+  stripRun.style.clipPath = stripDown ? `inset(0 0 ${cut} 0)` : `inset(0 ${cut} 0 0)`;
+  Object.assign(window.__strip, { at: +x.toFixed(2), far: +far.toFixed(2), seg: stripSeg, t: +stripT.toFixed(4) });
 }
 const stripOpen = () => STRIP.classList.contains("open");
 addEventListener("resize", () => { if (stripOpen()) stripFit(); }, { passive: true });
@@ -11381,6 +11529,183 @@ addEventListener("scroll", () => {
     STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
   });
 }, { passive: true });
+/* THE CHOICE IS CARRIED (v12). The owner, of a chosen stop that "literally
+   instantly opens": the strip should go home first and then the page should
+   scroll "at a fast pace but not too fast" to the section, "so the user can
+   see the whole rail going and all the scroll happening", down to a stop
+   ahead and up to one behind. So a choice no longer rides the row's href.
+   The dialog reels the strip home (the 260 ms choose reel) and hands the
+   stop here, and the page travels to the anchor's own park: the section's
+   top at the viewport's top, where the browser's jump would have put it.
+
+   THE CURVE IS A TRAIN: a pull-away on a raised cosine, a run at constant
+   speed, a brake on a raised cosine, each ramp CARRY_RAMP of the journey.
+   Against the two eased curves it was tried beside (a cubic and a quintic
+   smoothstep, lab note v12/stops) it has the lowest peak speed for the
+   time, 1.43x the average where the cubic is 1.5x and the quintic 1.88x, and
+   no jolt at either end; and the run between the ramps is the part a reader
+   can watch go by. The time grows with the root of the distance, floored and
+   capped: one stop is about 700 ms, three about 1.1 s, ¶01 to ¶12 2.2 s.
+
+   THE CARRY IS A SCROLL, and the assembly driver must go on reading it as
+   one: a frame that moves more than ASM_JUMP of a viewport is a jump, and a
+   jump lands every figure at once. So no frame advances more than
+   CARRY_STEP of a viewport; a long frame (a dropped one, a slow phone)
+   stretches the carry's time instead of skipping. Figures passed on the way
+   assemble and come apart as any scroll passes them, and the one at the
+   destination plays by the window law as the train brakes into its park.
+
+   IT LEADS THE FRAME. frame() calls stripCarryStep() before it reads
+   scrollY, so the rail, the figures and the clock are drawn for the y the
+   compositor shows in the same frame; a stepper after work() would draw
+   every frame of the carry one frame behind. It is not a second loop, and
+   while it runs it holds the engine's loop open.
+
+   IT LETS GO, deliberately unlike the gate's carry (holdScroll), which holds
+   the scroll for seven seconds because a reader stranded between ¶12 and
+   ¶13 has nowhere to go. Here the reader asked for a place, and any sign of
+   their own hand (a wheel, a touch, a scroll key, a press outside the
+   masthead and the strip, such as the scrollbar) ends the carry where it is
+   and gives the scroll back. Pressing the chip again BRAKES it, over
+   CARRY_BRAKE, rather than letting the page run on under the strip to the
+   old stop (measured in the lab, 1440: a carry to the gate left running
+   behind a second choice of ¶04 ran on to 10843 before turning back for
+   3019); a choice made then
+   retargets from where the page is, at the speed it is going. The gate's carry wins: no strip
+   carry starts while the scroll is held, and holdScroll ends one in flight.
+
+   IT IS AN ARRIVAL, the same as a cold hash: the head's data-arrive goes on
+   (window.__arrive) and comes off at the reader's next own act, so the
+   one-time peek re-takes its baseline all through the carry and never fires
+   on it. The URL takes the hash at the start, as a native anchor's does at
+   the click, and Back returns to the place the choice left, instantly, as a
+   hash Back always has. The place is kept in the entry's own state and put
+   back on popstate and again in the next frame: neither engine's own
+   restore holds here (lab, v12: Back to an entry left at 3993 landed at
+   3019, that entry's own earlier landing, in Chromium, which restores it
+   AFTER popstate; WebKit stood at 3017 at popstate). The frame after is
+   before the paint in both, so nothing shows the wrong place. Stamps are the
+   beat's, every frame: a carry stamps the stations it passes, as the jump
+   did. On landing the section takes the focus, as an anchor arrival would
+   give it the sequential focus point. Reduced motion jumps, as before. */
+const CARRY_RAMP = 0.3;  /* of the journey, the pull-away and the brake each */
+const CARRY_MIN = 700, CARRY_MAX = 2200, CARRY_K = 600; /* ms, and ms per root viewport */
+const CARRY_STEP = 0.8;  /* of ASM_JUMP: the most one frame of the carry may move */
+const CARRY_BRAKE = 240; /* ms · the chip pressed mid-carry: speed falls to rest, linearly */
+let carrying = null;
+/* the journey's shape, 0..1 over time 0..1, leaving at m0 (in units of the
+   average speed: 0 from rest, the current speed on a retarget) */
+function carryShape(u, m0) {
+  const R = CARRY_RAMP, c = (1 - (R * m0) / 2) / (1 - R);
+  if (u <= 0) return 0;
+  if (u >= 1) return 1;
+  if (u < R) return m0 * u + ((c - m0) / 2) * (u - (R / Math.PI) * Math.sin((Math.PI * u) / R));
+  const sR = (R * (m0 + c)) / 2;
+  if (u <= 1 - R) return sR + c * (u - R);
+  const w = u - (1 - R);
+  return sR + c * (1 - 2 * R) + (c / 2) * (w + (R / Math.PI) * Math.sin((Math.PI * w) / R));
+}
+const carryOff = ["wheel", "touchstart", "pointerdown", "keydown"];
+function carryHand(e) {
+  if (!carrying) return;
+  if (e.type === "pointerdown" && e.target.closest && e.target.closest("#mast, #manifest, #mscrim")) return;
+  if (e.type === "keydown") {
+    if (!SCROLL_KEYS.has(e.key) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && (e.target.closest("#manifest") || (e.key === " " && e.target.closest("button, a")))) return;
+  }
+  stripCarryStop();
+}
+function stripCarryStop() {
+  if (!carrying) return;
+  carrying = null;
+  for (const a of carryOff) removeEventListener(a, carryHand, { capture: true });
+  window.__strip.carrying = false;
+}
+function carryLand(el) {
+  /* the station takes the focus: a programmatic focus on a whole section
+     would ring it in an engine that reads the last press as a key, and a
+     ring round a station says nothing, so [data-carried] has none */
+  if (!el.hasAttribute("tabindex")) {
+    el.setAttribute("tabindex", "-1");
+    el.setAttribute("data-carried", "");
+    el.addEventListener("blur", () => { el.removeAttribute("tabindex"); el.removeAttribute("data-carried"); }, { once: true });
+  }
+  el.focus({ preventScroll: true });
+  window.__strip.landed = { hash: `#${el.id}`, y: scrollY, at: performance.now() };
+}
+function stripCarry(hash) {
+  const el = hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+  if (!el || scrollHeld) return false;
+  const max = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+  const to = clamp(Math.round(el.getBoundingClientRect().top + scrollY), 0, max);
+  const from = scrollY;
+  /* the place the choice leaves, kept where Back will find it */
+  history.replaceState({ ...(history.state || {}), runY: from }, "");
+  if (location.hash === hash) history.replaceState({ runY: to }, "", hash);
+  else history.pushState({ runY: to }, "", hash);
+  window.__arrive?.();
+  if (RM || Math.abs(to - from) < 2) {
+    stripCarryStop();
+    window.scrollTo(0, to);
+    carryLand(el);
+    return true;
+  }
+  /* a retarget leaves at the speed the carry is going, in the new journey's
+     units; from rest it leaves at 0 */
+  const v = carrying ? carrying.v : 0;
+  const dist = to - from;
+  const D = clamp(CARRY_K * Math.sqrt(Math.abs(dist) / vh), CARRY_MIN, CARRY_MAX);
+  if (!carrying) for (const a of carryOff) addEventListener(a, carryHand, { capture: true, passive: true });
+  carrying = { el, from, to, D, m0: clamp((v * D) / dist, -2, 3), u: 0, y: from, v, last: 0 };
+  window.__strip.carrying = true;
+  /* probe: the journey and, per frame, the time and the y it wrote */
+  window.__strip.carried = { from, to, D: Math.round(D), log: [] };
+  wake(true);
+  return true;
+}
+function stripCarryBrake() {
+  if (carrying && !carrying.brake) carrying.brake = { y0: carrying.y, v: carrying.v, t: 0 };
+}
+function stripCarryStep(now) {
+  const c = carrying;
+  if (!c.last) { c.last = now; return; } /* the first frame starts the clock */
+  const dt = Math.min(100, now - c.last);
+  c.last = now;
+  if (c.brake) {
+    const b = c.brake, t = (b.t = Math.min(CARRY_BRAKE, b.t + dt));
+    const y = b.y0 + b.v * t - (b.v * t * t) / (2 * CARRY_BRAKE);
+    c.v = b.v * (1 - t / CARRY_BRAKE); c.y = y;
+    window.scrollTo(0, Math.round(y));
+    if (t >= CARRY_BRAKE) stripCarryStop();
+    return;
+  }
+  const cap = CARRY_STEP * ASM_JUMP * vh;
+  const at = (u) => c.from + (c.to - c.from) * carryShape(u, c.m0);
+  let u = Math.min(1, c.u + dt / c.D), y = at(u);
+  if (Math.abs(y - c.y) > cap) {
+    /* stretch, not skip: the furthest u this frame may reach */
+    let lo = c.u, hi = u;
+    for (let k = 0; k < 16; k++) { const m = (lo + hi) / 2; if (Math.abs(at(m) - c.y) > cap) hi = m; else lo = m; }
+    u = lo; y = at(u);
+  }
+  c.v = dt > 0 ? (y - c.y) / dt : 0;
+  c.u = u; c.y = y;
+  window.scrollTo(0, Math.round(y));
+  if (window.__strip.carried.log.length < 600) window.__strip.carried.log.push([+now.toFixed(1), Math.round(y)]);
+  if (u >= 1) { stripCarryStop(); carryLand(c.el); }
+}
+window.__strip.carry = stripCarry;
+window.__strip.brake = stripCarryBrake;
+/* Back and Forward between a choice and the place it left: put the place
+   back (and let go of any carry, which the reader has just overruled) */
+addEventListener("popstate", (e) => {
+  stripCarryStop();
+  const y = e.state && e.state.runY;
+  if (typeof y !== "number") return;
+  const put = () => { if (Math.abs(scrollY - y) > 1) window.scrollTo(0, y); };
+  put();
+  requestAnimationFrame(put);
+});
 /* the dialog may already hold a press that came before this module ran */
 STRIP.dispatchEvent(new Event("stripready"));
 /* THE STAMPS ARE A HIGH-WATER MARK AND THE CHIP IS NOT, and the two facts
@@ -11419,7 +11744,6 @@ function setStop(beat) {
     if (here) li.firstElementChild.setAttribute("aria-current", "location");
     else li.firstElementChild.removeAttribute("aria-current");
   });
-  stripMark(n);
 }
 /* the strip's open and close live in one place · see #manifest-js, which
    owns the whole dialog contract: focus, keys, inert, Escape, the scrim. */
@@ -11898,6 +12222,7 @@ function asmProbe() {
 window.__world.asmRest = () => [...asm.values()].every((e) => e.s === e.t && e.v === 0);
 
 function frame() {
+  if (carrying) stripCarryStep(performance.now()); /* the strip's carry leads the frame: see stripCarry */
   const y = scrollY;
   const changed = y !== lastY;
   /* THE ONE THING THAT MOVES WITHOUT A SCROLL. The engine stops when the page
@@ -11906,7 +12231,7 @@ function frame() {
      long as it runs, and not one frame longer. */
   const departing =
     release.t0 > 0 && performance.now() < release.t0 + release.tTail + 150;
-  const hand = stirring.size > 0;
+  const hand = stirring.size > 0 || carrying !== null;
   if (changed || departing || hand) { lastY = y; stillFrames = 0; } else { stillFrames++; }
   if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
   requestAnimationFrame(frame);
@@ -12014,7 +12339,6 @@ function work(y) {
   let stamped = 0;
   for (let i = 3; i <= 8; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
   if (stamped !== window.__world.stamped) setStamps(stamped);
-  setStop(beat); /* the cursor, both ways — its own writer, not the ratchet's */
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
   $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
@@ -12044,7 +12368,12 @@ function work(y) {
      at clockSegment(). The phase name rides the same index as the hour, so the
      masthead is one instrument rather than two that disagree in the
      corridors. */
-  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
+  /* and the strip's cursor reads the same instrument (v12): the chip's
+     number, .here and the travelling square all turn over at the kicker
+     crossing that turns the hour, so nothing in the masthead or the strip
+     disagrees with anything else in it. It was the beat box, whose top
+     a reader crosses before the kicker that names the stop. */
+  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); setStop(c.seg); stripPoint(c.seg, c.t); }
 
   /* fx: arrive → drift → depart, a pure function of position */
   if (FLAGS.has("nofx")) return;
@@ -13736,6 +14065,7 @@ const eatKeys = (e) => {
 };
 function holdScroll(ms) {
   if (scrollHeld || RM) return;
+  stripCarryStop(); /* the gate's carry wins over the strip's */
   scrollHeld = true;
   document.body.classList.add("carrying");
   addEventListener("wheel", eatScroll, { passive: false });
@@ -18893,7 +19223,7 @@ function settleAll() {
      22:32: one instrument reading two stops, which is the defect this day was
      spent removing everywhere else. setMast(11, 0) is the same minute, named by
      the stop that owns it. */
-  setStamps(6); setStop(11); setMast(11, 0);
+  setStamps(6); setStop(11); setMast(11, 0); stripPoint(11, 0);
   asmSettle();
 }
 async function boot() {
@@ -19152,8 +19482,8 @@ boot();
 <script id="manifest-js">
 /* THE STRIP IS A DIALOG, and this is its whole contract. It opens because
    someone asked, from the chip, and it closes on the second press, on its
-   own close, on Escape, on a tap outside, and on choosing a stop, which also
-   navigates: the row's own href rides. On open, focus goes to the stop the
+   own close, on Escape, on a tap outside, and on choosing a stop, which then
+   carries the page there (v12; see the click handler). On open, focus goes to the stop the
    reader is standing in and the page behind goes inert; on close, focus
    comes back to the chip. aria-expanded tracks the one class that decides
    the visible state. The masthead is NOT inert, on purpose: the chip has to
@@ -19170,7 +19500,7 @@ boot();
    the dialog for the masthead's name link (measured in the v9 strip lab;
    Chromium's order is the same either way). The arrows, Home and End walk
    the line, Left and Right along the desktop tape, Up and Down the column
-   (below 1024). Every move is made with preventScroll, so the page behind
+   (below 1280). Every move is made with preventScroll, so the page behind
    never scrolls, and the column brings the row into view itself. */
 (function () {
   var man = document.getElementById("manifest"),
@@ -19188,8 +19518,8 @@ boot();
   function focusables() {
     return all(FOCUSABLE).filter(function (el) { return el.getClientRects().length > 0; });
   }
-  /* the column below 1024, as the CSS lays it */
-  function column() { return matchMedia("(max-width:1023px)").matches; }
+  /* the column below 1280, as the CSS lays it */
+  function column() { return matchMedia("(max-width:1279px)").matches; }
   function go(el) {
     el.focus({ preventScroll: true });
     if (!column() || !clip) return;
@@ -19218,6 +19548,7 @@ boot();
     if (!window.__strip) { queued = !queued; return; }
     open = true;
     var g = ++gen;
+    if (window.__strip.brake) window.__strip.brake(); /* a carry in flight comes to rest under the strip */
     man.hidden = false;
     scr.hidden = false;
     if (main) main.inert = true;
@@ -19232,7 +19563,7 @@ boot();
     if (cur) cur.focus({ preventScroll: true });
     settle(MS.open, function () { if (g === gen && open) man.setAttribute("data-state", "open"); });
   }
-  function hide(why) {
+  function hide(why, then) {
     if (!open) return;
     open = false;
     var g = ++gen;
@@ -19250,6 +19581,7 @@ boot();
       man.hidden = true;
       scr.hidden = true;
       man.setAttribute("data-state", "closed");
+      if (then) then();
     });
   }
   man.setAttribute("data-state", "closed");
@@ -19259,9 +19591,21 @@ boot();
     if (open) hide("chip"); else show();
   });
   scr.addEventListener("click", function () { hide("scrim"); });
+  /* A CHOICE IS CARRIED (v12): the strip reels home first, and then the
+     engine carries the page to the stop (stripCarry, in the engine, says
+     how and why). The row's own jump is stopped; a press that asks for a
+     new tab or window is the browser's and is left alone. Without the
+     engine the hash is set, which is the jump the row always made. */
   man.addEventListener("click", function (e) {
-    if (e.target.closest(".mclose")) hide("close");
-    else if (e.target.closest(".mrow")) hide("choose"); /* the link's own navigation rides */
+    if (e.target.closest(".mclose")) { hide("close"); return; }
+    var a = e.target.closest(".mrow");
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    var hash = a.getAttribute("href");
+    hide("choose", function () {
+      if (!window.__strip) location.hash = hash; /* no engine: the row's own jump */
+      else window.__strip.carry(hash); /* false while the gate holds the scroll: the choice only closes */
+    });
   });
   document.addEventListener("keydown", function (e) {
     if (!open) return;

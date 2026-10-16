@@ -11,6 +11,8 @@ import { expect, test, type Page } from "@playwright/test";
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
+ *   S1–S5 · the stops: the square travels, a choice is carried, reduced
+ *           motion jumps, a hand takes the scroll back, the dialog contract
  *
  * EFFECTIVE is the whole point of G2 and G2b. The run scales type in two ways
  * that a computed `font-size` cannot see: `transform` on the station wrappers
@@ -830,7 +832,6 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: "#mcount", why: "which stop of twelve, as a position" },
   { sel: "#mpeek i", why: "the run's closing time, in the first-scroll hint" },
   { sel: "#manifest .mt", why: "each stop's departure time in the timetable" },
-  { sel: "#manifest .foot i", why: "the run's closing time" },
   { sel: ".ladder", why: "the gate timetable: each stop's departure time" },
   { sel: ".approvebar .lt", why: "the last stop's own departure time, 22:41" },
   { sel: ".figsvg text", why: "figure labels — annotation on a drawing" },
@@ -999,7 +1000,8 @@ test.describe("G3 · mono only on machine values", () => {
 
 /* G3 · THE OPEN STRIP. The sweep above never opens the line diagram, so
    every face inside it went unchecked: the allowlist names `#manifest .mt`
-   and `#manifest .foot i`, but an unused entry is only logged. This opens the
+   (and named `#manifest .foot i` until v12's foot lost its clock), but an
+   unused entry is only logged. This opens the
    strip at the gate, where every stop's metric is printed, and walks its
    text alone: the clocks, the serial and the metric values may be mono, the
    names, the nouns and the metric words may not. The control forces the
@@ -1082,7 +1084,8 @@ test.describe("G3 · mono only on machine values, the strip open", () => {
         expect(stamped, "every project's metric is printed at the gate").toBe(
           6
         );
-        /* twelve clocks, the serial, the closing time and six values */
+        /* twelve clocks, the serial and six values: 19 (v12: the foot's
+           closing time went, it is the gate's own clock) */
         expect(mono, "the strip's machine values were found").toBeGreaterThan(
           18
         );
@@ -2435,5 +2438,383 @@ test.describe("G10c / G10d · positive controls", () => {
       n,
       "no seating means no stubs, and G10d's count is what sees it"
     ).toBe(0);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   S1–S5 · the stops (v12): the pointer travels with the page, and a stop
+   chosen from the strip is carried there by a visible scroll
+
+   Until v12 nothing bound the strip's dialog contract at all: G3 and G4
+   open it, and no spec ever pressed a row. These do, on the served page.
+   Each gate has a control built from the defect it exists to catch, made
+   by `inject` on the page's own source, and the control must go red.
+
+   Every expected value is computed HERE from layout (offsetTop chains, the
+   kicker centres the clock is anchored on, 0.62 of the viewport), never read
+   back from the probe that drives the square, so the gate cannot agree with
+   the engine by construction. The scroll during a carry is sampled by the
+   test's own rAF loop, not the engine's, which goes quiet when the page is
+   still and would report its own silence as the page's.
+   ══════════════════════════════════════════════════════════════════════ */
+type StripProbe = {
+  landed: { hash: string; y: number } | null;
+  carrying?: boolean;
+};
+
+/** the square's centre against the clock's own fraction, in tape px */
+const SQUARE_VS_CLOCK = () => {
+  const abs = (el: HTMLElement | null) => {
+    let y = 0;
+    while (el) {
+      y += el.offsetTop;
+      el = el.offsetParent as HTMLElement | null;
+    }
+    return y;
+  };
+  const vh = innerHeight;
+  const line = scrollY + 0.62 * vh;
+  const beats = [...document.querySelectorAll<HTMLElement>(".beat")];
+  const anchor = (i: number) => {
+    if (i === 0) return 0.62 * vh;
+    const k = beats[i].querySelector<HTMLElement>(".kicker");
+    return k ? abs(k) + k.offsetHeight / 2 : abs(beats[i]);
+  };
+  let seg = 0;
+  for (let i = 0; i < 12; i++) if (line >= anchor(i)) seg = i;
+  const t =
+    seg >= 11
+      ? 0
+      : Math.min(
+          1,
+          Math.max(0, (line - anchor(seg)) / (anchor(seg + 1) - anchor(seg)))
+        );
+  const S = document.getElementById("manifest")!;
+  const tape = S.querySelector(".tape")!.getBoundingClientRect();
+  const lis = [...S.querySelectorAll(".line li")];
+  /* a tick is a stop's li's left edge on the tape */
+  const tick = (i: number) => lis[i].getBoundingClientRect().left - tape.left;
+  const want = tick(seg) + t * (tick(seg + 1) - tick(seg));
+  const you = S.querySelector(".you")!.getBoundingClientRect();
+  const got = you.left + you.width / 2 - tape.left;
+  const here = lis.findIndex((l) => l.classList.contains("here")) + 1;
+  return {
+    seg,
+    t,
+    d: got - want,
+    here,
+    chip: document.getElementById("mcount")!.textContent,
+  };
+};
+
+const kickerCentre = (page: Page, id: string) =>
+  page.evaluate((id) => {
+    let el = document
+      .getElementById(id)!
+      .querySelector<HTMLElement>(".kicker") as HTMLElement | null;
+    const h = el!.offsetHeight;
+    let y = 0;
+    while (el) {
+      y += el.offsetTop;
+      el = el.offsetParent as HTMLElement | null;
+    }
+    return y + h / 2;
+  }, id);
+
+/** three parks inside glyph's leg, with the strip open while the page scrolls */
+async function squareThroughGlyph(page: Page) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await arrive(page);
+  const a = await kickerCentre(page, "glyph");
+  const b = await kickerCentre(page, "jetpack-compress");
+  const park = (f: number) => Math.round(a + f * (b - a) - 0.62 * 900);
+  await page.evaluate((y) => window.scrollTo(0, y), park(0.2));
+  await page.waitForTimeout(600);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1200);
+  const out = [];
+  for (const f of [0.2, 0.5, 0.8]) {
+    await page.evaluate((y) => window.scrollTo(0, y), park(f));
+    await page.waitForTimeout(400);
+    out.push(await page.evaluate(SQUARE_VS_CLOCK));
+  }
+  return out;
+}
+
+/** choose a stop from the strip and sample scrollY on the test's own rAF */
+async function chooseAndWatch(page: Page, from: number, href: string) {
+  await page.evaluate((y) => window.scrollTo(0, y), from);
+  await page.waitForTimeout(1200);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1100);
+  await page.evaluate(() => {
+    const w = window as unknown as { __ys: number[]; __strip: StripProbe };
+    w.__ys = [];
+    w.__strip.landed = null;
+    const tick = () => {
+      w.__ys.push(Math.round(scrollY));
+      if (w.__ys.length < 900) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  await page.locator(`#manifest .mrow[href="${href}"]`).click();
+  await page.waitForFunction(
+    () => (window as unknown as { __strip: StripProbe }).__strip.landed,
+    null,
+    { timeout: 10_000 }
+  );
+  await page.waitForTimeout(300);
+  return page.evaluate((href) => {
+    const ys = (window as unknown as { __ys: number[] }).__ys.splice(0);
+    const el = document.querySelector<HTMLElement>(href)!;
+    const park = Math.min(
+      Math.round(el.getBoundingClientRect().top + scrollY),
+      document.documentElement.scrollHeight - innerHeight
+    );
+    const first = ys[0];
+    const between = new Set(
+      ys.filter((y) => (y - first) * (park - y) > 0 && y !== park)
+    );
+    let mono = true;
+    const dir = Math.sign(park - first);
+    for (let i = 1; i < ys.length; i++)
+      if (Math.sign(ys[i] - ys[i - 1]) === -dir) mono = false;
+    return {
+      first,
+      park,
+      end: Math.round(scrollY),
+      between: between.size,
+      distinct: new Set(ys).size,
+      mono,
+      hash: location.hash,
+      focus: document.activeElement?.id ?? "",
+    };
+  }, href);
+}
+
+test.describe("S1 · the square travels with the page", () => {
+  test("it stands where the clock reads, inside the stop's leg", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const parks = await squareThroughGlyph(page);
+    for (const p of parks) {
+      expect(p.seg, "the three parks are inside glyph's leg").toBe(5);
+      expect(
+        Math.abs(p.d),
+        `the square is ${p.d.toFixed(2)}px from the clock's fraction ${p.t.toFixed(3)}`
+      ).toBeLessThanOrEqual(1);
+      expect(p.here, "the strip's here is the stop the clock names").toBe(6);
+      expect(p.chip, "the chip counts the same stop").toBe("06 / 12");
+    }
+    expect(
+      parks[2].t - parks[0].t,
+      "the parks span the leg, so a square that stood still would show"
+    ).toBeGreaterThan(0.5);
+  });
+
+  test("control: a square pinned at its stop's tick is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const TARGET = "const x = stripAt(stripSeg + stripT), far";
+    const [mark] = await inject(page, [
+      [TARGET, "const x = stripAt(stripSeg), far"],
+    ]);
+    const parks = await squareThroughGlyph(page);
+    expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
+    expect(
+      Math.max(...parks.map((p) => Math.abs(p.d))),
+      "a square on the tick is most of a leg from the clock's fraction"
+    ).toBeGreaterThan(1);
+  });
+});
+
+test.describe("S2 · a chosen stop is carried by a visible scroll", () => {
+  test("¶01 to ¶10: many steps, one way, ending on the anchor's park", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await arrive(page);
+    const r = await chooseAndWatch(page, 0, "#review");
+    expect(
+      r.between,
+      "positions strictly between where the reader was and the stop"
+    ).toBeGreaterThanOrEqual(30);
+    expect(r.mono, "the carry never turns back").toBe(true);
+    expect(r.end, "it ends on the anchor's own park").toBe(r.park);
+    expect(r.hash, "the hash is the stop's").toBe("#review");
+    expect(r.focus, "the station holds the focus").toBe("review");
+  });
+
+  test("control: the instant jump it replaced is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const TARGET = "if (RM || Math.abs(to - from) < 2) {";
+    const [mark] = await inject(page, [[TARGET, "if (true) {"]]);
+    await arrive(page);
+    const r = await chooseAndWatch(page, 0, "#review");
+    expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
+    expect(r.end, "the jump still lands").toBe(r.park);
+    expect(
+      r.between,
+      "a jump passes through nothing, and S2 must say so"
+    ).toBeLessThan(30);
+  });
+});
+
+test.describe("S3 · reduced motion jumps", () => {
+  for (const reduce of [true, false]) {
+    test(
+      reduce
+        ? "under reduced motion a choice is one jump"
+        : "control: without it the same probe sees the carry",
+      async ({ browser, baseURL }, testInfo) => {
+        testInfo.setTimeout(120_000);
+        const ctx = await browser.newContext({
+          viewport: { width: 1440, height: 900 },
+          reducedMotion: reduce ? "reduce" : "no-preference",
+          baseURL,
+        });
+        try {
+          const page = await ctx.newPage();
+          await arrive(page);
+          const r = await chooseAndWatch(page, 0, "#glyph");
+          expect(r.end, "it lands on the anchor's park").toBe(r.park);
+          expect(r.hash).toBe("#glyph");
+          expect(r.focus).toBe("glyph");
+          if (reduce)
+            expect(
+              r.distinct,
+              "two scroll positions: where it was, and the stop"
+            ).toBeLessThanOrEqual(2);
+          else
+            expect(
+              r.distinct,
+              "a carry writes many positions; the probe can see them"
+            ).toBeGreaterThan(10);
+        } finally {
+          await ctx.close();
+        }
+      }
+    );
+  }
+});
+
+/** start ¶01 to the gate, wheel once a third of the way, report where it stopped */
+async function wheelDuringCarry(page: Page) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await arrive(page);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1100);
+  await page.locator('#manifest .mrow[href="#gate"]').click();
+  await page.waitForFunction(() => scrollY > 3000, null, { timeout: 10_000 });
+  await page.mouse.move(720, 600);
+  await page.mouse.wheel(0, 120);
+  const atWheel = await page.evaluate(() => scrollY);
+  await page.waitForTimeout(2500);
+  return page.evaluate((atWheel) => {
+    const el = document.getElementById("gate")!;
+    const park = Math.min(
+      Math.round(el.getBoundingClientRect().top + scrollY),
+      document.documentElement.scrollHeight - innerHeight
+    );
+    const s = (window as unknown as { __strip: StripProbe }).__strip;
+    return {
+      atWheel,
+      end: scrollY,
+      park,
+      carrying: !!s.carrying,
+      landed: !!s.landed,
+    };
+  }, atWheel);
+}
+
+test.describe("S4 · a hand during the carry takes the scroll back", () => {
+  test("a wheel stops it where it is", async ({ page }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const r = await wheelDuringCarry(page);
+    expect(r.carrying, "the carry has let go").toBe(false);
+    expect(r.landed, "and never landed").toBe(false);
+    expect(
+      r.end - r.atWheel,
+      "it stopped within a wheel's reach of where the hand met it"
+    ).toBeLessThan(600);
+    expect(r.park - r.end, "far short of the gate").toBeGreaterThan(3000);
+  });
+
+  test("control: a carry that ignores the hand is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const TARGET = "function carryHand(e) {\n  if (!carrying) return;";
+    const [mark] = await inject(page, [
+      [TARGET, "function carryHand(e) {\n  return;"],
+    ]);
+    const r = await wheelDuringCarry(page);
+    expect(mark.hit, "carryHand's guard is still in the run").toBe(true);
+    expect(r.landed, "deaf to the hand, it runs on to the gate").toBe(true);
+    expect(
+      Math.abs(r.park - r.end),
+      "and S4's distance check would have failed"
+    ).toBeLessThan(3000);
+  });
+});
+
+test.describe("S5 · the strip's dialog contract", () => {
+  test("open, Escape, focus and inert", async ({ page }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await arrive(page);
+    await page.evaluate(() =>
+      window.scrollTo(
+        0,
+        document.getElementById("cadence")!.getBoundingClientRect().top +
+          scrollY
+      )
+    );
+    await page.waitForTimeout(800);
+    const before = await page.evaluate(() => scrollY);
+    await page.locator("#mtoggle").click();
+    await page.waitForTimeout(1100);
+    const open = await page.evaluate(() => ({
+      expanded: document
+        .getElementById("mtoggle")!
+        .getAttribute("aria-expanded"),
+      hidden: document.getElementById("manifest")!.hidden,
+      inert: document.querySelector("main")!.inert,
+      focus: document.activeElement?.getAttribute("href"),
+      current: document
+        .querySelector("#manifest .mrow[aria-current]")
+        ?.getAttribute("href"),
+      name: document.getElementById("mtitle")!.textContent,
+    }));
+    expect(open.expanded).toBe("true");
+    expect(open.hidden).toBe(false);
+    expect(open.inert, "the page behind is inert").toBe(true);
+    expect(open.focus, "focus lands on the stop the reader is in").toBe(
+      open.current
+    );
+    expect(open.current).toBe("#cadence");
+    expect(open.name, "the dialog is named").toBe("run 042, all twelve stops");
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(800);
+    const shut = await page.evaluate(() => ({
+      expanded: document
+        .getElementById("mtoggle")!
+        .getAttribute("aria-expanded"),
+      hidden: document.getElementById("manifest")!.hidden,
+      inert: document.querySelector("main")!.inert,
+      focus: document.activeElement?.id,
+      y: scrollY,
+    }));
+    expect(shut.expanded).toBe("false");
+    expect(shut.hidden, "closed means hidden").toBe(true);
+    expect(shut.inert).toBe(false);
+    expect(shut.focus, "focus comes back to the chip").toBe("mtoggle");
+    expect(shut.y, "nothing scrolled the page").toBe(before);
   });
 });
