@@ -1140,7 +1140,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        together on the platform's public landing page. */
     collaborator: {
       name: "Shree Chaturvedi",
-      href: "https://www.linkedin.com/in/chaturs/",
+      href: "https://www.linkedin.com/in/shreechaturvedi/",
       scope: "capstone teammate",
     },
     timeframe: "2025-09 to Present",
@@ -2823,7 +2823,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "C++ performance engineer, two-person project, my slice below",
     collaborator: {
       name: "Shree Chaturvedi",
-      href: "https://www.linkedin.com/in/chaturs/",
+      href: "https://www.linkedin.com/in/shreechaturvedi/",
       scope: "the SIMD kernels, written together",
     },
     timeframe: "2025-10 to 2026-01",

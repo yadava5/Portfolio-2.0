@@ -69,9 +69,11 @@ export const testimonials: Testimonial[] = [
     id: "randall-vollen",
     name: "Randall Vollen",
     /* CURRENT position, not the one held when the recommendation was written.
-       Verified on LinkedIn 2026-08-10: Applied AI & Data Principal at CBTS
-       since Jul 2026; the Miami University entry (Institutional Director of
-       BI, Data Management & Analytics, 2025–2026) now carries an end date.
+       Verified on LinkedIn 2026-10-16 (Experience section): "Super
+       Intelligence & Data Principal", CBTS, Full-time, Mar 2026 - Present.
+       The 2026-08-10 check read "Applied AI & Data Principal" for the same
+       CBTS role; the Miami University entry (Institutional Director of BI,
+       Data Management & Analytics, 2025–2026) carries an end date.
 
        The tense split here is deliberate and it is the whole point of having
        both fields. `title`/`company` answer "who is this person, and will the
@@ -87,7 +89,7 @@ export const testimonials: Testimonial[] = [
        employer, which is why the stale `company: "Miami University"` beside
        it went unnoticed for months. Read the Experience section, not the
        headline. */
-    title: "Applied AI & Data Principal",
+    title: "Super Intelligence & Data Principal",
     company: "CBTS",
     relationship: "manager",
     quote:
@@ -110,8 +112,15 @@ export const testimonials: Testimonial[] = [
   {
     id: "shree-chaturvedi",
     name: "Shree Chaturvedi",
-    /* Verified on LinkedIn and shreechaturvedi.com, 2026-08-10. Two changes,
-       and the second is the one that mattered.
+    /* CURRENT position. Verified on LinkedIn 2026-10-16 (Experience section,
+       the one entry with no end date): "Software Engineer", Apple, Full-time,
+       Oct 2026 - Present, on FoundationDB. His profile's canonical address is
+       now /in/shreechaturvedi/ (/in/chaturs/ redirects to it). His own site
+       still says he is looking; LinkedIn is the newer of the two.
+
+       The history below is from the 2026-08-10 check, when he had no
+       current entry. Two changes then, and the second is the one that
+       mattered.
 
        First, tense: he graduated in May 2026, stated in his own words on his
        site ("graduated may 2026") and in a LinkedIn post ("now that I've
@@ -126,13 +135,13 @@ export const testimonials: Testimonial[] = [
        Education entry and his own résumé. Overstating a real person's
        credentials on a page that exists to argue for careful claims is the
        specific failure this site cannot afford. */
-    title: "B.S. Computer Science, Minor in Mathematics",
-    company: "Miami University",
+    title: "Software Engineer",
+    company: "Apple",
     relationship: "colleague",
     quote:
       "Ayush was my teammate for our senior design project (capstone). He always brought good energy in meetings and came up with his own ideas. He showed strong aptitude and willingness to learn and adapt to new problem domains. I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work. I'm confident he would be a valuable member in any development team.",
     date: "2026-01",
-    linkedInUrl: "https://www.linkedin.com/in/chaturs/",
+    linkedInUrl: "https://www.linkedin.com/in/shreechaturvedi/",
     /* Surfaced: ¶11 prints this recommendation beside Randall's and names
        the stations each writer saw (Glyph and the AutoML capstone for
        this one). A note here used to say it was deliberately kept off the
