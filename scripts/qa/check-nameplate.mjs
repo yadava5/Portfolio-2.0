@@ -27,12 +27,16 @@
  *   4 · The type does not       np-settype animated Fraunces' opsz and wght,
  *       change width.           which resize glyphs: 78.3px of drift with the
  *                               machines drawn at the settled positions.
- *   5 · The hand replays        From 2026-10-09 a swoosh's crest and a press
- *       nothing.                re-ran a machine letter as an overlay riding
- *                               the wave; the owner ruled them out on
+ *   5 · The hand scatters,      From 2026-10-09 a swoosh's crest and a press
+ *       re-prints exactly,      re-ran a machine letter as an overlay riding
+ *       and replays nothing.    the wave; the owner ruled them out on
  *                               2026-10-16 ("not smooth ... run weirdly").
  *                               The assembly runs once, and again only from
- *                               "watch it again".
+ *                               "watch it again". The hand now scatters the
+ *                               name into its print screen; the lab found
+ *                               its holes (tmp/v13/lab/NAME NOTE.md), and
+ *                               the four checks here are the ones a page
+ *                               could ship broken without anyone seeing.
  *
  * Run against `out/`, which is what actually ships.
  */
@@ -95,7 +99,9 @@ let browser;
 try {
   const { chromium } = await import("@playwright/test");
   browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+  });
 
   /* Count performances by watching the overlay appear, not by trusting a
      flag the page could set wrongly. */
@@ -112,13 +118,16 @@ try {
           for (const n of m.addedNodes) {
             if (n.nodeType !== 1) continue;
             if (n.matches?.("svg.np-mech")) window.__npRuns++;
-            if (n.matches?.("svg") || n.querySelector?.("svg")) window.__npSvgs++;
+            if (n.matches?.("svg") || n.querySelector?.("svg"))
+              window.__npSvgs++;
           }
       }).observe(plate, { childList: true, subtree: true });
     });
   });
 
-  await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
+  await page.goto(`http://127.0.0.1:${port}/`, {
+    waitUntil: "domcontentloaded",
+  });
 
   /* ── Geometry, sampled THROUGH the run ─────────────────────────────── */
   const sample = () =>
@@ -181,29 +190,50 @@ try {
     `${runs} performance${runs === 1 ? "" : "s"} in 24s of sitting still`
   );
 
-  /* ── The hand replays nothing (5). A swoosh fast enough to have fired a
-     machine (the old threshold was 0.8 of the swell, ~7.7 em/s; these run
-     ~25), placed by the clock so every engine sweeps at one speed, then a
+  /* ── The hand (5): it scatters the set name and re-prints it, and it
+     replays no machine. Three fast swooshes placed by the clock, so every
+     engine sweeps at one speed, a pointer that jumps off the name, and a
      press on each of the five machine letters. Sampled by the page's own
-     frames: no SVG of any class joins the plate, and no letter's opacity
-     leaves 1 (an answer faded its letter out under the machine). ── */
+     frames, every frame:
+       a · no SVG of any class joins the plate, and the name still
+           performed exactly once (the replays, ruled out 2026-10-16);
+       b · the swoosh actually scatters the name (a hover that is dead code
+           would pass every other line here);
+       c · no letter is ever veiled while the dot canvas is hidden (the swap
+           is a crumble: a hidden letter with no canvas over it is a hole);
+       d · it comes back exactly, and soon: within 3s of the hand leaving,
+           every span's style is its own, every letter is opaque, the canvas
+           is hidden and the engine has stopped. ── */
+  await page
+    .waitForFunction(() => window.__world?.name?.()?.ready === true, null, {
+      timeout: 8000,
+    })
+    .catch(() => {});
   const hb = await page.evaluate(() => {
-    const r = document.querySelector("[data-nameplate] h1").getBoundingClientRect();
+    const r = document
+      .querySelector("[data-nameplate] h1")
+      .getBoundingClientRect();
     return { x: r.x, y: r.y, w: r.width, h: r.height };
   });
   const svgs0 = await page.evaluate(() => {
     const w = window;
-    w.__npMinOp = 1;
+    const plate = document.querySelector("[data-nameplate]");
+    const L = [...plate.querySelectorAll(".np-ch")];
+    w.__npSnap = L.map((l) => l.style.cssText).join("|");
+    w.__npGap = 0;
     w.__npWatch = true;
-    const L = [...document.querySelectorAll("[data-nameplate] .np-ch")];
     const tick = () => {
-      for (const l of L) w.__npMinOp = Math.min(w.__npMinOp, +getComputedStyle(l).opacity);
+      const cv = plate.querySelector("canvas");
+      const shown = cv && getComputedStyle(cv).visibility === "visible";
+      if (!shown && L.some((l) => +getComputedStyle(l).opacity < 0.999))
+        w.__npGap++;
       if (w.__npWatch) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
     return w.__npSvgs;
   });
   const hy = hb.y + hb.h * 0.55;
+  let broken = 0;
   for (const dir of [1, -1, 1]) {
     const x0 = dir > 0 ? hb.x - 60 : hb.x + hb.w + 60;
     const x1 = dir > 0 ? hb.x + hb.w + 60 : hb.x - 60;
@@ -213,17 +243,47 @@ try {
       u = Math.min(1, (Date.now() - t0) / 350);
       await page.mouse.move(x0 + (x1 - x0) * u, hy);
     }
+    broken = Math.max(
+      broken,
+      await page.evaluate(
+        () => window.__world.name()?.episode.broken.length ?? 0
+      )
+    );
     await page.waitForTimeout(500);
   }
+  /* the pointer jumps off the name in one event: not a hand */
+  await page.mouse.move(hb.x + hb.w * 0.5, hy);
+  await page.mouse.move(hb.x + hb.w + 600, hb.y + 600);
   for (const i of [0, 3, 7, 9, 10]) {
     await page.locator("[data-nameplate] .np-ch").nth(i).click();
     await page.waitForTimeout(250);
   }
   await page.mouse.move(hb.x + hb.w + 300, hb.y + 500);
-  await page.waitForTimeout(1500);
+  const settled = await page.evaluate(async () => {
+    const t0 = performance.now();
+    while (
+      performance.now() - t0 < 3000 &&
+      (window.__world.name()?.live || window.__world.hand() > 0)
+    )
+      await new Promise((r) => requestAnimationFrame(r));
+    return Math.round(performance.now() - t0);
+  });
+  await page.waitForTimeout(200);
   const handed = await page.evaluate(() => {
     window.__npWatch = false;
-    return { svgs: window.__npSvgs, minOp: window.__npMinOp, runs: window.__npRuns };
+    const plate = document.querySelector("[data-nameplate]");
+    const L = [...plate.querySelectorAll(".np-ch")];
+    const cv = plate.querySelector("canvas");
+    return {
+      svgs: window.__npSvgs,
+      runs: window.__npRuns,
+      gap: window.__npGap,
+      styles: L.map((l) => l.style.cssText).join("|") === window.__npSnap,
+      opaque: L.every((l) => getComputedStyle(l).opacity === "1"),
+      canvasHidden: !cv || getComputedStyle(cv).visibility === "hidden",
+      idle: window.__world.hand() === 0,
+      probe: window.__world.name(),
+    };
   });
   check(
     handed.svgs === svgs0 && handed.runs === 1,
@@ -231,9 +291,24 @@ try {
     `${handed.svgs - svgs0} overlay(s) and ${handed.runs - 1} performance(s) from 3 swooshes and 5 presses`
   );
   check(
-    handed.minOp > 0.999,
-    "the hand never fades a letter",
-    `lowest letter opacity seen ${handed.minOp.toFixed(3)}`
+    broken >= 8,
+    "a swoosh scatters the name",
+    `${broken} of 10 letters broken by one 350ms swoosh`
+  );
+  check(
+    handed.gap === 0,
+    "no letter is hidden without its dots",
+    `${handed.gap} frame(s) with a veiled letter and no canvas`
+  );
+  check(
+    settled < 3000 &&
+      handed.styles &&
+      handed.opaque &&
+      handed.canvasHidden &&
+      handed.idle &&
+      handed.probe?.rest === true,
+    "the name re-prints exactly, within 3s",
+    `${settled}ms to rest; styles ${handed.styles}, opaque ${handed.opaque}, canvas hidden ${handed.canvasHidden}, engine idle ${handed.idle}, probe rest ${handed.probe?.rest}`
   );
 
   /* ── The replay, which is the only place defect 2 is visible. ───────── */
@@ -279,7 +354,9 @@ try {
      the type's wrap or scale is where a box mismatch would resurface. ── */
   for (const w of [320, 768]) {
     const np = await browser.newPage({ viewport: { width: w, height: 900 } });
-    await np.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
+    await np.goto(`http://127.0.0.1:${port}/`, {
+      waitUntil: "domcontentloaded",
+    });
     await np.waitForTimeout(1600);
     const g = await np.evaluate(() => {
       const svg = document.querySelector("svg.np-mech");
@@ -291,15 +368,31 @@ try {
       return {
         scale: +Math.min(sb.width / vb[2], sb.height / vb[3]).toFixed(4),
         dTop: +(sb.top - hb.top).toFixed(1),
-        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        overflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
       };
     });
     if (!g) {
-      notes.push(`  · ${w}px — no overlay at this width, geometry checks skipped`);
+      notes.push(
+        `  · ${w}px — no overlay at this width, geometry checks skipped`
+      );
     } else {
-      check(Math.abs(g.scale - 1) < 0.002, `the overlay is unscaled at ${w}px`, `scale ${g.scale}`);
-      check(Math.abs(g.dTop) < 1.5, `the overlay sits on the type at ${w}px`, `${g.dTop}px offset`);
-      check(g.overflow <= 0, `the page does not scroll sideways at ${w}px`, `${g.overflow}px of overflow`);
+      check(
+        Math.abs(g.scale - 1) < 0.002,
+        `the overlay is unscaled at ${w}px`,
+        `scale ${g.scale}`
+      );
+      check(
+        Math.abs(g.dTop) < 1.5,
+        `the overlay sits on the type at ${w}px`,
+        `${g.dTop}px offset`
+      );
+      check(
+        g.overflow <= 0,
+        `the page does not scroll sideways at ${w}px`,
+        `${g.overflow}px of overflow`
+      );
     }
     await np.close();
   }
@@ -344,7 +437,9 @@ try {
 
 for (const n of notes) console.log(n);
 if (fails.length) {
-  console.error(`\ncheck-nameplate FAILED — ${fails.length} broken invariant(s):`);
+  console.error(
+    `\ncheck-nameplate FAILED — ${fails.length} broken invariant(s):`
+  );
   for (const f of fails) console.error(f);
   process.exit(1);
 }

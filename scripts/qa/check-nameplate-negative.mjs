@@ -19,6 +19,8 @@ import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const SRC = resolve(process.cwd(), "out");
+/** the compiled scatter, relative to the site root */
+const SCATTER_JS = "run/components/story/nameScatter.js";
 /** the line that mounts the hand on the settled name, verbatim in the page */
 const MOUNT = "hand = M.mountNameHand(plate, h1, letters, geo, window.__stir);";
 
@@ -90,14 +92,46 @@ const DEFECTS = [
   {
     name: "the hover replays the assembly",
     apply: (s) =>
-      s.replace(MOUNT, `${MOUNT} h1.addEventListener("pointerenter", () => perform());`),
+      s.replace(
+        MOUNT,
+        `${MOUNT} h1.addEventListener("pointerenter", () => perform());`
+      ),
     landed: (s) => s.includes(`${MOUNT} h1.addEventListener("pointerenter"`),
   },
   {
     name: "a press replays the assembly",
     apply: (s) =>
-      s.replace(MOUNT, `${MOUNT} h1.addEventListener("pointerdown", () => perform());`),
+      s.replace(
+        MOUNT,
+        `${MOUNT} h1.addEventListener("pointerdown", () => perform());`
+      ),
     landed: (s) => s.includes(`${MOUNT} h1.addEventListener("pointerdown"`),
+  },
+  /* The scatter's own three ways to ship broken. Each breaks the compiled
+     module or the mount, the way a regression would. */
+  {
+    name: "the hover is dead (the scatter never mounts)",
+    apply: (s) => s.replace(MOUNT, "/* hand removed */"),
+    landed: (s) => !s.includes(MOUNT) && s.includes("/* hand removed */"),
+  },
+  {
+    name: "a letter hides with no dots over it (the canvas is never shown)",
+    file: SCATTER_JS,
+    apply: (s) =>
+      s.replace('if (cv.style.visibility !== "visible")', "if (false)"),
+    landed: (s) =>
+      !s.includes('if (cv.style.visibility !== "visible")') &&
+      s.includes("if (false)"),
+  },
+  {
+    name: "the name never re-prints (no dot can seat)",
+    file: SCATTER_JS,
+    apply: (s) =>
+      s.replace(
+        "x[k] * x[k] + y[k] * y[k] < 0.12",
+        "x[k] * x[k] + y[k] * y[k] < -1"
+      ),
+    landed: (s) => s.includes("x[k] * x[k] + y[k] * y[k] < -1"),
   },
 ];
 
@@ -106,12 +140,14 @@ for (const d of DEFECTS) {
   const dir = await mkdtemp(join(tmpdir(), "np-neg-"));
   try {
     await cp(SRC, join(dir, "out"), { recursive: true });
-    const f = join(dir, "out", "index.html");
+    const f = join(dir, "out", d.file ?? "index.html");
     const before = await readFile(f, "utf8");
     const after = d.apply(before);
 
     if (after === before || !d.landed(after)) {
-      console.log(`  ✗ ${d.name}\n      INJECTION DID NOT LAND — this proves nothing`);
+      console.log(
+        `  ✗ ${d.name}\n      INJECTION DID NOT LAND — this proves nothing`
+      );
       missed++;
       continue;
     }
@@ -119,10 +155,14 @@ for (const d of DEFECTS) {
 
     let failed = false;
     try {
-      await run("node", ["scripts/qa/check-nameplate.mjs", "--root", join(dir, "out")], {
-        cwd: process.cwd(),
-        maxBuffer: 1 << 22,
-      });
+      await run(
+        "node",
+        ["scripts/qa/check-nameplate.mjs", "--root", join(dir, "out")],
+        {
+          cwd: process.cwd(),
+          maxBuffer: 1 << 22,
+        }
+      );
     } catch {
       failed = true;
     }
@@ -138,7 +178,9 @@ for (const d of DEFECTS) {
 }
 
 if (missed) {
-  console.error(`\ncheck-nameplate is blind to ${missed} of ${DEFECTS.length} defects`);
+  console.error(
+    `\ncheck-nameplate is blind to ${missed} of ${DEFECTS.length} defects`
+  );
   process.exit(1);
 }
 console.log(`\nall ${DEFECTS.length} defects are visible to check-nameplate`);

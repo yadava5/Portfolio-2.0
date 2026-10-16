@@ -683,14 +683,18 @@ test.describe("the tab mark is his name, and it stands still", () => {
    never comes back exactly to rest (an idle page that keeps painting, or a
    name left a pixel off its machines), it answers a cursor that is not
    moving (a page scrolled under a parked pointer), or it leaves copies of the
-   text behind (find-in-page and the accessibility tree see the word twice). */
+   text behind (find-in-page and the accessibility tree see the word twice).
+   Since 2026-10-16 the name's answer is the scatter (nameScatter.ts): the
+   same four rots, and the test that it replays none of the machines. */
 test.describe("the type answers the hand, and comes back to rest", () => {
   type Name = {
     live: boolean;
+    ready: boolean;
     driven: number;
     presses: number;
     peak: number;
     rest: boolean;
+    episode: { broken: number[]; maxLoose: number; maxJump: number };
   };
   type W = {
     __world: {
@@ -703,6 +707,12 @@ test.describe("the type answers the hand, and comes back to rest", () => {
   };
   const name = (page: import("@playwright/test").Page) =>
     page.evaluate(() => (window as unknown as W).__world.name?.() ?? null);
+  /* the scatter's dots are cut from a raster that loads after the name is
+     set: a gesture before it lands answers nothing, by design */
+  const scatterReady = (page: import("@playwright/test").Page) =>
+    expect
+      .poll(async () => (await name(page))?.ready ?? false, { timeout: 8000 })
+      .toBe(true);
   const counting = async (page: import("@playwright/test").Page) => {
     await page.addInitScript(() => {
       const raf = window.requestAnimationFrame.bind(window);
@@ -740,7 +750,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     }
   };
 
-  test("a swoosh across the name moves it, replays no machine, then nothing is left", async ({
+  test("a swoosh across the name scatters it, replays no machine, then it re-prints exactly", async ({
     page,
     isMobile,
   }) => {
@@ -748,7 +758,8 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     await counting(page);
     await page.goto("/");
     await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
-    await page.waitForTimeout(500);
+    await scatterReady(page);
+    await page.waitForTimeout(300);
     const before = await box(page, "h1.nameplate");
     const styles = await page.evaluate(() =>
       [...document.querySelectorAll("h1.nameplate .np-ch")].map(
@@ -765,8 +776,10 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     await sweep(page, before);
     const mid = await name(page);
     expect(mid?.live).toBe(true);
-    /* it moved: the bead chain lifted by a visible fraction of an em */
-    expect(mid!.peak).toBeGreaterThan(0.02);
+    /* it scattered: the dots flew a visible fraction of an em, from most of
+       the name's letters */
+    expect(mid!.peak).toBeGreaterThan(0.1);
+    expect(mid!.episode.broken.length).toBeGreaterThanOrEqual(8);
     /* and the assembly did NOT replay under it (owner, 2026-10-16: the
        machines run once, and again only from "watch it again") */
     expect(await svgs()).toBe(svg0);
@@ -824,7 +837,9 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     test.skip(isMobile, "no pointer to park on a phone");
     await page.goto("/");
     await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
-    await page.waitForTimeout(500);
+    /* armed, or "moves nothing" would be true of a scatter not yet loaded */
+    await scatterReady(page);
+    await page.waitForTimeout(300);
     const b = await box(page, "h1.nameplate");
     await page.mouse.move(b.x + b.w * 0.4, b.y + b.h * 0.55);
     await expect
@@ -857,14 +872,15 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     expect(scrolled!.rest).toBe(true);
   });
 
-  test("a tap on a phone presses the name, and it comes back to rest", async ({
+  test("a tap on a phone bursts the name, and it re-prints to rest", async ({
     page,
     isMobile,
   }) => {
     test.skip(!isMobile, "the desktop's hand is tested above");
     await page.goto("/");
     await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
-    await page.waitForTimeout(500);
+    await scatterReady(page);
+    await page.waitForTimeout(300);
     await page.locator("h1.nameplate .np-ch").nth(3).tap();
     await expect
       .poll(async () => (await name(page))?.presses ?? 0)
