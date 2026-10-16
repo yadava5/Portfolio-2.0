@@ -1943,11 +1943,12 @@ if (location.hash.length > 1) {
     height:1px; background:var(--hair-strong)}
   /* the plates: each one's stock is its own (a row's ::before, the name
      plate's .namebed), so a plate moves as one transform with its words; the
-     2 px inset leaves a 4 px gap of board between rows and a row plate 32.7
-     px tall at 1440 (the viewer's 32 px floor) */
+     1.6 px inset leaves a 3.2 px gap of board between rows and a row plate
+     32.4 px tall at 1440, the last one too (the viewer's 32 px floor) */
   .record .engcard header, .record .sigwell, .record .engrows li{position:relative; z-index:0}
   .record .sigwell, .record .engrows li{border-bottom-color:transparent}
-  .record .engrows li::before{content:""; position:absolute; z-index:-1; left:-8px; right:-8px; top:2px; bottom:2px; background:#fdf9f0}
+  .record .engrows li::before{content:""; position:absolute; z-index:-1; left:-8px; right:-8px; top:1.6px; bottom:1.6px; background:#fdf9f0}
+  .record .engrows li:last-child::before{bottom:0}
   .record .namebed{position:absolute; z-index:0; background:#fdf9f0}
   .record .bd{position:absolute; left:0; top:var(--f02-head); width:1px; height:1px; overflow:visible; pointer-events:none}
   .record .bdb{z-index:0} .record .bdf{z-index:2}
@@ -7623,11 +7624,11 @@ const F02 = {
   NAME: [0.86, 0.95], /* p · the pen, once the record is set; short of 1 so a park a hair under it still shows the name whole */
   WRITE_MS: 600,    /* the stroke's pace floor, end to end: one stroke, not letters */
   DEG: 40, K: 0.7,  /* fig. 03's oblique: depth recedes up and to the left */
-  PLATE: 10,        /* units · a plate stands this proud of the board */
+  PLATE: 7,         /* units · a plate stands this proud of the board: its top lip (3.2 px) fits the gap between rows, so no lip ever paints over the plate above */
   BODY: 24,         /* units · the board's own thickness behind its face */
   HELD: [44, 22],   /* units · how far in front of the board a plate waits: wide, narrow (the 390 staircase then stays on its screen, max x 381) */
   OVER: 8,          /* px · a plate runs this far past its words each side (the rows' ::before agrees) */
-  INSET: 2,         /* px · a row plate's inset top and bottom: the gap of board between rows is twice it */
+  INSET: 1.6,       /* px · a row plate's inset top and bottom: the gap of board between rows is twice it, and a row plate is 32.4 px tall at 1440 (the viewer's 32 px floor; measured off the build) */
   START: 0.92,      /* phone window · p 0 with this much of the stage on screen */
   FLOOR: 0.22,      /* phone window · never shorter than this many vh */
   MAST: 112,        /* phone window · the park never lifts the BOARD's top (its tab's top face) above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
@@ -7763,7 +7764,10 @@ function layWho() {
   Object.assign(f.bed.style, { left: `${(n0.x0 - (er.left - cr.left) * k).toFixed(2)}px`, top: `${(n0.y0 - (er.top - cr.top) * k).toFixed(2)}px`,
     width: `${(n0.x1 - n0.x0).toFixed(2)}px`, height: `${(n0.y1 - n0.y0).toFixed(2)}px` });
   const specs = [{ els: [f.bed, ink.querySelector("header"), ink.querySelector(".sigwell")], ...n0 }];
-  for (const li of ink.querySelectorAll(".engrows > li")) { const b = box(li); specs.push({ els: [li], x0: b.x0 - O, x1: b.x1 + O, y0: b.y0 + I, y1: b.y1 - I }); }
+  /* the last row has no rule under it (1 px shorter) and nothing below it,
+     so its plate keeps its full foot and stands as tall as the others */
+  const rows = [...ink.querySelectorAll(".engrows > li")];
+  rows.forEach((li, i) => { const b = box(li); specs.push({ els: [li], x0: b.x0 - O, x1: b.x1 + O, y0: b.y0 + I, y1: b.y1 - (i < rows.length - 1 ? I : 0) }); });
   f.plates = specs.map((s) => {
     const g = f02el("g", {}, front);
     f02block(g, s.x0, s.y0, s.x1, s.y1, 0, t, { top: ["ptop"], side: ["pside"], ln: "pl" });
