@@ -2494,6 +2494,15 @@ const SQUARE_VS_PARKS = () => {
   );
   let n = 0;
   for (let i = 1; i < 12; i++) if (scrollY >= parks[i]) n = i;
+  /* the stop the masthead names: the last kicker centre the reading line
+     (0.62 of the viewport) has crossed; segment 0 starts at the line's rest */
+  const beats = [...document.querySelectorAll<HTMLElement>(".beat")];
+  const line = scrollY + 0.62 * innerHeight;
+  let named = 0;
+  for (let i = 1; i < 12; i++) {
+    const k = beats[i].querySelector<HTMLElement>(".kicker");
+    if (k && line >= abs(k) + k.offsetHeight / 2) named = i;
+  }
   const t = n >= 11 ? 0 : (scrollY - parks[n]) / (parks[n + 1] - parks[n]);
   const tape = S.querySelector(".tape")!.getBoundingClientRect();
   /* the column below 1280 runs down the left; its tick is 21px into the row */
@@ -2510,6 +2519,7 @@ const SQUARE_VS_PARKS = () => {
   const here = lis.findIndex((l) => l.classList.contains("here")) + 1;
   return {
     n: n + 1,
+    named: named + 1,
     t,
     d: got - want,
     fromTick: got - tick(n),
@@ -2620,13 +2630,23 @@ test.describe("S1 · the square travels with the page", () => {
         Math.abs(p.d),
         `the square is ${p.d.toFixed(2)}px from the park fraction ${p.t.toFixed(3)}`
       ).toBeLessThanOrEqual(1);
-      expect(p.here, "the strip's here is the stop the parks name").toBe(6);
-      expect(p.chip, "the chip counts the same stop").toBe("06 / 12");
+      /* the chip and here turn over with the masthead's phase, at the
+         kicker crossing, which reaches the next stop before its park */
+      expect(p.here, "the strip's here is the stop the masthead names").toBe(
+        p.named
+      );
+      expect(p.chip, "the chip counts the same stop").toBe(
+        `${String(p.named).padStart(2, "0")} / 12`
+      );
     }
     expect(
       parks[2].t - parks[0].t,
       "the parks span the leg, so a square that stood still would show"
     ).toBeGreaterThan(0.5);
+    expect(
+      parks.map((p) => p.named),
+      "the three parks see the chip before and after the kicker crossing"
+    ).toEqual([6, 6, 7]);
   });
 
   for (const [w, h] of [
@@ -2667,12 +2687,11 @@ test.describe("S1 · the square travels with the page", () => {
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
-    const TARGET =
-      "{ const s = stripStopAt(y); setStop(s.n); stripPoint(s.n, s.t); }";
+    const TARGET = "{ const s = stripStopAt(y); stripPoint(s.n, s.t); }";
     const [mark] = await inject(page, [
       [
         TARGET,
-        "{ const s = clockSegment(y + vh * READ_LINE); setStop(s.seg); stripPoint(s.seg, s.t); }",
+        "{ const s = clockSegment(y + vh * READ_LINE); stripPoint(s.seg, s.t); }",
       ],
     ]);
     const r = await squareAfterCarry(page, 1440, 900);

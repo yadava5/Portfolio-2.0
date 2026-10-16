@@ -11375,9 +11375,16 @@ function stripFitColumn(opening) {
    17:11 there): the mirror image of the complaint (ruling, v12). The clock
    keeps its own kicker-centre lerp and the two no longer agree in the
    corridors, on purpose: the clock is the run's hour, the square is where
-   the reader is among the stops. The chip and .here turn over in the frame
-   the page reaches the next stop's park (setStop reads the same n), which is
-   the frame the square reaches that tick. Ends: the bar is the mark. At
+   the reader is among the stops. The chip and .here do NOT follow the
+   square: they turn over with the masthead's phase name at the kicker
+   crossing (work() says why), which comes about half a screen before the
+   next stop's park. So for that approach the open strip shows the next stop
+   in clay while the square is still running in toward its tick. That is
+   left as it is, on purpose: it is a line diagram's own announcement, the
+   next stop lit as the train comes into it, and the stop lit is the one
+   the reader is now reading (its kicker is on the reading line). Drawing
+   the square in some other state until it reaches the tick would add a
+   fourth mark for a half-screen moment. Ends: the bar is the mark. At
    06:12 until the square has cleared the bar, and from the gate's park on
    (the last park; ¶13 is not a stop of this run), the square is put away
    and the bar turns clay. Only the transform and the clip are written per
@@ -12297,13 +12304,14 @@ function work(y) {
      at clockSegment(). The phase name rides the same index as the hour, so the
      masthead is one instrument rather than two that disagree in the
      corridors. */
-  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
-  /* the strip's cursor reads the stops' own parks (v12, see stripParks):
-     the chip's number, .here and the travelling square turn over when the
-     page reaches the next stop's park, the place its anchor puts it. It was
-     the beat box, whose top crosses the reading line 0.62 of a screen
-     earlier. The clock above keeps the kicker, and says the hour. */
-  { const s = stripStopAt(y); setStop(s.n); stripPoint(s.n, s.t); }
+  /* the chip's number, .here and aria-current turn over with the phase
+     name beside the chip, at the kicker crossing (v12 ruling): the two sit
+     side by side on every frame, and a stretch where the masthead says
+     "glyph" and the chip still says 05 is a disagreement on the page itself */
+  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); setStop(c.seg); }
+  /* the travelling square reads the stops' own parks (see stripParks), so a
+     stop carried to arrives with the square on its tick */
+  { const s = stripStopAt(y); stripPoint(s.n, s.t); }
 
   /* fx: arrive → drift → depart, a pure function of position */
   if (FLAGS.has("nofx")) return;
