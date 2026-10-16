@@ -23,9 +23,12 @@ document.documentElement.classList.add("js");
    reflows both fire that one. Intent events don't lie. The engine toggles
    classes only and never reads this attribute, so the two states compose.
    Accepted cost, stated rather than discovered: a reader who arrives by
-   citation and never scrolls, taps or types never sees the manifest. */
-if (location.hash.length > 1) {
+   citation and never scrolls, taps or types never sees the manifest.
+   A stop chosen from the strip is an arrival too (v12): the carry calls
+   window.__arrive as it starts, and the same first act ends it. */
+window.__arrive = () => {
   const de = document.documentElement;
+  if (de.hasAttribute("data-arrive")) return;
   /* touchstart is kept alongside pointerdown because WebKit has been
      unreliable firing pointerdown for scroll-intent touches; removal
      matching ignores the `passive` option, so this teardown is sound. */
@@ -36,7 +39,8 @@ if (location.hash.length > 1) {
   };
   de.setAttribute("data-arrive", "");
   for (const a of acts) addEventListener(a, free, { passive: true });
-}
+};
+if (location.hash.length > 1) window.__arrive();
 </script>
 <style>
   /* ————————————————————————————————————————————————————————————————
@@ -3551,6 +3555,8 @@ body{font-synthesis:none}
   position:fixed; left:var(--pad-x); right:var(--pad-x); top:var(--band-top);
   height:var(--band); z-index:7; pointer-events:none}
 #manifest[hidden]{display:none}
+/* a station the strip carried the reader to holds the focus, unringed */
+[data-carried]:focus{outline:none}
 #manifest .housing{display:none} /* the phone's; see the phone block */
 /* the clip: a static window the tape moves under. Its right edge is the
    housing's mouth, drawn: a 2px rule the tape slides out from behind, so a
@@ -11338,6 +11344,183 @@ addEventListener("scroll", () => {
     STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
   });
 }, { passive: true });
+/* THE CHOICE IS CARRIED (v12). The owner, of a chosen stop that "literally
+   instantly opens": the strip should go home first and then the page should
+   scroll "at a fast pace but not too fast" to the section, "so the user can
+   see the whole rail going and all the scroll happening", down to a stop
+   ahead and up to one behind. So a choice no longer rides the row's href.
+   The dialog reels the strip home (the 260 ms choose reel) and hands the
+   stop here, and the page travels to the anchor's own park: the section's
+   top at the viewport's top, where the browser's jump would have put it.
+
+   THE CURVE IS A TRAIN: a pull-away on a raised cosine, a run at constant
+   speed, a brake on a raised cosine, each ramp CARRY_RAMP of the journey.
+   Against the two eased curves it was tried beside (a cubic and a quintic
+   smoothstep, lab note v12/stops) it has the lowest peak speed for the
+   time, 1.43x the average where the cubic is 1.5x and the quintic 1.88x, and
+   no jolt at either end; and the run between the ramps is the part a reader
+   can watch go by. The time grows with the root of the distance, floored and
+   capped: one stop is about 700 ms, three about 1.1 s, ¶01 to ¶12 2.2 s.
+
+   THE CARRY IS A SCROLL, and the assembly driver must go on reading it as
+   one: a frame that moves more than ASM_JUMP of a viewport is a jump, and a
+   jump lands every figure at once. So no frame advances more than
+   CARRY_STEP of a viewport; a long frame (a dropped one, a slow phone)
+   stretches the carry's time instead of skipping. Figures passed on the way
+   assemble and come apart as any scroll passes them, and the one at the
+   destination plays by the window law as the train brakes into its park.
+
+   IT LEADS THE FRAME. frame() calls stripCarryStep() before it reads
+   scrollY, so the rail, the figures and the clock are drawn for the y the
+   compositor shows in the same frame; a stepper after work() would draw
+   every frame of the carry one frame behind. It is not a second loop, and
+   while it runs it holds the engine's loop open.
+
+   IT LETS GO, deliberately unlike the gate's carry (holdScroll), which holds
+   the scroll for seven seconds because a reader stranded between ¶12 and
+   ¶13 has nowhere to go. Here the reader asked for a place, and any sign of
+   their own hand (a wheel, a touch, a scroll key, a press outside the
+   masthead and the strip, such as the scrollbar) ends the carry where it is
+   and gives the scroll back. Pressing the chip again BRAKES it, over
+   CARRY_BRAKE, rather than letting the page run on under the strip to the
+   old stop (measured in the lab, 1440: a carry to the gate left running
+   behind a second choice of ¶04 ran on to 10843 before turning back for
+   3019); a choice made then
+   retargets from where the page is, at the speed it is going. The gate's carry wins: no strip
+   carry starts while the scroll is held, and holdScroll ends one in flight.
+
+   IT IS AN ARRIVAL, the same as a cold hash: the head's data-arrive goes on
+   (window.__arrive) and comes off at the reader's next own act, so the
+   one-time peek re-takes its baseline all through the carry and never fires
+   on it. The URL takes the hash at the start, as a native anchor's does at
+   the click, and Back returns to the place the choice left, instantly, as a
+   hash Back always has. The place is kept in the entry's own state and put
+   back on popstate and again in the next frame: neither engine's own
+   restore holds here (lab, v12: Back to an entry left at 3993 landed at
+   3019, that entry's own earlier landing, in Chromium, which restores it
+   AFTER popstate; WebKit stood at 3017 at popstate). The frame after is
+   before the paint in both, so nothing shows the wrong place. Stamps are the
+   beat's, every frame: a carry stamps the stations it passes, as the jump
+   did. On landing the section takes the focus, as an anchor arrival would
+   give it the sequential focus point. Reduced motion jumps, as before. */
+const CARRY_RAMP = 0.3;  /* of the journey, the pull-away and the brake each */
+const CARRY_MIN = 700, CARRY_MAX = 2200, CARRY_K = 600; /* ms, and ms per root viewport */
+const CARRY_STEP = 0.8;  /* of ASM_JUMP: the most one frame of the carry may move */
+const CARRY_BRAKE = 240; /* ms · the chip pressed mid-carry: speed falls to rest, linearly */
+let carrying = null;
+/* the journey's shape, 0..1 over time 0..1, leaving at m0 (in units of the
+   average speed: 0 from rest, the current speed on a retarget) */
+function carryShape(u, m0) {
+  const R = CARRY_RAMP, c = (1 - (R * m0) / 2) / (1 - R);
+  if (u <= 0) return 0;
+  if (u >= 1) return 1;
+  if (u < R) return m0 * u + ((c - m0) / 2) * (u - (R / Math.PI) * Math.sin((Math.PI * u) / R));
+  const sR = (R * (m0 + c)) / 2;
+  if (u <= 1 - R) return sR + c * (u - R);
+  const w = u - (1 - R);
+  return sR + c * (1 - 2 * R) + (c / 2) * (w + (R / Math.PI) * Math.sin((Math.PI * w) / R));
+}
+const carryOff = ["wheel", "touchstart", "pointerdown", "keydown"];
+function carryHand(e) {
+  if (!carrying) return;
+  if (e.type === "pointerdown" && e.target.closest && e.target.closest("#mast, #manifest, #mscrim")) return;
+  if (e.type === "keydown") {
+    if (!SCROLL_KEYS.has(e.key) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && (e.target.closest("#manifest") || (e.key === " " && e.target.closest("button, a")))) return;
+  }
+  stripCarryStop();
+}
+function stripCarryStop() {
+  if (!carrying) return;
+  carrying = null;
+  for (const a of carryOff) removeEventListener(a, carryHand, { capture: true });
+  window.__strip.carrying = false;
+}
+function carryLand(el) {
+  /* the station takes the focus: a programmatic focus on a whole section
+     would ring it in an engine that reads the last press as a key, and a
+     ring round a station says nothing, so [data-carried] has none */
+  if (!el.hasAttribute("tabindex")) {
+    el.setAttribute("tabindex", "-1");
+    el.setAttribute("data-carried", "");
+    el.addEventListener("blur", () => { el.removeAttribute("tabindex"); el.removeAttribute("data-carried"); }, { once: true });
+  }
+  el.focus({ preventScroll: true });
+  window.__strip.landed = { hash: `#${el.id}`, y: scrollY, at: performance.now() };
+}
+function stripCarry(hash) {
+  const el = hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+  if (!el || scrollHeld) return false;
+  const max = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+  const to = clamp(Math.round(el.getBoundingClientRect().top + scrollY), 0, max);
+  const from = scrollY;
+  /* the place the choice leaves, kept where Back will find it */
+  history.replaceState({ ...(history.state || {}), runY: from }, "");
+  if (location.hash === hash) history.replaceState({ runY: to }, "", hash);
+  else history.pushState({ runY: to }, "", hash);
+  window.__arrive?.();
+  if (RM || Math.abs(to - from) < 2) {
+    stripCarryStop();
+    window.scrollTo(0, to);
+    carryLand(el);
+    return true;
+  }
+  /* a retarget leaves at the speed the carry is going, in the new journey's
+     units; from rest it leaves at 0 */
+  const v = carrying ? carrying.v : 0;
+  const dist = to - from;
+  const D = clamp(CARRY_K * Math.sqrt(Math.abs(dist) / vh), CARRY_MIN, CARRY_MAX);
+  if (!carrying) for (const a of carryOff) addEventListener(a, carryHand, { capture: true, passive: true });
+  carrying = { el, from, to, D, m0: clamp((v * D) / dist, -2, 3), u: 0, y: from, v, last: 0 };
+  window.__strip.carrying = true;
+  /* probe: the journey and, per frame, the time and the y it wrote */
+  window.__strip.carried = { from, to, D: Math.round(D), log: [] };
+  wake(true);
+  return true;
+}
+function stripCarryBrake() {
+  if (carrying && !carrying.brake) carrying.brake = { y0: carrying.y, v: carrying.v, t: 0 };
+}
+function stripCarryStep(now) {
+  const c = carrying;
+  if (!c.last) { c.last = now; return; } /* the first frame starts the clock */
+  const dt = Math.min(100, now - c.last);
+  c.last = now;
+  if (c.brake) {
+    const b = c.brake, t = (b.t = Math.min(CARRY_BRAKE, b.t + dt));
+    const y = b.y0 + b.v * t - (b.v * t * t) / (2 * CARRY_BRAKE);
+    c.v = b.v * (1 - t / CARRY_BRAKE); c.y = y;
+    window.scrollTo(0, Math.round(y));
+    if (t >= CARRY_BRAKE) stripCarryStop();
+    return;
+  }
+  const cap = CARRY_STEP * ASM_JUMP * vh;
+  const at = (u) => c.from + (c.to - c.from) * carryShape(u, c.m0);
+  let u = Math.min(1, c.u + dt / c.D), y = at(u);
+  if (Math.abs(y - c.y) > cap) {
+    /* stretch, not skip: the furthest u this frame may reach */
+    let lo = c.u, hi = u;
+    for (let k = 0; k < 16; k++) { const m = (lo + hi) / 2; if (Math.abs(at(m) - c.y) > cap) hi = m; else lo = m; }
+    u = lo; y = at(u);
+  }
+  c.v = dt > 0 ? (y - c.y) / dt : 0;
+  c.u = u; c.y = y;
+  window.scrollTo(0, Math.round(y));
+  if (window.__strip.carried.log.length < 600) window.__strip.carried.log.push([+now.toFixed(1), Math.round(y)]);
+  if (u >= 1) { stripCarryStop(); carryLand(c.el); }
+}
+window.__strip.carry = stripCarry;
+window.__strip.brake = stripCarryBrake;
+/* Back and Forward between a choice and the place it left: put the place
+   back (and let go of any carry, which the reader has just overruled) */
+addEventListener("popstate", (e) => {
+  stripCarryStop();
+  const y = e.state && e.state.runY;
+  if (typeof y !== "number") return;
+  const put = () => { if (Math.abs(scrollY - y) > 1) window.scrollTo(0, y); };
+  put();
+  requestAnimationFrame(put);
+});
 /* the dialog may already hold a press that came before this module ran */
 STRIP.dispatchEvent(new Event("stripready"));
 /* THE STAMPS ARE A HIGH-WATER MARK AND THE CHIP IS NOT, and the two facts
@@ -11854,6 +12037,7 @@ function asmProbe() {
 window.__world.asmRest = () => [...asm.values()].every((e) => e.s === e.t && e.v === 0);
 
 function frame() {
+  if (carrying) stripCarryStep(performance.now()); /* the strip's carry leads the frame: see stripCarry */
   const y = scrollY;
   const changed = y !== lastY;
   /* THE ONE THING THAT MOVES WITHOUT A SCROLL. The engine stops when the page
@@ -11862,7 +12046,7 @@ function frame() {
      long as it runs, and not one frame longer. */
   const departing =
     release.t0 > 0 && performance.now() < release.t0 + release.tTail + 150;
-  const hand = stirring.size > 0;
+  const hand = stirring.size > 0 || carrying !== null;
   if (changed || departing || hand) { lastY = y; stillFrames = 0; } else { stillFrames++; }
   if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
   requestAnimationFrame(frame);
@@ -13696,6 +13880,7 @@ const eatKeys = (e) => {
 };
 function holdScroll(ms) {
   if (scrollHeld || RM) return;
+  stripCarryStop(); /* the gate's carry wins over the strip's */
   scrollHeld = true;
   document.body.classList.add("carrying");
   addEventListener("wheel", eatScroll, { passive: false });
@@ -19112,8 +19297,8 @@ boot();
 <script id="manifest-js">
 /* THE STRIP IS A DIALOG, and this is its whole contract. It opens because
    someone asked, from the chip, and it closes on the second press, on its
-   own close, on Escape, on a tap outside, and on choosing a stop, which also
-   navigates: the row's own href rides. On open, focus goes to the stop the
+   own close, on Escape, on a tap outside, and on choosing a stop, which then
+   carries the page there (v12; see the click handler). On open, focus goes to the stop the
    reader is standing in and the page behind goes inert; on close, focus
    comes back to the chip. aria-expanded tracks the one class that decides
    the visible state. The masthead is NOT inert, on purpose: the chip has to
@@ -19178,6 +19363,7 @@ boot();
     if (!window.__strip) { queued = !queued; return; }
     open = true;
     var g = ++gen;
+    if (window.__strip.brake) window.__strip.brake(); /* a carry in flight comes to rest under the strip */
     man.hidden = false;
     scr.hidden = false;
     if (main) main.inert = true;
@@ -19192,7 +19378,7 @@ boot();
     if (cur) cur.focus({ preventScroll: true });
     settle(MS.open, function () { if (g === gen && open) man.setAttribute("data-state", "open"); });
   }
-  function hide(why) {
+  function hide(why, then) {
     if (!open) return;
     open = false;
     var g = ++gen;
@@ -19210,6 +19396,7 @@ boot();
       man.hidden = true;
       scr.hidden = true;
       man.setAttribute("data-state", "closed");
+      if (then) then();
     });
   }
   man.setAttribute("data-state", "closed");
@@ -19219,9 +19406,21 @@ boot();
     if (open) hide("chip"); else show();
   });
   scr.addEventListener("click", function () { hide("scrim"); });
+  /* A CHOICE IS CARRIED (v12): the strip reels home first, and then the
+     engine carries the page to the stop (stripCarry, in the engine, says
+     how and why). The row's own jump is stopped; a press that asks for a
+     new tab or window is the browser's and is left alone. Without the
+     engine the hash is set, which is the jump the row always made. */
   man.addEventListener("click", function (e) {
-    if (e.target.closest(".mclose")) hide("close");
-    else if (e.target.closest(".mrow")) hide("choose"); /* the link's own navigation rides */
+    if (e.target.closest(".mclose")) { hide("close"); return; }
+    var a = e.target.closest(".mrow");
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    var hash = a.getAttribute("href");
+    hide("choose", function () {
+      if (!window.__strip) location.hash = hash; /* no engine: the row's own jump */
+      else window.__strip.carry(hash); /* false while the gate holds the scroll: the choice only closes */
+    });
   });
   document.addEventListener("keydown", function (e) {
     if (!open) return;
