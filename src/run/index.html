@@ -12125,7 +12125,7 @@ function layoutBox(el) {
            in place of the driver's own; null falls back to it } */
 function asmFigure(key, spec) {
   const e = { key, box: spec.box, draw: spec.draw, span: spec.span || null, win: spec.window || null,
-    top: 0, h: 0, yA: 0, yB: 1, yG: null, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
+    top: 0, h: 0, yA: 0, yB: 1, yG: null, held: false, pFull: 0, vmax: ASM_RATE, t: 1, s: NaN, v: 0, last: NaN };
   asm.set(key, e);
   if (booted) asmMeasure(e);
   if (RM) { e.t = e.s = 1; asmPut(e, 1); }
@@ -12151,7 +12151,7 @@ function asmMeasure(e) {
 }
 function asmGeometry() { for (const e of asm.values()) asmMeasure(e); asmProbe(); }
 /* the target: the window, or the window CLOSED where a reader paused (yG) */
-const asmTarget = (e, y) => ASM_PIN ?? clamp((y - e.yA) / Math.max(1, (e.yG ?? e.yB) - e.yA), 0, 1);
+const asmTarget = (e, y) => ASM_PIN ?? (e.held ? 1 : clamp((y - e.yA) / Math.max(1, (e.yG ?? e.yB) - e.yA), 0, 1));
 const asmSeen = (e, y) => e.top - y < vh && e.top + e.h - y > 0;
 /* how much of the drawing is on screen at y, 0..1 */
 const asmVis = (e, y) => Math.max(0, Math.min(e.top + e.h, y + vh) - Math.max(e.top, y)) / Math.max(1, e.h);
@@ -12165,6 +12165,23 @@ function asmPut(e, p) {
   e.last = p;
   e.draw(p);
 }
+/* A LANDING (v11). A reader who reaches INTO a figure, a focus or a press on
+   something in it, is reading it now, wherever the scroll has it: the figure
+   is drawn finished at once (no hand, no speed limit) and HELD finished
+   while any of it is on screen, so a link the drawing had not yet uncovered
+   is never an invisible focus stop or tap target, and the next scroll does
+   not take it apart under the reader's finger. Leaving the screen lets it go,
+   exactly where the grace's closed window is let go, and the window is the
+   driver's own throughout: nothing is moved, so nothing persists into the
+   next visit. A figure calls this from its own focusin / pointerdown; under
+   reduced motion or a pinned p there is nothing to land. */
+function asmLand(key) {
+  const e = asm.get(key);
+  if (!e || RM || ASM_PIN !== null) return;
+  e.held = true; e.t = e.s = 1; e.v = 0;
+  if (asmGracing === e) { asmGracing = null; clearTimeout(asmGraceT); asmGraceT = setTimeout(asmGrace, ASM_GRACE); }
+  asmPut(e, 1); asmProbe();
+}
 function asmWork(y) {
   const jump = asmY === null || Math.abs(y - asmY) > ASM_JUMP * vh;
   asmY = y;
@@ -12173,7 +12190,7 @@ function asmWork(y) {
   if (!RM && ASM_PIN === null) { clearTimeout(asmGraceT); asmGraceT = setTimeout(asmGrace, ASM_GRACE); }
   let moving = false;
   for (const e of asm.values()) {
-    if (!asmSeen(e, y)) { e.yG = null; if (asmGracing === e) asmGracing = null; } /* off screen: the window is whole again */
+    if (!asmSeen(e, y)) { e.yG = null; e.held = false; if (asmGracing === e) asmGracing = null; } /* off screen: the window is whole again, and a landing is let go */
     e.t = asmTarget(e, y);
     if (jump || ASM_PIN !== null || Number.isNaN(e.s) || !asmSeen(e, y)) { e.s = e.t; e.v = 0; }
     if (Math.abs(e.t - e.s) > ASM_EPS || Math.abs(e.v) > ASM_VEPS) moving = true;
@@ -12247,6 +12264,7 @@ function asmProbe() {
     o[e.key] = { t: +e.t.toFixed(4), s: +(Number.isNaN(e.s) ? -1 : e.s).toFixed(4), v: +e.v.toFixed(3),
       d: +(Number.isNaN(e.last) ? -1 : e.last).toFixed(4), /* the p the drawing was last drawn at: the ink, not the bookkeeping */
       yA: Math.round(e.yA), yB: Math.round(e.yB), g: e.yG === null ? null : Math.round(e.yG), /* the window closed at a pause, or whole */
+      held: e.held, /* landed by a focus or a press, until it leaves the screen */
       vis: +asmVis(e, scrollY).toFixed(3), pFull: +e.pFull.toFixed(3), vmax: +e.vmax.toFixed(3) };
   window.__world.asm = o;
 }
