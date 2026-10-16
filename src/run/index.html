@@ -7705,7 +7705,12 @@ function fig02Covered() {
    tab under the scrim; no p inside that window was ever graced either (less
    than ASM_SEEN shows anywhere in it), so the earlier park costs no grace */
 function whoWindow(e) {
-  const yB = Math.min(e.top + e.h / 2 - ASM_END * vh, e.top + f02.rise - F02.MAST);
+  /* the close is the centre line, or where the board's top reaches the
+     masthead, whichever comes first; but never before the board is 90%
+     in view (ASM_SEEN), so a stop at the fold is never a park (run-home's
+     fold law). On a phone shorter than the stage (390x664) that last term
+     wins and the tab parks under the masthead's scrim, as in v10 */
+  const yB = Math.max(Math.min(e.top + e.h / 2 - ASM_END * vh, e.top + f02.rise - F02.MAST), e.top + ASM_SEEN * e.h - vh);
   /* a wide seat keeps the driver's own start, measured against this end */
   if (!mobile) return { yA: Math.min(e.top + ASM_START * e.h - vh, yB - 0.12 * vh), yB };
   const yA = Math.min(e.top + F02.START * e.h - vh, yB - F02.FLOOR * vh);
