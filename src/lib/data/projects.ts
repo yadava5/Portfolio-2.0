@@ -453,7 +453,7 @@ export const projects: Project[] = [
     featured: true,
     category: "full-stack",
     startDate: "2023-09",
-    endDate: "2025-05",
+    endDate: "2026",
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
