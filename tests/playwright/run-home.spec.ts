@@ -728,33 +728,76 @@ test.describe("the type answers the hand, and comes back to rest", () => {
       const r = document.querySelector(s)!.getBoundingClientRect();
       return { x: r.x, y: r.y, w: r.width, h: r.height };
     }, sel);
-  /* a real hand: many small moves, fast, through the x-height band, placed
+  /* a real hand's pace: small moves, fast, through the x-height band, placed
      by the CLOCK and not by a count. A machine used to answer a crest moving
-     faster than 7.69 em/s, and 40 moves with no delay is a step count whose
-     speed is whatever the engine spends per move: measured, Playwright's
-     WebKit takes ~16.6 ms a move to Chromium's 8.3, so the same sweep ran at
-     8.46 em/s there and 17 in Chromium. Placed by elapsed time, every engine
-     sweeps at one speed — fast enough that, had a replay come back, it would
-     fire here. */
+     faster than 7.69 em/s; this sweep crosses 896 px of a 166.4 px em in
+     450 ms, ~12 em/s on every engine, fast enough that, had a replay come
+     back, it would fire here. A count of moves is not a speed: 40 moves with
+     no delay once ran at 8.46 em/s on WebKit and 17 on Chromium. */
   const sweep = async (
     page: import("@playwright/test").Page,
     b: { x: number; y: number; w: number; h: number },
     ms = 450
   ) => {
     const y = b.y + b.h * 0.55;
+    /* the pointer arrives for real, so a trusted pointerenter on the name
+       (the replay this test exists to catch) still fires */
     await page.mouse.move(b.x - 60, y);
-    const t0 = Date.now();
-    for (let u = 0; u < 1; ) {
-      u = Math.min(1, (Date.now() - t0) / ms);
-      await page.mouse.move(b.x - 60 + (b.w + 120) * u, y);
-    }
+    await page.mouse.move(b.x + 2, y);
+    /* and the hand itself is written into the page's own queue, one move
+       every 8 ms by the page clock, the way a browser queues a real hand
+       between two frames. Driven from the test, each trusted move waits for
+       a rendering update, and Linux WebKit renders the live scatter at
+       ~350 ms a frame, measured: the 450 ms sweep got 3 or 4 moves, every
+       segment past teleport or the 300 ms gap, and nothing scattered.
+       Queued here, every engine gets the same moves (about 57, one per
+       8 ms of 450) at one speed. */
+    await page.evaluate(
+      ([x0, x1, y, ms]) => {
+        const t0 = performance.now();
+        for (let next = t0, u = 0; u < 1; next += 8) {
+          let t = performance.now();
+          while (t < next) t = performance.now();
+          u = Math.min(1, (t - t0) / ms);
+          const x = x0 + (x1 - x0) * u;
+          (document.elementFromPoint(x, y) ?? document.body).dispatchEvent(
+            new PointerEvent("pointermove", {
+              clientX: x,
+              clientY: y,
+              bubbles: true,
+              composed: true,
+              pointerType: "mouse",
+              isPrimary: true,
+            })
+          );
+        }
+      },
+      [b.x + 2, b.x + b.w + 60, y, ms] as const
+    );
+    /* the frames that consume the queue */
+    await page.evaluate(
+      () =>
+        new Promise<void>((r) =>
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => requestAnimationFrame(() => r()))
+          )
+        )
+    );
   };
+
+  /* ceilings, not clocks (the assembly's SLOW, below): WebKit on Linux
+     draws the live scatter at ~3 frames a second where a mac draws 60,
+     measured in the Playwright noble image, and the step is clamped at
+     50 ms of motion a frame, so the re-print that rests in 1.9 s on
+     Chromium and Firefox there takes 6 s on WebKit */
+  const SLOW = 30000;
 
   test("a swoosh across the name scatters it, replays no machine, then it re-prints exactly", async ({
     page,
     isMobile,
   }) => {
     test.skip(isMobile, "a phone has no hover; the press is tested below");
+    test.setTimeout(120_000);
     await counting(page);
     await page.goto("/");
     await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
@@ -788,7 +831,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
       .poll(
         () => page.evaluate(() => (window as unknown as W).__world.hand()),
         {
-          timeout: 5000,
+          timeout: SLOW,
         }
       )
       .toBe(0);
@@ -822,7 +865,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
           await page.waitForTimeout(350);
           return (await rafN()) - a;
         },
-        { timeout: 5000 }
+        { timeout: SLOW }
       )
       .toBe(0);
     const r0 = await rafN();
