@@ -7837,10 +7837,15 @@ function whoWindow(e) {
   const yA = Math.min(e.top + F02.START * e.h - vh, yB - W);
   return { yA, yB };
 }
-/* a focus or a press anywhere in the card lands it */
+/* a focus or a press anywhere in the card lands it. A press is a CLICK,
+   never a pointerdown: a phone reader's swipe starts with a pointerdown on
+   whatever is under the finger, and at 390 the card is 316 of the screen's
+   390 px, so a pointerdown landing finished the card under nearly every swipe
+   that passed it (measured: a touch scroll gesture from p .3 drew p 1, held,
+   at 390x844, 390x664 and 393x727); a scroll gesture never ends in a click */
 function f02land() { f02.landing = true; asmLand("fig02"); f02.landing = false; }
 f02.stage.addEventListener("focusin", f02land);
-f02.stage.addEventListener("pointerdown", f02land);
+f02.stage.addEventListener("click", f02land);
 /* built on the real face (the rules are measured off the ink), registered
    before boot's own continuation of the same promise measures the window;
    re-laid on every seat change after the engine's own pass */
