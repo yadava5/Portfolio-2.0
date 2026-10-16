@@ -19,6 +19,8 @@ import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const SRC = resolve(process.cwd(), "out");
+/** the line that mounts the hand on the settled name, verbatim in the page */
+const MOUNT = "hand = M.mountNameHand(plate, h1, letters, geo, window.__stir);";
 
 /** Each: mutate the page, and state how to confirm the mutation landed. */
 const DEFECTS = [
@@ -80,6 +82,22 @@ const DEFECTS = [
       /@keyframes np-settype\s*\{\s*0%[^}]*"opsz"\s*18/.test(s) &&
       !s.includes("lastW = Math.round(plate.getBoundingClientRect().width)") &&
       s.includes("if (!w || w === lastW) return;"),
+  },
+  /* The hand's replays, reintroduced the plainest way a regression could
+     bring them back: the settled name re-runs its assembly when the
+     pointer arrives, or when it presses. Either is the defect the owner
+     ruled out on 2026-10-16, whatever overlay class it draws. */
+  {
+    name: "the hover replays the assembly",
+    apply: (s) =>
+      s.replace(MOUNT, `${MOUNT} h1.addEventListener("pointerenter", () => perform());`),
+    landed: (s) => s.includes(`${MOUNT} h1.addEventListener("pointerenter"`),
+  },
+  {
+    name: "a press replays the assembly",
+    apply: (s) =>
+      s.replace(MOUNT, `${MOUNT} h1.addEventListener("pointerdown", () => perform());`),
+    landed: (s) => s.includes(`${MOUNT} h1.addEventListener("pointerdown"`),
   },
 ];
 

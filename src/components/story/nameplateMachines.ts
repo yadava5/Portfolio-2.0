@@ -108,15 +108,6 @@ import { mulberry32 } from "@/components/thread/geometry";
    because `tsconfig.run.json` named `personal.ts` as a compile ROOT. Both
    are gone now: the import here, and the root there (C44). */
 export const MACHINE_NAME = "Ayush Yadav";
-/** character index → machine (see file header). */
-const MACHINE: Record<number, string> = {
-  0: "dividers",
-  3: "road",
-  7: "dial",
-  9: "runner",
-  10: "bird",
-};
-
 const NS = "http://www.w3.org/2000/svg";
 const INK_WET = "#4A382A";
 const INK = "#26231C";
@@ -1514,10 +1505,6 @@ export type HandProbe = {
   level: number[];
   /** every span's style attribute is byte-for-byte its pre-mount self */
   rest: boolean;
-  /** answers fired, by machine, and the most overlays ever live at once */
-  fired: Record<string, number>;
-  answering: number;
-  maxLive: number;
 };
 
 /* THE NAME ANSWERS THE HAND (2026-10-09).
@@ -1596,8 +1583,9 @@ const REST_AXES = '"opsz" 144, "SOFT" 50, "WONK" 0, "wght" 600';
    at REST_AXES — the letter's own axes — and carries colour alone. */
 
 /* ════ THE WAVE, MADE FLUID ══════════════════════════════════════════
-   The same concept — the hand puts a wave through the name and the
-   machines answer the crest — rebuilt around what the probe actually
+   The same concept — the hand puts a wave through the name (until
+   2026-10-16 the machines answered its crest too; they do not now) —
+   rebuilt around what the probe actually
    measured (tmp/v5/plan/FINDINGS-name-and-miss.md) and the bar the
    critique set from it: ≤1 sign reversal a letter once the hand has gone,
    peak lift ≤0.06em, turn ≤2°, a swoosh no more than 4× a reading pass,
@@ -1709,7 +1697,6 @@ const FLUID = {
    *  fast under a machine that is working its letter */
   wetUp: 14,
   wetDown: 11,
-  wetAns: 18,
   /** and the opacity under which the twin is simply off: a soak fading
    *  out below a hundredth is a second of frames nobody can see */
   wetOff: 0.02,
@@ -1724,30 +1711,6 @@ const FLUID = {
   hold: 0.09,
   rho: 0.74,
   rc: 18,
-  /** a machine answers a real swoosh only: this much of the swell's
-   *  height to fire, this little to re-arm, and this close to the crest */
-  fire: 0.8,
-  rearm: 0.35,
-  near: 0.3,
-  /** ONE machine answers a gesture, and not another for this long (ms).
-     Four fired in one 300ms swoosh when the only gate was the crest —
-     a riot, and the cost of building four overlays inside one gesture is
-     the single 32ms frame that measured. One answer is also the better
-     reading: the machine the swoosh reaches first is the one that
-     speaks. */
-  gap: 700,
-  /** HALF the exchange (ms). The machine fades IN over the first half
-   *  with the letter still at full opacity, and the letter fades out over
-   *  the second with the machine at full — never both at once.
-   *  A complementary cross-dissolve seemed right and is wrong, and the
-   *  filmstrip caught it: stacking the same glyph at a and 1-a leaves
-   *  a + (1-a) - a(1-a) of coverage, which is 75% at the middle, so the
-   *  letter goes pale for a frame or two on its way to being a machine.
-   *  Coverage stays whole only if one side is opaque throughout, and
-   *  over-covering is free — two identical inks stacked are that ink.
-   *  WAAPI rather than style.opacity, so nothing writes the letter's
-   *  inline opacity at any point, at rest or mid-answer. */
-  seam: 56,
   /** below this the letter snaps to exactly zero (em) */
   rest: 0.0004,
   /** the fixed substep the followers integrate in (s). The frame walks the
@@ -1767,68 +1730,6 @@ const rgbOf = (css: string): number[] => {
   const m = css.match(/[\d.]+/g);
   return m ? m.slice(0, 3).map(Number) : [0x26, 0x23, 0x1c];
 };
-
-/* The answers cut the letters along the SAME polygons the opening uses
-   (scan-letterform9), so a machine answers in its own pieces. */
-const LEG_L: [number, number][] = [
-  [-0.15, -0.3],
-  [0.435, -0.3],
-  [0.435, 0.578],
-  [0.282, 0.578],
-  [0.25, 0.686],
-  [0.435, 0.686],
-  [0.435, 1.12],
-  [-0.15, 1.12],
-];
-const LEG_R: [number, number][] = [
-  [0.435, -0.3],
-  [1.2, -0.3],
-  [1.2, 1.12],
-  [0.435, 1.12],
-  [0.435, 0.686],
-  [0.625, 0.686],
-  [0.59, 0.578],
-  [0.435, 0.578],
-];
-const BAR: [number, number][] = [
-  [0.24, 0.572],
-  [0.635, 0.572],
-  [0.635, 0.688],
-  [0.24, 0.688],
-];
-const BOWL: [number, number][] = [
-  [-0.08, 0.465],
-  [0.72, 0.465],
-  [0.72, 1.1],
-  [-0.08, 1.1],
-];
-const SHOULDER: [number, number][] = [
-  [-0.08, -0.1],
-  [1.12, -0.1],
-  [1.12, 0.475],
-  [-0.08, 0.475],
-];
-const STEM: [number, number][] = [
-  [0.575, 0.465],
-  [1.12, 0.465],
-  [1.12, 1.1],
-  [0.575, 1.1],
-];
-const V_L: [number, number][] = [
-  [-0.2, -0.12],
-  [0.622, -0.12],
-  [0.622, 0.78],
-  [0.74, 1.0],
-  [0.74, 1.14],
-  [-0.2, 1.14],
-];
-const V_R: [number, number][] = [
-  [0.622, -0.12],
-  [1.2, -0.12],
-  [1.2, 1.14],
-  [0.4, 1.14],
-  [0.622, 0.78],
-];
 
 /**
  * Mount the hand on a settled nameplate.
@@ -2025,438 +1926,18 @@ export function mountNameHand(
   const lift = new Float64Array(N);
   const wrote = letters.map(() => ({ tr: "", rot: "", sc: "" }));
 
-  /* ── THE MACHINES ANSWER ─────────────────────────────────────────────
-     The crest reaching a machine letter fires that letter's machine, in
-     the opening's own vocabulary and pieces: the A's dividers open and
-     close on their hinge, the s is re-run by its bead, the dial takes the
-     a's bowl and spins with the hand's speed down its detents to a catch,
-     the runner hops, the v's strokes beat once as wings. Each answer is
-     an overlay (class np-ans, never np-mech: check-nameplate counts
-     np-mech as performances) whose outer group is moved EVERY FRAME from
-     the same pose the letter gets, while WAAPI drives only the pieces
-     inside it, so the machine rides the string with its letter. Its text
-     carries the letter's current soak, so the swap in and out is
-     invisible. One live answer per machine: a scribble cannot stack
-     them, and a machine re-arms only once its letter has calmed. */
-  type Answer = {
-    svg: SVGSVGElement;
-    outer: SVGGElement;
-    texts: SVGTextElement[];
-    end: number;
-    lv: number;
-    /** the exchange: the two halves of the cross-dissolve, and when
-     *  the return dissolve started (0 while the machine is still working) */
-    fade?: Animation[];
-    off?: number;
-  };
-  const answers: (Answer | null)[] = letters.map(() => null);
-  const armed = letters.map(() => true);
-  const fired: Record<string, number> = {};
-  let maxLive = 0;
-  let hop = { t0: -1, dir: 1, h: 0 };
-  /** when the last machine spoke, so only one answers a gesture */
-  let lastAnswer = -1e9;
+  /* ── THE MACHINES DO NOT ANSWER (2026-10-16) ─────────────────────────
+     From 2026-10-09 to this date the crest reaching a machine letter, and
+     a press on one, re-ran that letter's machine as an overlay (np-ans)
+     riding the string. The owner's ruling: the assembly is perfect, and
+     its pieces replayed under the hand "are not smooth and run weirdly".
+     So nothing the hand does builds an overlay or fades a letter: the
+     machines belong to the performance and to "watch it again" alone,
+     and check-nameplate holds that (a swoosh and a press add no SVG to
+     the plate and leave every letter opaque). The answers' builders are
+     in git history. */
+  /** which way the hand last travelled, so the crest runs ahead of it */
   let handDir = 1;
-  const HOP_MS = 440;
-
-  type Made = { ms: number; texts: SVGTextElement[] };
-  const hinge = (n: SVGElement, x: number, yy: number) => {
-    n.style.transformOrigin = `${x}px ${yy}px`;
-    n.style.transformBox = "view-box";
-  };
-  /** the dividers: the stems open on their hinge, the heavy leg first,
-   *  the crossbar lets go while they are apart and ties them again */
-  const answerDividers = (
-    svg: SVGSVGElement,
-    outer: SVGGElement,
-    k: number
-  ): Made => {
-    const b = g.box[0];
-    const px = b.x + 0.473 * b.w;
-    const py = g.base - g.capH - 0.109 * g.capH;
-    const legL = clipped(svg, g, letters, 0, LEG_L, "cap");
-    const legR = clipped(svg, g, letters, 0, LEG_R, "cap");
-    const bar = clipped(svg, g, letters, 0, BAR, "cap");
-    for (const q of [legL, legR, bar]) outer.appendChild(q.gRot);
-    const boss = stroke(
-      el("circle", { cx: px, cy: py, r: g.fs * 0.058 }, outer),
-      g.sw * 0.55
-    );
-    const pin = el(
-      "circle",
-      { cx: px, cy: py, r: g.fs * 0.03, fill: INK_WET },
-      outer
-    );
-    hinge(legL.gRot, px, py);
-    hinge(legR.gRot, px, py);
-    const ov = 5 + 3 * k;
-    const open = (sg: number, f: number): Keyframe[] => [
-      { transform: "rotate(0deg)", easing: "cubic-bezier(.3,.7,.3,1)" },
-      {
-        transform: `rotate(${(sg * ov * f).toFixed(2)}deg)`,
-        offset: 0.36,
-        easing: "cubic-bezier(.45,.05,.3,1)",
-      },
-      {
-        transform: `rotate(${(-sg * ov * f * 0.18).toFixed(2)}deg)`,
-        offset: 0.74,
-        easing: "cubic-bezier(.35,.1,.3,1)",
-      },
-      { transform: "rotate(0deg)" },
-    ];
-    legR.gRot.animate(open(-1, 1), { duration: 640, fill: "both" });
-    legL.gRot.animate(open(1, 0.9), { duration: 600, delay: 50, fill: "both" });
-    bar.gRot.animate(
-      [
-        { opacity: 1 },
-        { opacity: 0, offset: 0.14 },
-        { opacity: 0, offset: 0.6 },
-        { opacity: 1, offset: 0.84 },
-        { opacity: 1 },
-      ],
-      { duration: 650, fill: "both" }
-    );
-    for (const n of [boss, pin])
-      n.animate(
-        [
-          { opacity: 0 },
-          { opacity: 1, offset: 0.16 },
-          { opacity: 1, offset: 0.58 },
-          { opacity: 0 },
-        ],
-        { duration: 650, fill: "both" }
-      );
-    return { ms: 700, texts: [legL.text, legR.text, bar.text] };
-  };
-  /** the road: the s is run again by its bead and inks on behind it,
-   *  over a ghost of its old ink. Filmed without the ghost, the s simply
-   *  vanished for the run and the word read "Ayu h". */
-  const answerRoad = (svg: SVGSVGElement, outer: SVGGElement): Made => {
-    const d = sPathD(g);
-    const gG = el("g", {}, outer);
-    const ghost = mkText(gG, g, letters, 3);
-    gG.animate(
-      [{ opacity: 1 }, { opacity: 0.3, offset: 0.12 }, { opacity: 0.3 }],
-      { duration: 430, fill: "both" }
-    );
-    const gT = el("g", {}, outer);
-    const t = mkText(gT, g, letters, 3);
-    const rw = wipe(svg, g, gT, d, 0.52 * g.box[3].w);
-    const bead = el("circle", { r: g.beadR, fill: INK_WET }, outer);
-    bead.style.offsetPath = `path("${d}")`;
-    bead.style.offsetRotate = "0deg";
-    const run: KeyframeAnimationOptions = {
-      duration: 430,
-      fill: "both",
-      easing: "cubic-bezier(.4,.06,.2,1)",
-    };
-    rw.s.animate([{ strokeDashoffset: rw.L }, { strokeDashoffset: 0 }], run);
-    bead.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], run);
-    bead.animate(
-      [
-        { opacity: 0 },
-        { opacity: 1, offset: 0.08 },
-        { opacity: 1, offset: 0.84 },
-        { opacity: 0 },
-      ],
-      { duration: 480, fill: "both" }
-    );
-    return { ms: 500, texts: [ghost, t] };
-  };
-  /** the dial: the bowl gives way to the dial, the needle spins with the
-   *  hand's speed down its seven detents to a catch, and the bowl inks
-   *  back on from its own bowl–stem junction */
-  const answerDial = (
-    svg: SVGSVGElement,
-    outer: SVGGElement,
-    k: number,
-    dir: number
-  ): Made => {
-    const d = dialGeom(g, 7);
-    const bowl = clipped(svg, g, letters, 7, BOWL, "x");
-    const sk: string[] = [];
-    for (let q = 0; q <= 30; q++) {
-      const [x, yy] = d.pt(1.0, d.rest - (q * 360) / 30);
-      sk.push(`${x.toFixed(1)} ${yy.toFixed(1)}`);
-    }
-    const bowlW = wipe(svg, g, bowl.gCl, "M " + sk.join(" L "), 0.44 * d.w);
-    const shoulder = clipped(svg, g, letters, 7, SHOULDER, "x");
-    const stemP = clipped(svg, g, letters, 7, STEM, "x");
-    for (const q of [bowl, shoulder, stemP]) outer.appendChild(q.gRot);
-    const gF = el("g", {}, outer);
-    stroke(
-      el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, gF),
-      g.sw * 0.5
-    );
-    el("circle", { cx: d.cx, cy: d.cy, r: g.fs * 0.02, fill: INK_WET }, gF);
-    for (let q = 0; q < 7; q++) {
-      const a = (q * 360) / 7 + d.rest;
-      const [xa, ya] = d.pt(1.2, a);
-      const [xb, yb] = d.pt(q === 0 ? 1.46 : 1.32, a);
-      stroke(
-        el(
-          "path",
-          {
-            d: `M ${xa.toFixed(1)} ${ya.toFixed(1)} L ${xb.toFixed(1)} ${yb.toFixed(1)}`,
-          },
-          gF
-        ),
-        q === 0 ? g.sw * 0.5 : Math.max(1, g.sw * 0.28)
-      );
-    }
-    const gN = el("g", {}, gF);
-    el("path", { d: needleD(g, d, d.rest), fill: INK_WET }, gN);
-    hinge(gN, d.cx, d.cy);
-    hinge(gF, d.cx, d.cy);
-    /* detents, decaying: the faster the hand, the more of them */
-    const DET = 360 / 7;
-    const n = Math.max(4, Math.min(14, Math.round(4 + 9 * k)));
-    const ivs: number[] = [];
-    let iv = 1;
-    for (let q = 0; q < n; q++) {
-      ivs.push(iv);
-      iv *= 1.2;
-    }
-    const T = ivs.reduce((x, z) => x + z, 0);
-    const kf: Keyframe[] = [
-      { transform: `rotate(${-dir * n * DET}deg)`, offset: 0 },
-    ];
-    let acc2 = 0;
-    for (let q = 1; q <= n; q++) {
-      acc2 += ivs[q - 1];
-      const off = acc2 / T;
-      const ang = -dir * (n - q) * DET;
-      if (q === n) {
-        kf.push({
-          transform: `rotate(${(dir * 4.2).toFixed(2)}deg)`,
-          offset: Math.max(0, off - 0.05),
-        });
-        kf.push({
-          transform: `rotate(${(-dir * 0.9).toFixed(2)}deg)`,
-          offset: Math.max(0, off - 0.02),
-        });
-        kf.push({ transform: "rotate(0deg)", offset: 1 });
-      } else if (q >= n - 2) {
-        kf.push({
-          transform: `rotate(${ang}deg)`,
-          offset: Math.min(0.99, off),
-        });
-        kf.push({
-          transform: `rotate(${ang}deg)`,
-          offset: Math.min(0.995, off + 0.012),
-        });
-      } else kf.push({ transform: `rotate(${ang}deg)`, offset: off });
-    }
-    /* a faster hand spins it FASTER, not longer: more detents in nearly
-       the same time. The length was read off the decaying intervals once
-       (1.75s at thirteen detents), then bounded at 380 + 40 a detent, and
-       still held the loop open 1.41s after a flung pass; at 300 + 25 the
-       whole answer ends inside a second of the crest */
-    const spin = 300 + 25 * n;
-    gF.animate(
-      [
-        { opacity: 0, transform: "scale(.96)" },
-        { opacity: 1, transform: "scale(1)" },
-      ],
-      {
-        duration: 90,
-        fill: "both",
-        easing: "ease-out",
-      }
-    );
-    gN.animate(kf, {
-      duration: spin,
-      delay: 50,
-      fill: "both",
-      easing: "linear",
-    });
-    gF.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 220,
-      delay: 50 + spin,
-      fill: "forwards",
-      easing: "ease",
-    });
-    bowlW.s.animate([{ strokeDashoffset: bowlW.L }, { strokeDashoffset: 0 }], {
-      duration: 340,
-      delay: 20 + spin,
-      fill: "both",
-      easing: "cubic-bezier(.35,.05,.25,1)",
-    });
-    return { ms: spin + 380, texts: [bowl.text, shoulder.text, stemP.text] };
-  };
-  /** the bird: the v's strokes, hinged at the vertex, beat once, down
-   *  and out into open wings, a short upstroke past the stance, and fold
-   *  back to the v. Up-first was filmed: at the raised pose the two
-   *  strokes close into one solid wedge. */
-  const answerBird = (
-    svg: SVGSVGElement,
-    outer: SVGGElement,
-    k: number
-  ): Made => {
-    const bg = birdGeom(g);
-    const lockL = clipped(svg, g, letters, 10, V_L, "x");
-    const lockR = clipped(svg, g, letters, 10, V_R, "x");
-    for (const q of [lockL, lockR]) {
-      outer.appendChild(q.gRot);
-      hinge(q.gRot, bg.vx, bg.vy);
-    }
-    const up = 1 + 0.4 * k;
-    const down = 10 + 6 * k;
-    const beat = (raise: number, sg: number): Keyframe[] => [
-      { transform: "rotate(0deg)", easing: "cubic-bezier(.25,.7,.3,1)" },
-      {
-        transform: `rotate(${(sg * down).toFixed(2)}deg)`,
-        offset: 0.34,
-        easing: "cubic-bezier(.45,.05,.3,1)",
-      },
-      {
-        transform: `rotate(${(raise * 0.35 * up).toFixed(2)}deg)`,
-        offset: 0.66,
-        easing: "cubic-bezier(.35,.1,.3,1)",
-      },
-      { transform: "rotate(0deg)" },
-    ];
-    lockL.gRot.animate(beat(-12 - bg.tiltL, -1), {
-      duration: 640,
-      fill: "both",
-    });
-    lockR.gRot.animate(beat(14 - bg.tiltR, 1), {
-      duration: 640,
-      delay: 30,
-      fill: "both",
-    });
-    return { ms: 700, texts: [lockL.text, lockR.text] };
-  };
-  /** the letter's last pose, so an answer that fires between frames is
-   *  placed on it at once rather than at the letter's rest */
-  const pose = letters.map(() => ({ tx: 0, ty: 0, th: 0, sc: 1 }));
-  const track = (i: number) => {
-    const a = answers[i];
-    if (!a) return;
-    const b = g.box[i];
-    const ox = b.x + b.w / 2;
-    const oy = g.base;
-    const q = pose[i];
-    a.outer.setAttribute(
-      "transform",
-      `translate(${(ox + q.tx * fs).toFixed(2)} ${(oy + q.ty * fs).toFixed(2)}) ` +
-        `rotate(${q.th.toFixed(2)}) scale(${q.sc.toFixed(4)}) translate(${(-ox).toFixed(2)} ${(-oy).toFixed(2)})`
-    );
-    /* the machine stays DRY, and once. It cross-dissolves with the
-       dry letter, so its ink has to be that letter's ink at the seam, and
-       the soak it would otherwise carry is the twin's job — which is
-       fading out above it while the machine works. */
-    if (a.lv !== 0) {
-      a.lv = 0;
-      for (const t of a.texts) {
-        t.style.setProperty("font-variation-settings", REST_AXES);
-        t.setAttribute("fill", ink[0]);
-      }
-    }
-  };
-  const fire = (i: number, k: number, now: number) => {
-    const kind = MACHINE[i];
-    if (!kind || answers[i] || stale || dead) return;
-    armed[i] = false;
-    fired[kind] = (fired[kind] ?? 0) + 1;
-    if (kind === "runner") {
-      if (hop.t0 < 0)
-        hop = {
-          t0: now,
-          dir: handDir,
-          /* the hop stays inside the swell's own ceiling: stacked on a
-             crest it put this one letter half again over it, and the bar
-             is the name's, not the wave's */
-          h: 0.028 + 0.012 * k,
-        };
-      return;
-    }
-    const svg = mkOverlay(plate, g, "np-ans");
-    const outer = el("g", {}, svg);
-    const made =
-      kind === "dividers"
-        ? answerDividers(svg, outer, k)
-        : kind === "road"
-          ? answerRoad(svg, outer)
-          : kind === "dial"
-            ? answerDial(svg, outer, k, handDir)
-            : answerBird(svg, outer, k);
-    const an: Answer = {
-      svg,
-      outer,
-      texts: made.texts,
-      end: now + made.ms + 2 * FLUID.seam,
-      lv: -1,
-    };
-    answers[i] = an;
-    /* THE LETTER AND ITS MACHINE EXCHANGE, they do not swap. Both sides
-       are the same drawing in the same place — the machines are clipped
-       copies of the real letter, measured raster-identical to the span —
-       so a cross-dissolve between them cannot be seen, PROVIDED the pieces
-       have not moved yet. So the answer's own motion is held back by
-       exactly the seam: a negative currentTime puts every animation in its
-       before-phase, where `fill: both` holds the first keyframe, which is
-       the letterform.
-       WAAPI rather than style.opacity, and not only because it interpolates
-       for free: nothing then writes the letter's inline opacity at all, so
-       the span's style attribute stays its pre-mount self through an answer
-       as well as at rest. */
-    for (const q of outer.getAnimations({ subtree: true })) {
-      try {
-        q.currentTime = -2 * FLUID.seam;
-      } catch {
-        /* an engine that refuses a negative time just starts at 0: the seam
-           is then a 112ms dissolve over pieces already moving, which is the
-           v4 swap softened, not a regression */
-      }
-    }
-    const ease: KeyframeAnimationOptions = {
-      duration: 2 * FLUID.seam,
-      fill: "both",
-      easing: "linear",
-    };
-    an.fade = [
-      letters[i].animate(
-        [
-          { opacity: 1, offset: 0 },
-          { opacity: 1, offset: 0.5 },
-          { opacity: 0, offset: 1 },
-        ],
-        ease
-      ),
-      svg.animate(
-        [
-          { opacity: 0, offset: 0 },
-          { opacity: 1, offset: 0.5 },
-          { opacity: 1, offset: 1 },
-        ],
-        ease
-      ),
-    ];
-    track(i);
-    maxLive = Math.max(maxLive, answers.filter(Boolean).length);
-  };
-  /** the runner's one hop, on top of the string: up and forward, a
-   *  landing squash, a small second bound, planted past upright */
-  const hopPose = (now: number) => {
-    const u = (now - hop.t0) / HOP_MS;
-    if (hop.t0 < 0 || u >= 1) return { ty: 0, th: 0, sy: 1 };
-    /* ONE bound, not two. v4's second, smaller bound is a second reversal
-       of that letter's lift, and the bar is one a letter. The landing keeps
-       its squash — a squash is scale, not a reversal, and it is the whole
-       reason the hop reads as weight. */
-    const AIR = 0.72;
-    if (u < AIR) {
-      const a = u / AIR;
-      return {
-        ty: -hop.h * 4 * a * (1 - a),
-        th: hop.dir * 1.2 * Math.sin(Math.PI * a),
-        sy: 1,
-      };
-    }
-    const w = (u - AIR) / (1 - AIR);
-    return { ty: 0, th: 0, sy: 1 - 0.022 * Math.sin(Math.PI * w) };
-  };
 
   /* ── THE SWELL AND ITS FOLLOWERS ───────────────────────────────
      Nothing here integrates the hand. The hand only says where it is and
@@ -2612,10 +2093,6 @@ export function mountNameHand(
 
   const clearAll = () => {
     for (let i = 0; i < N; i++) {
-      answers[i]?.fade?.forEach((q) => q.cancel());
-      answers[i]?.svg.remove();
-      answers[i] = null;
-      armed[i] = true;
       for (const p of OWN) letters[i].style.removeProperty(p);
       wrote[i].tr = wrote[i].rot = wrote[i].sc = "";
       level[i] = 0;
@@ -2629,7 +2106,6 @@ export function mountNameHand(
         wetAt[i] = "";
       }
     }
-    hop.t0 = -1;
     pinned = false;
   };
 
@@ -2662,7 +2138,7 @@ export function mountNameHand(
      the letter, and the same three plus opacity on its wet twin. No axis,
      no colour, no width — so there is no advance to re-centre and no
      sideways motion to jump. */
-  const draw = (now: number, dtF: number) => {
+  const draw = (dtF: number) => {
     if (!pinned) {
       pinned = true;
       for (let i = 0; i < N; i++)
@@ -2685,27 +2161,16 @@ export function mountNameHand(
         FLUID.rot * Math.tanh((Math.atan(slope) * 180) / Math.PI / FLUID.rot);
       const e = Math.min(1, Math.abs(yd) / ceil);
       /* the soak: the letter's own excursion, eased. Ink soaks fast and
-         dries slowly, and dries fast under a machine that is working its
-         letter; a press spreads no ink at all. */
-      const soak = answers[i] || (i === 9 && hop.t0 >= 0) ? 0 : e;
-      const rate =
-        soak > wet[i] ? FLUID.wetUp : answers[i] ? FLUID.wetAns : FLUID.wetDown;
-      wet[i] += (soak - wet[i]) * (1 - Math.exp(-rate * dtF));
+         dries slowly; a press spreads no ink at all. */
+      const rate = e > wet[i] ? FLUID.wetUp : FLUID.wetDown;
+      wet[i] += (e - wet[i]) * (1 - Math.exp(-rate * dtF));
       if (wet[i] < FLUID.wetOff) wet[i] = 0;
       level[i] = Math.round(wet[i] * SOAK);
-      const hp = i === 9 ? hopPose(now) : null;
-      const q = pose[i];
-      q.tx = 0;
-      /* the runner's hop REPLACES most of its share of the swell: a
-         letter being run by its machine has left the string, and the two
-         stacked would put that one letter over the swell's own ceiling */
-      q.ty = (hp ? hp.ty + yd * 0.25 : yd) + dep[i] * FLUID.pressY;
-      q.th = hp ? hp.th + th * 0.25 : th;
-      q.sc = 1 + FLUID.swell * e - dep[i] * FLUID.pressSc;
-      const sy = hp && hp.sy !== 1 ? q.sc * hp.sy : 0;
-      const tr = q.ty ? `0em ${q.ty.toFixed(4)}em` : "";
-      const rot = `${q.th.toFixed(2)}deg`;
-      const sc = sy ? `${q.sc.toFixed(4)} ${sy.toFixed(4)}` : q.sc.toFixed(4);
+      const ty = yd + dep[i] * FLUID.pressY;
+      const k = 1 + FLUID.swell * e - dep[i] * FLUID.pressSc;
+      const tr = ty ? `0em ${ty.toFixed(4)}em` : "";
+      const rot = `${th.toFixed(2)}deg`;
+      const sc = k.toFixed(4);
       const w = wrote[i];
       const st = letters[i].style;
       if (tr !== w.tr) {
@@ -2718,22 +2183,19 @@ export function mountNameHand(
       const sp = wetSpan[i];
       if (sp) {
         const op = wet[i] ? wet[i].toFixed(3) : "0";
-        const wsc = sy
-          ? `${(q.sc * wetSx[i]).toFixed(4)} ${sy.toFixed(4)}`
-          : `${(q.sc * wetSx[i]).toFixed(4)} ${q.sc.toFixed(4)}`;
+        const wsc = `${(k * wetSx[i]).toFixed(4)} ${sc}`;
         if (op !== wetAt[i]) sp.style.setProperty("opacity", (wetAt[i] = op));
         if (tr) sp.style.setProperty("translate", tr);
         else sp.style.removeProperty("translate");
         sp.style.setProperty("rotate", rot);
         sp.style.setProperty("scale", wsc);
       }
-      track(i);
     }
   };
 
   /* ONE FRAME: read the hand, walk it along the path it drew while the
-     followers integrate, run the answers' own clock, and stop on the frame
-     everything is exactly at rest. */
+     followers integrate, and stop on the frame everything is exactly at
+     rest. */
   const step = (now: number): boolean => {
     if (dead) return false;
     steps++;
@@ -2751,13 +2213,6 @@ export function mountNameHand(
     /* a frame shorter than a substep keeps its path for the next one:
        consuming it here would throw the hand's travel away */
     if (!nSub) return true;
-    /* where the crest was before this frame: a machine answers the crest
-       CROSSING it, not the crest's position at the end of a frame. On a
-       loaded page a 30ms frame carries the hand 0.54em and the window is
-       0.3em wide, so an endpoint test silently stops answering at all
-       exactly when frames get long — caught by a filmstrip whose own
-       screencast slowed the page enough to fire nothing. */
-    const wasX = hand.x;
     readHand(now, nSub * FLUID.dt);
     let pressLive = false;
     for (let j = 1; j <= nSub; j++) {
@@ -2783,47 +2238,6 @@ export function mountNameHand(
        leaves every target at zero and this cannot advance — which is the
        invariant the e2e holds a parked pointer and a scrolling page to. */
     if (mt > 0) driven++;
-    let busy = hop.t0 >= 0 && now - hop.t0 < HOP_MS;
-    if (!busy) hop.t0 = -1;
-    const amp = Math.tanh(vHat / FLUID.vk);
-    let speaking = busy || now - lastAnswer < FLUID.gap;
-    for (let i = 0; i < N; i++) {
-      const a = answers[i];
-      if (a) {
-        busy = true;
-        if (!a.off && now >= a.end) {
-          /* the pieces are back on the letterform by now, so the same
-             dissolve takes it back: reverse, do not re-create */
-          a.off = now;
-          a.fade?.forEach((q) => q.reverse());
-        } else if (a.off && now >= a.off + 2 * FLUID.seam) {
-          a.fade?.forEach((q) => q.cancel());
-          a.svg.remove();
-          answers[i] = null;
-          busy = answers.some(Boolean);
-        }
-      }
-      if (!MACHINE[i]) continue;
-      /* a machine answers a real swoosh, not a reading pass: the swell at
-         its full height, the crest at this letter, and the hand has to
-         calm down before that letter will answer again */
-      if (amp < FLUID.rearm) armed[i] = true;
-      else if (
-        armed[i] &&
-        !speaking &&
-        amp > FLUID.fire &&
-        !answers[i] &&
-        cx[i] > Math.min(wasX, hand.x) - FLUID.near &&
-        cx[i] < Math.max(wasX, hand.x) + FLUID.near
-      ) {
-        fire(i, Math.min(1, Math.max(0, (vHat - 10) / 20)), now);
-        if (answers[i] || hop.t0 >= 0) {
-          busy = true;
-          speaking = true;
-          lastAnswer = now;
-        }
-      }
-    }
     /* A HAND STILL ON THE NAME IS NOT REST, and this is not a nicety: the
        first frame of a gesture has one path sample and so no speed yet,
        the swell is still zero, and the frame would otherwise read as rest
@@ -2831,19 +2245,11 @@ export function mountNameHand(
        next sample is again the first and the speed can never build. The
        hand measured 37 restarts and nothing moving at all. */
     const onName = vHat > 0.02 || now - atT < 120;
-    if (
-      !onName &&
-      my < FLUID.rest &&
-      mv < 0.02 &&
-      !mt &&
-      !mw &&
-      !pressLive &&
-      !busy
-    ) {
+    if (!onName && my < FLUID.rest && mv < 0.02 && !mt && !mw && !pressLive) {
       settle();
       return false;
     }
-    draw(now, dtF);
+    draw(dtF);
     return true;
   };
 
@@ -2925,7 +2331,6 @@ export function mountNameHand(
       depAmp[i] = Math.pow(FLUID.rho, Math.abs(i - best));
     }
     presses++;
-    if (MACHINE[best]) fire(best, 0.25, t0);
     go();
   };
   /* a mouse or pen presses on the way down; a finger presses only once it
@@ -2993,9 +2398,6 @@ export function mountNameHand(
       lift: Array.from(lift, (x) => +x.toFixed(4)),
       level: Array.from(level),
       rest: letters.every((l, i) => l.style.cssText === snap[i]),
-      fired: { ...fired },
-      answering: answers.filter(Boolean).length + (hop.t0 >= 0 ? 1 : 0),
-      maxLive,
     }),
   };
 }

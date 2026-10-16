@@ -691,8 +691,6 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     presses: number;
     peak: number;
     rest: boolean;
-    fired: Record<string, number>;
-    answering: number;
   };
   type W = {
     __world: {
@@ -721,12 +719,13 @@ test.describe("the type answers the hand, and comes back to rest", () => {
       return { x: r.x, y: r.y, w: r.width, h: r.height };
     }, sel);
   /* a real hand: many small moves, fast, through the x-height band, placed
-     by the CLOCK and not by a count. A machine answers only a crest moving
+     by the CLOCK and not by a count. A machine used to answer a crest moving
      faster than 7.69 em/s, and 40 moves with no delay is a step count whose
      speed is whatever the engine spends per move: measured, Playwright's
      WebKit takes ~16.6 ms a move to Chromium's 8.3, so the same sweep ran at
-     8.46 em/s there and 17 in Chromium, about a millisecond a move from
-     failing. Placed by elapsed time, every engine sweeps at one speed. */
+     8.46 em/s there and 17 in Chromium. Placed by elapsed time, every engine
+     sweeps at one speed — fast enough that, had a replay come back, it would
+     fire here. */
   const sweep = async (
     page: import("@playwright/test").Page,
     b: { x: number; y: number; w: number; h: number },
@@ -741,7 +740,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
     }
   };
 
-  test("a swoosh across the name moves it and wakes its machines, then nothing is left", async ({
+  test("a swoosh across the name moves it, replays no machine, then nothing is left", async ({
     page,
     isMobile,
   }) => {
@@ -761,15 +760,16 @@ test.describe("the type answers the hand, and comes back to rest", () => {
           getComputedStyle(l).rotate
       )
     );
+    const svgs = () => page.locator(".np-plate svg").count();
+    const svg0 = await svgs();
     await sweep(page, before);
     const mid = await name(page);
     expect(mid?.live).toBe(true);
     /* it moved: the bead chain lifted by a visible fraction of an em */
     expect(mid!.peak).toBeGreaterThan(0.02);
-    /* and the machines that built the letters answered the crest */
-    expect(
-      Object.values(mid!.fired).reduce((a, b) => a + b, 0)
-    ).toBeGreaterThan(0);
+    /* and the assembly did NOT replay under it (owner, 2026-10-16: the
+       machines run once, and again only from "watch it again") */
+    expect(await svgs()).toBe(svg0);
     await page.mouse.move(before.x + before.w + 300, before.y + 400);
     await expect
       .poll(
@@ -781,8 +781,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
       .toBe(0);
     const after = await name(page);
     expect(after!.rest).toBe(true);
-    expect(after!.answering).toBe(0);
-    await expect(page.locator(".np-plate .np-ans")).toHaveCount(0);
+    expect(await svgs()).toBe(svg0);
     /* every letter is exactly where and what it was, and the box never moved */
     expect(
       await page.evaluate(() =>

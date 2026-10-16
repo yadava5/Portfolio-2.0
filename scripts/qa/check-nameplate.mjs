@@ -27,6 +27,12 @@
  *   4 · The type does not       np-settype animated Fraunces' opsz and wght,
  *       change width.           which resize glyphs: 78.3px of drift with the
  *                               machines drawn at the settled positions.
+ *   5 · The hand replays        From 2026-10-09 a swoosh's crest and a press
+ *       nothing.                re-ran a machine letter as an overlay riding
+ *                               the wave; the owner ruled them out on
+ *                               2026-10-16 ("not smooth ... run weirdly").
+ *                               The assembly runs once, and again only from
+ *                               "watch it again".
  *
  * Run against `out/`, which is what actually ships.
  */
@@ -95,13 +101,19 @@ try {
      flag the page could set wrongly. */
   await page.addInitScript(() => {
     window.__npRuns = 0;
+    /* and every SVG of ANY class: the hand's replays were np-ans, which
+       the performance count above deliberately never saw */
+    window.__npSvgs = 0;
     addEventListener("DOMContentLoaded", () => {
       const plate = document.querySelector("[data-nameplate]");
       if (!plate) return;
       new MutationObserver((ms) => {
         for (const m of ms)
-          for (const n of m.addedNodes)
-            if (n.nodeType === 1 && n.matches?.("svg.np-mech")) window.__npRuns++;
+          for (const n of m.addedNodes) {
+            if (n.nodeType !== 1) continue;
+            if (n.matches?.("svg.np-mech")) window.__npRuns++;
+            if (n.matches?.("svg") || n.querySelector?.("svg")) window.__npSvgs++;
+          }
       }).observe(plate, { childList: true, subtree: true });
     });
   });
@@ -167,6 +179,61 @@ try {
     runs === 1,
     "the name performs exactly once",
     `${runs} performance${runs === 1 ? "" : "s"} in 24s of sitting still`
+  );
+
+  /* ── The hand replays nothing (5). A swoosh fast enough to have fired a
+     machine (the old threshold was 0.8 of the swell, ~7.7 em/s; these run
+     ~25), placed by the clock so every engine sweeps at one speed, then a
+     press on each of the five machine letters. Sampled by the page's own
+     frames: no SVG of any class joins the plate, and no letter's opacity
+     leaves 1 (an answer faded its letter out under the machine). ── */
+  const hb = await page.evaluate(() => {
+    const r = document.querySelector("[data-nameplate] h1").getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height };
+  });
+  const svgs0 = await page.evaluate(() => {
+    const w = window;
+    w.__npMinOp = 1;
+    w.__npWatch = true;
+    const L = [...document.querySelectorAll("[data-nameplate] .np-ch")];
+    const tick = () => {
+      for (const l of L) w.__npMinOp = Math.min(w.__npMinOp, +getComputedStyle(l).opacity);
+      if (w.__npWatch) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return w.__npSvgs;
+  });
+  const hy = hb.y + hb.h * 0.55;
+  for (const dir of [1, -1, 1]) {
+    const x0 = dir > 0 ? hb.x - 60 : hb.x + hb.w + 60;
+    const x1 = dir > 0 ? hb.x + hb.w + 60 : hb.x - 60;
+    await page.mouse.move(x0, hy);
+    const t0 = Date.now();
+    for (let u = 0; u < 1; ) {
+      u = Math.min(1, (Date.now() - t0) / 350);
+      await page.mouse.move(x0 + (x1 - x0) * u, hy);
+    }
+    await page.waitForTimeout(500);
+  }
+  for (const i of [0, 3, 7, 9, 10]) {
+    await page.locator("[data-nameplate] .np-ch").nth(i).click();
+    await page.waitForTimeout(250);
+  }
+  await page.mouse.move(hb.x + hb.w + 300, hb.y + 500);
+  await page.waitForTimeout(1500);
+  const handed = await page.evaluate(() => {
+    window.__npWatch = false;
+    return { svgs: window.__npSvgs, minOp: window.__npMinOp, runs: window.__npRuns };
+  });
+  check(
+    handed.svgs === svgs0 && handed.runs === 1,
+    "the hand replays no machine",
+    `${handed.svgs - svgs0} overlay(s) and ${handed.runs - 1} performance(s) from 3 swooshes and 5 presses`
+  );
+  check(
+    handed.minOp > 0.999,
+    "the hand never fades a letter",
+    `lowest letter opacity seen ${handed.minOp.toFixed(3)}`
   );
 
   /* ── The replay, which is the only place defect 2 is visible. ───────── */
