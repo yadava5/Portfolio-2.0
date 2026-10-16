@@ -133,6 +133,23 @@ const DEFECTS = [
       ),
     landed: (s) => s.includes("x[k] * x[k] + y[k] * y[k] < -1"),
   },
+  {
+    name: "a letter scatters only in part (the descender stays solid)",
+    file: SCATTER_JS,
+    apply: (s) => s.replace("SCATTER.whole * total[i]", "2 * total[i]"),
+    landed: (s) =>
+      !s.includes("SCATTER.whole * total[i]") && s.includes("2 * total[i]"),
+  },
+  {
+    name: "the scatter's canvas scrolls the page sideways",
+    file: SCATTER_JS,
+    apply: (s) =>
+      s.replace(
+        "const CW = Math.min(CWfull, Math.floor(vR - X0));",
+        "const CW = CWfull + 0 * vR;"
+      ),
+    landed: (s) => s.includes("const CW = CWfull + 0 * vR;"),
+  },
 ];
 
 let missed = 0;

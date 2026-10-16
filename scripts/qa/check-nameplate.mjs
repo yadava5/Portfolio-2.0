@@ -234,6 +234,7 @@ try {
   });
   const hy = hb.y + hb.h * 0.55;
   let broken = 0;
+  let held = { above: 0, body: 0, below: 0 };
   for (const dir of [1, -1, 1]) {
     const x0 = dir > 0 ? hb.x - 60 : hb.x + hb.w + 60;
     const x1 = dir > 0 ? hb.x + hb.w + 60 : hb.x - 60;
@@ -250,6 +251,13 @@ try {
       )
     );
     await page.waitForTimeout(500);
+    const h = await page.evaluate(() => window.__world.name()?.episode.held);
+    if (h)
+      held = {
+        above: Math.max(held.above, h.above),
+        body: Math.max(held.body, h.body),
+        below: Math.max(held.below, h.below),
+      };
   }
   /* the pointer jumps off the name in one event: not a hand */
   await page.mouse.move(hb.x + hb.w * 0.5, hy);
@@ -294,6 +302,13 @@ try {
     broken >= 8,
     "a swoosh scatters the name",
     `${broken} of 10 letters broken by one 350ms swoosh`
+  );
+  /* e · the WHOLE letter scatters: a pass through the x-height left 34-49%
+     of the y's descender seated, a solid hook under the cloud */
+  check(
+    held.above < 0.05 && held.body < 0.05 && held.below < 0.05,
+    "a broken letter scatters whole",
+    `never-converted share of broken letters: above the cap line ${held.above}, body ${held.body}, below the baseline ${held.below}`
   );
   check(
     handed.gap === 0,
@@ -352,7 +367,7 @@ try {
   /* ── Narrow widths. Every geometry defect so far was found at 1440 and
      the machines are sized from a measured box, so a width that changes
      the type's wrap or scale is where a box mismatch would resurface. ── */
-  for (const w of [320, 768]) {
+  for (const w of [320, 768, 1280]) {
     const np = await browser.newPage({ viewport: { width: w, height: 900 } });
     await np.goto(`http://127.0.0.1:${port}/`, {
       waitUntil: "domcontentloaded",
@@ -392,6 +407,44 @@ try {
         g.overflow <= 0,
         `the page does not scroll sideways at ${w}px`,
         `${g.overflow}px of overflow`
+      );
+    }
+    /* and not once the scatter has mounted, mid-scatter: its canvas reached
+       past the page's right edge, 38px at 768 and 40 at 320 */
+    const armed = await np
+      .waitForFunction(() => window.__world?.name?.()?.ready === true, null, {
+        timeout: 15000,
+      })
+      .then(() => true)
+      .catch(() => false);
+    if (!armed) {
+      notes.push(
+        `  · ${w}px — the scatter never armed, its overflow check skipped`
+      );
+    } else {
+      const nb = await np.evaluate(() => {
+        const r = document
+          .querySelector("[data-nameplate] h1")
+          .getBoundingClientRect();
+        return { x: r.x, y: r.y, w: r.width, h: r.height };
+      });
+      const ny = nb.y + nb.h * 0.55;
+      await np.mouse.move(nb.x - 20, ny);
+      const t1 = Date.now();
+      for (let u = 0; u < 1; ) {
+        u = Math.min(1, (Date.now() - t1) / 300);
+        await np.mouse.move(nb.x - 20 + (nb.w + 40) * u, ny);
+      }
+      const mid = await np.evaluate(() => ({
+        overflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+        loose: window.__world.name()?.loose ?? 0,
+      }));
+      check(
+        mid.overflow <= 0 && mid.loose > 0,
+        `the scatter does not scroll the page sideways at ${w}px`,
+        `${mid.overflow}px of overflow with ${mid.loose} dots loose`
       );
     }
     await np.close();

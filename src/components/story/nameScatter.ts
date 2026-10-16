@@ -43,6 +43,11 @@ export type HandProbe = {
     maxLoose: number;
     maxJump: number;
     frames: number;
+    /** of the letters it broke, the share of dots that never left, above the
+     *  cap line (ascenders, the A's apex), between it and the baseline, and
+     *  below the baseline (the y's descender): a letter half converted is a
+     *  solid hook under a cloud */
+    held: { above: number; body: number; below: number };
   };
 };
 
@@ -92,6 +97,9 @@ const SCATTER = {
   handMax: 12,
   /** one event further than this (em) is a pointer that jumped, not a hand */
   teleport: 2.4,
+  /** once this share of a letter's dots has left, the rest of the letter
+   *  goes with them: the whole character scatters, never a part of it */
+  whole: 0.25,
   /** a press or a tap: radius (em) and strength (px/s) */
   burstR: 0.9,
   burst: 1100,
@@ -144,9 +152,23 @@ export function mountNameHand(
      (1.2-1.6px of registration error, measured); snapped, the swap frame
      lands within half a pixel at 1440 and 1280. */
   const onGrid = (v: number, o: number) => Math.floor((v + o) * dpr) / dpr - o;
-  const X0 = onGrid(bx0 - pad, pr0.left);
+  /* AND INSIDE THE SECTION AND THE VIEWPORT. Unclamped, the canvas reached
+     past the right edge of the page and the whole page scrolled sideways
+     once the scatter mounted: 12px at 1280, 38 at 768, 40 at 320, measured.
+     A dot that flies past either edge is simply not drawn. */
+  const sec = (
+    plate.closest("section") ?? document.body
+  ).getBoundingClientRect();
+  const vL = Math.max(sec.left, 0) - pr0.left;
+  const vR =
+    Math.min(sec.right, document.documentElement.clientWidth) - pr0.left;
+  const X0 = Math.max(
+    onGrid(bx0 - pad, pr0.left),
+    Math.ceil((vL + pr0.left) * dpr) / dpr - pr0.left
+  );
   const Y0 = onGrid(by0 - pad * 0.8, pr0.top);
-  const CW = Math.ceil(bx1 - bx0 + 2 * pad);
+  const CWfull = Math.ceil(bx1 - X0 + pad);
+  const CW = Math.min(CWfull, Math.floor(vR - X0));
   const CH = Math.ceil(by1 - by0 + 1.6 * pad);
   const base = g0.base;
   const ink = getComputedStyle(h1).color;
@@ -228,12 +250,15 @@ export function mountNameHand(
   let cellW = new Int32Array(0);
   let cellH = new Int32Array(0);
   let seated = new Uint8Array(0);
+  /* which dots this episode has loosened, for the probe's `held` */
+  let ever = new Uint8Array(0);
   let tHit = new Float64Array(0);
   let prevX = new Float32Array(0);
   let prevY = new Float32Array(0);
   const lx0 = new Int32Array(N);
   const lw = new Int32Array(N);
   const looseN = new Int32Array(N);
+  const total = new Int32Array(N);
   /* each letter's pristine raster, and its ink still in place: a cell is
      cut out ONCE when its dot leaves and painted back ONCE, from the
      pristine raster, when it seats (re-cutting every crumbling letter every
@@ -394,9 +419,11 @@ export function mountNameHand(
     vx = new Float32Array(D);
     vy = new Float32Array(D);
     seated = new Uint8Array(D).fill(1);
+    ever = new Uint8Array(D);
     tHit = new Float64Array(D);
     prevX = Float32Array.from(hx);
     prevY = Float32Array.from(hy);
+    for (let k = 0; k < D; k++) total[li[k]]++;
     for (let k = 0; k < D; k++) {
       const gk = key(Math.floor(hx[k] / P), Math.floor(hy[k] / P));
       const cell = grid.get(gk);
@@ -534,6 +561,7 @@ export function mountNameHand(
     }
   };
   const loosen = (k: number, t: number) => {
+    ever[k] = 1;
     if (seated[k]) {
       seated[k] = 0;
       looseN[li[k]]++;
@@ -712,6 +740,7 @@ export function mountNameHand(
       episode.maxLoose = 0;
       episode.maxJump = 0;
       episode.frames = 0;
+      ever.fill(0);
     }
 
     /* the hand: every segment it drew since the last frame */
@@ -847,6 +876,38 @@ export function mountNameHand(
         seated[k] = 1;
         looseN[li[k]]--;
         seatQ.push(k);
+      }
+    }
+
+    /* THE WHOLE CHARACTER SCATTERS. The hand reaches 0.46em either side of
+       its path, and a pass through the x-height never reached the y's
+       descender: 34-49% of the dots below the baseline of every letter it
+       broke stayed seated at 1440 and 1280, a solid hook under the cloud
+       (measured, both engines). So once a quarter of a letter has left, the
+       rest of it follows, at the letter's own mean velocity, each dot at its
+       own share of it. */
+    {
+      const mvx = new Float32Array(N);
+      const mvy = new Float32Array(N);
+      for (let k = 0; k < D; k++)
+        if (!seated[k]) {
+          mvx[li[k]] += vx[k];
+          mvy[li[k]] += vy[k];
+        }
+      for (let i = 0; i < N; i++) {
+        if (!looseN[i] || looseN[i] >= total[i]) continue;
+        if (looseN[i] < SCATTER.whole * total[i]) continue;
+        const ax = mvx[i] / looseN[i];
+        const ay = mvy[i] / looseN[i];
+        for (let k = 0; k < D; k++) {
+          if (li[k] !== i || !seated[k]) continue;
+          const j = 0.45 + 0.55 * hash(k + 23);
+          const a = (hash(k + 29) - 0.5) * 0.9;
+          vx[k] = (ax * Math.cos(a) - ay * Math.sin(a)) * j;
+          vy[k] = (ax * Math.sin(a) + ay * Math.cos(a)) * j;
+          cap(k);
+          loosen(k, t);
+        }
       }
     }
 
@@ -1062,6 +1123,21 @@ export function mountNameHand(
         maxLoose: episode.maxLoose,
         maxJump: +episode.maxJump.toFixed(2),
         frames: episode.frames,
+        held: (() => {
+          const n = { above: 0, body: 0, below: 0 };
+          const h = { above: 0, body: 0, below: 0 };
+          const capY = capTop - Y0;
+          const baseY = base - Y0;
+          for (let k = 0; k < D; k++) {
+            if (!episode.broken.has(li[k])) continue;
+            const b = hy[k] < capY ? "above" : hy[k] > baseY ? "below" : "body";
+            n[b]++;
+            if (!ever[k]) h[b]++;
+          }
+          const f = (b: keyof typeof n) =>
+            n[b] ? +(h[b] / n[b]).toFixed(3) : 0;
+          return { above: f("above"), body: f("body"), below: f("below") };
+        })(),
       },
     }),
   };
