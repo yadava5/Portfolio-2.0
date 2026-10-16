@@ -1028,6 +1028,8 @@ test.describe("the figures assemble with the scroll", () => {
     yA: number;
     yB: number;
     g: number | null;
+    vis: number;
+    held: boolean;
   };
   type W = { __world: { asm: Record<string, A>; asmRest: () => boolean } };
   const frames = (page: import("@playwright/test").Page, n = 2) =>
@@ -1040,12 +1042,20 @@ test.describe("the figures assemble with the scroll", () => {
         }),
       n
     );
+  /* THE WAITS ARE CEILINGS, NOT CLOCKS. WebKit on Linux (CI's only WebKit)
+     rasterises this page on the CPU at 2 to 17 frames a second where a mac
+     draws 60 (labrat, CI run 38911284112; measured in the Playwright noble
+     image, arm64, at 2 to 10 CPUs), and the
+     hand's step is clamped at 50 ms of motion a frame, so below 20 fps a 0.4 s
+     motion takes seconds of wall time. Every wait here is for the driver's
+     state; its timeout only says when to give up. */
+  const SLOW = 30000;
   const rest = (page: import("@playwright/test").Page) =>
     page.waitForFunction(
       () => (window as unknown as W).__world.asmRest(),
       null,
       {
-        timeout: 5000,
+        timeout: SLOW,
       }
     );
   const asmOf = (page: import("@playwright/test").Page, key: string) =>
@@ -1060,30 +1070,89 @@ test.describe("the figures assemble with the scroll", () => {
     await frames(page);
     await rest(page);
   };
-  const canon = (page: import("@playwright/test").Page, id: string) =>
-    page.evaluate(
-      ([i, skip]) =>
-        [...document.getElementById(i)!.querySelectorAll("*")]
-          .filter((e) => !skip || !e.closest(skip))
-          .map(
-            (e) =>
-              e.tagName +
-              "|" +
-              [...e.attributes]
-                /* a style attribute with nothing in it declares nothing: a
-                   cleared inline property leaves style="" behind, and that is
-                   the same drawing as no attribute at all */
-                .filter((a) => a.name !== "style" || a.value.trim() !== "")
-                .map((a) => a.name + "=" + a.value)
-                .sort()
-                .join(",") +
-              "|" +
-              (e.children.length ? "" : e.textContent)
-          )
-          .join("\n"),
-      [id, SKIP[id] ?? ""] as const
+  /* TWO READS LIVE IN THE PAGE, so a sample is taken in the frame the
+     driver works its y: below 20 fps (WebKit-on-Linux, CI) every protocol
+     round trip can wait out a frame, and a read that crosses the grace's
+     600 ms of stillness reads the grace, not the scroll.
+     __canon is the drawing as text: every element's tag, attributes and
+     leaf text. __asmGo scrolls to y and returns the probe the driver
+     publishes for it: a probe published since the scroll, this figure's
+     hand at rest, and either the frame after the scroll's or, when no hand
+     was running before it (so asmWork is the only thing that can publish),
+     the scroll's own frame, read in the frame the grace is armed. What the
+     target IS, is the assertions' business, not this wait's. */
+  type In = W & {
+    __canon: (i: string, skip: string) => string;
+    __asmGo: (k: string, to: number | string) => Promise<A | null>;
+  };
+  const install = () => {
+    const w = window as unknown as In;
+    w.__canon = (i, skip) =>
+      [...document.getElementById(i)!.querySelectorAll("*")]
+        .filter((e) => !skip || !e.closest(skip))
+        .map(
+          (e) =>
+            e.tagName +
+            "|" +
+            [...e.attributes]
+              /* a style attribute with nothing in it declares nothing: a
+                 cleared inline property leaves style="" behind, and that is
+                 the same drawing as no attribute at all */
+              .filter((a) => a.name !== "style" || a.value.trim() !== "")
+              .map((a) => a.name + "=" + a.value)
+              .sort()
+              .join(",") +
+            "|" +
+            (e.children.length ? "" : e.textContent)
+        )
+        .join("\n");
+    /* to: a y, or an element id to scrollIntoView's centre */
+    w.__asmGo = async (k, to) => {
+      const was = w.__world.asm;
+      const idle = w.__world.asmRest();
+      const here = was[k];
+      /* already there and at rest: no scroll, so no frame will publish */
+      if (to === Math.round(scrollY) && here.s === here.t && here.v === 0)
+        return here;
+      if (typeof to === "string")
+        document
+          .getElementById(to)!
+          .scrollIntoView({ block: "center", behavior: "instant" });
+      else scrollTo({ top: to, behavior: "instant" });
+      const t0 = performance.now();
+      for (let n = 0; ; n++) {
+        await new Promise((r) => requestAnimationFrame(r));
+        const a = w.__world.asm[k];
+        if (
+          (n >= 1 || idle) &&
+          w.__world.asm !== was &&
+          a.s === a.t &&
+          a.v === 0
+        )
+          return a;
+        if (performance.now() - t0 > 30000) return null;
+      }
+    };
+  };
+  const arrive = async (
+    page: import("@playwright/test").Page,
+    key: string,
+    to: number | string
+  ) => {
+    const a = await page.evaluate(
+      ([k, t]) => (window as unknown as In).__asmGo(k, t),
+      [key, to] as const
     );
+    if (!a) throw new Error(`the driver never worked ${to}`);
+    return a;
+  };
+  const canon = (page: import("@playwright/test").Page, id: string) =>
+    page.evaluate(([i, skip]) => (window as unknown as In).__canon(i, skip), [
+      id,
+      SKIP[id] ?? "",
+    ] as const);
   const open = async (page: import("@playwright/test").Page) => {
+    await page.addInitScript(install);
     await page.goto("/");
     await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
     await expect
@@ -1097,13 +1166,65 @@ test.describe("the figures assemble with the scroll", () => {
         { timeout: 15000 }
       )
       .toBe(FIGS.map(([k]) => k).join(","));
+    /* THE WINDOWS ARE READ ONCE THEY ARE THE PAGE'S. fig. 10 and fig. 11
+       register inside buildThread(), after boot's measure and before
+       `booted`, so they hold the unmeasured 0..1 until the first re-measure;
+       and the nameplate's reveal moves every window down (32 px at 1440, 54
+       on a phone) a frame or two after data-np-ready. On a mac both land
+       before the keys are read; on WebKit-on-Linux they land a second later,
+       and CI read fig. 11's window as yB - yA = 1 (a Linux container also
+       sampled fig. 08 54 px off its window). So: every window measured,
+       every figure drawn, the hand at rest, and the windows unchanged over
+       eight frames */
+    const settled = page.waitForFunction(
+      (keys) => {
+        const g = window as unknown as W & {
+          __asmSig?: string;
+          __asmSame?: number;
+        };
+        const asm = g.__world.asm;
+        const ok =
+          keys.every(
+            (k) => asm[k] && asm[k].yB - asm[k].yA > 1 && asm[k].s >= 0
+          ) && g.__world.asmRest();
+        const sig = keys
+          .map((k) => (asm[k] ? asm[k].yA + ":" + asm[k].yB : "-"))
+          .join();
+        if (!ok || sig !== g.__asmSig) {
+          g.__asmSig = sig;
+          g.__asmSame = 0;
+          return false;
+        }
+        g.__asmSame = (g.__asmSame ?? 0) + 1;
+        return g.__asmSame >= 8;
+      },
+      FIGS.map(([k]) => k),
+      { polling: "raf", timeout: SLOW }
+    );
+    await settled.catch(async (err) => {
+      const left = await page.evaluate(() => {
+        const g = window as unknown as W;
+        return [
+          Object.entries(g.__world.asm)
+            .filter(([, a]) => a.yB - a.yA <= 1 || a.s < 0)
+            .map(([k, a]) => `${k} ${a.yA}..${a.yB} s ${a.s}`)
+            .join(", ") || "none",
+          String(g.__world.asmRest()),
+        ];
+      });
+      throw new Error(
+        `the windows never settled: unmeasured or undrawn ${left[0]}; at rest ${left[1]} (${err})`
+      );
+    });
   };
 
   for (const [key, id] of FIGS) {
     test(`${key}: the same y gives the same drawing both ways, and a centred park is finished`, async ({
       page,
       isMobile,
-    }) => {
+    }, testInfo) => {
+      /* ~30 arrivals, each a second or more at WebKit-on-Linux's frame rate */
+      testInfo.setTimeout(180_000);
       await open(page);
       const w = await asmOf(page, key);
       /* fig. 08's window is its plate's dusk entrance: 89 to 211 px */
@@ -1118,12 +1239,23 @@ test.describe("the figures assemble with the scroll", () => {
          pause" is the test's to keep, not the page's to survive */
       const sample = async (y: number) => {
         for (let k = 0; k < 4; k++) {
-          await jump(page, y - 2000 < 0 ? y + 2000 : y - 2000);
-          await jump(page, y);
-          const a = await asmOf(page, key);
-          const c = await canon(page, id);
-          const after = await asmOf(page, key);
-          if (after.g === null) return { a, c };
+          const r = await page.evaluate(
+            async ([kk, i, skip, y0, y1]) => {
+              const w = window as unknown as In;
+              if (!(await w.__asmGo(kk, y0)) || !(await w.__asmGo(kk, y1)))
+                return null;
+              return { a: w.__world.asm[kk], c: w.__canon(i, skip) };
+            },
+            [
+              key,
+              id,
+              SKIP[id] ?? "",
+              y - 2000 < 0 ? y + 2000 : y - 2000,
+              y,
+            ] as const
+          );
+          if (!r) throw new Error(`the driver never worked ${y}`);
+          if (r.a.g === null) return r;
         }
         throw new Error(`reads too slow to sample the pure law at ${y}`);
       };
@@ -1171,12 +1303,12 @@ test.describe("the figures assemble with the scroll", () => {
       /* a park is ARRIVED at: from off the screen, where no window is closed
          (a slow read above could have paused long enough for a grace) */
       await jump(page, Math.round(w.yA - 1500));
-      await jump(page, park);
       /* the scroll alone must do most of it — the grace is a completion,
          never the play the owner rejected: pure p at a centred park is at
          least PARK_FLOOR (measured .82-.89 across seats); at a declared
-         close it is 1 */
-      const parked = await asmOf(page, key);
+         close it is 1. Read in the frame it is worked: a read after the
+         grace reads 1 and calls the park finished by the scroll */
+      const parked = await arrive(page, key, park);
       expect(
         parked.t,
         tall
@@ -1186,7 +1318,7 @@ test.describe("the figures assemble with the scroll", () => {
       /* ... and after the grace's stillness the hand finishes it, and the
          window is closed where the reader paused */
       await expect
-        .poll(async () => (await asmOf(page, key)).s, { timeout: 4000 })
+        .poll(async () => (await asmOf(page, key)).s, { timeout: SLOW })
         .toBe(1);
       const graced = await asmOf(page, key);
       /* a park the scroll alone finished (fig. 08's dusk window ends at the
@@ -1221,12 +1353,96 @@ test.describe("the figures assemble with the scroll", () => {
         ).toBe(finished);
       /* back up from the park it comes apart again, continuously, over the
          closed window: p falls with y, never jumps, never sticks */
+      /* THE UPS ARRIVE BY A JUMP, as every move here is meant to (jump()
+         above: "lands at rest in the frame it arrives"). A step of 0.3 of
+         the closed window is shorter than the driver's snap distance (0.3
+         vh), so the hand plays it, and below 20 fps the hand takes longer
+         than the grace's 600 ms: on WebKit-on-Linux the grace fired mid-step,
+         closed the window again at the sample and read 1 (CI run
+         38911284112, 3 of 3 on fig. 08 at 1440 and on the phone, fig. 10 on
+         the phone). So each sample is reached from a hop one snap distance
+         below it, where the closed window has the figure finished and still
+         on screen, and all of it runs in the page, frame by frame: a read
+         is taken in the frame the driver works its y and the next scroll
+         leaves in that same frame, so no step is ever still for the grace.
+         A read the grace beat anyway (a frame longer than 600 ms) is
+         reported as such, never read as the law */
       const yG = graced.g ?? w.yB;
-      const ups: number[] = [];
-      for (const f of [0.8, 0.5, 0.2]) {
-        await jump(page, Math.round(w.yA + f * (yG - w.yA)));
-        ups.push((await asmOf(page, key)).s);
-      }
+      const ys2 = [0.8, 0.5, 0.2].map((f) =>
+        Math.round(w.yA + f * (yG - w.yA))
+      );
+      const climb = await page.evaluate(
+        async ([k, ysUp, g0]) => {
+          const w = window as unknown as In;
+          const go = (y: number) => w.__asmGo(k, y);
+          const frame = () => new Promise((r) => requestAnimationFrame(r));
+          /* FIRST THE HAND TAKES IT APART. From just past the closed window
+             (finished there), a step back to the first sample that is
+             shorter than the snap distance: the hand, not a snap, must start
+             p down, watched frame by frame and left in the frame it moves,
+             before the grace's 600 ms could close the window there. A hand
+             that cannot run backward reads 1 here on every engine */
+          const yb = ysUp[0];
+          const top = await go(yb + Math.floor(0.3 * innerHeight) - 4);
+          if (!top)
+            return {
+              s: [],
+              back: null,
+              err: "the driver never worked the step back",
+            };
+          scrollTo({ top: yb, behavior: "instant" });
+          let back: { s0: number; s: number; t: number } | null = null;
+          for (let n = 0; n < 12 && !back; n++) {
+            await frame();
+            const a = w.__world.asm[k];
+            if (a.g !== g0)
+              return {
+                s: [],
+                back,
+                err: `reads too slow to watch the hand at ${yb}`,
+              };
+            if (a.s < top.s - 1e-4) back = { s0: top.s, s: a.s, t: a.t };
+          }
+          if (!back) return { s: [], back, err: "" }; /* asserted below */
+          const s: number[] = [];
+          for (const y of ysUp) {
+            const h = await go(Math.round(y + 0.3 * innerHeight + 2));
+            if (!h)
+              return {
+                s,
+                back,
+                err: `the driver never worked the hop off ${y}`,
+              };
+            if (!(h.vis > 0) || h.g !== g0)
+              return {
+                s,
+                back,
+                err: `the hop off ${y} let go of the closed window (vis ${h.vis}, g ${h.g})`,
+              };
+            const u = await go(y);
+            if (!u) return { s, back, err: `the driver never worked ${y}` };
+            if (u.g !== g0)
+              return {
+                s,
+                back,
+                err: `reads too slow to sample the closed window at ${y}`,
+              };
+            s.push(u.s);
+          }
+          return { s, back, err: "" };
+        },
+        [key, ys2, graced.g] as const
+      );
+      if (climb.err) throw new Error(climb.err);
+      expect(
+        climb.back,
+        "up from the park the hand takes it apart, by itself"
+      ).not.toBeNull();
+      expect(
+        climb.back!.s,
+        "and it is the hand, not a snap: on its way to the target"
+      ).toBeGreaterThan(climb.back!.t);
+      const ups = climb.s;
       expect(ups[0], "up from the park: coming apart").toBeLessThan(1);
       expect(ups[1]).toBeLessThan(ups[0]);
       expect(ups[2]).toBeLessThan(ups[1]);
@@ -1239,21 +1455,12 @@ test.describe("the figures assemble with the scroll", () => {
       ).toBeNull();
       if (!isMobile) {
         await jump(page, Math.round(w.yA - 1500));
-        await page.evaluate(
-          (i) =>
-            document
-              .getElementById(i)!
-              .scrollIntoView({ block: "center", behavior: "instant" }),
-          id
-        );
-        await frames(page);
-        await rest(page);
         expect(
-          (await asmOf(page, key)).t,
+          (await arrive(page, key, id)).t,
           "scrollIntoView centre, desktop: mostly by the scroll"
         ).toBeGreaterThanOrEqual(PARK_FLOOR);
         await expect
-          .poll(async () => (await asmOf(page, key)).s, { timeout: 4000 })
+          .poll(async () => (await asmOf(page, key)).s, { timeout: SLOW })
           .toBe(1);
       }
     });
@@ -1290,6 +1497,7 @@ test.describe("the figures assemble with the scroll", () => {
       isMobile,
     }) => {
       test.skip(isMobile, "wheel input; the touch flick is the same driver");
+      test.setTimeout(90_000);
       await open(page);
       const w = await asmOf(page, key);
       await jump(page, Math.round(w.yA - 0.3 * (w.yB - w.yA)));

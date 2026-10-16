@@ -578,7 +578,12 @@ test.describe("G2c · fig. 02's words only ever translate", () => {
    phone, a touch scroll gesture that starts on the card must leave the card
    un-landed (held false) and move p. The control: a tap on the same card
    lands it (held true), so the probe can read true. Chromium only: the
-   gesture is CDP's Input.synthesizeScrollGesture.
+   gesture is CDP's Input.dispatchTouchEvent, a finger down, ten moves and
+   up, which the browser turns into its own scroll. It was
+   Input.synthesizeScrollGesture, which on headless Chromium on Linux (CI)
+   delivers a touchstart and a touchend and no touchmove, so nothing ever
+   scrolled: the same call on a bare 5000 px page with no script moved 0 px
+   on Linux and 60 px on a mac (labrat, CI run 38911284112).
    ══════════════════════════════════════════════════════════════════════ */
 test.describe("G2d · a swipe across fig. 02 does not land it", () => {
   async function parkPhone(
@@ -636,18 +641,26 @@ test.describe("G2d · a swipe across fig. 02 does not land it", () => {
     browserName,
     baseURL,
   }, testInfo) => {
-    test.skip(browserName !== "chromium", "CDP scroll gesture");
+    test.skip(browserName !== "chromium", "CDP touch input");
     testInfo.setTimeout(60_000);
     const { ctx, page, at } = await parkPhone(browser, baseURL);
     try {
       const before = await probe(page);
       const cdp = await ctx.newCDPSession(page);
-      await cdp.send("Input.synthesizeScrollGesture", {
-        x: at.x,
-        y: at.y,
-        yDistance: -60,
-        gestureSourceType: "touch",
-        speed: 300,
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: at.x, y: at.y }],
+      });
+      for (let i = 1; i <= 10; i++) {
+        await cdp.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [{ x: at.x, y: at.y - 6 * i }],
+        });
+        await page.waitForTimeout(16);
+      }
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
       });
       await page.waitForTimeout(250);
       const after = await probe(page);
@@ -874,7 +887,7 @@ test.describe("G2e · fig. 05's words only ever translate", () => {
    phone swipe begins with. Parked at p .3 on a touch phone, a touch scroll
    gesture that starts on the week must leave the plate un-landed (held
    false) and move p. The control: a tap on the same spot lands it (held
-   true). Chromium only: the gesture is CDP's Input.synthesizeScrollGesture.
+   true). Chromium only: the gesture is CDP's Input.dispatchTouchEvent (G2d's).
    ══════════════════════════════════════════════════════════════════════ */
 test.describe("G2f · a swipe across fig. 05 does not land it", () => {
   async function parkPhone(
@@ -938,18 +951,29 @@ test.describe("G2f · a swipe across fig. 05 does not land it", () => {
     browserName,
     baseURL,
   }, testInfo) => {
-    test.skip(browserName !== "chromium", "CDP scroll gesture");
+    test.skip(browserName !== "chromium", "CDP touch input");
     testInfo.setTimeout(60_000);
     const { ctx, page, at } = await parkPhone(browser, baseURL);
     try {
       const before = await probe(page);
       const cdp = await ctx.newCDPSession(page);
-      await cdp.send("Input.synthesizeScrollGesture", {
-        x: at.x,
-        y: at.y,
-        yDistance: -60,
-        gestureSourceType: "touch",
-        speed: 300,
+      /* the same finger as G2d's (dispatchTouchEvent, not
+         synthesizeScrollGesture, which sends no touchmove on headless
+         Chromium on Linux, so nothing scrolled on CI) */
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: at.x, y: at.y }],
+      });
+      for (let i = 1; i <= 10; i++) {
+        await cdp.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [{ x: at.x, y: at.y - 6 * i }],
+        });
+        await page.waitForTimeout(16);
+      }
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
       });
       await page.waitForTimeout(250);
       const after = await probe(page);
