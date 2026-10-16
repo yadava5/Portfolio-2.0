@@ -176,6 +176,8 @@ test.describe("reduced motion and keyboard access", () => {
       );
     const a0 = await asm();
     expect(Object.keys(a0).sort()).toEqual([
+      "fig02",
+      "fig03",
       "fig04",
       "fig06",
       "fig07",
@@ -189,6 +191,8 @@ test.describe("reduced motion and keyboard access", () => {
        and an assertion on s passed it. So the drawn p is read too, and the
        drawing itself must be one picture wherever the still reader stands. */
     const ids: Record<string, string> = {
+      fig02: "fig02",
+      fig03: "pathFig",
       fig04: "appliedFig",
       fig06: "net",
       fig07: "jetFig",
