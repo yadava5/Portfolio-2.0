@@ -299,7 +299,7 @@ const emitted = {
     `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.ico"))}" sizes="32x32"/>`,
     `<link rel="apple-touch-icon" href="${esc(seo.absoluteSiteUrl("/apple-touch-icon.png"))}"/>`,
   ].join("\n    "),
-  "JSON-LD": `<script type="application/ld+json">${seo.jsonLdHtml(seo.siteGraph())}</script>`,
+  "JSON-LD": `<script type="application/ld+json">${seo.jsonLdHtml(seo.homeGraph())}</script>`,
 };
 
 /* An empty data-layer field would emit a well-formed but empty tag, which is

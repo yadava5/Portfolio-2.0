@@ -45,6 +45,7 @@ export function absoluteSiteUrl(pathOrUrl: string): string {
 /** Stable @ids so the graph nodes can reference each other across routes */
 const PERSON_ID = `${siteMetadata.url}/#person`;
 const SITE_ID = `${siteMetadata.url}/#website`;
+const PROFILE_ID = `${siteMetadata.url}/#profilepage`;
 
 type JsonLdNode = Record<string, unknown>;
 
@@ -61,6 +62,8 @@ export function personNode(): JsonLdNode {
     "@type": "Person",
     "@id": PERSON_ID,
     name: personalInfo.name,
+    givenName: personalInfo.firstName,
+    familyName: personalInfo.lastName,
     url: `${siteMetadata.url}/`,
     image: absoluteSiteUrl(personalInfo.portrait.image),
     description: personalInfo.bio[0],
@@ -80,6 +83,8 @@ export function personNode(): JsonLdNode {
     sameAs: socialLinks
       .filter((link) => link.url.startsWith("http"))
       .map((link) => link.url),
+    /* fig. 02's languages and builds rows, restated — see personal.ts */
+    knowsAbout: personalInfo.knowsAbout,
     ...(school
       ? {
           alumniOf: {
@@ -105,11 +110,45 @@ export function webSiteNode(): JsonLdNode {
   };
 }
 
-/** Person + WebSite — emitted once, from the root layout */
+/** Person + WebSite — the 404 page's graph (render-404.mjs) */
 export function siteGraph(): JsonLdNode {
   return {
     "@context": "https://schema.org",
     "@graph": [personNode(), webSiteNode()],
+  };
+}
+
+/**
+ * The home page's graph: siteGraph() plus a ProfilePage, so a name query
+ * can read the home page as Ayush Yadav's profile page (Google's ProfilePage
+ * structured data: `mainEntity` required, `dateCreated`/`dateModified`
+ * recommended).
+ *
+ * HOME ONLY. The 404 shares siteGraph() and is nobody's profile; a case
+ * file is an article about a project. `dateModified` is
+ * `siteMetadata.homeUpdated`, the same constant the sitemap's home
+ * `<lastmod>` reads, at the day precision it is declared in — a time of
+ * day would be an invented number. `dateCreated` is omitted: nothing on
+ * record says when the profile was created, and a guess is the lie the
+ * header above rules out.
+ */
+export function homeGraph(): JsonLdNode {
+  const url = `${siteMetadata.url}/`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfilePage",
+        "@id": PROFILE_ID,
+        url,
+        name: siteMetadata.title,
+        dateModified: siteMetadata.homeUpdated,
+        isPartOf: { "@id": SITE_ID },
+        mainEntity: { "@id": PERSON_ID },
+      },
+      personNode(),
+      webSiteNode(),
+    ],
   };
 }
 

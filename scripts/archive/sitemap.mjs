@@ -8,11 +8,27 @@
  * themselves. The sitemap was contradicting the pages it indexes.
  *
  * `verified` is YYYY-MM, the precision on record, so it resolves to the first
- * of that month rather than inventing a day. The two index pages report the
- * newest of the files, which is exactly what they are: a view over them.
+ * of that month rather than inventing a day. /evidence/ reports the newest of
+ * the files, which is exactly what it is: a view over them.
+ *
+ * The home page is NOT a view over the case files: it is the run, and it
+ * changes on its own schedule. It reported the newest `verified` month
+ * (2026-09-01) on the day the run itself had last changed (2026-10-16). It
+ * now reads `siteMetadata.homeUpdated`, a declared YYYY-MM-DD in personal.ts
+ * that the home ProfilePage's `dateModified` reads too — declared rather than
+ * taken from the clock or git, so the build stays byte-reproducible.
  */
 
 const verifiedDate = (verified) => new Date(`${verified}-01T00:00:00Z`);
+
+const homeDate = (homeUpdated) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(homeUpdated ?? "")) {
+    throw new Error(
+      `siteMetadata.homeUpdated must be YYYY-MM-DD, got ${JSON.stringify(homeUpdated)}`
+    );
+  }
+  return new Date(`${homeUpdated}T00:00:00Z`);
+};
 
 /** Next wrote `<lastmod>` as a full ISO instant; keep that shape. */
 const stamp = (date) => date.toISOString();
@@ -22,7 +38,12 @@ export function sitemapXml({ studies, siteMetadata }) {
   const newest = new Date(Math.max(...[...byId.values()].map((d) => d.getTime())));
 
   const entries = [
-    { loc: `${siteMetadata.url}/`, mod: newest, freq: "monthly", pri: "1" },
+    {
+      loc: `${siteMetadata.url}/`,
+      mod: homeDate(siteMetadata.homeUpdated),
+      freq: "monthly",
+      pri: "1",
+    },
     ...studies.map((s) => ({
       loc: `${siteMetadata.url}/projects/${s.projectId}/`,
       mod: byId.get(s.projectId) ?? newest,
