@@ -11,7 +11,7 @@ import { expect, test, type Page } from "@playwright/test";
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
- *   S1–S5 · the stops: the square travels (and lands on its tick), a choice is carried, reduced
+ *   S1–S6 · the stops: the square travels (and lands on its tick), a choice is carried, reduced
  *           motion jumps, a hand takes the scroll back, the dialog contract
  *
  * EFFECTIVE is the whole point of G2 and G2b. The run scales type in two ways
@@ -2464,11 +2464,13 @@ test.describe("G10c / G10d · positive controls", () => {
 type StripProbe = {
   landed: { hash: string; y: number } | null;
   carrying?: boolean;
+  parks: number[];
 };
 
-/** the square's centre against the stops' own park fraction, in tape px:
- *  a stop's park is its section's top as the anchor jump parks it, clamped
- *  to the scroll's reach, recomputed here from offsetTop chains */
+/** the square's centre against the stops' own park fraction, in tape px.
+ *  The parks are the engine's (v13: composed); that they are where a carry
+ *  lands is S2's, and that they frame their stations is S6's, both
+ *  measured from layout */
 const SQUARE_VS_PARKS = () => {
   const abs = (el: HTMLElement | null) => {
     let y = 0;
@@ -2480,22 +2482,7 @@ const SQUARE_VS_PARKS = () => {
   };
   const S = document.getElementById("manifest")!;
   const lis = [...S.querySelectorAll(".line li")];
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const parks = lis.map((li) =>
-    Math.min(
-      max,
-      Math.max(
-        0,
-        Math.round(
-          abs(
-            document.querySelector<HTMLElement>(
-              li.firstElementChild!.getAttribute("href")!
-            )
-          )
-        )
-      )
-    )
-  );
+  const parks = (window as unknown as { __strip: StripProbe }).__strip.parks;
   let n = 0;
   for (let i = 1; i < 12; i++) if (scrollY >= parks[i]) n = i;
   /* the stop the masthead names: the last kicker centre the reading line
@@ -2596,11 +2583,12 @@ async function chooseAndWatch(page: Page, from: number, href: string) {
   await page.waitForTimeout(300);
   return page.evaluate((href) => {
     const ys = (window as unknown as { __ys: number[] }).__ys.splice(0);
-    const el = document.querySelector<HTMLElement>(href)!;
-    const park = Math.min(
-      Math.round(el.getBoundingClientRect().top + scrollY),
-      document.documentElement.scrollHeight - innerHeight
+    const i = [...document.querySelectorAll("#manifest .mrow")].findIndex(
+      (a) => a.getAttribute("href") === href
     );
+    const park = (window as unknown as { __strip: StripProbe }).__strip.parks[
+      i
+    ];
     const first = ys[0];
     const between = new Set(
       ys.filter((y) => (y - first) * (park - y) > 0 && y !== park)
@@ -2708,7 +2696,7 @@ test.describe("S1 · the square travels with the page", () => {
 });
 
 test.describe("S2 · a chosen stop is carried by a visible scroll", () => {
-  test("¶01 to ¶10: many steps, one way, ending on the anchor's park", async ({
+  test("¶01 to ¶10: many steps, one way, ending on the stop's park", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
@@ -2720,7 +2708,7 @@ test.describe("S2 · a chosen stop is carried by a visible scroll", () => {
       "positions strictly between where the reader was and the stop"
     ).toBeGreaterThanOrEqual(30);
     expect(r.mono, "the carry never turns back").toBe(true);
-    expect(r.end, "it ends on the anchor's own park").toBe(r.park);
+    expect(r.end, "it ends on the stop's own park").toBe(r.park);
     expect(r.hash, "the hash is the stop's").toBe("#review");
     expect(r.focus, "the station holds the focus").toBe("review");
   });
@@ -2760,7 +2748,7 @@ test.describe("S3 · reduced motion jumps", () => {
           const page = await ctx.newPage();
           await arrive(page);
           const r = await chooseAndWatch(page, 0, "#glyph");
-          expect(r.end, "it lands on the anchor's park").toBe(r.park);
+          expect(r.end, "it lands on the stop's park").toBe(r.park);
           expect(r.hash).toBe("#glyph");
           expect(r.focus).toBe("glyph");
           if (reduce)
@@ -2794,12 +2782,8 @@ async function wheelDuringCarry(page: Page) {
   const atWheel = await page.evaluate(() => scrollY);
   await page.waitForTimeout(2500);
   return page.evaluate((atWheel) => {
-    const el = document.getElementById("gate")!;
-    const park = Math.min(
-      Math.round(el.getBoundingClientRect().top + scrollY),
-      document.documentElement.scrollHeight - innerHeight
-    );
     const s = (window as unknown as { __strip: StripProbe }).__strip;
+    const park = s.parks[11];
     return {
       atWheel,
       end: scrollY,
@@ -2893,5 +2877,118 @@ test.describe("S5 · the strip's dialog contract", () => {
     expect(shut.inert).toBe(false);
     expect(shut.focus, "focus comes back to the chip").toBe("mtoggle");
     expect(shut.y, "nothing scrolled the page").toBe(before);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   S6 · a chosen station is framed (v13)
+
+   The owner: "when we reach the station ... it should be like center
+   formatted, showing everything", of a carry that parked ¶02 with its top
+   at the viewport's top and 252px of blank paper under it. After a carry,
+   the station's content (its section's in-flow children, from offsetTop
+   chains) must sit inside the band between the masthead's scrim foot (the
+   mast's box + 2.4rem) and the viewport's foot less 24px: when it fits,
+   with its spare height split at the optical centre (0.42 above, within
+   6px); when it does not, with its top 12px under the scrim's foot (within
+   4px), never under it. Computed here from layout, not read from the
+   engine's parks. The control puts v12's anchor parks back.
+   ══════════════════════════════════════════════════════════════════════ */
+const FRAMED = (href: string) => {
+  const abs = (el: HTMLElement | null) => {
+    let y = 0;
+    while (el) {
+      y += el.offsetTop;
+      el = el.offsetParent as HTMLElement | null;
+    }
+    return y;
+  };
+  const sec = document.querySelector<HTMLElement>(href)!;
+  let top = Infinity;
+  let bottom = -Infinity;
+  for (const c of [...sec.children] as HTMLElement[]) {
+    const cs = getComputedStyle(c);
+    if (!c.offsetHeight || cs.position === "absolute" || cs.display === "none")
+      continue;
+    top = Math.min(top, abs(c));
+    bottom = Math.max(bottom, abs(c) + c.offsetHeight);
+  }
+  const mast = document.getElementById("mast")!;
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const bandTop = mast.getBoundingClientRect().bottom + 2.4 * rem;
+  const bandBottom = innerHeight - 24;
+  const t = top - scrollY;
+  const b = bottom - scrollY;
+  return {
+    fits: b - t <= bandBottom - bandTop,
+    gapTop: t - bandTop,
+    gapBottom: bandBottom - b,
+  };
+};
+
+async function carryAndFrame(page: Page, w: number, h: number, href: string) {
+  await page.setViewportSize({ width: w, height: h });
+  await arrive(page);
+  await page.locator("#mtoggle").click();
+  await page.waitForTimeout(1100);
+  await page.evaluate(() => {
+    (window as unknown as { __strip: StripProbe }).__strip.landed = null;
+  });
+  await page.locator(`#manifest .mrow[href="${href}"]`).click();
+  await page.waitForFunction(
+    () => (window as unknown as { __strip: StripProbe }).__strip.landed,
+    null,
+    { timeout: 10_000 }
+  );
+  await page.waitForTimeout(300);
+  return page.evaluate(FRAMED, href);
+}
+
+const framedOk = (f: { fits: boolean; gapTop: number; gapBottom: number }) =>
+  f.fits
+    ? Math.abs(f.gapTop - 0.42 * (f.gapTop + f.gapBottom)) <= 6 &&
+      f.gapTop >= 0 &&
+      f.gapBottom >= 0
+    : Math.abs(f.gapTop - 12) <= 4;
+
+test.describe("S6 · a chosen station is framed", () => {
+  for (const [w, h, href] of [
+    [1440, 900, "#who"],
+    [1440, 900, "#cadence"],
+    [1440, 900, "#automl"],
+    [390, 844, "#who"],
+    [390, 844, "#glyph"],
+  ] as const) {
+    test(`${href} at ${w}x${h}`, async ({ page }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      const f = await carryAndFrame(page, w, h, href);
+      expect(
+        framedOk(f),
+        `${href} ${f.fits ? "fits" : "is taller than the band"}: ` +
+          `${f.gapTop.toFixed(1)}px above, ${f.gapBottom.toFixed(1)}px below`
+      ).toBe(true);
+    });
+  }
+
+  test("control: the anchor's own park, v12's, is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const TARGET =
+      "  window.__strip.parks = stripParks;\n  window.__strip.band = band;";
+    const [mark] = await inject(page, [
+      [
+        TARGET,
+        "  stripParks = stripSections.map((el) => (el ? clamp(Math.round(absTop(el)), 0, max) : 0));\n" +
+          TARGET,
+      ],
+    ]);
+    const f = await carryAndFrame(page, 1440, 900, "#who");
+    expect(mark.hit, "stripLayParks' publish line is still in the run").toBe(
+      true
+    );
+    expect(framedOk(f), "¶02 parked at its section top is not framed").toBe(
+      false
+    );
   });
 });

@@ -3680,8 +3680,8 @@ body{font-synthesis:none}
   left:-1px; width:3px; top:var(--zone-a); height:var(--line); background:var(--ink)}
 /* HERE TRAVELS WITH THE PAGE (v12). One clay square for the whole tape,
    placed every frame by stripPlace() at the reader's place among the stops:
-   the fraction of the way from the stop's park (where its anchor puts the
-   page) to the next one's, on the strip's tick axis, so a stop chosen and
+   the fraction of the way from the stop's park (where the strip's carry
+   brings the page to rest, composed on the station) to the next one's, on the strip's tick axis, so a stop chosen and
    carried to arrives on its tick (see stripParks in the engine). It takes the
    night print's clay once it is past the dusk's ink switch. The travelled
    line is one element too, the heavier line in the ink, clipped to the
@@ -5773,6 +5773,23 @@ function cacheGeometry() {
      d probe stays the ink and the ink is the finished plate */
   if (RM && climb.e) { asmPut(climb.e, 1); asmProbe(); } /* re-probe: the measure's snapshot saw the cleared flag */
   stripLayParks(); /* the strip's stops are scroll positions too: see stripParks */
+  /* AN ELEMENT FRAMED AT ITS STOP'S PARK HAS ARRIVED BY IT (v13). The fx
+     windows are the reader's passage through the screen, and the late ones
+     (a provenance line arrives over p .18 to .42) were laid against the
+     anchor's park: at the composed park, which frames a station further down
+     the screen, ¶11's "the recommendations, in full" stood at op 0 under a
+     station the reader had chosen (lab v13). So an element wholly inside the
+     band at its own station's park gets its arrival window ended there,
+     shifted, not shortened; everything else, the dusk chain (synced) and the
+     opening frame are left as declared. */
+  for (const f of fx) {
+    f.parkB = null;
+    if (f.synced || !stripParks) continue;
+    const i = stripSections.indexOf(f.el.closest(".beat"));
+    if (i <= 0) continue;
+    const park = stripParks[i], band = window.__strip.band;
+    if (f.top >= park + band.top && f.top + f.h <= park + band.bottom) f.parkB = (park + vh - f.top) / (vh + f.h) - 0.005;
+  }
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
@@ -9441,6 +9458,26 @@ function scrubSigns(tokenY, settled) {
   if (changed) for (const r of signs.rows) r.ink();
 }
 
+/* THE PARSE IS DONE WHERE THE STATION IS FRAMED (v13). fig. 05 scrubs on
+   the beat's own progress, and its last chip lands at p .72: under the
+   anchor's park that was bp .76 at 1440, done; at the composed park, which
+   frames cadence 174px higher, it is bp .52, and the strip's carry left the
+   meet chip in mid-air across "add a Meet" (lab v13, still before the fix).
+   So where the plate is wholly on screen at its stop's park, the scrub also
+   runs on the approach to that park, from the beat's own start to the park,
+   and the faster of the two wins: done at the park, never later than it
+   was, still a pure function of y both ways. Where the plate is not wholly
+   on screen at the park (the stacked seats, where it sits under the prose),
+   the beat's progress alone, as before: nothing is finished below the fold. */
+function cadenceP(y, beat, bp) {
+  const own = beat < 4 ? 0 : beat > 4 ? 1 : bp;
+  const park = stripParks && stripParks[4];
+  if (!park || !cad.ready) return own;
+  const band = window.__strip.band;
+  if (!band || cad.top < park + band.top || cad.bot > park + innerHeight) return own;
+  const y0 = beats[4].top - vh * READ_LINE;
+  return Math.max(own, park > y0 ? clamp((y - y0) / (park - y0), 0, 1) : 1);
+}
 /* Cadence — the parse. Chips fly measured word → measured slot. */
 const cad = { fig: $("cadFig"), chips: [], ready: false };
 function cacheCadence() {
@@ -9464,6 +9501,7 @@ function cacheCadence() {
     c.start = [wr.left - figR.left, wr.top - figR.top - 4];
     c.word = cad.fig.querySelector(wordOf[c.w]);
   }
+  cad.top = absTop(cad.fig); cad.bot = cad.top + cad.fig.offsetHeight; /* the plate's page box, for cadenceP */
   cad.ready = true;
 }
 function scrubCadence(p) {
@@ -11456,9 +11494,9 @@ function stripFitColumn(opening) {
    is placed on the strip's own axis (the ticks stripFit laid, so the dusk's
    longer leg and a phone row that wraps are measured, not assumed) at the
    reader's place AMONG THE STOPS: t of the way from stop n's park to stop
-   n+1's, where a stop's park is the scroll position its anchor puts the
-   page at, the very number the strip's carry lands on (stripParks, one
-   function for both). So a chosen stop arrives with the square ON its tick,
+   n+1's, where a stop's park is the scroll position that frames the
+   station (v13: composed, see stripParks), the very number the strip's
+   carry lands on (stripParks, one function for both). So a chosen stop arrives with the square ON its tick,
    by construction. The first cut took the masthead clock's fraction, and a
    carry to glyph landed the square 43% into glyph's leg (the clock reads
    17:11 there): the mirror image of the complaint (ruling, v12). The clock
@@ -11481,17 +11519,92 @@ function stripFitColumn(opening) {
    and is placed when it opens. */
 let stripFar = 0, stripReached = 0, stripSeg = 0, stripT = 0, stripTicks = null, stripDown = false;
 const stripYou = STRIP.querySelector(".you");
-/* THE STOPS AS SCROLL POSITIONS: each row's section top, as the browser's
-   anchor jump would park it, clamped to the scroll's reach (the gate's park
-   is the end of the document until ¶13 opens). Re-laid by cacheGeometry, so
-   a resize, a reflow below, or the morning opening moves them, and by the
-   carry as it starts, which then lands on the number it laid. */
+/* THE STOPS AS SCROLL POSITIONS, COMPOSED (v13). A stop's park is where the
+   page comes to rest when the reader chooses it: the strip's carry lands on
+   it, and the square's fraction reads it, so arrival is on the tick by
+   construction (one function, stripLayParks). Re-laid by cacheGeometry (a
+   resize, a reflow below, the morning opening) and by the carry as it
+   starts, which then lands on the number it laid.
+
+   v12 parked a stop where its anchor would, the section's top at the
+   viewport's top. The owner, of the carry to ¶02: "who is literally touching
+   the top ... and there's like blank space", and of the rest: "it should be
+   like center formatted, showing everything". Measured at 1440 (lab v13,
+   land.mjs): every station's content began 63px down, under the masthead's
+   scrim (it ends 98px down), with 252px of empty paper under who's board,
+   cadence's kicker in the fade and the next station's kicker at the foot.
+
+   So a park now FRAMES the station. Its content is the section's own boxes
+   in flow (the kicker, heading, deck, the epigraph where a station has one,
+   the prose, the figure and its caption, the links, the yard's school
+   record): the union of the section's in-flow children. The band it is
+   framed in is the free screen between the scrim's foot (the masthead's
+   bottom + 2.4rem, #mast::before) and the viewport's foot less PARK_FOOT.
+   Content that fits is set at the band's OPTICAL centre: PARK_LIFT of the
+   spare height above it and the rest below, a little above geometric (at
+   .5 the boards read as sinking at 1x). Content taller than the band reads
+   from the top: its top PARK_MARGIN under the scrim's foot, never under it.
+   Then, where the slack allows, the park is moved (never past those two
+   limits) so that neither the previous station's last line (it must sit
+   under the masthead's opaque box) nor the next station's first is on screen.
+   Two stops are their own. The start is the top of the page (its hero is
+   composed for it). The gate is where the masthead bows out (#mast.gone),
+   so its band is the whole screen: it parks at the end of the document when
+   its content fits there (1440: 41px to 833 of 900, and at the end the
+   token halts at the socket and the ring is drawn), and otherwise reads from
+   the top, PARK_MARGIN down (390: 1243px of gate on an 844 screen; the
+   anchor's own park had it 17px down, and the end of the document cut its
+   head off by 411px, measured on the first cut of this). Under reduced motion the
+   masthead is not fixed (it prints once at the top), so the band starts at
+   the viewport's top. */
+const PARK_LIFT = 0.42;  /* of the spare height, above the content: the optical centre */
+const PARK_MARGIN = 12;  /* px · under the scrim's foot, for content taller than the band */
+const PARK_FOOT = 24;    /* px · kept clear at the viewport's foot */
 let stripParks = null;
 const stripSections = maniRows.map((li) => document.getElementById(li.firstElementChild.getAttribute("href").slice(1)));
+/* a station's content, in page px: its in-flow children's layout boxes */
+function stripContent(sec) {
+  let top = Infinity, bottom = -Infinity;
+  for (const c of sec.children) {
+    if (!c.offsetHeight) continue;
+    const cs = getComputedStyle(c);
+    if (cs.position === "absolute" || cs.position === "fixed" || cs.display === "none") continue;
+    const t = absTop(c);
+    top = Math.min(top, t); bottom = Math.max(bottom, t + c.offsetHeight);
+  }
+  return top < bottom ? { top, bottom } : { top: absTop(sec), bottom: absTop(sec) + sec.offsetHeight };
+}
+/* the band a park frames a station in, viewport px */
+function stripBand() {
+  const mast = $("mast");
+  const fixed = getComputedStyle(mast).position === "fixed";
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const under = fixed ? mast.offsetHeight : 0;
+  return { under, top: fixed ? under + 2.4 * rem : 0, bottom: innerHeight - PARK_FOOT };
+}
 function stripLayParks() {
   const max = Math.max(0, document.documentElement.scrollHeight - innerHeight);
-  stripParks = stripSections.map((el) => (el ? clamp(Math.round(absTop(el)), 0, max) : 0));
+  const band = stripBand(), room = band.bottom - band.top;
+  const boxes = stripSections.map((el) => (el ? stripContent(el) : null));
+  const last = stripSections.length - 1;
+  stripParks = boxes.map((c, i) => {
+    if (!c || i === 0) return 0;
+    if (i === last) return c.top >= max && c.bottom - max <= innerHeight ? max : clamp(Math.round(c.top - PARK_MARGIN), 0, max);
+    const h = c.bottom - c.top;
+    /* the content's own limits: its top never under the scrim's foot, and
+       if it fits, its foot never under the band's */
+    const hi = c.top - band.top - PARK_MARGIN;
+    const lo = h <= room ? c.bottom - band.bottom : hi;
+    let y = h <= room ? c.top - band.top - Math.max(PARK_MARGIN, (room - h) * PARK_LIFT) : hi;
+    /* the neighbours off screen, where those limits leave room for it */
+    const off0 = boxes[i - 1] ? boxes[i - 1].bottom - band.under : -Infinity;
+    const off1 = boxes[i + 1] ? boxes[i + 1].top - innerHeight : Infinity;
+    const a = Math.max(lo, off0), b = Math.min(hi, off1);
+    if (a <= b) y = clamp(y, a, b);
+    return clamp(Math.round(y), 0, max);
+  });
   window.__strip.parks = stripParks;
+  window.__strip.band = band;
 }
 /* the stop the page is at, and how far on to the next one, 0..1 */
 function stripStopAt(y) {
@@ -11557,8 +11670,13 @@ addEventListener("scroll", () => {
    see the whole rail going and all the scroll happening", down to a stop
    ahead and up to one behind. So a choice no longer rides the row's href.
    The dialog reels the strip home (the 260 ms choose reel) and hands the
-   stop here, and the page travels to the anchor's own park: the section's
-   top at the viewport's top, where the browser's jump would have put it.
+   stop here, and the page travels to the stop's park: the scroll that
+   frames the station in the screen under the masthead (v13, composed; it
+   was the anchor's own, the section's top at the viewport's top, and every
+   station landed under the scrim). A hash load and Back stay the browser's
+   own: a citation's offset is the one the rejoin guard in <head> is written
+   against, and correcting it after load would be a second, visible jump on
+   every cited arrival; Back returns to the place the choice left.
 
    THE CURVE IS A TRAIN: a pull-away on a raised cosine, a run at constant
    speed, a brake on a raised cosine, each ramp CARRY_RAMP of the journey.
@@ -11653,6 +11771,7 @@ function carryLand(el) {
     el.addEventListener("blur", () => { el.removeAttribute("tabindex"); el.removeAttribute("data-carried"); }, { once: true });
   }
   el.focus({ preventScroll: true });
+  asmArrive(scrollY); /* a figure the carry left mid-window plays on to finished */
   window.__strip.landed = { hash: `#${el.id}`, y: scrollY, at: performance.now() };
 }
 function stripCarry(hash) {
@@ -12227,6 +12346,29 @@ function asmGrace() {
     return;
   }
 }
+/* AN ARRIVAL IS A PARK (v13). A stop chosen from the strip is a place the
+   reader asked to be, so a figure the carry left on screen part way through
+   its window is played on to finished from there, by the same hand at the
+   same speed limit, and its window closes where the carry stopped: exactly
+   what the grace does for a reader who pauses, without the grace's
+   eligibility (ASM_SEEN, ASM_EYE), which a composed park on a stacked seat
+   can miss. Measured at 1024x768 before this: fig. 02 stood at p .41 with
+   60% of the board on screen and the grace never fired, a half-built board
+   at rest under a station the reader had chosen. A figure still at p 0 (its
+   window not begun, below the fold) is left alone: nothing starts below the
+   fold. Called by the carry as it lands, at the park's y. */
+function asmArrive(y) {
+  if (RM || ASM_PIN !== null) return;
+  for (const e of asm.values()) {
+    if (!asmSeen(e, y) || e.yG !== null) continue;
+    const t = asmTarget(e, y);
+    if (t <= 0 || t >= 1) continue;
+    e.yG = y; e.t = 1;
+    if (!asmMoving) { asmMoving = true; asmT = 0; }
+    stir(asmStep);
+  }
+  asmProbe();
+}
 /* the settled world (reduced motion, a dead module): every figure finished */
 function asmSettle() { for (const e of asm.values()) { e.t = e.s = 1; e.v = 0; asmPut(e, 1); } asmProbe(); }
 /* probe hooks: each figure's window, target, shown p and drawn p (d, the p
@@ -12341,7 +12483,7 @@ function work(y) {
   /* stations scrub only near their own beat */
   /* beat 1's card rides the assembly driver (v10): fig. 02 clocks the name itself */
   /* beat 2's plate (fig. 03) rides the assembly driver too (v10): one clock, no scrub */
-  if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
+  if (Math.abs(beat - 4) <= 1) scrubCadence(cadenceP(y, beat, bp));
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
      its bench is a settled record. Beat 6's drawing is assembled by the
      hand now (asmWork, below), and its elevation is drawn settled. */
@@ -12462,6 +12604,7 @@ function work(y) {
         if (e > ib) { ia2 = 0; ib2 = e; }
       }
     }
+    if (f.parkB !== null && f.parkB < ib2) { ia2 = Math.max(0, ia2 - (ib2 - f.parkB)); ib2 = f.parkB; } /* arrived by its stop's park (cacheGeometry) */
     f.inA = ia2; f.inB = ib2; /* the window this frame was drawn from */
     const uin = clamp((p - ia2) / (ib2 - ia2), 0, 1);
     const ein = smooth(uin);
