@@ -6,7 +6,8 @@ import { expect, test, type Page } from "@playwright/test";
  *
  *   G2  · no HTML text under 12px EFFECTIVE at 390 and 1440
  *   G2b · the same floor for the tight (phone) SVG figure editions
- *   G2c · fig. 02's words are never shown under its pose
+ *   G2c · fig. 02's words are never transformed
+ *   G2d · a swipe across fig. 02 scrolls it, it does not land it
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
@@ -384,30 +385,26 @@ test.describe("G2 · the reading floor under a camera", () => {
 });
 
 /* ══════════════════════════════════════════════════════════════════════
-   G2c · fig. 02's words are never posed (v10)
+   G2c · fig. 02's words are never transformed (v11)
 
-   Fig. 02 is a record card that lies on the desk and stands up toward the
-   reader as they scroll: one rotateX on the card's body, under the stage's
-   perspective. Its words are HTML, and a word under that pose is a word
-   scaled to fake depth, which the run never does. So while the card is
-   posed the reader sees a picture of the ink on the posed body, and the
-   live words take over only face-on (theta 0). At every frame of a scroll
-   through its window, down and back up, at a reader's pace, at 800 px/s
-   and at 1500 px/s, no text node under #fig02 may be visible while theta
-   is above 0. The probe is __world.fig02.theta and the effOpacity G2 uses.
-   A run that never saw the card posed, or never saw it stand, proves
-   nothing and fails.
+   Fig. 02 is a record card printed by a press as the reader scrolls: a
+   roller rides two rails left to right and the blank stock slides off the
+   words behind it. The words themselves never move, so no word is ever
+   scaled or bent to fake depth. At every frame of a scroll through its
+   window, down and back up, at a reader's pace, at 800 px/s and at 1500
+   px/s, every ancestor of every text node under #fig02, up to and including
+   #fig02, has no transform. A run that never saw the record part-printed
+   (__world.fig02Covered() reports a covered word), or never saw it whole,
+   proves nothing and fails.
    ══════════════════════════════════════════════════════════════════════ */
-const POSE_MAX = 0.05;
-type PoseRun = {
-  posed: number;
-  face: number;
-  worst: number;
+type PressRun = {
+  part: number;
+  whole: number;
+  moved: number;
   at: string;
-  theta: number;
 };
 /** drives the scroll from the page's own frames and reads each one */
-async function poseRun(page: Page): Promise<PoseRun> {
+async function pressRun(page: Page): Promise<PressRun> {
   await page.waitForFunction(
     () =>
       !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
@@ -417,23 +414,25 @@ async function poseRun(page: Page): Promise<PoseRun> {
   );
   return page.evaluate(
     () =>
-      new Promise<PoseRun>((done) => {
+      new Promise<PressRun>((done) => {
         const w = (
           window as unknown as {
             __world: {
               asm: Record<string, { yA: number; yB: number }>;
-              fig02?: { theta: number };
+              fig02Covered: () => { text: string; covered: boolean }[];
             };
           }
         ).__world;
         const a = w.asm.fig02;
-        const nodes: Text[] = [];
-        const walk = document.createTreeWalker(
-          document.getElementById("fig02")!,
-          NodeFilter.SHOW_TEXT
-        );
+        const stage = document.getElementById("fig02")!;
+        const holders = new Set<Element>();
+        const walk = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
         for (let n = walk.nextNode(); n; n = walk.nextNode())
-          if (n.textContent!.trim()) nodes.push(n as Text);
+          if (n.textContent!.trim())
+            for (let e = n.parentElement; e; e = e.parentElement) {
+              holders.add(e);
+              if (e === stage) break;
+            }
         /* px per frame: a reader, 800 px/s and 1500 px/s at 60 Hz; each
            leg ends with 40 still frames so the hand lands where it goes */
         const plan: number[] = [];
@@ -445,21 +444,19 @@ async function poseRun(page: Page): Promise<PoseRun> {
           for (let y = y1; y > y0; y -= v) plan.push(y);
           for (let k = 0; k < 40; k++) plan.push(y0);
         }
-        const r: PoseRun = { posed: 0, face: 0, worst: 0, at: "", theta: 0 };
+        const r: PressRun = { part: 0, whole: 0, moved: 0, at: "" };
         let i = 0;
         const tick = () => {
-          const th = w.fig02?.theta ?? NaN;
-          if (th > 0) {
-            r.posed++;
-            for (const n of nodes) {
-              const o = window.__gate.effOpacity(n.parentElement!);
-              if (o > r.worst) {
-                r.worst = o;
-                r.theta = th;
-                r.at = `${window.__gate.sel(n.parentElement!)} · ${n.textContent!.trim().slice(0, 24)}`;
-              }
+          const cov = w.fig02Covered();
+          if (cov.some((c) => c.covered)) r.part++;
+          else r.whole++;
+          for (const e of holders) {
+            const t = getComputedStyle(e).transform;
+            if (t && t !== "none") {
+              r.moved++;
+              if (!r.at) r.at = `${window.__gate.sel(e)} · ${t}`;
             }
-          } else if (th === 0) r.face++;
+          }
           if (i < plan.length) {
             window.scrollTo({ top: plan[i++], behavior: "instant" });
             requestAnimationFrame(tick);
@@ -469,25 +466,22 @@ async function poseRun(page: Page): Promise<PoseRun> {
       })
   );
 }
-function expectNeverPosed(r: PoseRun): void {
+function expectNeverMoved(r: PressRun): void {
   expect(
-    r.posed,
-    "the run must see the card posed, or it proves nothing"
+    r.part,
+    "the run must see the record part-printed, or it proves nothing"
   ).toBeGreaterThan(20);
-  expect(r.face, "and it must see the card stand face-on").toBeGreaterThan(0);
-  expect(
-    r.worst,
-    `live words on the posed card: ${r.at} at opacity ${r.worst} with theta ${r.theta}`
-  ).toBeLessThanOrEqual(POSE_MAX);
+  expect(r.whole, "and it must see the record whole").toBeGreaterThan(0);
+  expect(r.moved, `a word on fig. 02 was transformed: ${r.at}`).toBe(0);
 }
 
-test.describe("G2c · fig. 02's words are never posed", () => {
+test.describe("G2c · fig. 02's words are never transformed", () => {
   test("at 1440", async ({ page }, testInfo) => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     await installProbes(page);
     await arrive(page);
-    expectNeverPosed(await poseRun(page));
+    expectNeverMoved(await pressRun(page));
   });
 
   test("at 390", async ({ browser, baseURL }, testInfo) => {
@@ -503,16 +497,15 @@ test.describe("G2c · fig. 02's words are never posed", () => {
       const p = await ctx.newPage();
       await installProbes(p);
       await arrive(p);
-      expectNeverPosed(await poseRun(p));
+      expectNeverMoved(await pressRun(p));
     } finally {
       await ctx.close();
     }
   });
 
-  /* THE GATE CAN FAIL. The same run on a card whose words stay visible
-     under the pose (the posed state's own hiding rule defeated) must find
-     them, at full opacity, while theta is above 0 */
-  test("positive control: words left on the posed card are caught", async ({
+  /* THE GATE CAN FAIL. The same run on a card whose words carry a
+     transform (one sub-pixel shift on the card's body) must find it */
+  test("positive control: a transformed word is caught", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
@@ -520,15 +513,129 @@ test.describe("G2c · fig. 02's words are never posed", () => {
     await installProbes(page);
     await arrive(page);
     await page.addStyleTag({
-      content:
-        '.record .stage[data-ink="0"] .engcard{visibility:visible !important}',
+      content: "#fig02 .engcard{transform:translateX(0.5px) !important}",
     });
-    const r = await poseRun(page);
-    expect(r.posed).toBeGreaterThan(20);
+    const r = await pressRun(page);
+    expect(r.part).toBeGreaterThan(20);
     expect(
-      r.worst,
-      "words on the posed card were left visible and the run did not see them"
-    ).toBeGreaterThan(POSE_MAX);
+      r.moved,
+      "the card's words were transformed and the run did not see it"
+    ).toBeGreaterThan(0);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   G2d · a swipe across fig. 02 scrolls it; only a focus or a tap lands it
+
+   A focus or a click on the card lands it (asmLand: drawn finished at once).
+   A phone swipe begins with a pointerdown, so a landing bound to pointerdown
+   finished the card under nearly every swipe and the phone reader never saw
+   the press run; every other gate passed it. Parked at p .3 on a touch
+   phone, a touch scroll gesture that starts on the card must leave the card
+   un-landed (held false) and move p. The control: a tap on the same card
+   lands it (held true), so the probe can read true. Chromium only: the
+   gesture is CDP's Input.synthesizeScrollGesture.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("G2d · a swipe across fig. 02 does not land it", () => {
+  async function parkPhone(
+    browser: import("@playwright/test").Browser,
+    baseURL: string | undefined
+  ) {
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 664 },
+      isMobile: true,
+      hasTouch: true,
+      deviceScaleFactor: 1,
+      baseURL,
+    });
+    const page = await ctx.newPage();
+    await installProbes(page);
+    await arrive(page);
+    await page.waitForFunction(
+      () =>
+        !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
+          .__world.asm?.fig02
+    );
+    const at = await page.evaluate(async () => {
+      const a = (
+        window as unknown as {
+          __world: { asm: Record<string, { yA: number; yB: number }> };
+        }
+      ).__world.asm.fig02;
+      scrollTo({
+        top: Math.round(a.yA + 0.3 * (a.yB - a.yA)),
+        behavior: "instant",
+      });
+      await new Promise((r) => setTimeout(r, 700));
+      const c = document.querySelector("#fig02 .card")!.getBoundingClientRect();
+      return {
+        x: Math.round(c.left + c.width * 0.7),
+        y: Math.round(
+          Math.max(c.top + 40, Math.min(innerHeight - 140, c.top + 200))
+        ),
+      };
+    });
+    return { ctx, page, at };
+  }
+  const probe = (page: Page) =>
+    page.evaluate(() => {
+      const e = (
+        window as unknown as {
+          __world: { asm: Record<string, { d: number; held: boolean }> };
+        }
+      ).__world.asm.fig02;
+      return { d: e.d, held: !!e.held };
+    });
+
+  test("a touch swipe on the card scrolls it", async ({
+    browser,
+    browserName,
+    baseURL,
+  }, testInfo) => {
+    test.skip(browserName !== "chromium", "CDP scroll gesture");
+    testInfo.setTimeout(60_000);
+    const { ctx, page, at } = await parkPhone(browser, baseURL);
+    try {
+      const before = await probe(page);
+      const cdp = await ctx.newCDPSession(page);
+      await cdp.send("Input.synthesizeScrollGesture", {
+        x: at.x,
+        y: at.y,
+        yDistance: -60,
+        gestureSourceType: "touch",
+        speed: 300,
+      });
+      await page.waitForTimeout(250);
+      const after = await probe(page);
+      expect(after.held, "a swipe that starts on the card landed it").toBe(
+        false
+      );
+      expect(after.d, "the swipe must move the press").toBeGreaterThan(
+        before.d
+      );
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test("control: a tap on the card lands it", async ({
+    browser,
+    browserName,
+    baseURL,
+  }, testInfo) => {
+    test.skip(browserName !== "chromium", "pairs with the CDP gesture");
+    testInfo.setTimeout(60_000);
+    const { ctx, page, at } = await parkPhone(browser, baseURL);
+    try {
+      const url0 = page.url();
+      await page.touchscreen.tap(at.x, at.y);
+      await page.waitForTimeout(400);
+      const q = await probe(page);
+      expect(q.held, "a tap on the card must land it").toBe(true);
+      expect(page.url(), "and open nothing").toBe(url0);
+    } finally {
+      await ctx.close();
+    }
   });
 });
 
