@@ -9704,6 +9704,7 @@ function drawCadence(p) {
   const noon = smooth((p - F05.NOON[0]) / (F05.NOON[1] - F05.NOON[0]));
   cadPut(f.tile, "opacity", noon.toFixed(3));
   f.slot.classList.toggle("on", noon > 0);
+  if (!f.slot.classList.length) f.slot.removeAttribute("class"); /* not even class="": the same p, the same DOM, both ways */
   f.hook = window.__world.fig05 = { p: +p.toFixed(4), landed, pose: offset > 0 ? 1 : 0, offset: +offset.toFixed(1), seated, pulled: +us.toFixed(3) };
 }
 /* a focus or a click anywhere on the plate lands it. A click, never a
