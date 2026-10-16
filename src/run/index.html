@@ -8284,7 +8284,9 @@ function buildPath(tight) {
     T(R, my + 22, "usage table", "lit", "end"); T(R, my + 36, "57.8M rows", null, "end");
     T(R, my + 54, "stays with IT Services", "yd-note", "end");
     marks = [el("path", { d: D_FILED, class: "tickp", transform: `translate(${r1(ix - 84)} ${r1(my + 25)}) scale(1.4)` }, L.labels),
-      el("path", { d: D_HELD, class: "tickp withheld", transform: `translate(${r1(R - 166)} ${r1(my + 43)}) scale(1.4)` }, L.labels)];
+      /* seated as the tick is: immediately before its words, on their row,
+         the tick's 11-unit gap (the words measure 115.7 at 13.5 px) */
+      el("path", { d: D_HELD, class: "tickp withheld", transform: `translate(${r1(R - 145)} ${r1(my + 42.2)}) scale(1.4)` }, L.labels)];
   } else {
     /* the phone: each source on a station board on a post standing BESIDE
        its own track at the plate's edge, the far post behind the far track
@@ -8305,10 +8307,12 @@ function buildPath(tight) {
     T(ir, my + 20, "master inventory", "lit", "end"); T(ir, my + 34, "10,453 × 35 fields", null, "end");
     T(ir, my + 52, "checked in", "yd-note lit", "end");
     T(ul, my + 20, "usage table", "lit"); T(ul, my + 34, "57.8M rows");
-    T(ul, my + 52, "stays with", "yd-note"); T(ul, my + 66, "IT Services", "yd-note");
+    /* the disposition is indented by its own mark, which stands before it
+       as the tick stands before "checked in", with the tick's 6-unit gap */
+    T(ul + 20, my + 52, "stays with", "yd-note"); T(ul + 20, my + 66, "IT Services", "yd-note");
     T(trunkFrom - 6, my + 4, "main line", null, "end");
     marks = [el("path", { d: D_FILED, class: "tickp", transform: `translate(${r1(ir - 76)} ${r1(my + 42)}) scale(1.2)` }, L.labels),
-      el("path", { d: D_HELD, class: "tickp withheld", transform: `translate(${r1(ul + 61)} ${r1(my + 44)}) scale(1.2)` }, L.labels)];
+      el("path", { d: D_HELD, class: "tickp withheld", transform: `translate(${r1(ul - 1.4)} ${r1(my + 41.3)}) scale(1.2)` }, L.labels)];
   }
   const markLen = marks.map((m) => { const n = m.getTotalLength(); m.style.strokeDasharray = n; m.style.strokeDashoffset = n; return [m, n]; });
   /* ——— the records: per lane `slots`, the lanes interleaved; the first to
