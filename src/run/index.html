@@ -1905,8 +1905,10 @@ if (location.hash.length > 1) {
   .engrows li:last-child{border-bottom:none}
   /* ····· the record, set on its board (v11) ·····
      The record card is a BOARD: a thick dark station board, drawn in fig.
-     03's cabinet oblique (40 degrees at .7, receding up and to the LEFT, so
-     the two plates read as one drawing board on one scroll), with the record
+     03's cabinet oblique (40 degrees at .7, receding up and toward the
+     page's outer edge as figs. 03, 04 and 08 do: right on a wide seat, where
+     the rail's waybill rides the gutter on the board's left, and left on a
+     narrow one, where the right margin is 18 px), with the record
      set on it as cream plates, the name plate and then one plate a row, each
      standing proud of the board by its own thickness. It is the platform
      indicator the run's own stops would have had: a porter set a plate in for
@@ -7593,7 +7595,8 @@ function scrubWho(t) {
    third time was the BOARD at the end, in 3D, assembled the way the other
    figures are, simple. So the card is a board (the stylesheet's "the record,
    set on its board") and the record is SET on it: every plate starts held
-   just in front of the board, down and to the right in this oblique, all of
+   just in front of the board (down and away from the side the depth
+   recedes to: left on a wide seat, right on a phone), all of
    them legible, and over RUN they are pressed back into their places in
    reading order (the name plate, then each row), one glide a plate (a
    trapezoid of speed, ramps EASE at each end), each over TRIP of p and
@@ -7623,18 +7626,18 @@ const F02 = {
   EASE: 0.2,        /* of a trip · accelerating and braking: the peak is 1 / (1 - EASE) of the mean */
   NAME: [0.86, 0.95], /* p · the pen, once the record is set; short of 1 so a park a hair under it still shows the name whole */
   WRITE_MS: 600,    /* the stroke's pace floor, end to end: one stroke, not letters */
-  DEG: 40, K: 0.7,  /* fig. 03's oblique: depth recedes up and to the left */
+  DEG: 40, K: 0.7,  /* fig. 03's oblique (40 degrees, .7). Depth recedes up and toward the page's OUTER edge, as figs. 03, 04 and 08 do: up and right where the board stands right of the prose, so its body never reaches back over the gutter the rail's waybill rides in (it ends 3 px short of the card at 1440, measured); up and left on a narrow seat, where the right margin is 18 px and the left 56 */
   PLATE: 7,         /* units · a plate stands this proud of the board: its top lip (3.2 px) fits the gap between rows, so no lip ever paints over the plate above */
   BODY: 24,         /* units · the board's own thickness behind its face */
-  HELD: [44, 22],   /* units · how far in front of the board a plate waits: wide, narrow (the 390 staircase then stays on its screen, max x 381) */
+  HELD: [30, 22],   /* units · how far in front of the board a plate waits: wide, narrow (the 390 staircase then stays on its screen, max x 381). In front is down and LEFT on a wide seat, so there it is also capped where a plate's edge would pass the card's own: no plate ever waits over the waybill's gutter */
   OVER: 8,          /* px · a plate runs this far past its words each side (the rows' ::before agrees) */
   INSET: 1.6,       /* px · a row plate's inset top and bottom: the gap of board between rows is twice it, and a row plate is 32.4 px tall at 1440 (the viewer's 32 px floor; measured off the build) */
   START: 0.92,      /* phone window · p 0 with this much of the stage on screen */
   FLOOR: 0.22,      /* phone window · never shorter than this many vh */
-  MAST: 112,        /* phone window · the park never lifts the BOARD's top (its tab's top face) above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
+  MAST: 112,        /* fig. 02's window, every seat · the park never lifts the BOARD's top (its tab's top face) above this: the masthead's scrim runs 2.4rem below its 60 px box (#mast::before), and a tab parked in that fade measured #d99278 for #c4532e */
 };
 const f02 = { stage: $("fig02"), e: null, p: NaN, name: 0, tp: 0, rate: 0, t: 0, rT: 0, landing: false, hook: null,
-  W: 0, H: 0, rise: 0, plates: [], glyphs: [], cx: 0, cy: 0 };
+  W: 0, H: 0, rise: 0, plates: [], glyphs: [], cx: 0, cy: 0, s: 1, held: 0 };
 f02.card = f02.stage.querySelector(".card");
 f02.ink = f02.stage.querySelector(".engcard");
 f02.bed = f02.ink.querySelector(".namebed");
@@ -7660,7 +7663,7 @@ function f02trap(u, a) {
   return v * (u - a / 2);
 }
 /* the oblique: card px across and down, depth z in units into the page */
-const f02at = (x, y, z = 0) => [x - z * f02.cx, y - z * f02.cy];
+const f02at = (x, y, z = 0) => [x - f02.s * z * f02.cx, y - z * f02.cy]; /* s: 1 recedes left, -1 right */
 const f02d = (pts, close = true) => pts.map((q, i) => `${i ? "L" : "M"}${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(" ") + (close ? "Z" : "");
 function f02el(tag, attrs, parent) {
   const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -7668,12 +7671,14 @@ function f02el(tag, attrs, parent) {
   parent.appendChild(e);
   return e;
 }
-/* a block's three faces as this oblique shows them (front, top, left),
+/* a block's three faces as this oblique shows them (front, top, and the
+   side the depth recedes toward: left when s is 1, right when it is -1),
    x0..x1 across, y0..y1 down, z0 (near) to z1 (far), and its ink edges;
    k names the classes, and a face a class does not name is not drawn */
 function f02block(g, x0, y0, x1, y1, z0, z1, k) {
-  const A = f02at(x0, y0, z0), B = f02at(x1, y0, z0), C = f02at(x1, y1, z0), D = f02at(x0, y1, z0);
-  const A1 = f02at(x0, y0, z1), B1 = f02at(x1, y0, z1), D1 = f02at(x0, y1, z1);
+  const xs = f02.s > 0 ? x0 : x1, xo = f02.s > 0 ? x1 : x0;
+  const A = f02at(xs, y0, z0), B = f02at(xo, y0, z0), C = f02at(xo, y1, z0), D = f02at(xs, y1, z0);
+  const A1 = f02at(xs, y0, z1), B1 = f02at(xo, y0, z1), D1 = f02at(xs, y1, z1);
   for (const c of k.top) f02el("path", { d: f02d([A, B, B1, A1]), class: c }, g);
   for (const c of k.side) f02el("path", { d: f02d([A, D, D1, A1]), class: c }, g);
   for (const c of k.front || []) f02el("path", { d: f02d([A, B, C, D]), class: c }, g);
@@ -7739,7 +7744,7 @@ function layWho() {
   const box = (el) => { const r = el.getBoundingClientRect(); return { x0: (r.left - cr.left) * k, x1: (r.right - cr.left) * k, y0: (r.top - cr.top) * k, y1: (r.bottom - cr.top) * k }; };
   const W = (f.W = f.card.offsetWidth), H = (f.H = f.card.offsetHeight);
   const t = F02.PLATE, T = t + F02.BODY, O = F02.OVER, I = F02.INSET;
-  f.held = narrow ? F02.HELD[1] : F02.HELD[0];
+  f.s = narrow ? 1 : -1;
   const back = f.back, front = f.front;
   back.textContent = ""; front.textContent = "";
   /* the pool under the board, at its middle depth */
@@ -7768,6 +7773,9 @@ function layWho() {
      so its plate keeps its full foot and stands as tall as the others */
   const rows = [...ink.querySelectorAll(".engrows > li")];
   rows.forEach((li, i) => { const b = box(li); specs.push({ els: [li], x0: b.x0 - O, x1: b.x1 + O, y0: b.y0 + I, y1: b.y1 - (i < rows.length - 1 ? I : 0) }); });
+  /* how far a plate waits in front: on a wide seat that is down and left,
+     so never further than the nearest plate's left edge is inside the card */
+  f.held = narrow ? F02.HELD[1] : Math.min(F02.HELD[0], Math.min(...specs.map((q) => q.x0)) / f.cx);
   f.plates = specs.map((s) => {
     const g = f02el("g", {}, front);
     f02block(g, s.x0, s.y0, s.x1, s.y1, 0, t, { top: ["ptop"], side: ["pside"], ln: "pl" });
@@ -7786,7 +7794,7 @@ function drawWho(p) {
     const a = F02.RUN[0] + i * gap, u = f02trap((p - a) / F02.TRIP, F02.EASE), z = f.held * (1 - u);
     const off = Math.hypot(z * f.cx, z * f.cy);
     /* none at home: a plate in its place carries no transform at all */
-    const tf = z > 0.005 ? `translate(${(z * f.cx).toFixed(2)}px, ${(z * f.cy).toFixed(2)}px)` : "none";
+    const tf = z > 0.005 ? `translate(${(f.s * z * f.cx).toFixed(2)}px, ${(z * f.cy).toFixed(2)}px)` : "none";
     for (const el of q.els) f02put(el, "transform", tf);
     q.u = u;
     offset = Math.max(offset, tf === "none" ? 0 : off);
@@ -7829,18 +7837,22 @@ function fig02Covered() {
   for (let n = tw.nextNode(); n; n = tw.nextNode()) if (n.data.trim()) out.push({ text: n.data.trim(), covered: false, inName: who.sig.contains(n) });
   return out;
 }
-/* the phone's window (the driver's own per-figure option): p 0 waits until
-   START of the stage is on screen; the park is where the board's top (rise
-   below the stage's) reaches MAST, or the centre line if that comes first;
-   never shorter than FLOOR of the screen. The press parked a stage too tall
+/* fig. 02's window (the driver's own per-figure option). On EVERY seat the
+   park is the centre line or, where the board is tall enough to need it,
+   where the board's top (rise below the stage's, its tab included) reaches
+   MAST, whichever comes first: at 1280x800 the centre line had put the
+   board's top at 73, inside the masthead's 59 px box (the owner's ruling,
+   v11). A wide seat keeps the driver's own start; on a phone p 0 waits until
+   START of the stage is on screen, and the window is never shorter than
+   FLOOR of the screen. The press parked a stage too tall
    for the screen where ASM_SEEN of it first showed, which at 390x664 put its
    tab under the scrim; no p inside that window was ever graced either (less
    than ASM_SEEN shows anywhere in it), so the earlier park costs no grace */
 function whoWindow(e) {
-  if (!mobile) return null;
-  const W = F02.FLOOR * vh;
   const yB = Math.min(e.top + e.h / 2 - ASM_END * vh, e.top + f02.rise - F02.MAST);
-  const yA = Math.min(e.top + F02.START * e.h - vh, yB - W);
+  /* a wide seat keeps the driver's own start, measured against this end */
+  if (!mobile) return { yA: Math.min(e.top + ASM_START * e.h - vh, yB - 0.12 * vh), yB };
+  const yA = Math.min(e.top + F02.START * e.h - vh, yB - F02.FLOOR * vh);
   return { yA, yB };
 }
 /* a focus or a click anywhere in the card lands it. A click, never a
