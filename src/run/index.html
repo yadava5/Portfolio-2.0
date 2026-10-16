@@ -7622,7 +7622,7 @@ function scrubWho(t) {
    the lift's 1292; the run is 0.9 of the window because at 0.86 it stepped
    25.6 px at 1440 and 26.8 at 1280),
    and every word left of the nip is printed; over OFF the press lifts off;
-   from pName the pen writes the name (the scroll's progress to p 1, floored
+   over NAME the pen writes the name (the scroll's progress, floored
    at WRITE_MS end to end, high-water mark kept: D-1), so the name is written
    at its best moment, on a record the press has just printed.
    THE ROLLER ROLLS. A dark bar sweeping a card reads as a scanner's wipe;
@@ -7649,6 +7649,7 @@ function scrubWho(t) {
 const F02 = {
   RUN: [0, 0.9],   /* p · the nip's run across the card */
   OFF: [0.9, 0.96], /* p · the press lifts off (opacity, then visibility): gone at rest */
+  NAME: [0.9, 0.97], /* p · the pen, from the press's last pass; ending short of p 1, because a short phone's park can sit a hair under it (390x664 parked at .9986, which left the name at .986 when the stroke ran to 1) */
   EASE: 0.16,      /* of the run · accelerating and braking; the peak speed is 1 / (1 - EASE) of the mean */
   GEAR: 0.5,       /* the bands turn at this share of the physical rate (see THE ROLLER ROLLS) */
   WRITE_MS: 600,   /* the stroke's pace floor, end to end: one stroke, not letters */
@@ -7779,10 +7780,9 @@ function drawWho(p) {
       f02put(b, "opacity", c > 0 ? (0.9 * c).toFixed(2) : "0");
     });
   }
-  /* the name: the scroll's own progress from pName to p 1; a landing takes it
+  /* the name: the scroll's own progress over NAME; a landing takes it
      there at once, a motion no faster than the pen */
-  const pName = F02.RUN[1];
-  f.tp = p >= 1 ? 1 : p <= pName ? 0 : (p - pName) / (1 - pName);
+  f.tp = clamp((p - F02.NAME[0]) / (F02.NAME[1] - F02.NAME[0]), 0, 1);
   if (landed) f.rate = Math.max(f.rate, f.tp);
   whoName(Math.min(f.tp, f.rate));
   if (f.rate < Math.min(1, f.tp)) stir(whoStep);
