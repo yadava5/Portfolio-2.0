@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
@@ -495,133 +496,181 @@ test.describe("the home page is the run", () => {
 });
 
 /**
- * The tab mark: the page in a 16px window, sewn on its own clock.
+ * The tab mark: his name, and it stands still.
  *
- * public/favicon.svg is not authored. It is `markSvg({...arcColor(0, 0),
- * phase: 0})`, the page's own drawing at dawn with the thread at rest,
- * written out by render-favicons.mjs; and that file's 48 px ICO sibling is
- * what Google shows beside the owner's name, so the still IS the brand.
- * The live layer swaps the icon's href to the same function's output: the
- * seam is pulled one step every half second on the wall clock, and the
- * field follows the reader. Four things can rot quietly and are pinned
- * here: the still can drift from the function (a bookmark showing
- * yesterday's mark while the tab shows today's, and the first swap after
- * load visibly jumping); the ticker can stop (the owner's ruling is that
- * the icon is alive on its own, not only on scroll); the live layer can
- * stop following the page into the night; and under reduced motion the
- * icon's one promise is to stand still.
+ * The owner's ruling (2026-10-16) retired the live mark: the icon is his
+ * name, "Ayush" over "Yadav", cut from Fraunces with the clay rail between
+ * the words, drawn once in scripts/asset-truth/site-mark.mjs and rendered to
+ * public/ by render-favicons.mjs. What can rot quietly is pinned here. The
+ * head can stop offering the three files in the order browsers read them
+ * (the svg first, the 32px ico as the floor, the touch icon for iOS). The
+ * file served can stop being the file committed and hashed into the
+ * manifest. And the old habit can come back: anything on the page that
+ * writes an icon link after the parser has, a swapped href or a replaced
+ * element, is the live mark returning, and that is what the count below sees.
  *
- * WebKit is skipped for the live cases by design, not by accident: Safari
- * takes no SVG icon and is reported to ignore href swaps, so the page does
- * not attempt them there and keeps the ICO.
+ * The count is installed before the page's first script and watches the
+ * whole document, so a write made during boot is caught as surely as one
+ * made at the end of a long read. The links the parser puts in are not
+ * writes, and are allowed for by name: the served HTML says how many icon
+ * links it carries, and the page may hold exactly that many, ever. The control runs the
+ * same counter over the same scroll with one href swapped and one link
+ * replaced, and must report exactly those two writes, so a counter that
+ * cannot see a swap fails there rather than passing here.
  */
-test.describe("the tab mark is the page in a 16px window", () => {
-  const drawingOf = (file: string) =>
-    file
-      .replace(/^\s*<\?xml[^>]*>\s*/, "")
-      .replace(/^\s*<!--[\s\S]*?-->\s*/, "")
-      .trim();
-  type Mark = {
-    live: boolean;
-    swaps: number;
-    key: string;
-    svg: string;
-    phase: number;
-    rate: number;
-  };
-  const readMark = (page: import("@playwright/test").Page) =>
-    page.evaluate(() => {
-      const w = window as unknown as {
-        __world: { beat: number; night: boolean; mark: Mark };
-      };
-      return {
-        href: document
-          .querySelector('link[rel="icon"][type="image/svg+xml"]')!
-          .getAttribute("href"),
-        beat: w.__world.beat,
-        night: w.__world.night,
-        ...w.__world.mark,
-      };
+test.describe("the tab mark is his name, and it stands still", () => {
+  const ICON = 'link[rel~="icon"], link[rel="apple-touch-icon"]';
+  /* `seen` starts at the icon links already in the document when the
+     counter arrives (an engine may run init scripts before or after the
+     parser reaches the head) and grows with every one inserted after, so it
+     means the same thing on all three engines: icon links ever present */
+  type IconWrites = { seen: number; removed: number; attrs: number };
+  const countIconWrites = (sel: string) => {
+    const w = {
+      seen: document.querySelectorAll(sel).length,
+      removed: 0,
+      attrs: 0,
+    };
+    (window as unknown as { __iconWrites: IconWrites }).__iconWrites = w;
+    const isIcon = (n: Node) => n instanceof Element && n.matches(sel);
+    new MutationObserver((records) => {
+      for (const r of records) {
+        if (r.type === "attributes") {
+          if (isIcon(r.target)) w.attrs++;
+          continue;
+        }
+        r.addedNodes.forEach((n) => {
+          if (isIcon(n)) w.seen++;
+        });
+        r.removedNodes.forEach((n) => {
+          if (isIcon(n)) w.removed++;
+        });
+      }
+    }).observe(document, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["href", "rel", "type", "sizes"],
     });
-  const dataUri = (svg: string) =>
-    "data:image/svg+xml," + encodeURIComponent(svg);
+  };
+  const readIconWrites = (page: import("@playwright/test").Page) =>
+    page.evaluate(
+      () => (window as unknown as { __iconWrites: IconWrites }).__iconWrites
+    );
+  const iconsIn = (html: string) =>
+    (html.match(/<link\b[^>]*rel="(?:icon|apple-touch-icon)"[^>]*>/g) ?? [])
+      .length;
+  /* the whole run, top to bottom, in steps of most of a screen, with time
+     for the engine to draw the arc at each, then three seconds of nothing */
+  const readTheRun = async (
+    page: import("@playwright/test").Page,
+    midway?: () => Promise<void>
+  ) => {
+    const steps = await page.evaluate(() =>
+      Math.ceil(document.documentElement.scrollHeight / (innerHeight * 0.8))
+    );
+    for (let i = 1; i <= steps; i++) {
+      await page.evaluate(
+        (f) =>
+          window.scrollTo({
+            top: f * (document.documentElement.scrollHeight - innerHeight),
+            behavior: "instant",
+          }),
+        i / steps
+      );
+      await page.waitForTimeout(60);
+      if (midway && i === Math.ceil(steps / 2)) await midway();
+    }
+    await page.waitForTimeout(3000);
+  };
 
-  test("the still is the page's own drawing at dawn, thread at rest", async ({
+  test("the head offers the svg, the 32px ico and the touch icon, and the svg served is the one committed", async ({
     page,
+    request,
   }) => {
     await page.goto("/");
-    const still: string = await page.evaluate(() =>
-      (window as unknown as { __mark: { still: () => string } }).__mark.still()
+    const links = await page.locator(ICON).evaluateAll((els) =>
+      els.map((e) => ({
+        rel: e.getAttribute("rel"),
+        path: new URL(e.getAttribute("href")!, location.href).pathname,
+        type: e.getAttribute("type"),
+        sizes: e.getAttribute("sizes"),
+      }))
     );
-    expect(still.startsWith("<svg")).toBe(true);
-    expect(still).toContain("stroke-dashoffset");
-    expect(drawingOf(readFileSync("public/favicon.svg", "utf8"))).toBe(
-      still.trim()
-    );
+    expect(links).toEqual([
+      { rel: "icon", path: "/favicon.svg", type: "image/svg+xml", sizes: null },
+      { rel: "icon", path: "/favicon.ico", type: null, sizes: "32x32" },
+      {
+        rel: "apple-touch-icon",
+        path: "/apple-touch-icon.png",
+        type: null,
+        sizes: null,
+      },
+    ]);
+
+    const disk = readFileSync("public/favicon.svg", "utf8");
+    const served = await request.get("/favicon.svg");
+    expect(served.ok()).toBe(true);
+    expect(await served.text()).toBe(disk);
+    expect(disk).toContain("from scripts/asset-truth/site-mark.mjs");
+    const manifest = JSON.parse(
+      readFileSync("public/icons.manifest.json", "utf8")
+    ) as { svg: string };
+    expect(createHash("sha256").update(disk).digest("hex")).toBe(manifest.svg);
+
+    /* the page carries no drawing of its own any more: one mark, one source */
+    expect(await page.evaluate(() => "__mark" in window)).toBe(false);
   });
 
-  test("it sews on its own, two steps a second, and the tab carries exactly the engine's frame", async ({
+  test("no icon link is written over a whole read of the run and three seconds still", async ({
     page,
-    browserName,
+    request,
   }) => {
-    test.skip(
-      browserName === "webkit",
-      "Safari takes no SVG icon; the live layer is off there by design"
-    );
+    const parsed = iconsIn(await (await request.get("/")).text());
+    expect(parsed).toBe(3);
+    await page.addInitScript(countIconWrites, ICON);
     await page.goto("/");
-    await page.waitForTimeout(1300);
-    const a = await readMark(page);
-    expect(a.live).toBe(true);
-    expect(a.beat).toBe(0);
-    expect(a.rate).toBe(500);
-    /* nothing scrolled, and the seam still moved: at least two swaps in
-       the first 1.3 s, each carrying the engine's own last drawing */
-    expect(a.swaps).toBeGreaterThanOrEqual(2);
-    expect(a.href).toBe(dataUri(a.svg));
-    await page.waitForTimeout(1100);
-    const b = await readMark(page);
-    expect(b.swaps).toBeGreaterThan(a.swaps);
-    expect(b.phase).not.toBe(a.phase);
-    expect(b.href).toBe(dataUri(b.svg));
-    expect(b.svg).toContain("stroke-dashoffset");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    const before = await page
+      .locator(ICON)
+      .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+    await readTheRun(page);
+    expect(await readIconWrites(page)).toEqual({
+      seen: parsed,
+      removed: 0,
+      attrs: 0,
+    });
+    expect(
+      await page
+        .locator(ICON)
+        .evaluateAll((els) => els.map((e) => e.getAttribute("href")))
+    ).toEqual(before);
   });
 
-  test("it follows the reader into the night", async ({
+  test("control: one href swapped and one link replaced mid-read are both caught", async ({
     page,
-    browserName,
+    request,
   }) => {
-    test.skip(browserName === "webkit", "no live layer in WebKit");
+    const parsed = iconsIn(await (await request.get("/")).text());
+    await page.addInitScript(countIconWrites, ICON);
     await page.goto("/");
-    await page.waitForTimeout(600);
-    const top = await readMark(page);
-    expect(top.beat).toBe(0);
-    expect(top.night).toBe(false);
-    await page.evaluate(() =>
-      document.getElementById("automl")!.scrollIntoView()
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await readTheRun(page, () =>
+      page.evaluate(() => {
+        const svg = document.querySelector<HTMLLinkElement>(
+          'link[rel="icon"][type="image/svg+xml"]'
+        )!;
+        svg.href =
+          "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E";
+        const ico = document.querySelector('link[rel="icon"][sizes]')!;
+        ico.replaceWith(ico.cloneNode());
+      })
     );
-    await expect.poll(async () => (await readMark(page)).night).toBe(true);
-    await page.waitForTimeout(600);
-    const night = await readMark(page);
-    expect(night.swaps).toBeGreaterThan(top.swaps);
-    expect(night.key.startsWith("n")).toBe(true);
-    expect(night.href).toBe(dataUri(night.svg));
-  });
-
-  test("under reduced motion the icon stands still", async ({
-    page,
-    browserName,
-  }) => {
-    test.skip(browserName === "webkit", "no live layer in WebKit");
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/");
-    await page.evaluate(() =>
-      document.getElementById("automl")!.scrollIntoView()
-    );
-    await page.waitForTimeout(1500);
-    const m = await readMark(page);
-    expect(m.live).toBe(false);
-    expect(m.swaps).toBe(0);
-    expect(m.href).toMatch(/\/favicon\.svg$/);
+    expect(await readIconWrites(page)).toEqual({
+      seen: parsed + 1,
+      removed: 1,
+      attrs: 1,
+    });
   });
 });
 
