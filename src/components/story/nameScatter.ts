@@ -112,7 +112,7 @@ export function mountNameHand(
   plate: HTMLDivElement,
   h1: HTMLElement,
   letters: HTMLElement[],
-  g0: { base: number },
+  g0: { base: number; capH?: number },
   stir: Stir
 ): { unmount: () => void; probe: () => HandProbe } {
   const N = letters.length;
@@ -150,8 +150,29 @@ export function mountNameHand(
   const CH = Math.ceil(by1 - by0 + 1.6 * pad);
   const base = g0.base;
   const ink = getComputedStyle(h1).color;
+  /* THE CLOUD STAYS IN THE NAME'S OWN LINE. A round tether let dots fly over
+     the hourline above and the role line below at every size (seen in the
+     films at 1440 and 390). So each dot also meets two soft walls: a fifth
+     of an em above the cap line and below the baseline, and never closer
+     than 3px to the lines that are really there, read once here with the
+     rest of the geometry. */
+  const capTop = base - (g0.capH ?? fs * 0.7);
+  const near = (el: Element | null, side: "top" | "bottom") => {
+    if (!el) return NaN;
+    const r = el.getBoundingClientRect();
+    if (!r.height || r.right < pr0.left + bx0 || r.left > pr0.left + bx1)
+      return NaN;
+    return (side === "top" ? r.top : r.bottom) - pr0.top;
+  };
+  const above = near(plate.previousElementSibling, "bottom");
+  const below = near(plate.nextElementSibling, "top");
   /* the screen: a cell this size per dot, so a 166px name is ~1,650 dots */
   const P = Math.max(3.2, fs / 30);
+  /* the walls, canvas-local px */
+  const wallTop =
+    Math.max(capTop - fs * 0.2, above === above ? above + 3 : -Infinity) - Y0;
+  const wallBot =
+    Math.min(base + fs * 0.2, below === below ? below - 3 : Infinity) - Y0;
 
   const cv = document.createElement("canvas");
   cv.width = Math.round(CW * dpr);
@@ -798,6 +819,16 @@ export function mountNameHand(
           ax -= 900 * e * x[k] + 8 * vx[k];
           ay -= 900 * e * y[k] + 8 * vy[k];
         }
+        /* and the line's walls. A dot's own home is always inside them: with
+           the radius added after the home was taken in, a dot seated near
+           the cap line was pushed off its home for good and the name never
+           re-printed (caught by the harness: 6s, stuck, every engine) */
+        const py = hy[k] + y[k];
+        const top = Math.min(wallTop + rr[k], hy[k]);
+        const bot = Math.max(wallBot - rr[k], hy[k]);
+        if (py < top) ay += 2600 * (top - py) - (vy[k] < 0 ? 18 * vy[k] : 0);
+        else if (py > bot)
+          ay -= 2600 * (py - bot) + (vy[k] > 0 ? 18 * vy[k] : 0);
         vx[k] = (vx[k] + ax * h) * drag;
         vy[k] = (vy[k] + ay * h) * drag;
         x[k] += vx[k] * h;
