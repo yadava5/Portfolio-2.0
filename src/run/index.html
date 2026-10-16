@@ -3497,26 +3497,42 @@ body{font-synthesis:none}
    otherwise merge with the page: dark along the cream end by day, cream
    along the dark end by night. The close and the title are printed on it.
 
-   THE TERMINATOR CARRIES NO WORDS. The 21:07 leg holds W4 until the last
-   label that reaches into it has cleared, plus --air, and only then falls.
+   THE TERMINATOR CARRIES NO WORDS. The ground holds W4 until lifequest's
+   label has cleared, plus --air, falls to W5 across --dusk (48px), and is
+   W5 again --air before automl's label begins: a terminator, not a field.
+   v9's fall ran 150 to 200px of wordless leg at 1440 and read as a muddy
+   brown block with a gap in the line diagram (v12 review); at 48px the same
+   colours read as the edge of the light.
 
-   ONE READING ORDER. Every label is a stack read top-down, name, noun,
-   metric: above the line it hangs from the tape's top edge, below it from
-   the line, so every name on a side sits on one baseline, and an earned
-   metric prints into a row already held for it (a 3-row floor): nothing
-   moves when it arrives. Labels alternate above (odd) and below (even) and
-   hang right from their tick, capped at two legs less --air; clocks sit in
-   the line zone on the side the label is not. A metric's words are the text
-   face and only its value (.mv) is mono, which is also what puts "9,701 of
-   10,000 right" on one line at 1280 (128.5px; all mono it was 171.5).
-   Every label is one line at 1280 and 1440; a narrower desktop wraps a noun
-   or a metric downward and fit() grows the zone to hold it (1024: three
-   wrap, nothing overflows).
+   ONE SIDE, ONE GRID (v12). v9 alternated the labels above and below the
+   line, and the clocks on the side the label was not, so the tape read as
+   two zigzags. Now it reads as a timetable: a header (the title at the left,
+   the close at the right), every clock on one row above the line, every
+   stop's name on one baseline below it, and under the name one more line
+   that says what the project is until the reader has passed it, then what
+   it proved (the noun holds the metric's place, as the phone's column
+   always did). Each stop is centred on its tick; the two termini are set
+   flush to their bars, the start's left edge and the gate's right edge,
+   which are also the title's and the close's, so the tape has one left and
+   one right. The legs are FITTED, not equal: stripFit() measures every
+   stop's widest line and gives each leg what its two stops need plus --air,
+   lets the rest fall evenly (the dusk's leg also holds the terminator), and
+   only if that cannot fit lets the second lines wrap to a narrower measure.
 
-   THE MARKS ARE THREE AND NONE IS A BOX ROUND ANOTHER. Here: a 9px clay
-   square on the line at the stop's tick, its clock in clay, landing as the
-   tape comes to rest. Keyboard focus: a 2px clay ring round the whole stack,
-   offset 4px, so it crosses no word. Hover: the name underlined.
+   ONE HIERARCHY. Name: the text face at 15px in the ink. What it is: the
+   italic at 13px in the second ink. What it proved: the roman at 13px, its
+   value in mono in the ink. When: the clock, mono at 12.8px, in the second
+   ink ahead, the ink once reached. Mono stays on exactly two things, both
+   machine values on purpose: the clocks are readings of the run's clock,
+   the same face as the masthead's, so the strip and the masthead are
+   visibly one instrument; the metric values are figures read out of the
+   repositories. Every word a person reads is the text face.
+
+   THE MARKS. Clay means here, and only here: the stop the reader is in has
+   its clock and its name in clay, and the square travels the line with the
+   page. Hover underlines the name; keyboard focus rings the stack, offset
+   so it crosses no word. Earned metrics carry no colour: being printed is
+   the mark.
 
    Motion: one translate of the tape under a static clip (the pull and the
    reel), one fade of the scrim, one scale of the here-mark. Transforms and
@@ -3524,11 +3540,14 @@ body{font-synthesis:none}
    no transition.
 
    The inks against the grounds they actually sit on, the floor per kind over
-   every state the lab measured (open at 4, at 9, at 12; 1440, 1280, 1024,
-   390, 360; Chromium and WebKit identical). #f2e4c9 is W4, the 19:36 to
-   21:07 field; #3e342c is the ground under automl's clock and name, 7px past
-   the 22:05 tick on the W5 to W6 deepening; #2c2622 is W6, the night end;
-   #fbf3e7 is first light, under the title and the phone's housing:
+   every state the lab measured (v9: open at 4, at 9, at 12; 1440, 1280, 1024,
+   390, 360; Chromium and WebKit identical; v12 re-measured every text run of
+   the one-sided tape and the column against window.__strip.ground under its
+   own box, at the start, at glyph and at the references, 1440 and 390, lab
+   inks.mjs). #f2e4c9 is W4, the 19:36 to 21:07 field; #3e342c is W5, the
+   ground where the terminator ends and automl's label begins; #2c2622 is W6,
+   the night end; #fbf3e7 is first light, under the title and the phone's
+   housing:
    measured: #26231c on #f2e4c9 — 12.48:1 / Lc 87.5
    measured: #5c564a on #f2e4c9 — 5.79:1 / Lc 70.1
    measured: #a03f20 on #f2e4c9 — 5.18:1 / Lc 66.4
@@ -3537,6 +3556,15 @@ body{font-synthesis:none}
    measured: #d9d0c3 on #2c2622 — 9.78:1 / Lc 75.4
    measured: #f6efe2 on #2c2622 — 13.05:1 / Lc 94.5
    measured: #26231c on #fbf3e7 — 14.24:1 / Lc 96.0
+   v12, the new pairs: here in clay (the clock and now the name too) by day
+   at glyph and by night at the references; automl's noun on the darkest
+   W5 sample under it; the phone housing's title in the second ink; the
+   serial and the start's here-name on first light:
+   measured: #a03f20 on #f5eddc — 5.59:1 / Lc 71.2
+   measured: #f4b090 on #2c2622 — 8.14:1 / Lc 65.1
+   measured: #d9d0c3 on #3d332c — 8.06:1 / Lc 72.3
+   measured: #5c564a on #fbf3e7 — 6.61:1 / Lc 78.7
+   measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
    The names' floor, Lc 87.5, is under the Lc 90 body target: it is the
    page's darkest ink on the page's own 19:36 to 21:07 field, and no darker
    token exists, so it is stated rather than "fixed". The noun's pair is the
@@ -3544,15 +3572,17 @@ body{font-synthesis:none}
 #mscrim, #manifest{--t-pull:620ms; --t-reel:360ms; --t-choose:260ms; --t-mark:220ms; --t-scrim:320ms}
 #manifest{
   /* written on open by stripFit(); these are the pre-open values */
-  --band-top:60px; --zone-a:66px; --zone-b:66px; --line:34px; --leg:80px;
-  --lead:10px; --dusk-x:187px; --last:80px; --air:10px;
+  --band-top:60px; --zone-a:66px; --zone-b:70px; --line:12px; --head:44px;
+  --lead:20px; --trail:20px; --dusk:48px; --gap:10px;
   --p0:#fbf3e7; --in:0px;
   /* declared here and not on :root: a custom property resolves where it is
      declared, and stripFit() writes the zones on this element */
   --band:calc(var(--zone-a) + var(--line) + var(--zone-b));
   --ink:#26231c; --ink-2:#5c564a; --clay:#a03f20; --clay-g:#c4532e;
   /* right is the chip's right edge: the tape comes from under it */
-  position:fixed; left:var(--pad-x); right:var(--pad-x); top:var(--band-top);
+  /* it hangs --gap under the masthead: a printed strip that SITS, not one
+     butted against the band it came out of */
+  position:fixed; left:var(--pad-x); right:var(--pad-x); top:calc(var(--band-top) + var(--gap));
   height:var(--band); z-index:7; pointer-events:none}
 #manifest[hidden]{display:none}
 /* a station the strip carried the reader to holds the focus, unringed */
@@ -3599,14 +3629,17 @@ body{font-synthesis:none}
   #manifest .line li:is(:first-child,:last-child)::before{transition:background-color var(--t-mark) cubic-bezier(.2,.8,.3,1)}
   #manifest.open[data-state="opening"] .line li.here:is(:first-child,:last-child)::before{transition-delay:calc(var(--t-pull) * .7)}
 }
-/* the close: printed at the tape's night end, top right, under the chip. A
-   32px target in the night print's ink and strong hairline in both modes,
-   because the terminus is always night. */
-#manifest .tclose{position:absolute; top:8px; right:8px; z-index:4; display:grid; place-items:center;
-  width:32px; height:32px; margin:0; padding:0 0 2px; font-family:var(--body); font-size:1.25rem;
-  line-height:1; color:#f6efe2; background:none; border:1px solid rgba(246,239,226,.45);
-  border-radius:2px; pointer-events:auto; cursor:pointer}
-#manifest .tclose:hover{border-color:#f6efe2}
+/* the clip and the frame take a 2px radius, the chip's own */
+#manifest .clip, #manifest .tape::before{border-radius:2px}
+/* the close: printed in the header at the tape's night end, its right edge
+   (the cross's, not the box's) on the gate bar's. A 32px target with a 14px cross in the night print's
+   ink; its box is drawn on hover and focus only, so at rest the header is
+   two words and a mark. Night inks in both modes: the terminus is night. */
+#manifest .tclose{position:absolute; top:calc((var(--head) - 32px) / 2 + 2px); right:calc(var(--trail) - 13px); z-index:4;
+  display:grid; place-items:center; width:32px; height:32px; margin:0; padding:0 0 2px;
+  font-family:var(--body); font-size:1.25rem; line-height:1; color:#f6efe2; background:none;
+  border:1px solid transparent; border-radius:2px; pointer-events:auto; cursor:pointer}
+#manifest .tclose:hover{border-color:rgba(246,239,226,.45)}
 #manifest .tclose:focus-visible{outline:2px solid #e08a5f; outline-offset:2px}
 #manifest nav{display:contents}
 /* width explicit: WebKit sizes a shrink-to-fit flex line from its labels,
@@ -3614,29 +3647,26 @@ body{font-synthesis:none}
    only the scrim closes. */
 #manifest .line{pointer-events:auto; display:flex; width:100%; min-width:0; height:100%;
   padding-left:var(--lead); list-style:none; font-family:var(--body); letter-spacing:0}
-/* ── one leg: the label overflows it on purpose ── */
-#manifest .line li{position:relative; flex:0 0 var(--leg); min-width:0; height:100%}
+/* ── one leg, tick to tick: stripFit() writes each leg's basis ── */
+#manifest .line li{position:relative; flex:0 0 auto; min-width:0; height:100%}
 #manifest .line li[data-print="night"]{--ink:#f6efe2; --ink-2:#d9d0c3; --clay:#f4b090; --clay-g:#e08a5f}
-#manifest .line li:nth-child(8){flex-basis:calc(var(--leg) + var(--dusk-x))}
-#manifest .line li:last-child{flex:1 1 var(--last)} /* the rounding slack, at the housing end */
-/* the line, a segment per leg: travelled legs heavier and in the ink, the
-   legs ahead a hairline in the second ink. Across the dusk it changes ink
-   where the field does, and each pair at its own point (written by
-   stripLay): where the day ink and the night ink stand at equal contrast on
-   the ground. For the ink pair that is the masthead's MAST_CROSS; for the
-   ahead pair it is lighter, and switching it there too left the hairline at
-   1.7:1 before a light dash appeared. */
-/* the line and its ticks are drawn on the li, over the row's anchor: they
-   take no pointer, so a click on a stop's mark reaches its link */
+#manifest .line li:last-child{flex:1 1 auto} /* the gate bar, and the tape's end past it */
+/* the line, a segment per leg, a hairline in the second ink; the travelled
+   part is the heavier .run above it. Across the dusk it changes ink where
+   the field does, at the point (written by stripLay) where the day ink and
+   the night ink stand at equal contrast on the ground: for the ink pair the
+   masthead's MAST_CROSS; for the ahead pair it is lighter, and switching it
+   there too left the hairline at 1.7:1 before a light dash appeared. The
+   line and its ticks take no pointer, so a press on a mark reaches its link. */
 #manifest .line li::after{content:""; position:absolute; left:0; right:0; pointer-events:none;
   top:calc(var(--zone-a) + var(--line) / 2); height:1px; background:var(--ink-2)}
 #manifest .line li:nth-child(8)::after{--seg-a:var(--ink-2); --seg-b:#d9d0c3; --sw:var(--switch-ahead, 50%);
   background:linear-gradient(to right, var(--seg-a) var(--sw), var(--seg-b) var(--sw))}
 #manifest .line li:last-child::after{display:none} /* the line ends at the terminus; the tape goes on */
-/* the tick, through the line at the leg's left edge; the two termini are
-   one bar each, so the line reads as running from here to there */
-#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + 5px); pointer-events:none;
-  width:1px; height:calc(var(--line) - 10px); background:var(--ink-2); z-index:1}
+/* the tick hangs from the line toward its name, so the clock above stands
+   clear of it; the two termini are one bar each, through the line */
+#manifest .line li::before{content:""; position:absolute; left:0; top:calc(var(--zone-a) + var(--line) / 2); pointer-events:none;
+  width:1px; height:6px; background:var(--ink-2); z-index:1}
 #manifest .line li[data-reached]::before{background:var(--ink)}
 #manifest .line li:first-child::before, #manifest .line li:last-child::before{
   left:-1px; width:3px; top:var(--zone-a); height:var(--line); background:var(--ink)}
@@ -3663,62 +3693,69 @@ body{font-synthesis:none}
    Graphic, not text: #c4532e on first light #fbf3e7 is 4.13:1, #e08a5f on
    the night end #2c2622 is 5.66:1, both over the 3:1 floor for a mark. */
 #manifest.open.atbar .line li.here:is(:first-child,:last-child)::before{background:var(--clay-g)}
-/* THE LEG IS THE TARGET: the anchor is the grid (zone, line zone, zone)
-   and fills the leg, so the whole leg is the hit area and G9 can see it */
-#manifest .line li .mrow{display:grid; grid-template-rows:var(--zone-a) var(--line) var(--zone-b);
-  grid-template-columns:100%; height:100%; width:100%; padding:0; text-decoration:none; color:inherit}
-#manifest .line li .mt{grid-row:2; align-self:end; justify-self:start; padding:0 0 2px 7px;
+/* THE STOP IS THE TARGET: its anchor is the cell centred on its tick, from
+   halfway back to the stop before to halfway on to the next (--hp, --hn,
+   written by stripFit; the termini run to the tape's ends), from the clock
+   row down, so the whole of a stop's column is its hit area and G9 can see
+   it. The clock and the stack are placed on the tick inside it. */
+#manifest .line li .mrow{position:absolute; top:calc(var(--zone-a) - 26px); bottom:0;
+  left:calc(-1 * var(--hp, 0px)); width:calc(var(--hp, 0px) + var(--hn, 40px));
+  padding:0; text-decoration:none; color:inherit}
+#manifest .line li .mt{position:absolute; left:var(--hp, 0px); top:9px; transform:translateX(-50%);
   font-family:var(--mono); font-style:normal; font-size:var(--fs-micro); font-variant-numeric:tabular-nums;
   letter-spacing:.02em; line-height:1; color:var(--ink-2); white-space:nowrap}
-#manifest .line li:nth-child(even) .mt{align-self:start; padding:2px 0 0 7px}
 #manifest .line li[data-reached] .mt{color:var(--ink)}
-#manifest .line li.stamped .mt, #manifest .line li.here .mt{color:var(--clay)}
-/* the stack: its box is its ink (the tick's 7px lead-in is a margin), so
-   the focus ring drawn on it hugs the words; its cap resolves here, where
-   the dialog's --leg is in scope */
-#manifest .line li .lab{grid-row:1; align-self:start; justify-self:start; display:flex;
-  flex-direction:column; align-items:flex-start; width:max-content;
-  max-width:calc(2 * var(--leg) - var(--air) - 7px); min-width:0; margin:8px 0 0 7px;
-  position:relative; z-index:1}
-#manifest .line li:nth-child(even) .lab{grid-row:3; margin-top:4px}
+#manifest .line li.here .mt, #manifest .line li.here .lab > b{color:var(--clay)}
+/* the stack: its box is its ink, so the focus ring drawn on it hugs the
+   words; --cap is stripFit's measure for a second line that has to wrap */
+#manifest .line li .lab{position:absolute; left:var(--hp, 0px); top:calc(26px + var(--line) + 9px);
+  transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; text-align:center;
+  width:max-content; max-width:var(--cap, none); min-width:0; z-index:1}
+#manifest .line li:first-child :is(.mt, .lab){transform:translateX(-1px); align-items:flex-start; text-align:left}
+#manifest .line li:last-child :is(.mt, .lab){transform:translateX(calc(-100% + 2px)); align-items:flex-end; text-align:right}
 #manifest .line li .lab > b{font-family:var(--body); font-weight:400; font-size:var(--fs-note);
   line-height:20px; color:var(--ink); white-space:nowrap}
 #manifest .line li .lab .mnoun{font-family:var(--body); font-style:italic; font-size:var(--fs-small);
-  line-height:16px; color:var(--ink-2)}
+  line-height:17px; color:var(--ink-2); text-wrap:balance}
 #manifest .line li .lab .m{margin:0; font-family:var(--body); font-size:var(--fs-small); letter-spacing:0;
-  word-spacing:normal; font-variant-numeric:normal; line-height:18px; color:var(--ink-2)}
+  word-spacing:normal; font-variant-numeric:normal; line-height:17px; color:var(--ink-2); text-wrap:balance}
 /* WITHHELD MEANS ABSENT: display:none, so an unearned metric is out of the
-   accessibility tree and find-in-page, and the 3-row floor holds its row */
-#manifest .line li:not(.stamped) .m{display:none}
+   accessibility tree and find-in-page; once earned it takes the noun's line */
+#manifest .line li:not(.stamped) .m, #manifest .line li.stamped .mnoun{display:none}
 /* the value, mono, inside the serif's line box (line-height 1), so the row
-   stays 18px; this out-specifies the page's own .mv size */
+   stays 17px; this out-specifies the page's own .mv size */
 #manifest .line li .lab .m .mv{font-family:var(--mono); font-weight:400; font-size:var(--fs-micro);
   letter-spacing:.02em; line-height:1; color:var(--ink); white-space:nowrap}
-/* ONE UNDERLINE, and it means hover. Keyboard focus is the ring and the
-   here-mark is the square: three marks, none standing in for another. An
-   underline on :focus-within also caught the here-name that focus lands on
-   at open, so hovering another stop drew two. */
+/* ONE UNDERLINE, and it means hover. Keyboard focus is the ring and here is
+   the clay: three marks, none standing in for another. An underline on
+   :focus-within also caught the here-name that focus lands on at open, so
+   hovering another stop drew two. */
 #manifest .line li:hover .lab > b{
   text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
 #manifest .line li .mrow:focus-visible{outline:none}
 #manifest .line li .mrow:focus-visible .lab{outline:2px solid var(--clay-g); outline-offset:4px; border-radius:1px}
-/* the dialog's name, printed on the lead below the line in the metric row,
-   and the foot, which hangs back from the tape's end on the same baseline */
-#manifest .line li .title{position:absolute; left:7px; bottom:8px; z-index:2; font-family:var(--body);
-  font-size:var(--fs-label); line-height:18px; color:var(--ink); white-space:nowrap}
+/* the header: the dialog's name at the left, flush with the start's bar,
+   and the foot at the right, short of the close; one baseline */
+#manifest .line li .title{position:absolute; left:-1px; top:calc(var(--head) / 2 - 7px); z-index:2;
+  font-family:var(--body); font-size:var(--fs-label); line-height:18px; color:var(--ink); white-space:nowrap}
 #manifest .title i, #manifest .htitle i{font-family:var(--mono); font-style:normal;
   font-size:var(--fs-micro); color:var(--clay); letter-spacing:.04em}
-#manifest .line li .foot{position:absolute; right:12px; bottom:8px; z-index:2; font-family:var(--body);
-  font-style:italic; font-size:var(--fs-small); line-height:18px; letter-spacing:0; word-spacing:normal;
-  color:var(--ink-2); white-space:nowrap}
-#manifest .line li .foot i{font-family:var(--mono); font-style:normal; line-height:1; font-size:var(--fs-micro);
-  font-variant-numeric:tabular-nums; letter-spacing:.02em}
+#manifest .line li .foot{position:absolute; right:calc(var(--trail) + 27px); top:calc(var(--head) / 2 - 7px); z-index:2;
+  font-family:var(--body); font-style:italic; font-size:var(--fs-small); line-height:18px; letter-spacing:0;
+  word-spacing:normal; color:var(--ink-2); white-space:nowrap}
 
 /* ── the column: the phone, and every seat narrower than 1024 ─────────────
-   THE TAPE NEEDS 1024px. Measured with all six earned: at 1000 "the
-   references" stands 4px from the close; at 900 nine labels wrap and the
-   band is 234px tall; at 866 it runs into the close and at 821 automl runs
-   into "the references" too. So below 1024 the strip hangs as a column from
+   THE TAPE NEEDS 1280px (v12, the one-sided timetable; v9's alternating
+   tape needed 1024). Measured with all six earned, the widest state, at
+   14px of air: the twelve stops need 1192px of tape with every line on one
+   line, 1154 with the second lines wrapped at 100px and 1050 at 76px; the
+   names, which never wrap, are most of it. 14px held at 1200 and read as
+   one run-on line of names across the night ("agentic automl the review
+   the references the gate", lab still after2), so the air is 20 (18 at the
+   least), which needs 1122 at 76px: a 1280 seat (1152 of tape) holds it,
+   1200 (1080) does not. Wrapping harder than 76px would set a second line
+   in three, which is a column's job, not a tape's. So below 1280 the strip
+   hangs as a column from
    the chip, at most 26rem wide and right-aligned under it (the tape comes
    from under the chip at every width; a 768 seat had 732px rows with the
    metric 500px from its name), and on a phone it is the full measure.
@@ -3738,18 +3775,27 @@ body{font-synthesis:none}
    scrolled to the current stop. A transform on the tape would collapse the
    column's scroll extent at the start of the pull (a transformed box counts
    where it is drawn), and that scroll would not hold. */
-@media (max-width:1023px){
-  #manifest{--housing:44px; --row:44px; --dusk-y:64px; height:auto; max-width:26rem; margin-left:auto;
-    max-height:calc(100vh - var(--band-top) - 8px); max-height:calc(100dvh - var(--band-top) - 8px);
-    display:flex; flex-direction:column; overflow:clip}
+@media (max-width:1279px){
+  /* the dusk between lifequest's row and automl's: 28px, a terminator, as
+     on the tape (it was 64px of wordless brown) */
+  #manifest{--housing:44px; --row:44px; --dusk-y:28px; --gap:8px; height:auto; max-width:26rem; margin-left:auto;
+    max-height:calc(100vh - var(--band-top) - var(--gap) - 10px); max-height:calc(100dvh - var(--band-top) - var(--gap) - 10px);
+    display:flex; flex-direction:column; overflow:clip; border-radius:2px}
+  /* THE HOUSING IS A HEADER, NOT A TOOLBAR (v12). It was a bordered bar with a
+     divided "close ×" cell, the heaviest thing in the column. Now it is the
+     column's own first light with one quiet rule under it: the title on the
+     rows' text edge (32px, where every clock starts) and "close" as a word,
+     a 44px target, underlined on hover. */
   #manifest .housing{position:relative; z-index:2; flex:0 0 var(--housing); display:flex; align-items:center;
-    justify-content:space-between; gap:.5rem; padding:0 0 0 .7rem; background:var(--p0);
-    border:1px solid var(--hair-strong); border-bottom:1px solid rgba(38,35,28,.16); pointer-events:auto}
-  #manifest .htitle{font-family:var(--body); font-size:var(--fs-label); color:var(--ink); white-space:nowrap}
-  #manifest .housing .mclose{display:inline-flex; align-items:center; gap:.35em; height:100%; min-height:44px;
-    margin:0; padding:0 .8rem; font-family:var(--body); font-size:var(--fs-label); line-height:1;
-    color:var(--ink); background:none; border:none; border-left:1px solid rgba(38,35,28,.16); cursor:pointer}
-  #manifest .housing .mclose:focus-visible{outline-offset:-4px}
+    justify-content:space-between; gap:.5rem; padding:0 0 0 32px; background:var(--p0);
+    border:1px solid var(--hair-strong); border-bottom:1px solid rgba(38,35,28,.12); border-radius:2px 2px 0 0;
+    pointer-events:auto}
+  #manifest .htitle{font-family:var(--body); font-size:var(--fs-label); color:var(--ink-2); white-space:nowrap}
+  #manifest .housing .mclose{display:inline-flex; align-items:center; height:100%; min-height:44px;
+    margin:0; padding:0 14px; font-family:var(--body); font-size:var(--fs-label); line-height:1;
+    color:var(--ink); background:none; border:none; cursor:pointer}
+  #manifest .housing .mclose:hover{text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
+  #manifest .housing .mclose:focus-visible{outline-offset:-6px}
   #manifest .tclose, #manifest .clip::after{display:none}
   #manifest .clip{position:relative; inset:auto; z-index:1; flex:1 1 auto; min-height:0; overflow-y:auto;
     overflow-x:clip; overscroll-behavior:contain; transform:translateY(var(--in)); will-change:transform}
@@ -3772,15 +3818,17 @@ body{font-synthesis:none}
   #manifest .run{left:13px; top:0; width:2px; height:0;
     background:linear-gradient(to bottom, #26231c var(--run-sw, 100%), #f6efe2 var(--run-sw, 100%))}
   #manifest .line li .title{display:none}
-  #manifest .line li .mrow{position:relative; display:flex; flex-wrap:wrap; align-items:baseline;
-    column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto; padding:12px 10px 11px 32px}
-  #manifest .line li .mt, #manifest .line li:nth-child(even) .mt{padding:0; align-self:baseline}
-  #manifest .line li .lab, #manifest .line li:nth-child(even) .lab{display:contents}
+  #manifest .line li .mrow{position:relative; top:auto; bottom:auto; left:auto; width:auto; display:flex;
+    flex-wrap:wrap; align-items:baseline; column-gap:.6rem; row-gap:.1rem; min-height:var(--row); height:auto;
+    padding:12px 12px 11px 32px}
+  #manifest .line li .mt{position:static; transform:none; align-self:baseline}
+  #manifest .line li:is(:first-child, :last-child) :is(.mt, .lab){transform:none}
+  #manifest .line li .lab{display:contents}
   #manifest .line li .lab .mnoun{display:none}
   #manifest .line li:not(.stamped) .lab .mnoun{display:inline; margin-left:auto; line-height:20px}
   #manifest .line li .lab > b{line-height:20px}
   #manifest .line li .lab .m{margin-left:auto; line-height:20px}
-  #manifest .line li .foot{position:static; display:block; padding:0 10px 12px 32px; white-space:normal}
+  #manifest .line li .foot{position:static; display:block; padding:0 12px 12px 32px; white-space:normal}
   /* the row's ring starts right of the line, so it crosses nothing */
   #manifest .line li .mrow:focus-visible .lab{outline:none}
   #manifest .line li .mrow:focus-visible::after{content:""; position:absolute; inset:3px 3px 3px 24px;
@@ -3906,6 +3954,12 @@ body{font-synthesis:none}
 }
 @media (max-width:560px){
   .padbar{justify-content:flex-start}
+  /* ON A PHONE THE COLUMN IS A SHEET, 8px from both edges. Hung on the
+     masthead's 18px margins its left edge stood on the rail's lane, and the
+     page's own thread, under the scrim, showed as a dotted mark poking out
+     of the column's frame (v12 review, x 15-18 at 390: #thread, found by
+     hiding each layer in turn). Over the lane, the thread is behind it. */
+  #manifest{left:8px; right:8px; max-width:none}
 }
 /* ── the masthead sheds the phase, not the count ─────────────────────────
    Three items want this band and below about 430px they do not fit. What
@@ -4251,15 +4305,15 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
      still names the dialog through aria-labelledby. -->
 <div id="manifest" role="dialog" aria-modal="true" aria-labelledby="mtitle" hidden>
   <div class="housing">
-    <span class="htitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span>
-    <button class="mclose" type="button" aria-label="close the line diagram">close <span aria-hidden="true">×</span></button>
+    <span class="htitle" aria-hidden="true">run <i data-machine>042</i>, all twelve stops</span>
+    <button class="mclose" type="button" aria-label="close the stops">close</button>
   </div>
   <div class="clip">
     <div class="tape">
-      <button class="mclose tclose" type="button" aria-label="close the line diagram">×</button>
+      <button class="mclose tclose" type="button" aria-label="close the stops">×</button>
       <nav aria-label="the twelve stops">
         <ol class="line">
-          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i> &middot; line diagram</span></li>
+          <li><a class="mrow" href="#start"><i class="mt">06:12</i><span class="lab"><b>the start</b></span></a><span class="title" id="mtitle" aria-hidden="true">run <i data-machine>042</i>, all twelve stops</span></li>
           <li><a class="mrow" href="#who"><i class="mt">06:58</i><span class="lab"><b>who</b></span></a></li>
           <li><a class="mrow" href="#path"><i class="mt">07:52</i><span class="lab"><b>the yard</b></span></a></li>
           <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><span class="lab"><b>applied</b><span class="mnoun">Gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></span></a></li>
@@ -4270,7 +4324,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <li data-proj="6" data-print="night"><a class="mrow" href="#automl"><i class="mt">22:05</i><span class="lab"><b>agentic automl</b><span class="mnoun">capstone ML agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></span></a></li>
           <li data-print="night"><a class="mrow" href="#review"><i class="mt">22:23</i><span class="lab"><b>the review</b></span></a></li>
           <li data-print="night"><a class="mrow" href="#cosigners"><i class="mt">22:32</i><span class="lab"><b>the references</b></span></a></li>
-          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="foot">ends <i>22:41</i> &middot; then one page more</span></li>
+          <li data-print="night"><a class="mrow" href="#gate"><i class="mt">22:41</i><span class="lab"><b>the gate</b></span></a><span class="foot">after the gate, one more page</span></li>
         </ol>
       </nav>
       <span class="run" aria-hidden="true"></span><span class="you" aria-hidden="true"></span>
@@ -11146,8 +11200,8 @@ const maniProj = maniRows.filter((li) => li.dataset.proj);
 const STRIP = $("manifest");
 const stripClip = STRIP.querySelector(".clip");
 const stripTape = STRIP.querySelector(".tape");
-/* the column below 1024 (see the CSS: the tape needs that width) */
-const stripColumn = () => matchMedia("(max-width:1023px)").matches;
+/* the column below 1280 (see the CSS: the tape needs that width) */
+const stripColumn = () => matchMedia("(max-width:1279px)").matches;
 const stripMix = (a, b, t) => oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t));
 const stripWay = (u) => { const i = Math.min(3, Math.floor(u)); return stripMix(WAY[i], WAY[i + 1], u - i); };
 /* the dusk path by lightness: DUSK's stops (its rows are [side, l, c, h,
@@ -11166,7 +11220,7 @@ const stripHermite = (s, m0, m1) => {
   const s2 = s * s, s3 = s2 * s;
   return 3 * s2 - 2 * s3 + m0 * (s3 - 2 * s2 + s) + m1 * (s3 - s2);
 };
-function stripGround(x, ticks, fade) {
+function stripGround(x, ticks, dusk) {
   if (x <= ticks[1]) return stripWay(0);
   for (let i = 1; i <= 7; i++) {
     if (x < ticks[i + 1]) {
@@ -11174,7 +11228,9 @@ function stripGround(x, ticks, fade) {
       return stripWay(clamp(lerp(DAY_ANCHOR[i - 1], DAY_ANCHOR[i], t), 0, 4));
     }
   }
-  const xa = ticks[8] + fade, x9 = ticks[9], xb = x9 + 0.75 * (ticks[10] - ticks[9]);
+  /* dusk.a: W4 ends (the last day label cleared); dusk.b: W5 reached (the
+     first night label's air begins); W6 three quarters into automl's leg */
+  const xa = dusk.a, x9 = dusk.b, xb = Math.max(x9 + 40, ticks[9] + 0.75 * (ticks[10] - ticks[9]));
   const L4 = WAY[4][0], L5 = WAY[5][0], L6 = WAY[6][0];
   /* automl's leg eases out from slope 2 (a quadratic); the dusk's end slope
      is chosen to meet it */
@@ -11197,19 +11253,19 @@ const stripCross = (a, b) => Math.sqrt((fieldLum(stripHex(a)) + 0.05) * (fieldLu
    switches on the dusk leg, each where the field's luminance crosses its
    pair's point. A second open with nothing changed lays nothing. */
 let stripLaid = "";
-function stripLay(ticks, fade, length, dir) {
-  Object.assign(window.__strip, { ticks, fade, length, ground: (x) => stripGround(x, ticks, fade) });
-  const key = JSON.stringify([ticks, fade, length, dir]);
+function stripLay(ticks, dusk, length, dir) {
+  Object.assign(window.__strip, { ticks, dusk, length, ground: (x) => stripGround(x, ticks, dusk) });
+  const key = JSON.stringify([ticks, dusk, length, dir]);
   if (key === stripLaid) return;
   stripLaid = key;
   const stops = [];
-  for (let x = 0; x <= length; x += 4) stops.push(`${rgbCss(stripGround(x, ticks, fade))} ${x}px`);
+  for (let x = 0; x <= length; x += 4) stops.push(`${rgbCss(stripGround(x, ticks, dusk))} ${x}px`);
   stripTape.style.backgroundImage = `linear-gradient(${dir}, ${stops.join(",")})`;
-  STRIP.style.setProperty("--p0", rgbCss(stripGround(0, ticks, fade)));
+  STRIP.style.setProperty("--p0", rgbCss(stripGround(0, ticks, dusk)));
   const ink = (li, t) => getComputedStyle(li).getPropertyValue(t).trim();
   const day = maniRows[7], night = maniRows[8];
   const at = (y) => {
-    for (let x = ticks[8] + fade; x < ticks[9]; x++) if (fieldLum(stripGround(x, ticks, fade)) < y) return x - ticks[8];
+    for (let x = Math.ceil(dusk.a); x < ticks[9]; x++) if (fieldLum(stripGround(x, ticks, dusk)) < y) return x - ticks[8];
     return ticks[9] - ticks[8];
   };
   const gone = at(stripCross(ink(day, "--ink"), ink(night, "--ink")));
@@ -11219,12 +11275,18 @@ function stripLay(ticks, fade, length, dir) {
   stripRun.style.setProperty("--run-sw", `${ticks[8] + gone - ticks[1]}px`);
   Object.assign(window.__strip, { switchAt: ticks[8] + gone, switchAheadAt: ticks[8] + ahead });
 }
-/* the band hangs from the masthead's lower edge. The legs share the tape
-   between the lead and the terminus, the 21:07 leg longer by --dusk-x (13%
-   of the width, 150 to 200: at 1280 it is what is left once eleven legs can
-   hold "calendar in plain English" on one line), and the two label zones
-   are as tall as their tallest stack, three rows at the least, so a row is
-   held for every metric. */
+/* THE LEGS ARE FITTED (v12). Each stop is centred on its tick (the termini
+   flush to their bars), so two neighbours need half of each one's widest
+   line (its name, its second line, its clock) plus --air between them, and
+   the dusk's leg holds the terminator too. Every leg gets at least that, and
+   what is left of the tape is shared so that as many legs as possible are
+   the same length (filled from the bottom like water: the short needs rise
+   to one level and the long ones keep theirs). If the needs alone do not
+   fit, the second lines are given a narrower measure (--cap) and wrap,
+   balanced, until they do, and only then does the air close from 20 to 18.
+   The band is as tall as its tallest stack. */
+const STRIP_CAPS = [0, 150, 132, 116, 100, 88, 76];
+const STRIP_AIRS = [20, 18];
 function stripFit(opening) {
   STRIP.style.setProperty("--band-top", `${Math.max(0, Math.round($("mast").getBoundingClientRect().bottom))}px`);
   if (STRIP.hidden) return;
@@ -11232,24 +11294,41 @@ function stripFit(opening) {
   const cs = getComputedStyle(STRIP);
   const px = (p) => parseFloat(cs.getPropertyValue(p));
   const length = stripClip.getBoundingClientRect().width;
-  const lead = px("--lead"), last = px("--last"), air = px("--air");
-  const duskX = Math.round(clamp(0.13 * innerWidth, 150, 200));
-  const leg = Math.floor((length - lead - duskX - last) / 11);
-  STRIP.style.setProperty("--dusk-x", `${duskX}px`);
-  STRIP.style.setProperty("--leg", `${leg}px`);
-  const tall = (odd) => Math.max(54, ...maniRows.filter((li, i) => i % 2 === (odd ? 0 : 1))
-    .map((li) => li.querySelector(".lab").offsetHeight));
-  STRIP.style.setProperty("--zone-a", `${tall(true) + 12}px`);
-  STRIP.style.setProperty("--zone-b", `${tall(false) + 12}px`);
-  /* the dusk begins once both stacks that reach into its leg have cleared
-     it, lifequest's below the line and jetpack's above; the reach is the
-     ink's right edge from the leg's own tick */
-  const reach = (i) => maniRows[i].querySelector(".lab").getBoundingClientRect().right - maniRows[i].getBoundingClientRect().left;
-  const fade = Math.ceil(Math.max(reach(7), reach(6) - leg) + air);
-  const ticks = [0];
-  for (let i = 1; i <= 12; i++) ticks[i] = lead + (i - 1) * leg + (i >= 9 ? duskX : 0);
-  stripLay(ticks, fade, length, "to right");
+  const lead = px("--lead"), trail = px("--trail"), dusk = px("--dusk");
+  const room = length - lead - trail, last = maniRows.length - 1;
+  /* each stop's reach left and right of its tick */
+  const reach = () => maniRows.map((li, i) => {
+    const w = Math.max(li.querySelector(".lab").offsetWidth, li.querySelector(".mt").offsetWidth);
+    return i === 0 ? [0, w] : i === last ? [w, 0] : [w / 2, w / 2];
+  });
+  let r = null, need = null, air = 0;
+  fit: for (const a of STRIP_AIRS) {
+    for (const cap of STRIP_CAPS) {
+      STRIP.style.setProperty("--cap", cap ? `${cap}px` : "none");
+      r = reach(); air = a;
+      need = r.slice(0, last).map((e, i) => e[1] + r[i + 1][0] + air + (i === 7 ? dusk + air : 0));
+      if (need.reduce((s, n) => s + n, 0) <= room) break fit;
+    }
+  }
+  let level = room / last;
+  for (let k = 0; k < last; k++) {
+    const long = need.filter((n) => n > level);
+    const next = (room - long.reduce((s, n) => s + n, 0)) / (last - long.length);
+    if (Math.abs(next - level) < 0.01) break;
+    level = next;
+  }
+  const legs = need.map((n) => Math.floor(Math.max(n, level)));
+  const ticks = [0, lead];
+  legs.forEach((g, i) => { ticks[i + 2] = ticks[i + 1] + g; });
+  maniRows.forEach((li, i) => {
+    if (i < last) li.style.flexBasis = `${legs[i]}px`;
+    li.style.setProperty("--hp", `${i === 0 ? lead : legs[i - 1] / 2}px`);
+    li.style.setProperty("--hn", `${i === last ? length - ticks[12] : legs[i] / 2}px`);
+  });
+  STRIP.style.setProperty("--zone-b", `${Math.max(...maniRows.map((li) => li.querySelector(".lab").offsetHeight)) + 26}px`);
+  stripLay(ticks, { a: ticks[8] + r[7][1] + air, b: ticks[9] - r[8][0] - air }, length, "to right");
   stripAxis(ticks, false);
+  Object.assign(window.__strip, { legs, need, air, cap: parseFloat(STRIP.style.getPropertyValue("--cap")) || 0 });
 }
 /* the column: the same ground top to bottom, the dusk ending 4px
    into automl's row rather than at its tick (the row's text begins 12px in,
@@ -11260,11 +11339,12 @@ function stripFit(opening) {
    OPEN: a refit for a stamp while the reader is scrolling the column must not
    take the column out of their hands. */
 function stripFitColumn(opening) {
+  maniRows.forEach((li) => { li.style.flexBasis = ""; }); /* the tape's legs, if the seat was a tape */
   const ticks = [0];
   maniRows.forEach((li, i) => { ticks[i + 1] = li.offsetTop + 21; });
-  const fade = maniRows[7].querySelector(".mrow").offsetHeight - 21 + 4;
-  ticks[9] = maniRows[8].offsetTop + 4;
-  stripLay(ticks, fade, stripTape.offsetHeight, "to bottom");
+  /* the fall runs from 4px under lifequest's row to 4px into automl's */
+  const dusk = { a: ticks[8] - 21 + maniRows[7].querySelector(".mrow").offsetHeight + 4, b: maniRows[8].offsetTop + 4 };
+  stripLay(ticks, dusk, stripTape.offsetHeight, "to bottom");
   stripAxis(ticks, true);
   const here = opening && STRIP.querySelector(".line li.here");
   if (here) {
@@ -19315,7 +19395,7 @@ boot();
    the dialog for the masthead's name link (measured in the v9 strip lab;
    Chromium's order is the same either way). The arrows, Home and End walk
    the line, Left and Right along the desktop tape, Up and Down the column
-   (below 1024). Every move is made with preventScroll, so the page behind
+   (below 1280). Every move is made with preventScroll, so the page behind
    never scrolls, and the column brings the row into view itself. */
 (function () {
   var man = document.getElementById("manifest"),
@@ -19333,8 +19413,8 @@ boot();
   function focusables() {
     return all(FOCUSABLE).filter(function (el) { return el.getClientRects().length > 0; });
   }
-  /* the column below 1024, as the CSS lays it */
-  function column() { return matchMedia("(max-width:1023px)").matches; }
+  /* the column below 1280, as the CSS lays it */
+  function column() { return matchMedia("(max-width:1279px)").matches; }
   function go(el) {
     el.focus({ preventScroll: true });
     if (!column() || !clip) return;
