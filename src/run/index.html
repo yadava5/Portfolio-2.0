@@ -8286,16 +8286,18 @@ function buildPath(tight) {
     marks = [el("path", { d: D_FILED, class: "tickp", transform: `translate(${r1(ix - 84)} ${r1(my + 25)}) scale(1.4)` }, L.labels),
       el("path", { d: D_HELD, class: "tickp withheld", transform: `translate(${r1(R - 166)} ${r1(my + 43)}) scale(1.4)` }, L.labels)];
   } else {
-    /* the phone: each source on a station board on a post standing on its
-       own track at the plate's edge (the far board higher, behind the near
-       board's post); each product under its own drawer, side by side */
+    /* the phone: each source on a station board on a post standing BESIDE
+       its own track at the plate's edge, the far post behind the far track
+       (cards pass in front of it), the near post in front of the near track
+       (cards pass behind it), the far board higher, its post running behind
+       the near board; each product under its own drawer, side by side */
     const boards = [[1, 6, "1.6M+ OAS query logs", "5 yrs · 1,153 users", 8], [0, 46, "Tableau + Workday", "hash dedup · REST API", 17]];
     for (const [i, top, a, b, px] of boards) {
-      const ln = Y.lanes[i], foot = P(px + ln.Z * cx, ln.Z), w = i ? 151 : 158;
+      const ln = Y.lanes[i], Zp = ln.Z + (i ? 9 : -9), foot = P(px + Zp * cx, Zp), w = i ? 151 : 158;
       /* the far post passes behind the near board: drawn as the two runs a
          reader sees, so no stroke ever lies under a word */
       const runs = i ? [[top + 34, 46], [80, foot[1]]] : [[top + 34, foot[1]]];
-      for (const [a, b] of runs) el("path", { d: poly([[px, a], [px, b]]), class: "yd-post" }, L.boards);
+      for (const [a, b] of runs) el("path", { d: poly([[px, a], [px, b]]), class: "yd-post" }, i ? L.track1 : L.heapF0);
       el("path", { d: poly([[3, top], [3 + w, top], [3 + w, top + 34], [3, top + 34]], true), class: "yd-board" }, L.boards);
       T(8, top + 14, a, "lit", null, L.boards); T(8, top + 28, b, null, null, L.boards);
     }
