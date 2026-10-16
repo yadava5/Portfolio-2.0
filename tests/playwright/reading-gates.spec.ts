@@ -826,6 +826,10 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: ".mv", why: "a machine value set inline in prose" },
   { sel: ".prov b", why: "the provenance line's values, not its prose" },
   { sel: ".kicker i", why: "the station clock" },
+  {
+    sel: ".engcard header i",
+    why: "the station clock on fig. 02's title strip, the kicker's own 06:58",
+  },
   { sel: "#mclock", why: "the run clock" },
   { sel: "#mast .st-run", why: "the run's serial" },
   { sel: "#mast .mdot", why: "the masthead's own separator" },
