@@ -566,56 +566,110 @@ if (location.hash.length > 1) window.__arrive();
   #amlFig text.tname:hover{fill:var(--ink); cursor:default}
   #amlFig .tdot.hot{stroke:var(--ink)}
 
-  /* cadence — the parse */
-  #cadFig{position:relative; min-height:300px}
-  #cadFig .sent{font-size:clamp(1.05rem, 1.6vw, 1.3rem); line-height:1.7; max-width:34ch}
-  #cadFig .sent .w{padding:.06em .12em; border-radius:2px; transition:opacity .4s ease, background .3s ease}
-  #cadFig .sent .w.dim{opacity:.32}
+  /* ····· cadence · the parse, set into the week (v13, in depth) ·····
+     fig. 05 drawn the family's way (the drawing's own note is in the
+     script, at drawCadence): a block of seven day slats on a plinth in the
+     drawing board's cabinet oblique, receding up and LEFT on every seat,
+     the tuesday slat pulled toward the reader, three pockets on the
+     plinth's front for the event's fields. The words are the live HTML,
+     face-on at their real size and only ever translated; the block, the
+     plinth, the pockets and every lip are SVG drawn at layout around them,
+     aria-hidden, no text, no pointer, in four layers: .cadb under the week,
+     .cadf over its grid, the slat's own cells over that, .cadt over the
+     slat, and the chips over everything. The faces are opaque paper and
+     the ink edges carry the depth, the family's rule. Light from above:
+     top faces lit, the side the depth recedes to shaded.
+     The faces are planes, not marks: what separates them is their ink,
+     measured on each face it is drawn over (the graphic floor is 3:1):
+       the edges on a lit top     measured: #26231c on #fffdf8 — 15.42:1 / Lc 101.5
+       the edges on a shaded side measured: #26231c on #e8dfcb — 11.83:1 / Lc 84.2
+       a seam or rim on a top     measured: #5c564a on #fffdf8 — 7.16:1 / Lc 84.1
+       a seam or rim on a side    measured: #5c564a on #e8dfcb — 5.49:1 / Lc 66.9
+       a pocket's inner edge      measured: #5c564a on #ddd2bb — 4.86:1 / Lc 59.6
+       the meet lips on a side    measured: #c4532e on #e8dfcb — 3.43:1 / Lc 52.4
+       the 12:00 on its tile      measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9 */
+  #cadFig{position:relative; padding-bottom:.6rem}
+  #cadFig .sent{position:relative; z-index:1; font-size:clamp(1.05rem, 1.6vw, 1.3rem); line-height:1.7; max-width:34ch}
+  /* a word's opacity is the parse's (--cad-o, written from p), never a
+     transition: the same p is the same plate */
+  #cadFig .sent .w{padding:.06em .12em; border-radius:2px; opacity:var(--cad-o, 1); transition:background .3s ease}
   #cadFig[data-hl="who"] .w-who,
   #cadFig[data-hl="when"] .w-when,
   #cadFig[data-hl="meet"] .w-meet{background:rgba(196,83,46,.16); opacity:1}
-  #cadWeek{
-    margin-left:auto; margin-top:1.6rem; width:min(340px, 100%);
-    border:1px solid var(--hair-strong); position:relative; background:var(--plate);
-  }
+  /* the week stands flush left on the plate, 10 px short of its right edge:
+     the plinth's step runs that far toward the reader */
+  #cadWeek{margin-top:1.6rem; width:min(440px, calc(100% - 10px)); position:relative}
   #cadWeek .hd{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--hair);
     font-family:var(--mono); font-size:.7rem; text-align:center; color:var(--ink-2)}
   #cadWeek .hd span{padding:.3rem 0}
   #cadWeek .hd span.tu{color:var(--clay)}
   #cadWeek .grid{display:grid; grid-template-columns:repeat(7,1fr); grid-template-rows:repeat(4, 34px)}
   #cadWeek .grid i{border-top:1px solid var(--hair); border-left:1px solid var(--hair)}
-  /* THE EVENT IS A GRID CHILD, NOT A COORDINATE. FIGURES.md rule 4: anchor
-     annotations to cells. Until 2026-08-06 the three chips flew to
-     `rel(slotWhen) ± {-26, +4, +32}` — measured pixel offsets over the grid —
-     and each chip is wider than a 1/7 column. Measured against the pre-fix
-     geometry, the settled stack printed across FOUR day columns at 768 and
-     1440 (mo·tu·we·th) and three at 320 and 390 · the brief reported it as
-     "the chip covers wednesday", which understates it. Nothing tied the
-     stack to a cell, so nothing could hold it to one. The tuesday cell now IS the event: it lights in place and
-     cannot leave its own column by construction. The archive's Cadence plate
-     is the settled frame of exactly this and says so in its own source. */
-  #cadWeek .grid i#slotWhen{display:flex; align-items:center; justify-content:center;
-    font-family:var(--mono); font-size:.6rem; letter-spacing:.02em; font-style:normal;
-    color:transparent; transition:color .35s ease, background .35s ease}
-  #cadWeek .grid i#slotWhen.on{color:var(--clay); background:rgba(196,83,46,.14)}
-  /* The dock the chips are filed into — three real rows below the grid, so
-     the landing place is a box the layout owns rather than an offset from a
-     cell. Reserve the height whether or not the chips have flown, so the
-     figure does not resize under the reader mid-scrub. */
-  #cadDock{margin-left:auto; margin-top:.55rem; width:min(340px, 100%);
-    display:grid; grid-auto-rows:1.6rem; row-gap:.16rem}
+  #cadWeek .grid i:nth-child(7n+1){border-left-color:transparent}
+  /* the tuesday slat's own head and cells: opaque paper over the drawing,
+     because it comes out over Wednesday's edge. Its place at rest is OUT
+     in front of the week (--cad-sx/-sy, set at layout), so the finished
+     plate carries no transform at all; the scroll translates it back in */
+  #cadWeek .hd span.tu, #cadWeek .grid i:nth-child(7n+2){position:relative; z-index:3; background:var(--ink-inverse);
+    left:var(--cad-sx, 0); top:var(--cad-sy, 0)}
+  /* the slat's own ink edge is its cells' borders, not a drawn line: a
+     line over the cells would cross the 12:00 on its tile */
+  #cadWeek .hd span.tu{border:1px solid var(--ink); border-bottom-color:var(--hair); margin:-1px 0 -1px}
+  #cadWeek .grid i:nth-child(7n+2){border-left-color:var(--ink); border-right:1px solid var(--ink)}
+  #cadWeek .grid i:nth-child(23){border-bottom:1px solid var(--ink)}
+  /* THE EVENT IS A GRID CHILD, NOT A COORDINATE (FIGURES.md rule 4, kept
+     from 2026-08-06): the tuesday noon cell IS the event's place and the
+     12:00 is its child, so at rest it cannot leave its own column */
+  #cadWeek .grid i#slotWhen{font-style:normal}
+  /* the 12:00 inherits the cell's size (--fs-micro, the floor: "the floor,
+     closed" below), and on a phone, where five of its glyphs are 38 px in a
+     40 px column, the tile is the cell's full width */
+  #slotWhen b{position:absolute; inset:3px 2px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:inherit; font-weight:400; letter-spacing:0; color:var(--clay);
+    background:var(--ink-inverse); box-shadow:inset 0 0 0 1px var(--clay-g); opacity:0}
+  @media (max-width:820px){ #slotWhen b{inset:3px 0} }
+  /* under 360 a column is 30 px and the five glyphs are not: the tile
+     overhangs its cell by 5 px a side, standing on the slat like a label */
+  @media (max-width:360px){ #slotWhen b{inset:3px -5px} }
+  /* the plinth's front: the event's three fields in a row, each chip's
+     own box laid out here (rule 4 again); 17 px in is the step (10) plus
+     the plinth's margin (7) */
+  #cadDock{margin:15px 0 0 17px; width:min(426px, calc(100% - 24px)); display:flex; flex-wrap:wrap; gap:12px .5rem}
   .chip{
-    position:absolute; left:0; top:0; z-index:2; white-space:nowrap;
+    position:relative; z-index:5; white-space:nowrap;
     font-family:var(--mono); font-size:.72rem; letter-spacing:.04em;
-    padding:.28rem .5rem; background:var(--plate); border:1px solid var(--ink-2);
-    color:var(--ink); border-radius:3px; opacity:0; cursor:default;
+    padding:.28rem .5rem; background:var(--ink-inverse); border:1px solid var(--ink-2);
+    color:var(--ink); opacity:0; cursor:default;
   }
   .chip.meet{border-color:var(--clay-g); color:var(--clay)}
   .chip:hover{border-color:var(--ink)}
-  /* the chips are controls now (role=button, tabindex), so the keyboard needs
-     the ring the drawn figure controls already get · outline takes no space,
-     so nothing on this plate moves for it */
+  /* the chips are controls (role=button, tabindex), so the keyboard gets
+     the ring the drawn figure controls already get */
   .chip:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
+  /* a finger's target is 44 px: the chip is 32, so its hit box runs 6 px
+     past it above and below and 4 px each side, which the gaps between
+     chips exactly hold (chipAt reads the same margins). A phone does not
+     tighten the chips to keep one row: the third wraps to a second, 12 px
+     below, so the rows' hit boxes meet and never overlap */
+  @media (pointer:coarse){ .chip::before{content:""; position:absolute; inset:-6px -4px} }
+  /* A CHIP ANSWERS THE HAND: lit (hover, tap or key) while it is HOME in
+     its pocket (.home, written from p), it stands one lip proud of it, its
+     lips with it. Only at home: a tap latches, and a latched lift on a chip
+     the scroll has taken back up would leave its lips floating empty.
+     `translate`, not `transform`, so it composes with the scroll's own */
+  #cadFig .chip, .cad3 .lips{transition:translate .18s ease-out}
+  #cadFig[data-hl="who"] #chWho.home, #cadFig[data-hl="when"] #chWhen.home, #cadFig[data-hl="meet"] #chMeet.home,
+  #cadFig[data-hl="who"] .lips.home[data-w="who"], #cadFig[data-hl="when"] .lips.home[data-w="when"],
+  #cadFig[data-hl="meet"] .lips.home[data-w="meet"]{translate:var(--cad-hx) var(--cad-hy)}
+  #cadFig[data-hl="who"] .lips.home[data-w="who"], #cadFig[data-hl="when"] .lips.home[data-w="when"],
+  #cadFig[data-hl="meet"] .lips.home[data-w="meet"]{opacity:1 !important}
+  @media (prefers-reduced-motion: reduce){ #cadFig .chip, .cad3 .lips{transition:none} }
+  .cad3{position:absolute; left:0; top:0; width:1px; height:1px; overflow:visible; pointer-events:none}
+  .cad3.cadb{z-index:0} .cad3.cadf{z-index:2} .cad3.cadt{z-index:4}
+  .cad3 .pg{fill:var(--ink-inverse)} .cad3 .lit{fill:#fffdf8} .cad3 .shade{fill:#e8dfcb} .cad3 .well{fill:#ddd2bb}
+  .cad3 .ln{fill:none; stroke:var(--ink); stroke-width:1.2; stroke-linejoin:round}
+  .cad3 .pl{fill:none; stroke:var(--ink-2); stroke-width:1; stroke-linejoin:round}
+  .cad3 .cl{fill:none; stroke:var(--clay-g); stroke-width:1.2; stroke-linejoin:round}
 
   /* glyph — the pad + the drawn net */
   .glyphrow{display:flex; gap:clamp(1rem, 2vw, 1.6rem); align-items:stretch; flex-wrap:wrap}
@@ -4519,7 +4573,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="prov mono">React · TypeScript · PostgreSQL · Google Calendar API</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/taskflow-calendar/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence" target="_blank" rel="noopener">source ↗</a> · <a href="https://usecadenceapp.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .0 .09 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
           <p class="sent">&ldquo;<span class="w">lunch with</span> <span class="w w-who">Sam</span>
             <span class="w w-when">next Tuesday at noon</span><span class="w">,</span>
@@ -4528,15 +4582,16 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <div class="hd"><span>mo</span><span class="tu">tu</span><span>we</span><span>th</span><span>fr</span><span>sa</span><span>su</span></div>
             <div class="grid">
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-              <i></i><i id="slotWhen">12:00</i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i id="slotWhen"><b>12:00</b></i><i></i><i></i><i></i><i></i><i></i>
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             </div>
           </div>
-          <div id="cadDock" aria-hidden="true"><i></i><i></i><i></i></div>
-          <span class="chip" id="chWho" data-w="who">sam</span>
-          <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
-          <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
+          <div id="cadDock">
+            <span class="chip" id="chWho" data-w="who">sam</span>
+            <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
+            <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
+          </div>
         </div>
         <figcaption>fig. 05 · a scripted parse, not a live call. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a chip to see its words.</i></figcaption>
       </figure>
@@ -9458,68 +9513,223 @@ function scrubSigns(tokenY, settled) {
   if (changed) for (const r of signs.rows) r.ink();
 }
 
-/* THE PARSE IS DONE WHERE THE STATION IS FRAMED (v13). fig. 05 scrubs on
-   the beat's own progress, and its last chip lands at p .72: under the
-   anchor's park that was bp .76 at 1440, done; at the composed park, which
-   frames cadence 174px higher, it is bp .52, and the strip's carry left the
-   meet chip in mid-air across "add a Meet" (lab v13, still before the fix).
-   So where the plate is wholly on screen at its stop's park, the scrub also
-   runs on the approach to that park, from the beat's own start to the park,
-   and the faster of the two wins: done at the park, never later than it
-   was, still a pure function of y both ways. Where the plate is not wholly
-   on screen at the park (the stacked seats, where it sits under the prose),
-   the beat's progress alone, as before: nothing is finished below the fold. */
-function cadenceP(y, beat, bp) {
-  const own = beat < 4 ? 0 : beat > 4 ? 1 : bp;
-  const park = stripParks && stripParks[4];
-  if (!park || !cad.ready) return own;
-  const band = window.__strip.band;
-  if (!band || cad.top < park + band.top || cad.bot > park + innerHeight) return own;
-  const y0 = beats[4].top - vh * READ_LINE;
-  return Math.max(own, park > y0 ? clamp((y - y0) / (park - y0), 0, 1) : 1);
+/* ····· fig. 05 · Cadence · the parse, set into the week (v13) ·····
+   The owner kept the concept (the sentence becomes a calendar entry: the
+   week, the chips, the words that light) and asked for it in 3D. Four
+   concepts were built on the page and paced (the lane's CONCEPTS.md); this
+   is their combination. THE WEEK IS A BLOCK OF SEVEN DAY SLATS standing on
+   a plinth, in the drawing board's cabinet oblique (40 degrees at .7,
+   receding up and LEFT: the plate is on the page's outer edge at 1440 and
+   the phone's wide margin is its left). The slats' seams run back across
+   the block's top. The plinth stands proud of the week, its top a step in
+   front of the slats, and its front carries three pockets: the event's
+   fields, each the box its chip is laid out in (FIGURES.md rule 4).
+   THE PARSE, over the window, in reading order, one move an object:
+     each phrase hands over as its chip appears over it, lifted toward the
+     reader (its lips show), and the chip glides at one speed to its pocket
+     and is flush there; while "next Tuesday at noon" travels, THE TUESDAY
+     SLAT IS PULLED OUT of the week toward the reader, and its noon cell
+     lights with the 12:00: the day the parse found stands proud of the
+     week at rest (the figure's one bold thing, concept C). The words are
+     the live HTML, face-on at their real size and only ever translated;
+     the block, the plinth, the pockets and every lip are SVG drawn at
+     layout around them (.cadb under the words, .cadf over the grid),
+     aria-hidden, no text, no pointer. No CSS 3D, so a flattened WebKit
+     frame is the same frame. Depth reads by occlusion: the slat's left
+     face is clipped where it passes behind Monday, its top uncovers the
+     notch it leaves in the block's top.
+   A CHIP ANSWERS THE HAND: hovered, tapped or pressed, it stands one lip
+   proud of its pocket as its words light (CSS translate on the chip and
+   its lips, set by data-hl: interaction, not the scroll).
+   PURE IN p: every transform and opacity here is a function of p alone; a
+   focus or a click on the plate lands it (asmLand), never a pointerdown.
+   THE PROBE (__world.fig05, written each draw): { p, landed, pose (1 while
+   any text holder is translated), offset (the largest holder offset, px),
+   seated (chips home), pulled (the slat, 0..1) }. */
+const F05 = {
+  DEG: 40, K: 0.7,   /* fig. 03's oblique; depth recedes up and LEFT on every seat */
+  BODY: 16,          /* units · the week block, front to back */
+  LIP: 6,            /* units · a chip's thickness, and how far a hovered chip stands proud */
+  LIFT: 14,          /* units · how far in front a chip rides at mid-trip */
+  STARTS: [0, 0.1, 0.2], /* p · each chip leaves its words, reading order */
+  RATE: 1.6,         /* px of glide per px of scroll, mean: every chip runs at one speed */
+  TRIP: [0.3, 0.66], /* p · a trip's floor and ceiling: the last chip is home by .86, a centred park on the smallest phone (320x568, a 199 px window) */
+  EASE: 0.2,         /* of a trip · accelerating and braking: the peak is 1.25x the mean */
+  FADE: 0.14,        /* of a trip · the chip appears as it lifts; its words hand over */
+  PULL: [0.2, 0.6],  /* p · the tuesday slat comes out */
+  OUT: 14,           /* units · how far: less than the step, so it stops on the plinth */
+  NOON: [0.3, 0.46], /* p · the 12:00 lights in it */
+  LEDGE: 7,          /* px · the plinth's margin round the chips */
+};
+const cad = { fig: $("cadFig"), e: null, p: NaN, landing: false, rT: 0, chips: [], slat: [], hook: null };
+cad.slot = $("slotWhen"); cad.tile = cad.slot.querySelector("b");
+cad.cx = F05.K * Math.cos((F05.DEG * Math.PI) / 180); cad.cy = F05.K * Math.sin((F05.DEG * Math.PI) / 180);
+/* the oblique: figure px across and down, depth z in units INTO the page
+   (negative is in front of it, toward the reader: down and right) */
+const cadAt = (x, y, z = 0) => [x - z * cad.cx, y - z * cad.cy];
+/* the screen offset of a holder moved z units in depth */
+const cadOff = (z) => [-z * cad.cx, -z * cad.cy];
+/* fig. 02's write-if-changed (f02put), custom properties too */
+function cadPut(el, k, v) {
+  let m = f02was.get(el);
+  if (!m) f02was.set(el, (m = {}));
+  if (m[k] === v) return;
+  m[k] = v;
+  if (k.startsWith("--")) el.style.setProperty(k, v);
+  else el.style[k] = v;
 }
-/* Cadence — the parse. Chips fly measured word → measured slot. */
-const cad = { fig: $("cadFig"), chips: [], ready: false };
-function cacheCadence() {
-  const figR = cad.fig.getBoundingClientRect();
-  const rel = (r) => [r.left - figR.left, r.top - figR.top];
-  const wordOf = { who: ".w-who", when: ".w-when", meet: ".w-meet" };
-  /* Each chip's landing place is A ROW'S OWN BOX, read from the dock the
-     layout laid out — not `rel(slotWhen) ± {-26, +4, +32}`, which is how the
-     stack came to print across up to four day columns. A chip is wider than
-     a 1/7 column at every width this page ships at, so anchoring it to a
-     cell's COORDINATE could only ever have been a near miss; anchoring it to
-     a box the grid owns cannot miss at all. FIGURES.md rule 4. */
-  const dockRows = [...$("cadDock").children];
-  cad.chips = [
-    { el: $("chWho"), w: "who", end: rel(dockRows[0].getBoundingClientRect()), at: 0.3 },
-    { el: $("chWhen"), w: "when", end: rel(dockRows[1].getBoundingClientRect()), at: 0.38 },
-    { el: $("chMeet"), w: "meet", end: rel(dockRows[2].getBoundingClientRect()), at: 0.5 },
-  ];
-  for (const c of cad.chips) {
-    const wr = cad.fig.querySelector(wordOf[c.w]).getBoundingClientRect();
-    c.start = [wr.left - figR.left, wr.top - figR.top - 4];
-    c.word = cad.fig.querySelector(wordOf[c.w]);
+const cadTf = (x, y) => (Math.abs(x) + Math.abs(y) > 0.005 ? `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)` : "none");
+/* a block's two faces this oblique shows (its top and its LEFT side), its
+   front, and its ink: x0..x1 across, y0..y1 down, depth z0 (near) to z1
+   (far); `open` leaves the front's outline to whatever already draws it */
+function cadBlock(g, x0, y0, x1, y1, z0, z1, k) {
+  const A = cadAt(x0, y0, z0), B = cadAt(x1, y0, z0), C = cadAt(x1, y1, z0), D = cadAt(x0, y1, z0);
+  const A1 = cadAt(x0, y0, z1), B1 = cadAt(x1, y0, z1), D1 = cadAt(x0, y1, z1);
+  if (k.top) f02el("path", { d: f02d([A, B, B1, A1]), class: k.top }, g);
+  if (k.side) f02el("path", { d: f02d([A, D, D1, A1]), class: k.side }, g);
+  if (k.front) f02el("path", { d: f02d([A, B, C, D]), class: k.front }, g);
+  if (k.ln) f02el("path", { d: `${f02d([D, D1, A1, B1, B], false)} ${f02d([A1, A], false)}${k.open ? "" : " " + f02d([A, B, C, D])}`, class: k.ln }, g);
+}
+/* a pocket cut z deep into a face, as much of it as shows through its
+   opening: the floor and the two inner walls this oblique shows (the foot
+   wall, lit, and the RIGHT wall, shaded), each cut at the opening's edge
+   (the part of a floor that projects past the rim is behind the face), the
+   rim and the inner edges in ink-2 */
+function cadPocket(g, x0, y0, x1, y1, z) {
+  const [dx, dy] = [z * cad.cx, z * cad.cy];
+  f02el("path", { d: f02d([[x0, y0], [x1 - dx, y0], [x1 - dx, y1 - dy], [x0, y1 - dy]]), class: "well" }, g);
+  f02el("path", { d: f02d([[x0, y1], [x1, y1], [x1 - dx, y1 - dy], [x0, y1 - dy]]), class: "lit" }, g);
+  f02el("path", { d: f02d([[x1, y0], [x1, y1], [x1 - dx, y1 - dy], [x1 - dx, y0]]), class: "shade" }, g);
+  f02el("path", { d: `${f02d([[x0, y0], [x1, y0], [x1, y1], [x0, y1]])} ${f02d([[x0, y1 - dy], [x1 - dx, y1 - dy], [x1 - dx, y0]], false)} ${f02d([[x1, y1], [x1 - dx, y1 - dy]], false)}`, class: "pl" }, g);
+}
+/* the drawing, from the plate's own boxes; once per face and seat. Layout
+   reads happen here and never in the draw, with every holder home */
+function layCadence() {
+  const f = cad, fig = f.fig;
+  for (const el of [...chipEls, ...f.slat]) { el.style.transform = ""; el.style.opacity = ""; f02was.delete(el); }
+  fig.style.setProperty("--cad-sx", "0px"); fig.style.setProperty("--cad-sy", "0px");
+  fig.querySelectorAll("svg.cad3").forEach((s) => s.remove());
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (cls) => { const s = document.createElementNS(NS, "svg"); s.setAttribute("class", `cad3 ${cls}`); s.setAttribute("aria-hidden", "true"); return s; };
+  const back = (f.back = mk("cadb")), front = (f.front = mk("cadf")), over = (f.over = mk("cadt"));
+  fig.prepend(back); fig.appendChild(front); fig.appendChild(over);
+  const fr = fig.getBoundingClientRect(), k = fig.offsetWidth / (fr.width || fig.offsetWidth);
+  const box = (r) => ({ x0: (r.left - fr.left) * k, y0: (r.top - fr.top) * k, x1: (r.right - fr.left) * k, y1: (r.bottom - fr.top) * k });
+  const rect = (el) => box(el.getBoundingClientRect());
+  /* a half pixel: a 1 px hairline drawn here paints one device pixel */
+  const sn = (q) => Math.round(q) + 0.5;
+  const wk = rect($("cadWeek")), gr = rect(fig.querySelector("#cadWeek .grid")), dk = rect($("cadDock"));
+  const M = F05.LEDGE, T = F05.BODY;
+  const X0 = sn(wk.x0), X1 = sn(wk.x1), Y0 = sn(wk.y0), Yb = sn(gr.y1);
+  /* the plinth: its front round the chips, and as deep as the step to the
+     week's foot (STEP, read off the layout) plus the week's own body */
+  const Q0 = sn(dk.y0 - M), Q1 = sn(dk.y1 + M), STEP = (Q0 - Yb) / cad.cy;
+  const P0 = sn(X0 + STEP * cad.cx), P1 = P0 + (X1 - X0);
+  const plinth = f02el("g", {}, back);
+  cadBlock(plinth, P0, Q0, P1, Q1, 0, STEP + T, { top: "lit", side: "shade", front: "pg" });
+  /* the week block on it, and the seams of its seven slats across its top */
+  const week = f02el("g", {}, back);
+  cadBlock(week, X0, Y0, X1, Yb, 0, T, { top: "lit", side: "shade", front: "pg" });
+  const heads = [...fig.querySelectorAll("#cadWeek .hd span")];
+  f02el("path", { d: heads.slice(1).map((h) => { const x = sn(rect(h).x0) - 0.5; return f02d([cadAt(x, Y0), cadAt(x, Y0, T)], false); }).join(" "), class: "pl" }, week);
+  /* the tuesday slat: its head and its four cells, the notch its column
+     leaves in the block's top (seen when it is out), its own top (moving,
+     over the notch) and its left face, clipped to what stands in front of
+     the week's face: behind it, Monday's slat hides it */
+  const tb = rect(heads[1]), sx0 = sn(tb.x0) - 0.5, sx1 = sn(tb.x1) - 0.5;
+  f02el("path", { d: f02d([cadAt(sx0, Y0), cadAt(sx1, Y0), cadAt(sx1, Y0, T), cadAt(sx0, Y0, T)]), class: "well" }, week);
+  cadBlock(plinth, P0, Q0, P1, Q1, 0, STEP + T, { ln: "ln", open: true });
+  f02el("path", { d: f02d([[P0, Q0], [P1, Q0], [P1, Q1], [P0, Q1]]), class: "ln" }, plinth);
+  cadBlock(week, X0, Y0, X1, Yb, 0, T, { ln: "ln" });
+  /* the pockets, one a chip, each the chip's own box; the chips' lips,
+   drawn home (depth 0 to LIP) and translated with them */
+  f.chips = chipEls.map((el, i) => {
+    const word = fig.querySelector({ who: ".w-who", when: ".w-when", meet: ".w-meet" }[el.dataset.w]);
+    const h = rect(el), w0 = box(word.getClientRects()[0]);
+    const x0 = sn(h.x0), x1 = sn(h.x1) - 1, y0 = sn(h.y0), y1 = sn(h.y1) - 1;
+    cadPocket(plinth, x0, y0, x1, y1, F05.LIP);
+    const g = f02el("g", { class: "lips", "data-w": el.dataset.w }, over);
+    cadBlock(g, x0, y0, x1, y1, 0, F05.LIP, { top: "lit", side: "shade", ln: el.classList.contains("meet") ? "cl" : "pl", open: true });
+    /* it leaves from over its words (the first line of them), a hair above */
+    return { el, word, g, dx: w0.x0 - h.x0, dy: w0.y0 - 3 - h.y0, start: F05.STARTS[i] };
+  });
+  const cells = [heads[1], ...[...fig.querySelectorAll("#cadWeek .grid i")].filter((_, i) => i % 7 === 1)];
+  /* each moving piece is drawn OUT (where it rests) inside a group the
+     scroll translates: an inner group carries the rest offset as an
+     attribute, because a CSS transform on the outer one replaces its own */
+  const [ox, oy] = cadOff(-F05.OUT), out = `translate(${ox.toFixed(2)} ${oy.toFixed(2)})`;
+  const piece = (parent) => { const m = f02el("g", {}, parent); return [m, f02el("g", { transform: out }, m)]; };
+  const [top, topIn] = piece(front);
+  cadBlock(topIn, sx0, Y0, sx1, Yb, 0, T, { top: "lit", ln: "ln", open: true });
+  const defs = f02el("defs", {}, front), cp = f02el("clipPath", { id: "cadSlatClip" }, defs);
+  f02el("rect", { x: sx0, y: Y0, width: 4000, height: 4000 }, cp);
+  const [side, sideIn] = piece(f02el("g", { "clip-path": "url(#cadSlatClip)" }, front));
+  cadBlock(sideIn, sx0, Y0, sx1, Yb, 0, T, { side: "shade", ln: "ln", open: true });
+  f.slat = [...cells, top, side];
+  fig.style.setProperty("--cad-sx", `${ox.toFixed(2)}px`); fig.style.setProperty("--cad-sy", `${oy.toFixed(2)}px`);
+  /* a hovered chip stands one lip proud: the CSS reads this */
+  const [hx, hy] = cadOff(-F05.LIP);
+  fig.style.setProperty("--cad-hx", `${hx.toFixed(2)}px`); fig.style.setProperty("--cad-hy", `${hy.toFixed(2)}px`);
+}
+function drawCadence(p) {
+  const f = cad, e = f.e;
+  const landed = RM || f.landing || Number.isNaN(f.p) || Math.abs(p - f.p) > 0.3; /* a landing, not a motion */
+  f.landing = false;
+  f.p = p;
+  /* one speed: a trip's length in p is its glide over RATE x the window */
+  const S = e ? Math.max(1, e.yB - e.yA) : 400;
+  let offset = 0, seated = 0;
+  for (const c of f.chips) {
+    const trip = clamp(Math.hypot(c.dx, c.dy) / (F05.RATE * S), F05.TRIP[0], F05.TRIP[1]);
+    const u = f02trap((p - c.start) / trip, F05.EASE);
+    const [ox, oy] = cadOff(-F05.LIFT * Math.sin(Math.PI * u));
+    /* the hand-over runs on the trip's own clock, not its eased one: the
+       chip is opaque paper over its words within FADE of the trip, so the
+       two are never long printed one through the other */
+    const x = c.dx * (1 - u) + ox, y = c.dy * (1 - u) + oy, tf = cadTf(x, y), o = smooth((p - c.start) / trip / F05.FADE);
+    cadPut(c.el, "transform", tf); cadPut(c.g, "transform", tf);
+    cadPut(c.el, "opacity", o.toFixed(3));
+    cadPut(c.g, "opacity", u >= 1 ? "0" : o.toFixed(3));
+    cadPut(c.word, "--cad-o", (1 - 0.68 * o).toFixed(3));
+    /* home: in its pocket, where a lit chip may stand proud (the CSS) */
+    c.el.classList.toggle("home", tf === "none"); c.g.classList.toggle("home", tf === "none");
+    if (tf === "none") seated++;
+    else offset = Math.max(offset, Math.hypot(x, y));
   }
-  cad.top = absTop(cad.fig); cad.bot = cad.top + cad.fig.offsetHeight; /* the plate's page box, for cadenceP */
-  cad.ready = true;
+  const us = f02trap((p - F05.PULL[0]) / (F05.PULL[1] - F05.PULL[0]), F05.EASE);
+  /* the slat rests OUT; before the parse finds Tuesday it is in the week */
+  const [sx, sy] = cadOff(F05.OUT * (1 - us)), stf = cadTf(sx, sy);
+  for (const el of f.slat) cadPut(el, "transform", stf);
+  if (stf !== "none") offset = Math.max(offset, Math.hypot(sx, sy));
+  const noon = smooth((p - F05.NOON[0]) / (F05.NOON[1] - F05.NOON[0]));
+  cadPut(f.tile, "opacity", noon.toFixed(3));
+  f.slot.classList.toggle("on", noon > 0);
+  f.hook = window.__world.fig05 = { p: +p.toFixed(4), landed, pose: offset > 0 ? 1 : 0, offset: +offset.toFixed(1), seated, pulled: +us.toFixed(3) };
 }
-function scrubCadence(p) {
-  if (!cad.ready) return;
-  for (const c of cad.chips) {
-    const t = smooth((p - c.at) / 0.22);
-    const x = lerp(c.start[0], c.end[0], t), y = lerp(c.start[1], c.end[1], t);
-    c.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-    /* the chip fades in AS it lifts; the word hands over early — the two
-       never sit printed on top of each other */
-    c.el.style.opacity = smooth((p - c.at + 0.02) / 0.08).toFixed(2);
-    c.word.classList.toggle("dim", t > 0.18);
-    /* The tuesday cell lights with the `when` chip — the parse filing its
-       event into the schedule, in the cell that IS tuesday noon. It does not
-       move, so it cannot cover a neighbour. */
-    if (c.w === "when") $("slotWhen").classList.toggle("on", t > 0.5);
-  }
+/* a focus or a click anywhere on the plate lands it. A click, never a
+   pointerdown: a phone reader's swipe starts with one (G2d, fig. 02) */
+function cadLand() { cad.landing = true; asmLand("fig05"); cad.landing = false; }
+cad.fig.addEventListener("focusin", cadLand);
+cad.fig.addEventListener("click", cadLand);
+/* the chips' longest trip ends the motion: the driver's speed limit is
+   scaled to it */
+function cadSpan(e) {
+  const S = Math.max(1, e.yB - e.yA);
+  return [0, Math.max(...cad.chips.map((c) => c.start + clamp(Math.hypot(c.dx, c.dy) / (F05.RATE * S), F05.TRIP[0], F05.TRIP[1])), F05.PULL[1])];
 }
+/* built on the real face (the chips leave from the words' own boxes),
+   registered before boot measures the window; re-laid on a seat change */
+function buildCadence() {
+  layCadence();
+  cad.e = asmFigure("fig05", { box: () => layoutBox(cad.fig), draw: drawCadence, span: cadSpan });
+  window.__world.fig05Els = () => [...chipEls, ...cad.slat]; /* probe hook: every holder the scroll moves */
+}
+document.fonts.ready.then(buildCadence, buildCadence);
+addEventListener("resize", () => {
+  if (!seatChanged) return;
+  clearTimeout(cad.rT);
+  cad.rT = setTimeout(() => { layCadence(); if (!Number.isNaN(cad.p)) { const p = cad.p; cad.p = NaN; drawCadence(p); } }, 200);
+});
 /* THE CHIPS ANSWER A FINGER NOW. fig. 05's caption tells a phone reader to
    "tap a chip to see its words", and until this the chips carried mouseenter
    and mouseleave and nothing else — the same defect `traceOn` was written for
@@ -9584,11 +9794,13 @@ for (const id of CHIP_IDS) {
   $(id).addEventListener("mouseleave", () => { if (!chipLatch) chipClear(); });
 }
 const chipAt = (x, y) => {
+  /* a finger's 44 px: the margins .chip::before adds under (pointer:coarse) */
+  const [hx, hy] = matchMedia("(pointer:coarse)").matches ? [4, 6] : [0, 0];
   let best = null, bd = Infinity;
   for (const c of chipEls) {
     if (parseFloat(getComputedStyle(c).opacity) < 0.05) continue;
     const r = c.getBoundingClientRect();
-    if (!r.width || x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+    if (!r.width || x < r.left - hx || x > r.right + hx || y < r.top - hy || y > r.bottom + hy) continue;
     const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
     if (d < bd) { bd = d; best = c; }
   }
@@ -12483,7 +12695,7 @@ function work(y) {
   /* stations scrub only near their own beat */
   /* beat 1's card rides the assembly driver (v10): fig. 02 clocks the name itself */
   /* beat 2's plate (fig. 03) rides the assembly driver too (v10): one clock, no scrub */
-  if (Math.abs(beat - 4) <= 1) scrubCadence(cadenceP(y, beat, bp));
+  /* beat 4's plate (fig. 05) rides the assembly driver too (v13): one clock, no scrub */
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
      its bench is a settled record. Beat 6's drawing is assembled by the
      hand now (asmWork, below), and its elevation is drawn settled. */
@@ -12733,7 +12945,7 @@ addEventListener("resize", () => {
   clearTimeout(resizeT);
   resizeT = setTimeout(() => {
     chooseEditions(); /* a narrower seat may swap a figure's plate */
-    cacheGeometry(); buildThread(); cacheCadence(); fitPad();
+    cacheGeometry(); buildThread(); fitPad();
     if (RM) { settleAll(); drawThread(scrollY, gatePageY, pathLen, true); }
     wake(true);
   }, 160);
@@ -19373,7 +19585,7 @@ if (!RM && !FLAGS.has("notype")) {
 /* if the module ever dies, the story must still read: settle everything */
 addEventListener("error", () => document.body.classList.add("settled"));
 function settleAll() {
-  scrubWho(1); scrubCadence(1); /* fig. 03 is the driver's (v10): asmSettle() below draws it parked */
+  scrubWho(1); /* figs. 03 and 05 are the driver's (v10, v13): asmSettle() below draws them parked */
   /* scrubBench(1) and scrubJetBench(1) stood here, and settling them for
      reduced-motion readers was the page already conceding the argument: the
      truthful form of a record is the settled one. Every reader gets it now,
@@ -19408,7 +19620,7 @@ async function boot() {
      built before anything is observed. */
   await new Promise((r) => requestAnimationFrame(r));
   chooseEditions(); /* build every figure on the plate its seat earns */
-  cacheGeometry(); buildThread(); cacheCadence(); fitPad();
+  cacheGeometry(); buildThread(); fitPad();
   booted = true;
   if (RM) {
     /* the settled world: everything at its truthful final frame — the

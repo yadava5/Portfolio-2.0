@@ -8,6 +8,8 @@ import { expect, test, type Page } from "@playwright/test";
  *   G2b · the same floor for the tight (phone) SVG figure editions
  *   G2c · fig. 02's words only ever translate
  *   G2d · a swipe across fig. 02 scrolls it, it does not land it
+ *   G2e · fig. 05's words only ever translate
+ *   G2f · a swipe across fig. 05 scrolls it, it does not land it
  *   G3  · mono only on machine values
  *   G4  · the manifest never covers text involuntarily
  *   G9  · no interactive target under 24×24 on the phone
@@ -674,6 +676,308 @@ test.describe("G2d · a swipe across fig. 02 does not land it", () => {
       await page.waitForTimeout(400);
       const q = await probe(page);
       expect(q.held, "a tap on the card must land it").toBe(true);
+      expect(page.url(), "and open nothing").toBe(url0);
+    } finally {
+      await ctx.close();
+    }
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   G2e · fig. 05's words only ever translate (v13, the week in depth)
+
+   Fig. 05 is drawn in depth around its live words: each chip is lifted off
+   its phrase and set into its pocket on the plinth, and the tuesday slat
+   (its head "tu" and its cells, the 12:00 among them) is pulled out of the
+   week toward the reader. Depth is SVG around face-on text, so no word is
+   ever scaled, skewed or rotated to fake it. At every frame of a scroll
+   through fig05's window, down and back up, at a reader's pace, at 800 px/s
+   and at 1500 px/s, every ancestor of every text node under #cadFig, up to
+   and including #cadFig, carries either no transform or
+   matrix(1, 0, 0, 1, tx, ty), and no `scale` or `rotate` (the hover's lift
+   is a `translate`, and a translation); and wherever the drawing is at
+   p 1, none at all: the slat RESTS out by layout (relative offsets), so the
+   finished plate is transform-free. A run that never saw a holder in
+   motion (__world.fig05.offset > 0), or never saw the plate at rest,
+   proves nothing and fails.
+   ══════════════════════════════════════════════════════════════════════ */
+type WeekRun = BoardRun;
+/** drives the scroll from the page's own frames and reads each one */
+async function weekRun(page: Page): Promise<WeekRun> {
+  await page.waitForFunction(
+    () =>
+      !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
+        .__world.asm?.fig05,
+    null,
+    { timeout: 15000 }
+  );
+  return page.evaluate(
+    () =>
+      new Promise<WeekRun>((done) => {
+        const w = (
+          window as unknown as {
+            __world: {
+              asm: Record<string, { yA: number; yB: number; d: number }>;
+              fig05: { offset: number };
+            };
+          }
+        ).__world;
+        const a = w.asm.fig05;
+        const stage = document.getElementById("cadFig")!;
+        const holders = new Set<Element>();
+        const walk = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
+        for (let n = walk.nextNode(); n; n = walk.nextNode())
+          if (n.textContent!.trim())
+            for (let e = n.parentElement; e; e = e.parentElement) {
+              holders.add(e);
+              if (e === stage) break;
+            }
+        const PURE = /^matrix\(1, 0, 0, 1, -?[\d.e-]+, -?[\d.e-]+\)$/;
+        const plan: number[] = [];
+        const y0 = Math.max(0, a.yA - 60);
+        const y1 = a.yB + 60;
+        for (const v of [3, 13, 25]) {
+          for (let y = y0; y < y1; y += v) plan.push(y);
+          for (let k = 0; k < 40; k++) plan.push(y1);
+          for (let y = y1; y > y0; y -= v) plan.push(y);
+          for (let k = 0; k < 40; k++) plan.push(y0);
+        }
+        const r: WeekRun = {
+          posed: 0,
+          rest: 0,
+          restMoved: 0,
+          bad: 0,
+          at: "",
+          restAt: "",
+          maxOffset: 0,
+        };
+        let i = 0;
+        const tick = () => {
+          const atRest = w.asm.fig05.d >= 1;
+          let moved = "";
+          for (const e of holders) {
+            const cs = getComputedStyle(e);
+            const t = cs.transform;
+            /* the individual properties compose with transform and a
+               matrix read cannot see them */
+            const extra =
+              (cs.scale !== "none" && cs.scale) ||
+              (cs.rotate !== "none" && cs.rotate);
+            if (extra) {
+              r.bad++;
+              if (!r.at)
+                r.at = `${window.__gate.sel(e)} · scale/rotate ${extra}`;
+            }
+            if (!t || t === "none") continue;
+            moved ||= `${window.__gate.sel(e)} · ${t}`;
+            if (!PURE.test(t)) {
+              r.bad++;
+              if (!r.at) r.at = `${window.__gate.sel(e)} · ${t}`;
+            }
+          }
+          if (moved) r.posed++;
+          if (atRest) {
+            r.rest++;
+            if (moved) {
+              r.restMoved++;
+              if (!r.restAt) r.restAt = moved;
+            }
+          }
+          r.maxOffset = Math.max(r.maxOffset, w.fig05.offset || 0);
+          if (i < plan.length) {
+            window.scrollTo({ top: plan[i++], behavior: "instant" });
+            requestAnimationFrame(tick);
+          } else done(r);
+        };
+        requestAnimationFrame(tick);
+      })
+  );
+}
+function expectWeekTranslated(r: WeekRun): void {
+  expect(
+    r.posed,
+    "the run must see a holder in motion, or it proves nothing"
+  ).toBeGreaterThan(20);
+  expect(
+    r.maxOffset,
+    "and __world.fig05.offset must have seen the move"
+  ).toBeGreaterThan(0);
+  expect(r.rest, "and it must see the plate at rest").toBeGreaterThan(0);
+  expect(
+    r.bad,
+    `a word on fig. 05 was scaled, skewed or rotated: ${r.at}`
+  ).toBe(0);
+  expect(r.restMoved, `fig. 05 at rest still moves a word: ${r.restAt}`).toBe(
+    0
+  );
+}
+
+test.describe("G2e · fig. 05's words only ever translate", () => {
+  test("at 1440", async ({ page }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await installProbes(page);
+    await arrive(page);
+    expectWeekTranslated(await weekRun(page));
+  });
+
+  test("at 390", async ({ browser, baseURL }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      isMobile: true,
+      hasTouch: true,
+      deviceScaleFactor: 1,
+      baseURL,
+    });
+    try {
+      const p = await ctx.newPage();
+      await installProbes(p);
+      await arrive(p);
+      expectWeekTranslated(await weekRun(p));
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  /* THE GATE CAN FAIL. The same run on a plate where the "tue · 12:00"
+     chip is scaled by 1% (invisible to a reader, and exactly the depth fake
+     this gate refuses) must be caught at its own message; a stylesheet
+     !important beats the scroll's inline transform */
+  test("positive control: a scaled chip is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await installProbes(page);
+    await arrive(page);
+    await page.addStyleTag({
+      content: "#chWhen{transform:scale(1.01) !important}",
+    });
+    const r = await weekRun(page);
+    expect(r.posed).toBeGreaterThan(20);
+    expect(
+      r.bad,
+      "the chip was scaled and the run did not see it"
+    ).toBeGreaterThan(0);
+    expect(r.at, "and it is caught as that chip, at that scale").toMatch(
+      /#chWhen.*matrix\(1\.01, 0, 0, 1\.01/
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   G2f · a swipe across fig. 05 scrolls it; only a focus or a tap lands it
+
+   fig. 05 lands the way fig. 02 does (a focus or a click on the plate:
+   asmLand), and for the same reason never on a pointerdown, which every
+   phone swipe begins with. Parked at p .3 on a touch phone, a touch scroll
+   gesture that starts on the week must leave the plate un-landed (held
+   false) and move p. The control: a tap on the same spot lands it (held
+   true). Chromium only: the gesture is CDP's Input.synthesizeScrollGesture.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("G2f · a swipe across fig. 05 does not land it", () => {
+  async function parkPhone(
+    browser: import("@playwright/test").Browser,
+    baseURL: string | undefined
+  ) {
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 664 },
+      isMobile: true,
+      hasTouch: true,
+      deviceScaleFactor: 1,
+      baseURL,
+    });
+    const page = await ctx.newPage();
+    await installProbes(page);
+    await arrive(page);
+    await page.waitForFunction(
+      () =>
+        !!(window as unknown as { __world: { asm?: Record<string, unknown> } })
+          .__world.asm?.fig05
+    );
+    const at = await page.evaluate(async () => {
+      const a = (
+        window as unknown as {
+          __world: { asm: Record<string, { yA: number; yB: number }> };
+        }
+      ).__world.asm.fig05;
+      scrollTo({
+        top: Math.round(a.yA + 0.3 * (a.yB - a.yA)),
+        behavior: "instant",
+      });
+      await new Promise((r) => setTimeout(r, 700));
+      /* a spot on the week's grid, away from every chip's flight */
+      const g = document
+        .querySelector("#cadWeek .grid")!
+        .getBoundingClientRect();
+      return {
+        x: Math.round(g.left + g.width * 0.8),
+        y: Math.round(
+          Math.max(
+            g.top + 20,
+            Math.min(innerHeight - 60, g.top + g.height * 0.5)
+          )
+        ),
+      };
+    });
+    return { ctx, page, at };
+  }
+  const probe = (page: Page) =>
+    page.evaluate(() => {
+      const e = (
+        window as unknown as {
+          __world: { asm: Record<string, { d: number; held: boolean }> };
+        }
+      ).__world.asm.fig05;
+      return { d: e.d, held: !!e.held };
+    });
+
+  test("a touch swipe on the week scrolls it", async ({
+    browser,
+    browserName,
+    baseURL,
+  }, testInfo) => {
+    test.skip(browserName !== "chromium", "CDP scroll gesture");
+    testInfo.setTimeout(60_000);
+    const { ctx, page, at } = await parkPhone(browser, baseURL);
+    try {
+      const before = await probe(page);
+      const cdp = await ctx.newCDPSession(page);
+      await cdp.send("Input.synthesizeScrollGesture", {
+        x: at.x,
+        y: at.y,
+        yDistance: -60,
+        gestureSourceType: "touch",
+        speed: 300,
+      });
+      await page.waitForTimeout(250);
+      const after = await probe(page);
+      expect(after.held, "a swipe that starts on the week landed it").toBe(
+        false
+      );
+      expect(after.d, "the swipe must move the parse").toBeGreaterThan(
+        before.d
+      );
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test("control: a tap on the week lands it", async ({
+    browser,
+    browserName,
+    baseURL,
+  }, testInfo) => {
+    test.skip(browserName !== "chromium", "pairs with the CDP gesture");
+    testInfo.setTimeout(60_000);
+    const { ctx, page, at } = await parkPhone(browser, baseURL);
+    try {
+      const url0 = page.url();
+      await page.touchscreen.tap(at.x, at.y);
+      await page.waitForTimeout(400);
+      const q = await probe(page);
+      expect(q.held, "a tap on the week must land it").toBe(true);
       expect(page.url(), "and open nothing").toBe(url0);
     } finally {
       await ctx.close();
