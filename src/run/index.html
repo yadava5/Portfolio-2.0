@@ -12547,6 +12547,10 @@ function asmStep(now) {
 function asmGrace() {
   asmGraceT = 0;
   if (RM || ASM_PIN !== null || asmGracing) return;
+  /* a scroll the frame has not worked yet is not stillness: the targets are
+     still the last y's, and a window closed here would close at a y nobody
+     has drawn (a frame longer than ASM_GRACE; the next asmWork re-arms) */
+  if (scrollY !== asmY) return;
   const y = scrollY;
   for (const e of asm.values()) {
     if (e.yG !== null || e.t >= 1 || e.t <= 0) continue;
@@ -19623,6 +19627,11 @@ async function boot() {
   chooseEditions(); /* build every figure on the plate its seat earns */
   cacheGeometry(); buildThread(); fitPad();
   booted = true;
+  /* fig. 10 and fig. 11 register inside buildThread(), after cacheGeometry()'s
+     measure and before `booted`, so asmFigure() skipped their measure and they
+     held the unmeasured window 0..1 until the first re-measure (labrat, CI run
+     38911284112): measure every window once more, now that all exist */
+  asmGeometry();
   if (RM) {
     /* the settled world: everything at its truthful final frame — the
        thread fully drawn, the token resting at the gate, held marks
