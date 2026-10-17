@@ -50,12 +50,7 @@ import { Project, projects } from "@/lib/data/projects";
 import { withBasePath } from "@/lib/basePath";
 
 export type CaseStudyNodeKind =
-  | "client"
-  | "api"
-  | "data"
-  | "ml"
-  | "system"
-  | "validation";
+  "client" | "api" | "data" | "ml" | "system" | "validation";
 
 export interface CaseStudyNode {
   id: string;

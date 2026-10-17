@@ -1242,13 +1242,11 @@ test.describe("G3 · mono only on machine values", () => {
                 continue;
               if (window.__gate.effOpacity(el) <= 0.05) continue;
               const ff = getComputedStyle(el).fontFamily.toLowerCase();
-              if (
-                !(
-                  ff.includes("fragment mono") ||
-                  ff.includes("ui-monospace") ||
-                  ff.startsWith("monospace")
-                )
-              )
+              if (!(
+                ff.includes("fragment mono") ||
+                ff.includes("ui-monospace") ||
+                ff.startsWith("monospace")
+              ))
                 continue;
               mono++;
               if (el.closest(allowSel)) {
@@ -1358,13 +1356,11 @@ const STRIP_MONO = () => {
       continue;
     if (window.__gate.effOpacity(el) <= 0.05) continue;
     const ff = getComputedStyle(el).fontFamily.toLowerCase();
-    if (
-      !(
-        ff.includes("fragment mono") ||
-        ff.includes("ui-monospace") ||
-        ff.startsWith("monospace")
-      )
-    )
+    if (!(
+      ff.includes("fragment mono") ||
+      ff.includes("ui-monospace") ||
+      ff.startsWith("monospace")
+    ))
       continue;
     mono++;
     if (el.closest(allow)) continue;
