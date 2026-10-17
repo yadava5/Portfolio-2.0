@@ -50,7 +50,7 @@
     "test:e2e:reading-gates": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/reading-gates.spec.ts --project=chromium-desktop"
   },
   "dependencies": {
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
