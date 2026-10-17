@@ -58,7 +58,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.39.2",
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "eslint": "^9",
     "globals": "^17.13.0",
