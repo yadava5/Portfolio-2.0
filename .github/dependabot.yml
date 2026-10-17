@@ -16,6 +16,17 @@ version: 2
 #              under .build/, which is generated staging, not source)
 #   actions    .github/workflows/{ci,deploy}.yml
 #
+# WEEKLY SINCE 2026-10-16, AND MERGED BY A WORKFLOW. The monthly cadence below
+# was chosen so a queue nobody reviews would stay short; it stayed short and
+# still nobody merged it: nine PRs sat open from August, and four advisories
+# (three high) sat on main beside them. Review was the bottleneck, not volume,
+# so review is now the CI: .github/workflows/dependabot-automerge.yml turns on
+# auto-merge for every minor or patch update, security fixes included,
+# and the main ruleset holds the merge until "✅ CI Complete" is green (the
+# golden hash and the five-engine smoke included). Majors still wait for a
+# person, as the groups below have always said.
+#
+# The original note, kept for its reasoning:
 # Monthly rather than weekly, matching the siblings: one maintainer, and a queue
 # of PRs nobody can review is worse than a slightly older lockfile. The limits
 # are deliberately small for the same reason — the estate was carrying 83 open
@@ -29,13 +40,26 @@ updates:
     # SECURITY updates are a separate mechanism unaffected by `schedule`, so
     # vulnerability patches still arrive immediately.
     schedule:
-      interval: monthly
+      interval: weekly
     open-pull-requests-limit: 5
     commit-message:
       prefix: build
     labels:
       - dependencies
+    # @types/node follows the runtime, and the runtime is .nvmrc (24). A types
+    # major ahead of it compiles against APIs CI's Node does not have: the open
+    # 20 to 26 PR of 2026-09-01 was exactly that. Move .nvmrc and this together.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
+      # Security fixes arrive as ONE pull request, whatever they touch, so a
+      # transitive advisory and its parent never land half fixed. Listed
+      # first; `applies-to` keeps it out of the version groups below.
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
       # Playwright's runner and its browser bindings have to move together;
       # split across PRs they produce a red suite that is nobody's fault.
       #
@@ -72,14 +96,15 @@ updates:
           - patch
 
   # ---- The workflows themselves -------------------------------------------
-  # ci.yml and deploy.yml pin actions by tag (checkout@v4, setup-node@v4,
-  # upload-artifact@v4, download-artifact@v4, upload-pages-artifact@v3,
-  # deploy-pages@v4). download-artifact arrived with the 2026-08-07 link-gate
-  # fix, so this entry has something to keep current from the day it lands.
+  # The workflows pin actions by major tag (checkout@v7, setup-node@v7,
+  # upload-artifact@v7, download-artifact@v8, upload-pages-artifact@v5,
+  # deploy-pages@v5, dependabot/fetch-metadata@v3 since 2026-10-16). Majors are
+  # NOT auto-merged: deploy.yml's two Pages actions run only on main, so no pull
+  # request's CI ever exercises them, and a green check would prove nothing.
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: monthly
+      interval: weekly
     open-pull-requests-limit: 5
     commit-message:
       prefix: ci

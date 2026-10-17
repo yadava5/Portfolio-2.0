@@ -1,0 +1,66 @@
+name: Dependabot auto-merge
+
+# Turns on auto-merge for the Dependabot pull requests a person would approve
+# without reading: every minor or patch update, security fixes included (nearly
+# every advisory is fixed by one). It reads the update type, not the alert:
+# fetch-metadata's alert lookup needs a token that can read Dependabot alerts,
+# and GITHUB_TOKEN cannot be given that. A security fix that is a major waits
+# with the other majors. It merges nothing itself. GitHub completes the merge only once the
+# main ruleset's required check, "✅ CI Complete", is green on the pull request,
+# and that check needs the whole of ci.yml: types, lint, the golden hash, the
+# gates and the five-engine browser smoke. A bump that changes what the site
+# builds turns the golden red, and the pull request waits for a person, which
+# is the gate doing its job.
+#
+# Majors are left alone on purpose (see .github/dependabot.yml).
+#
+# Outside pull requests: the ruleset on main needs an approving review from
+# someone with write access, which is only the owner, and a fork's workflows do
+# not run until he approves them (Actions setting: all external contributors).
+#
+# `pull_request`, never `pull_request_target`: this job checks out nothing and
+# runs no code from the pull request, and it should never be given the chance.
+#
+# A merge made with GITHUB_TOKEN starts no further workflow, so neither CI nor
+# the deploy runs on main after one. The pull request's own CI already ran on
+# the merged tree, and a dependency bump that passes the golden hash ships the
+# same page bytes, so the next push deploys it unchanged.
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'yadava5/Portfolio-2.0'
+    steps:
+      - name: Read what Dependabot is updating
+        id: meta
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      # The main ruleset wants one approving review from someone with write
+      # access, and the most recent push approved by someone other than its
+      # pusher. On a Dependabot pull request that someone is this workflow,
+      # for the update types above only; every other pull request needs the
+      # owner. The approval is not the gate: the merge still waits for CI.
+      - name: Approve, and queue the merge behind CI
+        if: >-
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.update-type == 'version-update:semver-patch'
+        run: |
+          gh pr review --approve "$PR_URL" --body "Minor or patch update: approved for auto-merge, which waits for ✅ CI Complete."
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Say why a major waits
+        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+        run: echo "::notice::$NAMES is a major update; it waits for a person."
+        env:
+          NAMES: ${{ steps.meta.outputs.dependency-names }}
