@@ -33,7 +33,6 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 20
   # FIXED, not a dispatch input. runall.sh and emptiness.mjs write into
   # docs/clarity/harness/<name>/, so a dispatch that named `baseline` would
   # overwrite the pre-redesign scorecard with this run's and then compare it
@@ -49,12 +48,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -113,7 +112,7 @@ jobs:
       # frames it rose on are the only thing that says why.
       - name: Upload the sweep
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: clarity-harness-${{ env.RUN_NAME }}
           path: |

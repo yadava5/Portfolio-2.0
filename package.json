@@ -5,6 +5,9 @@
   "license": "SEE LICENSE IN LICENSE",
   "author": "Ayush Yadav (https://ayush-yadav.com)",
   "homepage": "https://ayush-yadav.com",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "node scripts/archive/build-archive.mjs",
     "preview": "node scripts/dev/preview.mjs",
@@ -50,13 +53,13 @@
     "test:e2e:reading-gates": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/reading-gates.spec.ts --project=chromium-desktop"
   },
   "dependencies": {
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.62.1",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
     "eslint": "^9",
     "globals": "^17.9.0",
     "prettier": "^3.8.1",
