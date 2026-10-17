@@ -1,6 +1,6 @@
 # The browser suites
 
-Five specs, all of them run by something. This directory held twenty-six until
+Nine specs, all of them run by something. This directory held twenty-six until
 Phase 4, of which CI executed six and no npm script named twenty-four — a suite
 that large is not coverage, it is a place for a red to hide. What is left is
 listed here with the command that runs it, and nothing is here that nothing
@@ -13,6 +13,9 @@ which git ignores. Nothing generated belongs in this directory.
 | --------------------------- | ----------------------------- | --------------- |
 | `run-home.spec.ts`          | `test:e2e:browser-smoke`      | the home page IS the run — thirteen stations dawn to nightfall, the work rows reach their case files, the wasm classifier instantiates, no horizontal overflow at 320/390/1440 |
 | `atlas.spec.ts`             | `test:e2e:browser-smoke`      | the seven generated case files: artifact-backed proof, the receipts and the boundaries that keep them honest, fig. 1 as a contained labelled plate, the artifact viewer, the private stamp |
+| `reading-gates.spec.ts`     | `test:e2e:browser-smoke`      | the reading gates: no text under 12px effective at 390 and 1440, mono only on machine values, the stops never cover text by surprise, no phone target under 24×24, figs. 02 and 05 only translate their words, and the stops' carry and landing (S1 to S6) |
+| `clarity-fixes.spec.ts`     | `test:e2e:browser-smoke`      | the clarity round's interaction and accessibility fixes, each written against the defect as it was measured |
+| `ending-sequence.spec.ts`   | `test:e2e:browser-smoke`      | ¶12's ending: one aligned object, one filled control, and what pressing it starts |
 | `reduced-motion.spec.ts`    | `test:e2e:reduced-motion`     | the page arrives complete under `prefers-reduced-motion`, nothing waits to be scrolled into, anchor navigation does not depend on animation |
 | `performance-budget.spec.ts`| `test:e2e:performance`        | the launch budgets |
 | `a11y-audit.spec.ts`        | `test:e2e:a11y`               | axe over the run, a case file and the evidence index; and the archive's skip link, which no other gate reads |
@@ -32,7 +35,7 @@ Every `test:e2e:*` script builds first, because a spec run against a stale
 `out/` reports on a site that no longer exists:
 
 ```bash
-npm run test:e2e:browser-smoke     # atlas + run-home, five engines
+npm run test:e2e:browser-smoke     # the five smoke specs, five engines (1,280 tests)
 npm run test:e2e:a11y              # axe + the skip link, chromium
 npm run test:e2e:ui                # the Playwright UI, against whatever out/ holds
 ```

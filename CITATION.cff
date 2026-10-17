@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you reference this work, please cite it as below."
+type: software
+title: "The long run: the portfolio of Ayush Yadav"
+abstract: "One hand-written HTML page and a plain Node static generator. Every number on the page links to the commit, benchmark file or CI run it came from, and the build refuses to ship if one of those links stops resolving."
+authors:
+  - given-names: Ayush
+    family-names: Yadav
+    email: aesh.03.23@gmail.com
+    website: "https://ayush-yadav.com"
+repository-code: "https://github.com/yadava5/Portfolio-2.0"
+url: "https://ayush-yadav.com"
+license: PolyForm-Noncommercial-1.0.0
+keywords:
+  - portfolio
+  - static site generator
+  - vanilla JavaScript
+  - Playwright
+  - WebAssembly

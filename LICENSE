@@ -1,0 +1,45 @@
+Copyright Ayush Yadav (https://ayush-yadav.com). All rights reserved, except
+as granted below.
+
+This repository is source available, not open source. You are welcome to read
+it, run it, learn from it and change it for yourself. You may not sell it, or
+use it to make money.
+
+Required Notice: Copyright Ayush Yadav (https://ayush-yadav.com)
+
+1. THE CODE AND THE DESIGN
+
+   The source code in this repository, and the visual design it implements
+   (the page, its figures, the rail, the nameplate and the build), are
+   licensed under the PolyForm Noncommercial License 1.0.0. The full text is
+   in LICENSES/PolyForm-Noncommercial-1.0.0.md and at
+   https://polyformproject.org/licenses/noncommercial/1.0.0
+
+   In short: personal, educational and other noncommercial use is allowed.
+   Selling the site, selling a template or theme made from it, using it for
+   paid client work, or any other commercial use is not. Anyone you share a
+   copy with must also get these terms and the Required Notice line above.
+
+2. THE PERSONAL CONTENT
+
+   The following are NOT licensed for reuse in any form, commercial or not:
+
+   * the name Ayush Yadav, his likeness and his portrait photographs;
+   * the résumé (public/resume.pdf) and every fact about him, his work and his
+     employers in src/lib/data/;
+   * the written copy of the site: the station text, the case files and the
+     evidence pages;
+   * the site mark, the favicons and the social cards in public/og/.
+
+   A fork must replace all of it with its own. Quoting a short passage with a
+   link back, for review or commentary, is fine.
+
+3. THIRD PARTY MATERIAL
+
+   Some files belong to other people and keep their own terms. They are listed
+   in LICENSES/NOTICE.md. Nothing here relicenses them.
+
+4. ANYTHING ELSE
+
+   For commercial use, or any use these terms do not cover, ask:
+   aesh.03.23@gmail.com

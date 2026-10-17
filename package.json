@@ -2,6 +2,9 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Ayush Yadav (https://ayush-yadav.com)",
+  "homepage": "https://ayush-yadav.com",
   "scripts": {
     "build": "node scripts/archive/build-archive.mjs",
     "preview": "node scripts/dev/preview.mjs",
