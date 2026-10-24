@@ -379,13 +379,16 @@ function systemDiagram(arch, projectId) {
    as the accessible truth, paper-memory.js as the pen. The metric
    column stays drawn, labelled and redacted — ▓▓ with an sr-only twin —
    because a table with no place for the withheld numbers cannot show
-   WHAT is withheld (F21/F56's ruling, carried over). */
+   WHAT is withheld (F21/F56's ruling, carried over).
+   The button's name starts with the words it shows ("awaiting approval")
+   so a voice-control user can say what they see (WCAG 2.5.3); the name
+   used to be only "Approve run no. 041", which axe 4.14 fails. */
 function registryFig(reg) {
   const rows = reg.rows
     .map((row, i) => {
       const awaiting = row.status === "awaiting approval";
       const status = awaiting
-        ? `<button type="button" data-registry-approve aria-pressed="false" aria-label="Approve run no. ${esc(row.run)}" class="registry-approve"><span class="registry-strike">${esc(row.status)}</span><span aria-hidden="true" class="registry-mark"><span class="gsq2"></span>approved</span></button>`
+        ? `<button type="button" data-registry-approve aria-pressed="false" aria-label="${esc(row.status)}: approve run no. ${esc(row.run)}" class="registry-approve"><span class="registry-strike">${esc(row.status)}</span><span aria-hidden="true" class="registry-mark"><span class="gsq2"></span>approved</span></button>`
         : `<span class="rgstatus">${esc(row.status)}</span>`;
       return `<li data-registry-row="${i}"${awaiting ? ' class="awaiting"' : ""}><span class="rgrun">${esc(row.run)} · ${esc(row.model)}</span><span class="rgm" aria-hidden="true">▓▓</span><span class="sr-only">metrics not published</span>${status}</li>`;
     })
