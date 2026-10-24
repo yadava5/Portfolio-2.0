@@ -74,6 +74,16 @@ updates:
         patterns:
           - "@playwright/*"
           - playwright
+      # ESLint and @eslint/js ship in lockstep, and @eslint/js is where a major
+      # turns on its new recommended rules. On 2026-10-17 the 10.x pair arrived
+      # as two PRs (#69, #74) that each had to wait for the other: eslint 10
+      # alone was green only because it still ran the 9.x rule set. Same
+      # exception as playwright above: no update-types filter, and listed
+      # before lint-tooling so these two are claimed here first.
+      eslint-core:
+        patterns:
+          - eslint
+          - "@eslint/js"
       # Lint and format tooling churns on its own schedule and is safe to
       # batch. A separate PR per ESLint plugin is pure review tax.
       lint-tooling:

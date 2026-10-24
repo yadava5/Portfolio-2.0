@@ -1051,12 +1051,11 @@ function rgbaHex(v) {
     m[4] === undefined ? 1 : Number(m[4]),
   ];
 }
-let ARCHIVE_GROUNDS = {};
 if (ARCH["--paper"] && ARCH["--plate"] && ARCH["--plate-solid"]) {
   const paper = ARCH["--paper"];
   const [pt, pa] = rgbaHex(ARCH["--plate"]) ?? [];
   const [st, sa] = rgbaHex(ARCH["--plate-solid"]) ?? [];
-  ARCHIVE_GROUNDS = {
+  const ARCHIVE_GROUNDS = {
     paper,
     plate: blend(pt, paper, pa),
     "plate-solid": blend(st, paper, sa),

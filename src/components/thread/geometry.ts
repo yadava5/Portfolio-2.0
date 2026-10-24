@@ -664,7 +664,7 @@ function buildGate(
     /* Binding spine: ride the strip beneath the kicker across the page,
        drop the empty lane left of the stamp, enter the left edge */
     const laneX = s.left - 26;
-    let corridorY = 96;
+    let corridorY: number;
     if (env.kicker && flourishFits(env, spine)) {
       const k = env.kicker;
       corridorY = k.top + k.height + 22;
