@@ -12,16 +12,19 @@ import { CASE_STUDY_IDS } from "./case-file-fixtures";
  * sees a violation when there is one, so an empty list means none happened
  * rather than none were heard.
  *
- * 404.html is not here, on purpose. GitHub Pages serves it at any unmatched
- * path, so its assets are absolute https://ayush-yadav.com URLs. In production
- * that is 'self'; on the local server it is another origin, and the policy
- * would refuse them here while allowing them live.
+ * THIS IS THE SPEC THAT FOUND THE ICONS. Every head links its favicons by
+ * absolute https://ayush-yadav.com URL, and the first policy allowed only
+ * 'self', so on this local server every route was refused its favicon. The
+ * policy now names the site's origin; 404.html, whose stylesheet and scripts
+ * are absolute for the same reason, is the route that proves it.
  */
 
 const ROUTES = [
   "/",
   ...CASE_STUDY_IDS.map((id) => `/projects/${id}/`),
   "/evidence/",
+  /* any unmatched path is served 404.html, as GitHub Pages does */
+  "/no-such-page/",
 ];
 
 /** Collect every violation from the first byte, before the page's own scripts. */

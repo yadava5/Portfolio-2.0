@@ -13,9 +13,14 @@
  * run alone, because the Glyph station compiles fast_mnist.wasm and no other
  * page compiles anything. Styles keep 'unsafe-inline': the run carries style
  * attributes by the dozen, the engine writes more as it draws, and the reading
- * gates add theirs through addStyleTag. Nothing on the site loads from another origin,
- * so 'self' is the whole allow-list; `img-src` adds data: for the inline SVG
+ * gates add theirs through addStyleTag. `img-src` adds data: for the inline SVG
  * grounds in the run and in archive.css.
+ *
+ * THE SITE'S OWN ORIGIN IS NAMED BESIDE 'self'. Nothing loads from another
+ * origin, but every head links its icons by absolute URL, and 404.html, served
+ * at any path, loads its stylesheet and scripts that way. Live, those are
+ * 'self' already. On a local preview they are another origin, and the first
+ * cut of this policy refused the favicon on every page there.
  *
  * THE ORDER IS LOAD-BEARING. A meta policy governs only what the parser meets
  * after it, so the tag goes straight after <meta charset>, ahead of the run's
@@ -41,14 +46,20 @@ export function inlineScriptHashes(html) {
   return hashes;
 }
 
-/** The policy for one page, from that page's own bytes. */
-export function policy(html, { wasm = false } = {}) {
-  const scripts = ["'self'", ...(wasm ? ["'wasm-unsafe-eval'"] : []), ...inlineScriptHashes(html)];
+/**
+ * The policy for one page, from that page's own bytes.
+ *
+ * @param {string} html
+ * @param {{ origin: string, wasm?: boolean }} o  origin is siteMetadata.url
+ */
+export function policy(html, { origin, wasm = false }) {
+  const site = new URL(origin).origin;
+  const scripts = ["'self'", site, ...(wasm ? ["'wasm-unsafe-eval'"] : []), ...inlineScriptHashes(html)];
   return [
     "default-src 'self'",
     `script-src ${scripts.join(" ")}`,
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
+    `style-src 'self' ${site} 'unsafe-inline'`,
+    `img-src 'self' ${site} data:`,
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",

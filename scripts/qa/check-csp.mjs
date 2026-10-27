@@ -22,6 +22,7 @@ import { createHash } from "node:crypto";
 
 const root = process.cwd();
 const SITE = resolve(root, process.argv[2] ?? "out");
+const SITE_ORIGIN = "https://ayush-yadav.com";
 
 const failures = [];
 const fail = (msg) => failures.push(msg);
@@ -83,6 +84,14 @@ for (const path of pages) {
   }
   for (const ignored of ["frame-ancestors", "report-uri", "sandbox"]) {
     if (directives.has(ignored)) fail(`${rel}: ${ignored} is ignored in a meta policy and must not pretend to apply`);
+  }
+
+  /* The one host a policy may name is the site's own (csp.mjs says why). A
+     second origin anywhere would be a real allowance, live as well as local. */
+  for (const [name, sources] of directives) {
+    for (const host of sources.filter((s) => !s.startsWith("'") && s !== "data:")) {
+      if (host !== SITE_ORIGIN) fail(`${rel}: ${name} allows ${host}, and the only host it may name is ${SITE_ORIGIN}`);
+    }
   }
 
   const scriptSrc = directives.get("script-src") ?? [];

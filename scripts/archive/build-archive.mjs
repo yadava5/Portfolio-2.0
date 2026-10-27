@@ -217,7 +217,10 @@ const pages = htmlFiles(BUILD_ROOT);
 for (const path of pages) {
   const wasm = path === join(BUILD_ROOT, "index.html");
   try {
-    writeFileSync(path, withCsp(readFileSync(path, "utf8"), { wasm }));
+    writeFileSync(
+      path,
+      withCsp(readFileSync(path, "utf8"), { origin: siteMetadata.url, wasm })
+    );
   } catch (e) {
     fail(`${relative(BUILD_ROOT, path)}: ${e.message}`);
   }
