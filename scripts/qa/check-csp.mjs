@@ -87,7 +87,16 @@ for (const path of pages) {
   }
 
   /* The one host a policy may name is the site's own (csp.mjs says why). A
-     second origin anywhere would be a real allowance, live as well as local. */
+     second origin anywhere would be a real allowance, live as well as local.
+     And the four directives the pages' absolute URLs pass through must name
+     it: icons (img), the 404's assets (script, style) and the faces its
+     stylesheet then loads (font). Each was found missing by the browser spec,
+     img and font one at a time, so this asserts all four. */
+  for (const name of ["script-src", "style-src", "img-src", "font-src"]) {
+    if (!directives.get(name)?.includes(SITE_ORIGIN)) {
+      fail(`${rel}: ${name} does not name ${SITE_ORIGIN}, so off-origin the page loses what it links absolutely`);
+    }
+  }
   for (const [name, sources] of directives) {
     for (const host of sources.filter((s) => !s.startsWith("'") && s !== "data:")) {
       if (host !== SITE_ORIGIN) fail(`${rel}: ${name} allows ${host}, and the only host it may name is ${SITE_ORIGIN}`);

@@ -18,9 +18,11 @@
  *
  * THE SITE'S OWN ORIGIN IS NAMED BESIDE 'self'. Nothing loads from another
  * origin, but every head links its icons by absolute URL, and 404.html, served
- * at any path, loads its stylesheet and scripts that way. Live, those are
- * 'self' already. On a local preview they are another origin, and the first
- * cut of this policy refused the favicon on every page there.
+ * at any path, loads its stylesheet and scripts that way, and the stylesheet's
+ * relative font URLs then resolve against that origin too. Live, all of it is
+ * 'self' already. On a local preview it is another origin, and the first cuts
+ * of this policy refused the favicon on every page there, then the 404's four
+ * faces.
  *
  * THE ORDER IS LOAD-BEARING. A meta policy governs only what the parser meets
  * after it, so the tag goes straight after <meta charset>, ahead of the run's
@@ -60,6 +62,7 @@ export function policy(html, { origin, wasm = false }) {
     `script-src ${scripts.join(" ")}`,
     `style-src 'self' ${site} 'unsafe-inline'`,
     `img-src 'self' ${site} data:`,
+    `font-src 'self' ${site}`,
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",
