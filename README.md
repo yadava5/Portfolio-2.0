@@ -140,13 +140,13 @@ The preview rewrites the deployed origin to its own in the HTML it serves, so li
 npm run verify:portfolio
 ```
 
-Twenty-two checks in a fixed order, first failure stops: types, lint and format, the deploy build, the golden hash, sixteen gates on the built site, then the browser smoke. The deploy runs the same command without the browser step and refuses to ship on any red; CI runs the browser smoke on every push. The checking is more the point of this repository than the page is.
+Twenty-three checks in a fixed order, first failure stops: types, lint and format, the deploy build, the golden hash, seventeen gates on the built site, then the browser smoke. The deploy runs the same command without the browser step and refuses to ship on any red; CI runs the browser smoke on every push. The checking is more the point of this repository than the page is.
 
 ```mermaid
 flowchart LR
   push(["push to main"]) --> ci["ci.yml<br/>12 jobs"]
   push --> deploy["deploy.yml"]
-  deploy --> v["verify-portfolio --no-e2e<br/>21 checks"] --> golden{"golden hash<br/>matches?"}
+  deploy --> v["verify-portfolio --no-e2e<br/>22 checks"] --> golden{"golden hash<br/>matches?"}
   golden -->|yes| pages(["GitHub Pages<br/>ayush-yadav.com"])
   golden -->|no| stop(["deploy refused"])
   ci --> smoke["browser smoke<br/>1,280 tests · 5 engines"]

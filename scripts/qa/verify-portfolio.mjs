@@ -373,6 +373,7 @@ check("the run shipped, with its closure", assertRunShipped);
 check("golden hash", goldenHash);
 
 step("static export SEO", "test:seo", { reads: "out/**" });
+step("content security policy", "test:csp", { reads: "out/**/*.html" });
 step("proof manifest", "test:proof", {
   reads: "src/lib/data/proofManifest.ts",
 });
