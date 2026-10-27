@@ -2071,7 +2071,7 @@ test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () =
           "const STEP = 4;",
           "const STEP = 200;"
         );
-        await route.fulfill({ response: res, body });
+        await route.fulfill({ response: res, body: withoutPolicy(body) });
       }
     );
     await arrive(page);
@@ -2094,7 +2094,7 @@ test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () =
           "  drawTokenAndTravellers(scroll, tokenY, tokenL, halted);\n}",
           "  drawTokenAndTravellers(scroll, tokenY, tokenL, halted);\n  tctx.save(); tctx.globalCompositeOperation = 'destination-out'; tctx.fillRect(0, 0, 40, 40); tctx.restore();\n}"
         );
-        await route.fulfill({ response: res, body });
+        await route.fulfill({ response: res, body: withoutPolicy(body) });
       }
     );
     await arrive(page);
@@ -2255,9 +2255,11 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
            names on any page height, which is the defect the gate exists for. */
         await route.fulfill({
           response: res,
-          body: src.replace(
-            TARGET,
-            "mobile ? RAIL_X_MOBILE : i >= 10 && document.querySelector('.ladder .st') ? absLeft(document.querySelector('.ladder .st')) + 24 : (stx[i] / 100) * vw"
+          body: withoutPolicy(
+            src.replace(
+              TARGET,
+              "mobile ? RAIL_X_MOBILE : i >= 10 && document.querySelector('.ladder .st') ? absLeft(document.querySelector('.ladder .st')) + 24 : (stx[i] / 100) * vw"
+            )
           ),
         });
       }
@@ -2579,6 +2581,19 @@ test.describe("G10d · the junction stubs land on the rail", () => {
    nothing fulfils the real page and a control that passes on the real page is
    a control reporting that it works.
    ══════════════════════════════════════════════════════════════════════════ */
+/* EVERY DOCTORED RUN IS SERVED WITHOUT ITS POLICY. The run allows each inline
+   script by the sha256 of its shipped bytes (scripts/archive/csp.mjs), so an
+   edited script is refused and the probe it defines never exists: eleven
+   controls went red on `window.__rail is not a function` when the policy
+   landed. These controls test what the page draws, and csp.spec.ts owns the
+   policy, so the copy they doctor drops the tag rather than re-hashing it. */
+function withoutPolicy(html: string) {
+  return html.replace(
+    /<meta http-equiv="Content-Security-Policy"[^>]*>\n?/,
+    ""
+  );
+}
+
 /* One handler, N edits, each reporting whether it matched. Two `page.route`
    calls would NOT compose: handlers stack, and the later one re-fetches the
    pristine document, so the earlier edit is thrown away. */
@@ -2593,7 +2608,7 @@ async function inject(page: Page, edits: [string, string][]) {
         marks[i].hit = src.includes(from);
         src = src.replace(from, to);
       });
-      await route.fulfill({ response: res, body: src });
+      await route.fulfill({ response: res, body: withoutPolicy(src) });
     }
   );
   return marks;
