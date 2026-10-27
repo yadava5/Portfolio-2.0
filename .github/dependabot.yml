@@ -106,10 +106,11 @@ updates:
           - patch
 
   # ---- The workflows themselves -------------------------------------------
-  # The workflows pin actions by major tag (checkout@v7, setup-node@v7,
-  # upload-artifact@v7, download-artifact@v8, upload-pages-artifact@v5,
-  # deploy-pages@v5, dependabot/fetch-metadata@v3 since 2026-10-16). Majors are
-  # NOT auto-merged: deploy.yml's two Pages actions run only on main, so no pull
+  # The workflows pin every action to a full commit sha with its release in a
+  # trailing comment (`checkout@<sha> # v7.0.1`), since 2026-10-27; they used
+  # major tags, which whoever controls the action can move. Dependabot reads
+  # the comment and bumps sha and comment together. Majors are NOT
+  # auto-merged: deploy.yml's two Pages actions run only on main, so no pull
   # request's CI ever exercises them, and a green check would prove nothing.
   - package-ecosystem: github-actions
     directory: "/"

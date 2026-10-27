@@ -23,6 +23,7 @@
  *     2. copy public/
  *     3. emit /projects/<id>/ × 7, /evidence/, 404.html, sitemap.xml, robots.txt
  *     4. call build-home.mjs, which writes the run over index.html
+ *    4½. seat the content security policy in every page
  *     5. swap the finished root into place, atomically
  *
  * THE BUILD IS ASSEMBLED IN A SCRATCH DIRECTORY AND MOVED IN AT THE END, and
@@ -46,6 +47,7 @@
 import {
   mkdirSync,
   cpSync,
+  readFileSync,
   writeFileSync,
   existsSync,
   readdirSync,
@@ -60,6 +62,7 @@ import { renderCaseFile } from "./render-case-file.mjs";
 import { renderEvidence } from "./render-evidence.mjs";
 import { renderNotFound } from "./render-404.mjs";
 import { sitemapXml, robotsTxt } from "./sitemap.mjs";
+import { withCsp } from "./csp.mjs";
 
 const root = process.cwd();
 const argv = process.argv.slice(2);
@@ -193,13 +196,41 @@ execFileSync(
   { cwd: root, stdio: "inherit" }
 );
 
+if (!existsSync(join(BUILD_ROOT, "index.html"))) {
+  fail("build-home.mjs returned 0 without writing index.html");
+}
+
+/* ── 4½. the policy, on every page ───────────────────────────────────
+   LAST, because the policy hashes each page's inline scripts and any step
+   after it that touched one would ship a script its own page refuses to run.
+   Every .html under the root, found by walking rather than listed, so a page
+   added later cannot be emitted without one. scripts/archive/csp.mjs says
+   what the policy allows and why. */
+function htmlFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return htmlFiles(path);
+    return entry.name.endsWith(".html") ? [path] : [];
+  });
+}
+const pages = htmlFiles(BUILD_ROOT);
+for (const path of pages) {
+  const wasm = path === join(BUILD_ROOT, "index.html");
+  try {
+    writeFileSync(
+      path,
+      withCsp(readFileSync(path, "utf8"), { origin: siteMetadata.url, wasm })
+    );
+  } catch (e) {
+    fail(`${relative(BUILD_ROOT, path)}: ${e.message}`);
+  }
+}
+console.log(`  · content security policy on ${pages.length} pages`);
+
 /* ── 5. the swap ─────────────────────────────────────────────────────
    Everything above succeeded or this line was never reached. The old root goes
    and the new one takes its name; a reader served out of this directory sees
    the previous build until the rename, and the finished one after it. */
-if (!existsSync(join(BUILD_ROOT, "index.html"))) {
-  fail("build-home.mjs returned 0 without writing index.html");
-}
 rmSync(DEST, { recursive: true, force: true });
 renameSync(BUILD_ROOT, DEST);
 
