@@ -57,7 +57,9 @@ export function compileAndRelink({ root, project, outDir }) {
       stdio: ["ignore", "pipe", "pipe"],
     });
   } catch (e) {
-    throw new Error(`tsc: ${e.stdout?.toString().slice(0, 400) ?? e.message}`);
+    throw new Error(`tsc: ${e.stdout?.toString().slice(0, 400) ?? e.message}`, {
+      cause: e,
+    });
   }
   if (!existsSync(out)) throw new Error(`tsc emitted nothing to ${outDir}`);
 

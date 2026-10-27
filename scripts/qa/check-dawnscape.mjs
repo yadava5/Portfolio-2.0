@@ -1149,7 +1149,6 @@ try {
     };
     let facetsOpen = 0,
       facetsLeaky = 0,
-      facetsMax = 0,
       p2Low = 0;
     const hazeY = scape && scape.massifs ? scape.massifs.haze : null;
     const facetsBy = {};
@@ -1158,7 +1157,7 @@ try {
       facetsBy[nm] =
         (facetsBy[nm] || 0) + sm.querySelectorAll(".ds-facet").length;
     }
-    facetsMax = Math.max(0, ...Object.values(facetsBy));
+    const facetsMax = Math.max(0, ...Object.values(facetsBy));
     for (const fg of p2q(".ds-facet")) {
       const poly = (fg.dataset.poly || "")
         .split(" ")

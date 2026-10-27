@@ -33,6 +33,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
+    /* TypeScript 6 stopped loading every @types package by default; naming
+       node keeps `process` and `node:*` imports resolving as they did on 5. */
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
     }
