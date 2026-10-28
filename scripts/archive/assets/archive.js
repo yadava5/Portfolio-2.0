@@ -153,4 +153,14 @@
   } else {
     start();
   }
+
+  /* For whoever opens the console: the same lines the run prints, after
+     boot() in src/run/index.html. Change one, change both. */
+  console.log(
+    "%cHi. You opened the console, so you probably want to see how this is built.",
+    "font: 600 14px/1.5 Georgia, serif"
+  );
+  console.log(
+    "The source is public, the checks included: https://github.com/yadava5/Portfolio-2.0\nCheck my numbers, don't take my word."
+  );
 })();

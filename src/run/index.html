@@ -19678,6 +19678,16 @@ async function boot() {
   lastY = y0;
 }
 boot();
+/* FOR WHOEVER OPENS THE CONSOLE. Nothing here is hidden from DevTools, and
+   it would be pointless to try: the source is public, so the console says
+   where. scripts/archive/assets/archive.js prints the same lines. */
+console.log(
+  "%cHi. You opened the console, so you probably want to see how this is built.",
+  "font: 600 14px/1.5 Georgia, serif"
+);
+console.log(
+  "The source is public, the checks included: https://github.com/yadava5/Portfolio-2.0\nCheck my numbers, don't take my word."
+);
 </script>
 
 <script type="module">
