@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 /**
  * The home page, as it actually ships.
@@ -492,6 +492,83 @@ test.describe("the home page is the run", () => {
       .locator("#nextmorning")
       .evaluate((el) => el.getBoundingClientRect().height);
     expect(h).toBe(0);
+  });
+
+  /**
+   * Nothing the reader does before boot() throws.
+   *
+   * boot() builds the figures a frame after document.fonts.ready, and the
+   * listeners that rebuild the page's geometry are live from module eval. A
+   * resize in that window, or an approve pressed on a #gate arrival, reached
+   * cacheGeometry() with fig. 08 not yet built and threw "Cannot read
+   * properties of null (reading 'ys')". The live site did it on 2026-10-27,
+   * when a browser tab was sized while the page loaded.
+   *
+   * The fonts are held so the window stays open for as long as the test
+   * needs. Each test asserts that boot has NOT happened when it acts:
+   * without that, a fast boot would make the test pass on a page that never
+   * saw the early event. Both fail against the page before the fix.
+   */
+  async function holdTheFonts(page: Page) {
+    let release = () => {};
+    const held = new Promise<void>((r) => (release = r));
+    await page.route("**/fonts/*.woff2", async (route) => {
+      await held;
+      await route.continue();
+    });
+    return release;
+  }
+  const measured = (page: Page) =>
+    page.evaluate(
+      () =>
+        !!(window as unknown as { __world?: { fig08?: unknown } }).__world
+          ?.fig08
+    );
+  /* __world is written early in the engine's module, which evaluates in one
+     task: once it is visible, every listener the module registers is too */
+  const engineLive = (page: Page) =>
+    page.waitForFunction(() => "__world" in window);
+
+  test("a resize before boot throws nothing, and boot measures the seat it finds", async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    const release = await holdTheFonts(page);
+    await page.goto("/", { waitUntil: "commit" });
+    await engineLive(page);
+    for (const width of [1280, 1180]) {
+      await page.setViewportSize({ width, height: 800 });
+      await page.waitForTimeout(250);
+    }
+    expect(await measured(page), "the resizes must land before boot").toBe(
+      false
+    );
+    release();
+    await page.waitForFunction(
+      () =>
+        !!(window as unknown as { __world?: { fig08?: unknown } }).__world
+          ?.fig08,
+      null,
+      { timeout: 20_000 }
+    );
+    await page.waitForTimeout(500);
+    expect(errors).toEqual([]);
+  });
+
+  test("an approve pressed before boot throws nothing", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    const release = await holdTheFonts(page);
+    await page.goto("/#gate", { waitUntil: "commit" });
+    await engineLive(page);
+    await page.evaluate(() => document.getElementById("approve")?.click());
+    expect(await measured(page), "the press must land before boot").toBe(false);
+    await page.waitForTimeout(1500);
+    release();
+    await expect.poll(() => measured(page), { timeout: 20_000 }).toBe(true);
+    await page.waitForTimeout(500);
+    expect(errors).toEqual([]);
   });
 });
 
