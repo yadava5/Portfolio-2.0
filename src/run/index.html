@@ -5578,6 +5578,14 @@ function seatContour() {
 function cacheGeometry() {
   vw = seat.w; vh = seat.h; mobile = vw <= 820; stacked = vw <= 1249;
   seatContour();
+  /* NOTHING TO MEASURE UNTIL boot() HAS BUILT IT. The figures are built in
+     boot(), a frame after the fonts settle, and the listeners that call this
+     are live from module eval: a resize during a slow font load, or an
+     approve pressed on a #gate arrival, reached fig. 08's slot with climb.g
+     still null and threw (live, 2026-10-27). The seat above is still taken,
+     so anything that reads vw before boot reads the current one, and boot()
+     measures the page as it is by then, so an early caller loses nothing. */
+  if (!built) return;
   const measure = () => {
     docH = document.documentElement.scrollHeight;
     for (const b of beats) {
@@ -5913,6 +5921,7 @@ function sizeThread() {
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
+  if (!built) return; /* it reads what cacheGeometry() measures: see there */
   /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
      glyph(N), jetpack(F), lifequest(N), automl(F), the review(N),
      the co-signers(F), gate. Normal stations keep the thread by the prose
@@ -12331,6 +12340,10 @@ function mastInk(arc) {
 
 /* ————— the engine ————— */
 let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false, atMorning = false;
+/* the figures exist: set by boot() after chooseEditions(), before its first
+   measure, which is the one moment `booted` cannot mark (it waits for that
+   measure on purpose, see boot) */
+let built = false;
 const PROF = FLAGS.has("prof"); /* ?prof — the harness reads the app's own
    per-frame scripting cost from __prof, separated from raster/composite */
 window.__prof = [];
@@ -12944,8 +12957,11 @@ addEventListener("resize", () => {
      the resize has already paid for, so there is nothing to save by waiting.
      The debounced pass below still does the parts that are not the rail.
      Unless the layout viewport is where it was (see seatProbe): a phone's
-     toolbar sliding away is a resize event with nothing to rebuild. */
-  if (!seatChanged) return;
+     toolbar sliding away is a resize event with nothing to rebuild.
+     Nor before boot: boot() builds and measures at whatever seat it finds,
+     and the debounced pass below would build every figure on fallback type
+     and, under reduced motion, settle a page that does not exist yet. */
+  if (!seatChanged || !booted) return;
   cacheGeometry(); buildThread(); wake(true);
   clearTimeout(resizeT);
   resizeT = setTimeout(() => {
@@ -19625,6 +19641,7 @@ async function boot() {
      built before anything is observed. */
   await new Promise((r) => requestAnimationFrame(r));
   chooseEditions(); /* build every figure on the plate its seat earns */
+  built = true;
   cacheGeometry(); buildThread(); fitPad();
   booted = true;
   /* fig. 10 and fig. 11 register inside buildThread(), after cacheGeometry()'s
@@ -19661,6 +19678,16 @@ async function boot() {
   lastY = y0;
 }
 boot();
+/* FOR WHOEVER OPENS THE CONSOLE. Nothing here is hidden from DevTools, and
+   it would be pointless to try: the source is public, so the console says
+   where. scripts/archive/assets/archive.js prints the same lines. */
+console.log(
+  "%cHi. You opened the console, so you probably want to see how this is built.",
+  "font: 600 14px/1.5 Georgia, serif"
+);
+console.log(
+  "The source is public, the checks included: https://github.com/yadava5/Portfolio-2.0\nCheck my numbers, don't take my word."
+);
 </script>
 
 <script type="module">
