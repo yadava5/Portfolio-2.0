@@ -570,6 +570,62 @@ test.describe("the home page is the run", () => {
     await page.waitForTimeout(500);
     expect(errors).toEqual([]);
   });
+
+  /**
+   * The machines are drawn on the name, whatever the scroll-fx has done.
+   *
+   * The overlay and measureSettled's probe are both absolutely positioned
+   * inside .np-plate, so the plate has to be their containing block. Its
+   * `position: relative` was never parsed (a stray brace dropped the rule,
+   * see check-css-braces.mjs), and the name only lined up because the
+   * scroll-fx writes a transform to the plate, which makes a containing block
+   * too. Reloaded at ¶02 and scrolled back during the performance, the plate
+   * had no transform when it was measured: the machines were cut to a
+   * baseline 358px above the type and drew there (2026-10-28, 1512x982).
+   *
+   * ?nofx is that state on demand: the engine writes no fx transform at all.
+   * The test asserts the plate really has none, or it would pass on a page
+   * where the transform still hid the bug. Against the page before the fix:
+   * the overlay box was 805px tall starting 358px above the name, and the
+   * machines' baseline was y = -210 in a 176px box.
+   */
+  test("the machines are drawn on the name even with no fx transform on the plate", async ({
+    page,
+  }) => {
+    await page.goto("/?nofx");
+    await page
+      .locator("[data-nameplate] svg.np-mech text")
+      .first()
+      .waitFor({ state: "attached", timeout: 20_000 });
+    const m = await page.evaluate(() => {
+      const plate = document.querySelector("[data-nameplate]")!;
+      const h1 = plate.querySelector("h1")!.getBoundingClientRect();
+      const svg = plate.querySelector("svg.np-mech")!;
+      const s = svg.getBoundingClientRect();
+      return {
+        transform: getComputedStyle(plate).transform,
+        top: s.top - h1.top,
+        height: s.height - h1.height,
+        boxH: h1.height,
+        baselines: [...svg.querySelectorAll("text")]
+          .map((t) => Number(t.getAttribute("y")))
+          .filter(Number.isFinite),
+      };
+    });
+    expect(m.transform, "?nofx must leave the plate untransformed").toBe(
+      "none"
+    );
+    expect(Math.abs(m.top), "overlay top on the name").toBeLessThan(1);
+    expect(Math.abs(m.height), "overlay height is the name's").toBeLessThan(1);
+    expect(m.baselines.length).toBeGreaterThan(0);
+    for (const y of m.baselines) {
+      expect(
+        y,
+        "a machine letter's baseline sits inside the type"
+      ).toBeGreaterThan(m.boxH * 0.5);
+      expect(y).toBeLessThanOrEqual(m.boxH);
+    }
+  });
 });
 
 /**
