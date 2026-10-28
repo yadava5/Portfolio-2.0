@@ -374,6 +374,9 @@ check("golden hash", goldenHash);
 
 step("static export SEO", "test:seo", { reads: "out/**" });
 step("content security policy", "test:csp", { reads: "out/**/*.html" });
+step("every stylesheet closes what it opens", "test:css-braces", {
+  reads: "out/**/*.{html,css}",
+});
 step("proof manifest", "test:proof", {
   reads: "src/lib/data/proofManifest.ts",
 });
