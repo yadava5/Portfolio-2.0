@@ -24,6 +24,7 @@
     "test:e2e:ui": "playwright test --ui",
     "assets:budget": "node scripts/qa/check-asset-budgets.mjs",
     "test:seo": "node scripts/qa/check-static-export-seo.mjs",
+    "test:css-braces": "node scripts/qa/check-css-braces.mjs out",
     "test:csp": "node scripts/qa/check-csp.mjs out",
     "test:proof": "node scripts/qa/check-proof-manifest.mjs",
     "resume:build": "node scripts/resume/render-resume.mjs",

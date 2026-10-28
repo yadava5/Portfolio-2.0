@@ -2995,15 +2995,23 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
   }
 }
 
-}
-
 /* THE PLATE IS THE OVERLAY'S CONTAINING BLOCK.
    In the React nameplate this element carried `className="np-plate relative"`
    and the positioning came from Tailwind's `relative`, not from .np-plate.
    The run has no Tailwind, so the plate was position:static and the
    machines' absolutely positioned SVG escaped to the page — the fragment
    floating above the beat. A utility class doing load-bearing work is
-   invisible until the markup moves to a page without the utilities. */
+   invisible until the markup moves to a page without the utilities.
+   AND THEN THIS RULE WAS NOT PARSED, from #37 until 2026-10-28. A stray `}`
+   after the motion @media above became the start of this rule's selector,
+   `} .np-plate`, so the browser dropped the whole rule: the CSSOM held no
+   .np-plate rule and the plate computed position:static. It still lined up
+   on an ordinary load, because the scroll-fx writes a transform to the
+   plate and a transform makes a containing block too. A reload parked at
+   ¶02 starts the performance with no transform on the plate, the overlay
+   and measureSettled's probe both resolve against the beat, and the
+   machines were cut to a baseline 358px above the type (1512x982). The
+   build now fails on a brace that closes nothing (check-css-braces.mjs). */
 .np-plate {
   position: relative;
   /* THE PLATE MUST BE AS WIDE AS THE NAME, not as wide as the column.
