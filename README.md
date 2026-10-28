@@ -140,7 +140,7 @@ The preview rewrites the deployed origin to its own in the HTML it serves, so li
 npm run verify:portfolio
 ```
 
-Twenty-four checks in a fixed order, first failure stops: types, lint and format, the deploy build, the golden hash, eighteen gates on the built site, then the browser smoke. The deploy runs the same command without the browser step and refuses to ship on any red; CI runs the browser smoke on every push. The checking is more the point of this repository than the page is.
+Twenty-four checks in a fixed order, first failure stops: types, lint and format, the deploy build, a check that the run shipped with its closure, the golden hash, seventeen gates on the built site, then the browser smoke. The deploy runs the same command without the browser step and refuses to ship on any red; CI runs the browser smoke on every push. The checking is more the point of this repository than the page is.
 
 ```mermaid
 flowchart LR
