@@ -442,26 +442,10 @@ const FIGURES = [
     source:
       "backend/jobtracker/classifier/rules.py PATTERNS, AST-counted at 0285675c (rules.py last touched 2690de02, 2026-09-09) — 129 strong + 31 weak + 60 negative = 220, the 48 vetoes excluded; the demo space and both rules.json copies count 220 too. Was 106 + 26 + 69 = 201, true at 36a2f54",
   },
-  {
-    /* The pair is a MEASUREMENT THAT CAN NEVER BE RE-TAKEN, which is the
-       only reason it is bound here rather than left as prose. The weights
-       were withdrawn on 2026-08-15 (1efb0b38) because they were fitted
-       partly on a real mailbox, so nobody can reproduce the export — and
-       Applied's own README:460-465 says the figure "is now an attested
-       number rather than a reproducible one, and it should be described
-       that way wherever it is cited". An attested number with no way back
-       to its source is precisely the kind that drifts unnoticed, so all
-       three surfaces are pinned to the byte literals instead. */
-    figure: "Applied · int8 ONNX export size",
-    /* r13: ⟶ is kept for links to this site; the size change is words now */
-    run: /90 MB to 23 MB/,
-    data: {
-      projects: /int8 ONNX export, 90 to 23 MB/,
-      cases: /int8 ONNX export of the same model, 90 to 23 MB/,
-    },
-    source:
-      "scripts/readme_facts.py:2481-2507 pins 90,362,391 B fp32 and 22,843,695 B int8, measured 2026-08-03 and marked withdrawn; 90,362,391 / 1e6 = 90.4 and 22,843,695 / 1e6 = 22.8",
-  },
+  /* "Applied · int8 ONNX export size" (90 to 23 MB) stood here until
+     2026-11-10, when the owner withdrew the figure from every claim surface:
+     no in browser model has shipped since 2026-08-15, so the site keeps the
+     withdrawal and drops the size. Its negative twin is in RETIRED below. */
   {
     /* Bound on 2026-08-14, the day the number stopped being unverifiable.
        The station-fact audit restored "2,173 commits" with an explicit
@@ -1341,6 +1325,12 @@ const RETIRED = [
     why: "the 3.5× is OpenMP's alone — the arm64 `baseline` and `native` binaries build byte-identical, so the NEON path is in both sides of the comparison. Glyph's own configuration is named openmp+native; openmp+simd was the site's coinage, and it credited the vectorisation with a share of a number it does not earn",
     /* The erratum that retired it has to stay quotable, or the register
        stops being the record it claims to be. */
+    keptInRegister: true,
+  },
+  {
+    what: "the int8 ONNX export size (90 MB to 23 MB) as a claim about Applied",
+    pattern: /90 (MB )?to 23 MB/i,
+    why: "withdrawn from every claim surface on 2026-11-10: the in browser model build was withdrawn on 2026-08-15 and the live app runs the rules layer, so the size describes nothing a reader can use. Applied's 2026-09-23 erratum still quotes it, which is the register doing its job",
     keptInRegister: true,
   },
 ];

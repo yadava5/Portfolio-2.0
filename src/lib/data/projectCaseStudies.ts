@@ -949,9 +949,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "In-browser inference was built for all three classifier layers: an int8 ONNX export of the same model, 90 to 23 MB, served by transformers.js. That build was separate from the hosted web app, and its verdict was never the one getapplied.vercel.app returns. Its weights were withdrawn on 2026-08-15 because they were fitted partly on a real mailbox, so the size is an attested figure rather than a reproducible one. The export script still ships.",
+          "An in browser model build was withdrawn on 2026-08-15; the live app runs the rules layer. That build was separate from the hosted web app, and its verdict was never the one getapplied.vercel.app returns. Its weights were withdrawn because they were fitted partly on a real mailbox. The export script still ships.",
         method:
-          "ported the local classifier and exported it quantized; the sizes are the ones Applied pins as literals in scripts/readme_facts.py, 90,362,391 bytes fp32 and 22,843,695 bytes int8, measured 2026-08-03. The export script is linked at a commit AFTER the weights were removed, so following this row cannot re-publish them",
+          "ported the local classifier and exported it quantized. The export script is linked at a commit AFTER the weights were removed, so following this row cannot re-publish them",
         artifacts: [
           {
             label: `applied @ ${APPLIED_EXPORT_SHA} · ml/browser/export_onnx.py`,
@@ -1346,17 +1346,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "My slice of the build: the Monaco/Jupyter runtime with live WebSocket sync, Docker sandbox constraints, the eval runner, and the Optuna study streaming UI.",
-        method: "as presented: the presenter artifact names this work",
+          "My slice of the build: the TypeScript backend for the preprocessing and training phases, the eight stage LangGraph state machine behind preprocessing, and the service that scores every trained model.",
+        method:
+          "the résumé’s wording, checked against git blame at the pinned commit: the preprocessing state machine file is mine alone, and most of the scoring service is mine",
         artifacts: [
           {
-            label: "see fig. 5, the presenter deck",
-            href: "#artifacts",
-            capture: true,
+            label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/llm/langgraph/preprocessingRuntime.ts`,
+            href: `${AUTOML_BLOB}/backend/src/services/llm/langgraph/preprocessingRuntime.ts`,
+          },
+          {
+            label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/evaluationService.ts`,
+            href: `${AUTOML_BLOB}/backend/src/services/evaluationService.ts`,
           },
         ],
-        date: "2026-05",
-        visibility: "private-safe",
+        date: "2026-11-10",
+        visibility: "public",
       },
       {
         claim:
@@ -1426,7 +1430,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            passes the former as toolDefinitions. The old note cited
            training.ts:149, one line past the return. */
         claim:
-          "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups (preprocessing 14, cells 8, features 6, training 6, data 4, packages 3, UI 3) and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly.",
+          "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups (preprocessing 14, cells 8, features 6, training 6, data 4, packages 3, UI 3) and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly. The tool layer is Shree’s work, not my slice.",
         method:
           "both counts taken in source at the pinned commit, which is main's head: the twelve read out of the MCP server, the surface of 44 tools counted by name across the seven files in backend/src/services/llm/tools/",
         artifacts: [
@@ -1624,7 +1628,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     constraints: [
       "Prioritize on-device processing for privacy.",
       "Support LiDAR obstacle detection and haptic feedback.",
-      "Respect VoiceOver-first interaction patterns.",
+      "Live status is spoken independent of VoiceOver. Full VoiceOver support and voice commands are planned, not in this build.",
       "Use native iOS frameworks for performance and accessibility.",
     ],
     architecture: {
@@ -1634,7 +1638,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            target — and it has zero consumers: no view and no AppState
            instantiates it. A capability that is in the binary but wired to
            nothing is not a capability the case file may claim. */
-        "ARKit and Vision process device context locally, then SwiftUI and VoiceOver expose guidance through speech and haptics.",
+        "ARKit and Vision process device context locally, then SwiftUI delivers guidance through speech and haptics, independent of VoiceOver.",
       /* The spine follows the camera into OCR; LiDAR, the local model
          and VoiceOver all join at feedback, where every mode lands. */
       flow: [["camera"], ["vision"], ["feedback"]],
@@ -1729,7 +1733,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "VoiceOver-first flows and voice commands are the interaction model, documented in the public README.",
+          "Live status is spoken independent of VoiceOver. Full VoiceOver support and voice commands are planned, not in this build.",
         method: "README feature table, checked against the source",
         artifacts: [
           {
@@ -2138,13 +2142,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They run in CI: the workflow provisions a postgres:16 service and hands the suite RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there, and 11 of 11 executed at this pin on 2026-07-24.",
+          "The 15 tenant isolation tests, which run against a real postgres:16, pass: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They run in CI: the workflow provisions a postgres:16 service and hands the suite RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there.",
         method:
-          "re-run 2026-07-26 against a throwaway postgres:16 container, applying the real 0002 migration and a NOSUPERUSER NOBYPASSRLS role, driving the production query() and withTransaction()",
+          "re-run 2026-07-26 against a throwaway postgres:16 container, applying the real 0002 migration and a NOSUPERUSER NOBYPASSRLS role, driving the production query() and withTransaction(); the suite holds 15 tests at the suite pin",
         artifacts: [
           {
-            label: `lib/__tests__/rls.postgres.test.ts @ ${CADENCE_SHA}`,
-            href: `${CADENCE_BLOB}/lib/__tests__/rls.postgres.test.ts`,
+            label: `lib/__tests__/rls.postgres.test.ts @ ${CADENCE_SUITE_SHA}`,
+            href: `https://github.com/yadava5/cadence/blob/${CADENCE_SUITE_SHA}/lib/__tests__/rls.postgres.test.ts`,
           },
         ],
         date: "2026-07-26",
@@ -2819,7 +2823,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     collaborator: {
       name: "Shree Chaturvedi",
       href: "https://www.linkedin.com/in/shreechaturvedi/",
-      scope: "the SIMD kernels, written together",
+      scope: "Shree wrote about two thirds of the SIMD kernels",
     },
     timeframe: "2025-10 to 2026-01",
     filed: "2025-10",

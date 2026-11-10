@@ -287,14 +287,13 @@ export const projects: Project[] = [
     shortDescription:
       "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. In-browser inference was built for the full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) and measured on 2026-08-03: an int8 ONNX export, 90 to 23 MB, served by transformers.js, whose weights were withdrawn on 2026-08-15. The hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. An in browser model build was withdrawn on 2026-08-15. The hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
       { name: "PostgreSQL", color: "#336791" },
       { name: "Python", color: "#3776ab" },
-      { name: "SetFit", color: "#ff6f00" },
-      { name: "ONNX Runtime", color: "#8a2be2" },
+      { name: "FastAPI", color: "#009688" },
     ],
     /* Repo renamed yadava5/jobtracker → yadava5/applied (verified via
        `gh api`, 2026-07-26). The old path still redirects; this names the
@@ -312,7 +311,7 @@ export const projects: Project[] = [
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
-      "Built in-browser inference for the full 3-layer hybrid (rules -> e5 -> gated SetFit): an int8 ONNX export, 90 to 23 MB, served by transformers.js, measured 2026-08-03 and its weights withdrawn 2026-08-15; the hosted app runs rules only",
+      "An in browser model build was withdrawn on 2026-08-15; the hosted app runs the rules layer only",
       "Live in invite-only beta: gmail.readonly is a Google restricted scope, so an unverified app may authorise at most 100 test users — the demo and the on-device import need no invite and no account",
     ],
     isPrivate: false,
@@ -324,7 +323,7 @@ export const projects: Project[] = [
       { label: "Access", value: "invite-only beta; demo + import need none" },
       {
         label: "Browser export",
-        value: "int8 ONNX, 90 to 23 MB, weights withdrawn 2026-08-15",
+        value: "withdrawn 2026-08-15",
       },
     ],
     proofIds: [
@@ -400,7 +399,7 @@ export const projects: Project[] = [
     shortDescription:
       "Privacy-first iOS accessibility app using LiDAR, Vision, haptics, and voice guidance.",
     fullDescription:
-      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, haptics, speech, and VoiceOver-first SwiftUI flows for local processing.",
+      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, haptics and speech in SwiftUI, processing locally. Live status is spoken independent of VoiceOver; full VoiceOver support and voice commands are planned, not in this build.",
     techStack: [
       { name: "Swift", color: "#fa7343" },
       { name: "SwiftUI", color: "#0071e3" },
@@ -418,7 +417,7 @@ export const projects: Project[] = [
       "LiDAR obstacle detection with haptic feedback",
       "Vision OCR with speech synthesis for text reading",
       "On-device Vision workflows for privacy-first processing",
-      "VoiceOver-first accessibility with voice commands",
+      "Live status spoken independent of VoiceOver; full VoiceOver support and voice commands are planned",
       "71 unit tests for models and utilities — all passing on iOS 26.5 and 26.2",
     ],
     isPrivate: false,

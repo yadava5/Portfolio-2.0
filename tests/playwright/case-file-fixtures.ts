@@ -109,7 +109,8 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   automlPresenterProof: "Presenter stack proof",
   automlPresenterEvidence:
     "Presenter slide 8 records the stack and validation posture",
-  automlContribution: "Monaco/Jupyter runtime",
+  automlContribution:
+    "the TypeScript backend for the preprocessing and training phases",
   /* `jobtrackerArchitecture: "Local classification architecture"` retired
      2026-08-07 with its plate — its `<title>` named the retired brand and a
      superseded desktop architecture, and fig. 2 draws the current one.
@@ -244,7 +245,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   cadenceIdorReceipt:
     "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
   cadenceIsolationTests:
-    "11 of 11 isolation tests pass against a real Postgres",
+    "The 15 tenant isolation tests, which run against a real postgres:16, pass",
   /* Renamed from cadenceInertBoundary on 2026-08-03: the boundary stopped
      being inert when the cutover ran, and a fixture named for the old state
      would have kept asserting it. */

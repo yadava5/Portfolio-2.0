@@ -176,7 +176,8 @@ const AUTOML_TOOLS_SHA = "5e42233";
    present on the remote before this line was written, not after. 1,159
    becomes 1,179 with **zero** skips, which is the more interesting half: the
    11 that used to skip were the only tests that could demonstrate the
-   isolation Cadence claims, and they had never executed anywhere.
+   isolation Cadence claims. (Corrected 2026-11-10: this note said they had
+   never run anywhere. They always ran in CI, and the suite holds 15 now.)
 
    2026-08-07: this pin held 1,179 @ `2295044` while the case file's receipt
    read 1,185 and the case file's own architecture figure read 1,159 — one
@@ -317,9 +318,9 @@ export const proofManifest: ProofManifestEntry[] = [
        AUTOML_TOOLS_SHA above for what GitHub answers today. Both counts
        were re-taken at main's head and neither moved. */
     id: "automl-mcp-tools",
-    label: "44 agent tools, 12 over MCP",
+    label: "44 agent tools, 12 over MCP, Shree’s work",
     claim:
-      "The Agentic AutoML backend defines 44 LLM tools across seven groups: preprocessing (14), cell (8), feature (6), training (6), data (4), package (3), UI (3). Twelve of them, the data and cell groups, are registered over MCP in one server: the notebook surface the orchestrator drives. The other 32 are function-calling definitions the LangGraph phases consume directly.",
+      "Shree built this tool layer; it is not my slice of the platform. The Agentic AutoML backend defines 44 LLM tools across seven groups: preprocessing (14), cell (8), feature (6), training (6), data (4), package (3), UI (3). Twelve of them, the data and cell groups, are registered over MCP in one server: the notebook surface the orchestrator drives. The other 32 are function-calling definitions the LangGraph phases consume directly.",
     /* Plain literal, not interpolated — check-proof-manifest.mjs compares the
        sha in this URL against the one in `sourceLabel`, which IS a template;
        interpolating both would make them agree by construction. */
@@ -358,7 +359,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "taskflow-tests",
     label: "1,430 tests, 0 skipped",
     claim:
-      "Cadence runs 1,430 tests, 772 frontend + 658 backend, with nothing skipped, including the row-level-security suite that had never executed anywhere.",
+      "Cadence runs 1,430 tests, 772 frontend + 658 backend, with nothing skipped, including the 15 tenant isolation tests, which run against a real postgres:16.",
     /* Plain literal, not interpolated — see the note on jobtracker-backend-tests
        above: the gate cross-checks this URL's sha against sourceLabel's. */
     source: "https://github.com/yadava5/cadence/tree/6d09ee4",

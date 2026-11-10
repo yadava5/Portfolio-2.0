@@ -284,7 +284,7 @@ function figVisualAssist() {
     .join("");
   return {
     viewBox: "0 0 240 320",
-    alt: "Two independent modes drawn on one device. Navigation mode: LiDAR depth arcs meet an obstacle and resolve into haptic pulse marks and spoken distance. Awareness modes: camera frames feed Vision OCR for text and local recognition for objects, read aloud. VoiceOver is the interaction layer, and every path stays on the device.",
+    alt: "Two independent modes drawn on one device. Navigation mode: LiDAR depth arcs meet an obstacle and resolve into haptic pulse marks and spoken distance. Awareness modes: camera frames feed Vision OCR for text and local recognition for objects, read aloud. Live status is spoken independent of VoiceOver, and every path stays on the device.",
     caption: "fig. 1: two modes, one device: lidar guides, the camera reads.",
     captionNote:
       "the two vision paths never touch the lidar: the modes are independent.",
@@ -317,7 +317,7 @@ function figVisualAssist() {
       t(104, 217, "local recognition") +
       t(8, 252, "camera frames ⟶ read aloud") +
       `<line x1="8" y1="270" x2="232" y2="270" class="lane"/>` +
-      t(8, 292, "voiceover-first interaction"),
+      t(8, 292, "speaks without voiceover"),
   };
 }
 
