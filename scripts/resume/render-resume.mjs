@@ -97,7 +97,7 @@ const sections = [
       {
         heading: "Visual Assist - iOS LiDAR Accessibility App (2025-2026)",
         items: [
-          "Built SwiftUI/ARKit LiDAR obstacle detection, Vision OCR, speech guidance, haptics, and VoiceOver-first flows for on-device use.",
+          "Built SwiftUI/ARKit LiDAR obstacle detection, Vision OCR, speech guidance and haptics for on-device use; live status is spoken independent of VoiceOver.",
           "Covered model and utility logic with 71 audited XCTest functions while keeping camera and location context local.",
         ],
       },

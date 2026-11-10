@@ -67,7 +67,7 @@ const diagrams = [
     file: "visual-assist-architecture.svg",
     title: "Visual Assist On-Device Flow",
     subtitle:
-      "LiDAR, ARKit, and Vision signals become speech, haptics, and VoiceOver-first guidance",
+      "LiDAR, ARKit, and Vision signals become speech and haptic guidance, spoken independent of VoiceOver",
     accent: "#60a5fa",
     nodes: [
       ["LiDAR", "ARKit", "Depth signals"],
