@@ -194,7 +194,6 @@ const forbiddenPhrases = [
   "AI expert",
   "AI-native",
   "Codex",
-  "Claude",
   "ATS optimized",
   "AI optimized",
 ];
